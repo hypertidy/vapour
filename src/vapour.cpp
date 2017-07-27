@@ -1,5 +1,6 @@
 #include "/usr/include/gdal/ogrsf_frmts.h"
-
+#include "/usr/include/gdal/gdal.h"
+#include "/usr/include/gdal/gdal_frmts.h"
 #include <Rcpp.h>
 using namespace Rcpp;
 
