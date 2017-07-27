@@ -1,0 +1,42 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# vapour
+
+The goal of vapour is to learn C++ enough. 
+
+
+
+## Set up
+
+Register routines: 
+
+https://ironholds.org/registering-routines/
+
+http://dirk.eddelbuettel.com/blog/2017/04/30/#006_easiest_package_registration
+
+
+```R
+tools::package_native_routine_registration_skeleton("../vapour", "src/init.c",character_only = FALSE)
+```
+
+```R
+list.files("src", all = TRUE )
+unlink("src/*.so")
+unlink("src/*.o")
+list.files("src", all = TRUE )
+
+```
