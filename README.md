@@ -2,7 +2,7 @@
 vapour
 ======
 
-The goal of vapour is to learn C++ enough to help create a **GDAL API** package for R so that R package developers have a common foundation to extend. A common foundation is required so that general tools can be developed, without having to adhere to specific goals and choices made for other projects, or to be limited to the high level data models of GDAL itself (simple features and affine-based regular rasters composed of 2D slices).
+The goal of vapour is to learn C++ enough to help create a **GDAL API** package for R so that R package developers have a common foundation to extend. A common foundation is required so that general tools can be developed from a general resource, and so specific goals and choices made for other projects can be maintained separately. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools.
 
 Currently all it does is read the attribute table from a vector source (only integer, double and character types are supported.) This is inspired by and draws heavily on [the sf package, simple features for R](https://github.com/r-spatial/sf).
 
