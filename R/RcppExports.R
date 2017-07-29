@@ -18,3 +18,20 @@ vapour <- function(dsource, layer = 0L) {
     .Call('_vapour_vapour', PACKAGE = 'vapour', dsource, layer)
 }
 
+#' Test GDAL read
+#'
+#' Simple pointless function to learn the GDAL API.
+#'
+#' Microprocessors, databases, servers.
+#' @param dsource data source name (path to file, connection string, URL)
+#' @param layer integer of layer to work with, defaults to the first (0)
+#' @examples
+#' sfile <- system.file("shape/nc.shp", package="sf")
+#' vgeom(sfile)
+#' pfile <- "inst/extdata/point.shp"
+#' vgeom(pfile)
+#' @export
+to_format <- function(dsource, layer = 0L, format = "json") {
+    .Call('_vapour_to_format', PACKAGE = 'vapour', dsource, layer, format)
+}
+

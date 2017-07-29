@@ -48,6 +48,17 @@ read_gdal_table(sfile)
 
 There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables. 
 
+A low-level function will return a character vector of JSON, GML, or KML. 
+
+```{r}
+to_format(pfile)[5:6]  ## format = "json"
+
+sfile <- system.file("shape/nc.shp", package="sf")
+
+to_format(sfile, format = "gml")[99:100]
+
+to_format(sfile, format = "kml")[1:2]
+```
 
 ## Set up
 

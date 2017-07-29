@@ -131,3 +131,68 @@ List vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
 }
 
 
+
+
+//' Test GDAL read
+//'
+//' Simple pointless function to learn the GDAL API.
+//'
+//' Microprocessors, databases, servers.
+//' @param dsource data source name (path to file, connection string, URL)
+//' @param layer integer of layer to work with, defaults to the first (0)
+//' @examples
+//' sfile <- system.file("shape/nc.shp", package="sf")
+//' vgeom(sfile)
+//' pfile <- "inst/extdata/point.shp"
+//' vgeom(pfile)
+//' @export
+// [[Rcpp::export]]
+CharacterVector to_format(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0, Rcpp::CharacterVector format = "json")
+{
+  GDALAllRegister();
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    printf( "Open failed.\n" );
+    exit( 1 );
+  }
+  OGRLayer  *poLayer;
+  poLayer =  poDS->GetLayer(layer[0]);
+  OGRFeature *poFeature;
+  poLayer->ResetReading();
+  //  poFeature = poLayer->GetNextFeature();
+  int iField;
+  int nFeature = poLayer->GetFeatureCount();
+  OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+  Rcpp::CharacterVector out = Rcpp::CharacterVector(nFeature);
+  if (nFeature == 0) {
+    printf("no features found");
+//    return(out);
+  }
+  int iFeature = 0;
+  //std::string istring = "";
+  while( (poFeature = poLayer->GetNextFeature()) != NULL )
+  {
+    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+    OGRGeometry *poGeometry;
+    poGeometry = poFeature->GetGeometryRef();
+    if (format[0] == "json") {
+     out[iFeature] = poGeometry->exportToJson();
+    }
+    if (format[0] == "gml") {
+      out[iFeature] = poGeometry->exportToGML();
+    }
+    if (format[0] == "kml") {
+      out[iFeature] = poGeometry->exportToKML();
+    }
+    if (format[0] == "wkt") {
+//      out[iFeature] = poGeometry->expo
+    }
+    OGRFeature::DestroyFeature( poFeature );
+    iFeature = iFeature + 1;
+  }
+
+  GDALClose( poDS );
+  return(out);
+}
