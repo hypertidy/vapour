@@ -25,32 +25,7 @@ Currently all it does is read the attribute table from a vector source (only int
 
 Big thanks to Edzer Pebesma and Roger Bivand for prior art that I crib and copy from. 
 
-## Set up
 
-
-* hack the C++
-* autconf
-* run the register native routines
-* build the package
-
-Register routines: 
-
-https://ironholds.org/registering-routines/
-
-http://dirk.eddelbuettel.com/blog/2017/04/30/#006_easiest_package_registration
-
-
-```R
-tools::package_native_routine_registration_skeleton("../vapour", "src/init.c",character_only = FALSE)
-```
-
-```R
-list.files("src", all = TRUE )
-unlink("src/*.so")
-unlink("src/*.o")
-list.files("src", all = TRUE )
-
-```
 
 
 ## Examples
@@ -72,6 +47,28 @@ read_gdal_table(sfile)
 ```
 
 There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables. 
+
+
+## Set up
+
+These are just rough notes for myself at the moment. 
+
+* hack the C++
+* autconf
+* run the register native routines
+* build the package
+
+Register routines: 
+
+https://ironholds.org/registering-routines/
+
+http://dirk.eddelbuettel.com/blog/2017/04/30/#006_easiest_package_registration
+
+
+```R
+tools::package_native_routine_registration_skeleton("../vapour", "src/init.c",character_only = FALSE)
+```
+
 
 
 # Code of conduct
