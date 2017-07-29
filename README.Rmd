@@ -21,7 +21,7 @@ so that R package developers have a common foundation to extend. A common founda
 required so that general tools can be developed from a general resource, and so specific goals
 and choices made for other projects can be maintained separately. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. 
 
-Currently all it does is read the attribute table from a vector source (only integer, double and character types are supported.) This is inspired by and draws heavily on [the sf package, simple features for R](https://github.com/r-spatial/sf). 
+Currently all it does is read the geometry as text and / or read the attribute table from a vector source (only integer, double and character types are supported.) This is inspired by and draws heavily on [the sf package, simple features for R](https://github.com/r-spatial/sf). 
 
 Big thanks to Edzer Pebesma and Roger Bivand for prior art that I crib and copy from. 
 
@@ -62,19 +62,11 @@ to_format(sfile, format = "kml")[1:2]
 
 ## Set up
 
-These are just rough notes for myself at the moment. 
+I've kept a record of a minimal GDAL wrapper package here: 
 
-* hack the C++
-* autconf
-* run the register native routines
-* build the package
+https://github.com/mdsumner/gdalmin
 
-Register routines: 
-
-https://ironholds.org/registering-routines/
-
-http://dirk.eddelbuettel.com/blog/2017/04/30/#006_easiest_package_registration
-
+This must be run when your function definitions change: 
 
 ```R
 tools::package_native_routine_registration_skeleton("../vapour", "src/init.c",character_only = FALSE)
