@@ -6,12 +6,14 @@
 using namespace Rcpp;
 
 // vapour
-int vapour();
-RcppExport SEXP _vapour_vapour() {
+List vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer);
+RcppExport SEXP _vapour_vapour(SEXP dsourceSEXP, SEXP layerSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(vapour());
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour(dsource, layer));
     return rcpp_result_gen;
 END_RCPP
 }

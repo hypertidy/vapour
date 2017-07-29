@@ -1,12 +1,15 @@
 Package: vapour
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Title: Test Development of GDAL API for R
+Version: 0.0.1
+Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre")), 
+             person("Edzer", "Pebesma", role = "aut"))
+Description: Providing low-level access to GDAL functionality for building R packages.
 Depends: R (>= 3.4.1)
-License: What license is it under?
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 LinkingTo: Rcpp
-Imports: Rcpp
+Imports: assertthat, 
+         Rcpp, 
+         tibble
 RoxygenNote: 6.0.1

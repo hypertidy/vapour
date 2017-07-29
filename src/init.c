@@ -8,10 +8,10 @@
 */
 
 /* .Call calls */
-extern SEXP _vapour_vapour();
+extern SEXP _vapour_vapour(SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_vapour_vapour", (DL_FUNC) &_vapour_vapour, 0},
+    {"_vapour_vapour", (DL_FUNC) &_vapour_vapour, 2},
     {NULL, NULL, 0}
 };
 

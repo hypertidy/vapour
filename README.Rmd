@@ -16,11 +16,22 @@ knitr::opts_chunk$set(
 
 # vapour
 
-The goal of vapour is to learn C++ enough. 
+The goal of vapour is to learn C++ enough to help create a **GDAL API** package for R
+so that R package developers have a common foundation to extend. A common foundation is
+required so that general tools can be developed, without having to adhere to specific goals
+and choices made for other projects, or to be limited to the high level data models of GDAL itself (simple features and affine-based regular rasters composed of 2D slices). 
 
+Currently all it does is read the attribute table from a vector source (only integer, double and character types are supported.) This is inspired by and draws heavily on [the sf package, simple features for R](https://github.com/r-spatial/sf). 
 
+Big thanks to Edzer Pebesma and Roger Bivand for prior art that I crib and copy from. 
 
 ## Set up
+
+
+* hack the C++
+* autconf
+* run the register native routines
+* build the package
 
 Register routines: 
 
@@ -40,3 +51,29 @@ unlink("src/*.o")
 list.files("src", all = TRUE )
 
 ```
+
+
+## Examples
+
+There's a low level function `vapour` that returns the attributes as  list of vectors. 
+
+```{r}
+pfile <- system.file("extdata", "point.shp", package = "vapour")
+library(vapour)
+vapour(pfile)
+```
+
+A higher level function `read_gdal_attribute` wraps that function to return a data frame. 
+
+```{r}
+sfile <- system.file("shape/nc.shp", package="sf")
+
+read_gdal_table(sfile)
+```
+
+There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables. 
+
+
+# Code of conduct
+
+Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
