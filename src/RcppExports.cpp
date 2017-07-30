@@ -42,3 +42,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// sql_vapour
+List sql_vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector sql);
+RcppExport SEXP _vapour_sql_vapour(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type sql(sqlSEXP);
+    rcpp_result_gen = Rcpp::wrap(sql_vapour(dsource, layer, sql));
+    return rcpp_result_gen;
+END_RCPP
+}

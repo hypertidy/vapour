@@ -54,3 +54,18 @@ to_format <- function(dsource, layer = 0L, format = "json") {
     .Call('_vapour_to_format', PACKAGE = 'vapour', dsource, layer, format)
 }
 
+#' SQL layer read
+#'
+#' Read layer attributes after SQL select
+#' @param dsource data source name (path to file, connection string, URL)
+#' @param layer integer of layer to work with, defaults to the first (0)
+#' @examples
+#' sfile <- system.file("shape/nc.shp", package="sf")
+#' vapour(sfile)
+#' pfile <- "inst/extdata/point.shp"
+#' vapour(pfile)
+#' @export
+sql_vapour <- function(dsource, layer = 0L, sql = "") {
+    .Call('_vapour_sql_vapour', PACKAGE = 'vapour', dsource, layer, sql)
+}
+

@@ -17,6 +17,9 @@ library(dplyr)
 
 # vapour
 
+WARNING: do NOT use this package, it's completely reckless and unstable and most likely just won't work when you try.
+
+
 The goal of vapour is to learn C++ enough to help create a **GDAL API** package for R
 so that R package developers have a common foundation to extend. A common foundation is
 required so that general tools can be developed from a general resource, and so specific goals

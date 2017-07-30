@@ -104,25 +104,26 @@ List vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
   int iField;
   for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
   {
-
     OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
     if( poFieldDefn->GetType() == OFTInteger ) {
       Rcpp::IntegerVector nv;
       nv = out[iField];
       nv[iFeature] = poFeature->GetFieldAsInteger( iField );
-    } else if( poFieldDefn->GetType() == OFTInteger64 )
-      printf( CPL_FRMT_GIB ",", poFeature->GetFieldAsInteger64( iField ) );
-    else if( poFieldDefn->GetType() == OFTReal ) {
+    }
+  //  if( poFieldDefn->GetType() == OFTInteger64 )
+  //    printf( CPL_FRMT_GIB ",", poFeature->GetFieldAsInteger64( iField ) );
+    if( poFieldDefn->GetType() == OFTReal ) {
       Rcpp::NumericVector nv;
       nv = out[iField];
       nv[iFeature] = poFeature->GetFieldAsDouble( iField );
-    } else if( poFieldDefn->GetType() == OFTString ) {
+    }
+
+    if( poFieldDefn->GetType() == OFTString ) {
       Rcpp::CharacterVector nv;
       nv = out[iField];
       nv[iFeature] = poFeature->GetFieldAsString( iField );
 
-    }   else
-      printf( "%s,", poFeature->GetFieldAsString(iField) );
+    }
   }
   iFeature = iFeature + 1;
   }
@@ -147,7 +148,7 @@ List vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
 //' @export
 // [[Rcpp::export]]
 List to_binary(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
-{
+  {
   GDALAllRegister();
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -259,6 +260,86 @@ CharacterVector to_format(Rcpp::CharacterVector dsource, Rcpp::IntegerVector lay
     iFeature = iFeature + 1;
   }
 
+  GDALClose( poDS );
+  return(out);
+}
+
+
+//' SQL layer read
+//'
+//' Read layer attributes after SQL select
+//' @param dsource data source name (path to file, connection string, URL)
+//' @param layer integer of layer to work with, defaults to the first (0)
+//' @examples
+//' sfile <- system.file("shape/nc.shp", package="sf")
+//' vapour(sfile)
+//' pfile <- "inst/extdata/point.shp"
+//' vapour(pfile)
+//' @export
+// [[Rcpp::export]]
+List sql_vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0,
+                Rcpp::CharacterVector sql = "")
+{
+  GDALAllRegister();
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    printf( "Open failed.\n" );
+    exit( 1 );
+  }
+
+  Rcpp::CharacterVector empty = " ";
+  OGRLayer  *poLayer;
+  poLayer =  poDS->ExecuteSQL(sql[0],
+                               NULL,
+                               empty[0] );
+
+ // poLayer =  poDS->GetLayer(layer[0]);
+  OGRFeature *poFeature;
+  poLayer->ResetReading();
+  //  poFeature = poLayer->GetNextFeature();
+  int iField;
+  int nFeature = poLayer->GetFeatureCount();
+  OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+  bool int64_as_string = true;
+  Rcpp::List out = allocate_attribute(poFDefn, nFeature, int64_as_string);
+
+  if (nFeature == 0) {
+    printf("no features found");
+    return(out);
+  }
+  int iFeature = 0;
+  while( (poFeature = poLayer->GetNextFeature()) != NULL )
+  {
+    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+
+    int iField;
+    for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
+    {
+      OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
+      if( poFieldDefn->GetType() == OFTInteger ) {
+        Rcpp::IntegerVector nv;
+        nv = out[iField];
+        nv[iFeature] = poFeature->GetFieldAsInteger( iField );
+      }
+      //  if( poFieldDefn->GetType() == OFTInteger64 )
+      //    printf( CPL_FRMT_GIB ",", poFeature->GetFieldAsInteger64( iField ) );
+      if( poFieldDefn->GetType() == OFTReal ) {
+        Rcpp::NumericVector nv;
+        nv = out[iField];
+        nv[iFeature] = poFeature->GetFieldAsDouble( iField );
+      }
+
+      if( poFieldDefn->GetType() == OFTString ) {
+        Rcpp::CharacterVector nv;
+        nv = out[iField];
+        nv[iFeature] = poFeature->GetFieldAsString( iField );
+
+      }
+    }
+    iFeature = iFeature + 1;
+  }
   GDALClose( poDS );
   return(out);
 }

@@ -4,15 +4,17 @@
 \alias{read_gdal_table}
 \title{Read attributes from source as a data frame}
 \usage{
-read_gdal_table(dsource, layer = 0)
+read_gdal_table(dsource, layer = 0, sql = NULL)
 }
 \arguments{
 \item{dsource}{data source string}
 
 \item{layer}{layer index (0)}
+
+\item{sql}{optional sql query executed against the data source}
 }
 \description{
-Read attributes from source as a data frame
+See here for SQL details http://www.gdal.org/ogr_sql.html
 }
 \examples{
 f <- system.file("extdata", "point.shp", package = "vapour")
