@@ -187,7 +187,15 @@ CharacterVector to_format(Rcpp::CharacterVector dsource, Rcpp::IntegerVector lay
       out[iFeature] = poGeometry->exportToKML();
     }
     if (format[0] == "wkt") {
-//      out[iFeature] = poGeometry->expo
+      // see buffer handling for SRS here which is where
+      // I got inspiration from : http://www.gdal.org/gdal_tutorial.html
+      char *pszGEOM_WKT = NULL;
+      // see here for the constants for the format variants
+      // http://www.gdal.org/ogr__core_8h.html#a6716bd3399c31e7bc8b0fd94fd7d9ba6a7459e8d11fa69e89271771c8d0f265d8
+      poGeometry->exportToWkt(&pszGEOM_WKT, wkbVariantIso );
+      out[iFeature] = pszGEOM_WKT;
+      CPLFree( pszGEOM_WKT );
+
     }
     OGRFeature::DestroyFeature( poFeature );
     iFeature = iFeature + 1;
