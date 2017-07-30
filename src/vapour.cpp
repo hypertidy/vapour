@@ -133,13 +133,14 @@ List vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
 
 
 
-//' Test GDAL read
+//' Read GDAL geometry as text
 //'
-//' Simple pointless function to learn the GDAL API.
+//' Simple read of geometry-only as text format.
 //'
 //' Microprocessors, databases, servers.
 //' @param dsource data source name (path to file, connection string, URL)
 //' @param layer integer of layer to work with, defaults to the first (0)
+//' @format indicate text output format, available are "json" (default), "gml", "kml", "wkt"
 //' @examples
 //' sfile <- system.file("shape/nc.shp", package="sf")
 //' vgeom(sfile)

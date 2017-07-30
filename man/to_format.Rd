@@ -2,7 +2,8 @@
 % Please edit documentation in R/RcppExports.R
 \name{to_format}
 \alias{to_format}
-\title{Test GDAL read}
+\title{Read GDAL geometry as text}
+\format{indicate text output format, available are "json" (default), "gml", "kml", "wkt"}
 \usage{
 to_format(dsource, layer = 0L, format = "json")
 }
@@ -12,7 +13,7 @@ to_format(dsource, layer = 0L, format = "json")
 \item{layer}{integer of layer to work with, defaults to the first (0)}
 }
 \description{
-Simple pointless function to learn the GDAL API.
+Simple read of geometry-only as text format.
 }
 \details{
 Microprocessors, databases, servers.

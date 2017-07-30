@@ -12,6 +12,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "README-"
 )
+library(dplyr)
 ```
 
 # vapour
@@ -60,6 +61,14 @@ to_format(sfile, format = "gml")[99:100]
 to_format(sfile, format = "kml")[1:2]
 ```
 
+
+We can combine these together to get a custom data set. 
+
+```{r}
+library(dplyr)
+dat <- read_gdal_table(sfile) %>% dplyr::mutate(kml = to_format(sfile, format = "kml"))
+glimpse(dat)
+```
 ## Set up
 
 I've kept a record of a minimal GDAL wrapper package here: 
