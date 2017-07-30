@@ -1,0 +1,44 @@
+---
+title: "vapour benchmarks"
+author: "Michael Sumner"
+date: "30/07/2017"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Vapour for GDAL vector read
+
+Here we explore the read times of different formats, the raw read time for the attribute data and
+the GDAL raw WKB or formatted text geometry from various formats. 
+
+These files are Local Government Area multipolygon layers of **cadastral parcels**, property boundaries within the state of Tasmania. 
+
+There are three formats, "gdb" is the so-called GeoDatabase format by ESRI which is a complicated and opaque replacement for the old ArcInfo binary "ADF" formats, "tab" is the classic MapInfo TAB format also a sophisticated and full-featured propietary vector format, and "shp" that lowest-common denominator interchange workaround, and poor cousin of the the real GIS vector formats. 
+
+```{r}
+library(dplyr)
+f <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullname))
+gdb <- f %>% filter(grepl("gdb$", fullname))
+tab <- f %>% filter(grepl("tab$", fullname))
+shp <- f %>% filter(grepl("shp$", fullname))
+
+gdb %>% transmute(basename(file))
+tab %>% transmute(basename(file))
+shp %>% transmute(basename(file))
+```
+
+
+Let's read all the feature metadata attributes from the first format so we know what we 
+are dealing with. 400,000 or so multi polygon features spread over 29 file types and represents "several hundred Mb". (It might be interesting to determine the file footprint of each type here, but each has a relativly complicated relationship between "file set" and "the data set", so we leave it for now). 
+
+```{r}
+system.time(l <- lapply(gdb$fullname, vapour::read_gdal_table))
+
+(gdb$nrows <-  purrr::map_int(l, nrow))
+sum(gdb$nrows)
+```

@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{to_binary}
 \alias{to_binary}
-\title{Read GDAL geometry as text}
+\title{Read GDAL geometry as blob}
 \format{indicate text output format, available are "json" (default), "gml", "kml", "wkt"}
 \usage{
 to_binary(dsource, layer = 0L)
@@ -13,10 +13,7 @@ to_binary(dsource, layer = 0L)
 \item{layer}{integer of layer to work with, defaults to the first (0)}
 }
 \description{
-Simple read of geometry-only as text format.
-}
-\details{
-Microprocessors, databases, servers.
+Simple read of geometry-only as WKB format.
 }
 \examples{
 sfile <- system.file("shape/nc.shp", package="sf")

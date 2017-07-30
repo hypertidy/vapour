@@ -18,11 +18,11 @@ vapour <- function(dsource, layer = 0L) {
     .Call('_vapour_vapour', PACKAGE = 'vapour', dsource, layer)
 }
 
-#' Read GDAL geometry as text
+#' Read GDAL geometry as blob
 #'
-#' Simple read of geometry-only as text format.
+#' Simple read of geometry-only as WKB format.
 #'
-#' Microprocessors, databases, servers.
+#'
 #' @param dsource data source name (path to file, connection string, URL)
 #' @param layer integer of layer to work with, defaults to the first (0)
 #' @format indicate text output format, available are "json" (default), "gml", "kml", "wkt"
