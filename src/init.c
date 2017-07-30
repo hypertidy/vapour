@@ -8,10 +8,12 @@
 */
 
 /* .Call calls */
+extern SEXP _vapour_to_binary(SEXP, SEXP);
 extern SEXP _vapour_to_format(SEXP, SEXP, SEXP);
 extern SEXP _vapour_vapour(SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_vapour_to_binary", (DL_FUNC) &_vapour_to_binary, 2},
     {"_vapour_to_format", (DL_FUNC) &_vapour_to_format, 3},
     {"_vapour_vapour",    (DL_FUNC) &_vapour_vapour,    2},
     {NULL, NULL, 0}

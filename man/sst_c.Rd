@@ -15,5 +15,11 @@ GLOB/JPL/MUR/v4.1/2017/209/
 See data-raw/sst_c.R for the derivation column \code{sst_c} in Celsius.
 
 Also stored in GeoPackage format in
-\code{system.file("inst/extdata/sst_c.gpkg", package = "vapour")}
+\code{system.file("extdata/sst_c.gpkg", package = "vapour")}
+}
+\examples{
+## library(sf)
+## plot(sst_c)
+f <- system.file("extdata/sst_c.gpkg", package = "vapour")#
+#d <- read_gdal_table(f) \%>\% mutate(json =  to_format(f, format = "json"))
 }
