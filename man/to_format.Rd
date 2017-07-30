@@ -20,7 +20,7 @@ Microprocessors, databases, servers.
 }
 \examples{
 sfile <- system.file("shape/nc.shp", package="sf")
-vgeom(sfile)
+to_format(sfile)
 pfile <- "inst/extdata/point.shp"
-vgeom(pfile)
+to_format(pfile)
 }

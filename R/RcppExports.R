@@ -28,9 +28,9 @@ vapour <- function(dsource, layer = 0L) {
 #' @format indicate text output format, available are "json" (default), "gml", "kml", "wkt"
 #' @examples
 #' sfile <- system.file("shape/nc.shp", package="sf")
-#' vgeom(sfile)
+#' tib <- tibble::tibble(wkb = to_binary(sfile)) %>% bind_cols(read_gdal_table(sfile))
 #' pfile <- "inst/extdata/point.shp"
-#' vgeom(pfile)
+#' to_binary(pfile)
 #' @export
 to_binary <- function(dsource, layer = 0L) {
     .Call('_vapour_to_binary', PACKAGE = 'vapour', dsource, layer)
@@ -46,9 +46,9 @@ to_binary <- function(dsource, layer = 0L) {
 #' @format indicate text output format, available are "json" (default), "gml", "kml", "wkt"
 #' @examples
 #' sfile <- system.file("shape/nc.shp", package="sf")
-#' vgeom(sfile)
+#' to_format(sfile)
 #' pfile <- "inst/extdata/point.shp"
-#' vgeom(pfile)
+#' to_format(pfile)
 #' @export
 to_format <- function(dsource, layer = 0L, format = "json") {
     .Call('_vapour_to_format', PACKAGE = 'vapour', dsource, layer, format)

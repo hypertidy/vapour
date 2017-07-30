@@ -20,7 +20,7 @@ Microprocessors, databases, servers.
 }
 \examples{
 sfile <- system.file("shape/nc.shp", package="sf")
-vgeom(sfile)
+tib <- tibble::tibble(wkb = to_binary(sfile)) \%>\% bind_cols(read_gdal_table(sfile))
 pfile <- "inst/extdata/point.shp"
-vgeom(pfile)
+to_binary(pfile)
 }

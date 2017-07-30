@@ -427,7 +427,7 @@ Copyright (C) 2012 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/home/mdsumner/Git/vapour'
+ac_pwd='/perm_storage/home/mdsumner/Git/vapour'
 srcdir='.'
 test -n "$AWK" || AWK=awk
 # The default lists apply if the user does not specify any file.
@@ -584,25 +584,25 @@ cat >>"$ac_tmp/subs1.awk" <<\_ACAWK &&
 S["LTLIBOBJS"]=""
 S["LIBOBJS"]=""
 S["GEOS_CONFIG"]="/usr/bin/geos-config"
-S["PROJ_LIBS"]="-lproj "
-S["PROJ_CPPFLAGS"]=""
+S["PROJ_LIBS"]="-L/usr/local/lib -lproj "
+S["PROJ_CPPFLAGS"]="-I/usr/local/include"
 S["EGREP"]="/bin/grep -E"
 S["GREP"]="/bin/grep"
 S["CPP"]="gcc -std=gnu99 -E"
 S["OBJEXT"]="o"
 S["EXEEXT"]=""
 S["ac_ct_CC"]="gcc -std=gnu99"
-S["CPPFLAGS"]="  -I/usr/include/gdal    -I/usr/include/gdal -I/usr/include"
-S["LDFLAGS"]="-Wl,-Bsymbolic-functions -Wl,-z,relro"
-S["CFLAGS"]="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g"
+S["CPPFLAGS"]="  -I/usr/include/gdal -I/usr/local/include  -I/usr/local/include -I/usr/include/gdal -I/usr/include"
+S["LDFLAGS"]="-Wl,-z,relro"
+S["CFLAGS"]="-g -O2 -fdebug-prefix-map=/build/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g"
 S["CC"]="gcc -std=gnu99"
-S["PKG_LIBS"]=" -L/usr/lib -lgdal -L/usr/lib/x86_64-linux-gnu -lgeos_c -lproj "
-S["PKG_CPPFLAGS"]="  -I/usr/include/gdal -I/usr/include"
+S["PKG_LIBS"]=" -L/usr/lib -lgdal -L/usr/lib/x86_64-linux-gnu -lgeos_c -L/usr/local/lib -lproj "
+S["PKG_CPPFLAGS"]=" -I/usr/local/include -I/usr/include/gdal -I/usr/include"
 S["GDAL_CONFIG"]="/usr/bin/gdal-config"
 S["target_alias"]=""
 S["host_alias"]=""
 S["build_alias"]=""
-S["LIBS"]="-lproj   -L/usr/lib -lgdal -lproj   -L/usr/lib -lgdal"
+S["LIBS"]="-lproj   -L/usr/lib -lgdal -L/usr/local/lib -lproj   -L/usr/lib -lgdal"
 S["ECHO_T"]=""
 S["ECHO_N"]="-n"
 S["ECHO_C"]=""

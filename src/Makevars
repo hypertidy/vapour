@@ -1,3 +1,3 @@
-PKG_CPPFLAGS=  -I/usr/include/gdal -I/usr/include
-PKG_LIBS= -L/usr/lib -lgdal -L/usr/lib/x86_64-linux-gnu -lgeos_c -lproj 
+PKG_CPPFLAGS= -I/usr/local/include -I/usr/include/gdal -I/usr/include
+PKG_LIBS= -L/usr/lib -lgdal -L/usr/lib/x86_64-linux-gnu -lgeos_c -L/usr/local/lib -lproj 
 CXX_STD=CXX11

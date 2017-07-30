@@ -131,19 +131,19 @@ List vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
 }
 
 
-//' Read GDAL geometry as text
+//' Read GDAL geometry as blob
 //'
-//' Simple read of geometry-only as text format.
+//' Simple read of geometry-only as WKB format.
 //'
-//' Microprocessors, databases, servers.
+//'
 //' @param dsource data source name (path to file, connection string, URL)
 //' @param layer integer of layer to work with, defaults to the first (0)
 //' @format indicate text output format, available are "json" (default), "gml", "kml", "wkt"
 //' @examples
 //' sfile <- system.file("shape/nc.shp", package="sf")
-//' vgeom(sfile)
+//' tib <- tibble::tibble(wkb = to_binary(sfile)) %>% bind_cols(read_gdal_table(sfile))
 //' pfile <- "inst/extdata/point.shp"
-//' vgeom(pfile)
+//' to_binary(pfile)
 //' @export
 // [[Rcpp::export]]
 List to_binary(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
@@ -200,9 +200,9 @@ List to_binary(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
 //' @format indicate text output format, available are "json" (default), "gml", "kml", "wkt"
 //' @examples
 //' sfile <- system.file("shape/nc.shp", package="sf")
-//' vgeom(sfile)
+//' to_format(sfile)
 //' pfile <- "inst/extdata/point.shp"
-//' vgeom(pfile)
+//' to_format(pfile)
 //' @export
 // [[Rcpp::export]]
 CharacterVector to_format(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0, Rcpp::CharacterVector format = "json")
