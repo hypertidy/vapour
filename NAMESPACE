@@ -3,6 +3,7 @@
 export(read_gdal_geometry)
 export(read_gdal_table)
 export(sql_vapour)
+export(to_bblob)
 export(to_binary)
 export(to_format)
 export(vapour)

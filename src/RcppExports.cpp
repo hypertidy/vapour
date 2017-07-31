@@ -5,6 +5,18 @@
 
 using namespace Rcpp;
 
+// to_bblob
+List to_bblob(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer);
+RcppExport SEXP _vapour_to_bblob(SEXP dsourceSEXP, SEXP layerSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
+    rcpp_result_gen = Rcpp::wrap(to_bblob(dsource, layer));
+    return rcpp_result_gen;
+END_RCPP
+}
 // vapour
 List vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer);
 RcppExport SEXP _vapour_vapour(SEXP dsourceSEXP, SEXP layerSEXP) {

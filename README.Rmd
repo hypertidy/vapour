@@ -6,7 +6,7 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -72,6 +72,68 @@ library(dplyr)
 dat <- read_gdal_table(sfile) %>% dplyr::mutate(kml = to_format(sfile, format = "kml"))
 glimpse(dat)
 ```
+
+## Fast summary 
+
+There is a basic function `to_bblob` to return a straight forward bounding box vector for every feature, so that
+we can flexibly build an index of a data set for later use. 
+
+```{r}
+sfile <- system.file("shape/nc.shp", package="sf")
+str(to_bblob(sfile))
+
+```
+
+This makes for a very lightweight summary data set that will scale to hundreds of large inputs. 
+
+```{r}
+dat <- read_gdal_table(sfile)
+library(raster)
+dat$bbox <- to_bblob(sfile)
+
+plot(purrr::reduce(lapply(dat$bbox, raster::extent), raster::union))
+purrr::walk(lapply(dat$bbox, raster::extent), plot, add = TRUE)
+
+```
+
+An example is this set of 29 property boundary shapefiles, read into a few hundred Mb of simple features. 
+
+```{r}
+library(dplyr)
+f <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullname), grepl("shp$", fullname))
+library(vapour)
+##library(blob)
+##system.time(purrr::map(f$fullname, sf::read_sf))
+# user  system elapsed
+# 43.124   2.857  39.386
+
+#system.time({
+#d <- purrr::map(f$fullname, read_gdal_table)
+#d <- dplyr::bind_rows(d)
+#g <- purrr::map(f$fullname, read_gdal_geometry)
+#d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
+#})
+# user  system elapsed
+# 16.400   2.882  23.227
+#pryr::object_size(d)
+## 359 MB
+
+```
+
+We can read that in this simpler way for a quick data set to act as an index. 
+
+```{r}
+system.time({
+  d <- purrr::map_df(f$fullname, read_gdal_table)
+  d$bbox <- unlist(purrr::map(f$fullname, to_bblob), recursive = FALSE)
+})
+
+pryr::object_size(d)
+d
+
+```
+
+
 ## Set up
 
 I've kept a record of a minimal GDAL wrapper package here: 

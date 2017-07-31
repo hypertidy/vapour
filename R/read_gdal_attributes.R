@@ -26,13 +26,13 @@ read_gdal_table <- function(dsource, layer = 0, sql = NULL) {
 }
 
 
-read_gdal_geom_table <- function(dsource, layer = 0, sql = NULL) {
-  assertthat::is.scalar(layer)
-  assertthat::is.number(layer)
-  if (!is.null(sql)) {
-    sql <- gsub("SELECT ", "SELECT FID, ", sql)
-  }
-  tab <- read_gdal_table(dsource, layer = layer, sql = sql)
-  tab[["wkb"]] <- read_gdal_geometry_filter(dsource, layer, filter = tab$FID)
-  tab
-}
+# read_gdal_geom_table <- function(dsource, layer = 0, sql = NULL) {
+#   assertthat::is.scalar(layer)
+#   assertthat::is.number(layer)
+#   if (!is.null(sql)) {
+#     sql <- gsub("SELECT ", "SELECT FID, ", sql)
+#   }
+#   tab <- read_gdal_table(dsource, layer = layer, sql = sql)
+#   tab[["wkb"]] <- read_gdal_geometry_filter(dsource, layer, filter = tab$FID)
+#   tab
+# }

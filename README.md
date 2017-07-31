@@ -1,19 +1,8 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
 vapour
 ======
 
-WARNING: do NOT use this package, it's completely reckless and unstable.
+WARNING: do NOT use this package, it's completely reckless and unstable and most likely just won't work when you try.
 
 The goal of vapour is to learn C++ enough to help create a **GDAL API** package for R so that R package developers have a common foundation to extend. A common foundation is required so that general tools can be developed from a general resource, and so specific goals and choices made for other projects can be maintained separately. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools.
 
@@ -100,6 +89,191 @@ glimpse(dat)
 #> $ SID79     <dbl> 0, 3, 6, 2, 3, 5, 2, 2, 2, 5, 2, 5, 4, 4, 6, 17, 4, ...
 #> $ NWBIR79   <dbl> 19, 12, 260, 145, 1197, 1237, 139, 371, 844, 176, 59...
 #> $ kml       <chr> "<Polygon><outerBoundaryIs><LinearRing><coordinates>...
+```
+
+Fast summary
+------------
+
+There is a basic function `to_bblob` to return a straight forward bounding box vector for every feature, so that we can flexibly build an index of a data set for later use.
+
+``` r
+sfile <- system.file("shape/nc.shp", package="sf")
+str(to_bblob(sfile))
+#> List of 100
+#>  $ : num [1:4] -81.7 -81.2 36.2 36.6
+#>  $ : num [1:4] -81.3 -80.9 36.4 36.6
+#>  $ : num [1:4] -81 -80.4 36.2 36.6
+#>  $ : num [1:4] -76.3 -75.8 36.1 36.6
+#>  $ : num [1:4] -77.9 -77.1 36.2 36.6
+#>  $ : num [1:4] -77.2 -76.7 36.2 36.6
+#>  $ : num [1:4] -76.6 -76 36.2 36.6
+#>  $ : num [1:4] -77 -76.5 36.3 36.6
+#>  $ : num [1:4] -78.3 -77.9 36.2 36.6
+#>  $ : num [1:4] -80.5 -80 36.3 36.6
+#>  $ : num [1:4] -79.5 -79.1 36.2 36.5
+#>  $ : num [1:4] -80 -79.5 36.2 36.5
+#>  $ : num [1:4] -78.8 -78.5 36 36.5
+#>  $ : num [1:4] -79.2 -78.8 36.2 36.5
+#>  $ : num [1:4] -78.5 -78.3 36.2 36.5
+#>  $ : num [1:4] -78 -77.2 36 36.5
+#>  $ : num [1:4] -76.5 -76.1 36.1 36.5
+#>  $ : num [1:4] -81.5 -80.9 36 36.4
+#>  $ : num [1:4] -81.9 -81.5 36.1 36.4
+#>  $ : num [1:4] -76.6 -76.3 36.1 36.4
+#>  $ : num [1:4] -76.7 -76.4 36 36.3
+#>  $ : num [1:4] -82.1 -81.7 35.9 36.3
+#>  $ : num [1:4] -80.9 -80.4 36 36.3
+#>  $ : num [1:4] -78.5 -78 35.8 36.3
+#>  $ : num [1:4] -80.5 -80 36 36.3
+#>  $ : num [1:4] -80 -79.5 35.9 36.3
+#>  $ : num [1:4] -79.5 -79.2 35.8 36.2
+#>  $ : num [1:4] -77.3 -76.7 35.8 36.2
+#>  $ : num [1:4] -79.3 -79 35.9 36.2
+#>  $ : num [1:4] -79 -78.7 35.9 36.2
+#>  $ : num [1:4] -78.3 -77.7 35.7 36.2
+#>  $ : num [1:4] -82.4 -82 35.8 36.1
+#>  $ : num [1:4] -77.8 -77.3 35.7 36.1
+#>  $ : num [1:4] -81.8 -81.3 35.8 36.1
+#>  $ : num [1:4] -82.5 -82.1 35.7 36.1
+#>  $ : num [1:4] -77.4 -76.8 35.7 36.1
+#>  $ : num [1:4] -79 -78.3 35.5 36.1
+#>  $ : num [1:4] -83 -82.4 35.7 36.1
+#>  $ : num [1:4] -81.1 -80.7 35.5 36.1
+#>  $ : num [1:4] -80.7 -80.4 35.7 36.1
+#>  $ : num [1:4] -81.3 -81 35.8 36
+#>  $ : num [1:4] -80.5 -80 35.5 36
+#>  $ : num [1:4] -82 -81.4 35.6 36
+#>  $ : num [1:4] -76.8 -76.4 35.7 36
+#>  $ : num [1:4] -76.4 -76 35.6 36
+#>  $ : num [1:4] -82.3 -81.8 35.5 36
+#>  $ : num [1:4] -80.1 -79.5 35.5 35.9
+#>  $ : num [1:4] -79.6 -78.9 35.5 35.9
+#>  $ : num [1:4] -78.2 -77.7 35.6 35.9
+#>  $ : num [1:4] -80.8 -80.2 35.5 35.9
+#>  $ : num [1:4] -77.7 -77.1 35.3 35.8
+#>  $ : num [1:4] -81.5 -80.9 35.5 35.8
+#>  $ : num [1:4] -82.9 -82.2 35.4 35.8
+#>  $ : num [1:4] -78.7 -78.1 35.2 35.8
+#>  $ : num [1:4] -83.3 -82.7 35.3 35.8
+#>  $ : num [1:4] -76 -75.5 35.2 36.2
+#>  $ : num [1:4] -77.2 -76.5 35.2 35.7
+#>  $ : num [1:4] -84 -83.2 35.3 35.7
+#>  $ : num [1:4] -77.8 -77.5 35.3 35.7
+#>  $ : num [1:4] -79.4 -79 35.3 35.6
+#>  $ : num [1:4] -82.3 -81.7 35.2 35.6
+#>  $ : num [1:4] -78.3 -77.8 35.1 35.6
+#>  $ : num [1:4] -79.2 -78.5 35.2 35.6
+#>  $ : num [1:4] -81.8 -81.3 35.2 35.6
+#>  $ : num [1:4] -81.5 -80.9 35.4 35.6
+#>  $ : num [1:4] -83.4 -82.9 35 35.5
+#>  $ : num [1:4] -79.8 -79.1 35 35.5
+#>  $ : num [1:4] -81.1 -80.5 35 35.5
+#>  $ : num [1:4] -80.8 -80.3 35.2 35.5
+#>  $ : num [1:4] -80.2 -79.6 35.1 35.5
+#>  $ : num [1:4] -80.5 -80.1 35.1 35.5
+#>  $ : num [1:4] -82.7 -82.3 35.1 35.5
+#>  $ : num [1:4] -84 -83.6 35.2 35.5
+#>  $ : num [1:4] -77.8 -77.4 35 35.4
+#>  $ : num [1:4] -83.1 -82.6 35 35.4
+#>  $ : num [1:4] -81.4 -80.9 35.1 35.4
+#>  $ : num [1:4] -82.4 -82 35.2 35.4
+#>  $ : num [1:4] -83.7 -83.1 35 35.3
+#>  $ : num [1:4] -78.7 -78.1 34.6 35.3
+#>  $ : num [1:4] -77 -76.5 35 35.3
+#>  $ : num [1:4] -84.3 -83.7 35 35.3
+#>  $ : num [1:4] -79.1 -78.5 34.8 35.3
+#>  $ : num [1:4] -77.7 -77 34.8 35.2
+#>  $ : num [1:4] -80.8 -80.3 34.8 35.2
+#>  $ : num [1:4] -80.3 -79.9 34.8 35.2
+#>  $ : num [1:4] -79.5 -79 34.8 35.2
+#>  $ : num [1:4] -76.6 -75.8 35.1 35.7
+#>  $ : num [1:4] -78.2 -77.7 34.7 35.2
+#>  $ : num [1:4] -80.1 -79.5 34.8 35.2
+#>  $ : num [1:4] -84 -83.5 35 35.1
+#>  $ : num [1:4] -77.5 -76.6 34.8 35.4
+#>  $ : num [1:4] -79.7 -79.3 34.6 35
+#>  $ : num [1:4] -77.7 -77.1 34.5 35
+#>  $ : num [1:4] -79.5 -78.8 34.3 35
+#>  $ : num [1:4] -77.2 -76.3 34.6 35
+#>  $ : num [1:4] -78.9 -78.2 34.4 34.9
+#>  $ : num [1:4] -78.3 -77.5 34.3 34.7
+#>  $ : num [1:4] -79.1 -78.2 33.9 34.5
+#>  $ : num [1:4] -78 -77.8 34.1 34.4
+#>   [list output truncated]
+```
+
+This makes for a very lightweight summary data set that will scale to hundreds of large inputs.
+
+``` r
+dat <- read_gdal_table(sfile)
+library(raster)
+#> Loading required package: sp
+#> 
+#> Attaching package: 'raster'
+#> The following object is masked from 'package:dplyr':
+#> 
+#>     select
+dat$bbox <- to_bblob(sfile)
+
+plot(purrr::reduce(lapply(dat$bbox, raster::extent), raster::union))
+purrr::walk(lapply(dat$bbox, raster::extent), plot, add = TRUE)
+```
+
+![](README-unnamed-chunk-7-1.png)
+
+An example is this set of 29 property boundary shapefiles, read into a few hundred Mb of simple features.
+
+``` r
+library(dplyr)
+f <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullname), grepl("shp$", fullname))
+library(vapour)
+##library(blob)
+##system.time(purrr::map(f$fullname, sf::read_sf))
+# user  system elapsed
+# 43.124   2.857  39.386
+
+#system.time({
+#d <- purrr::map(f$fullname, read_gdal_table)
+#d <- dplyr::bind_rows(d)
+#g <- purrr::map(f$fullname, read_gdal_geometry)
+#d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
+#})
+# user  system elapsed
+# 16.400   2.882  23.227
+#pryr::object_size(d)
+## 359 MB
+```
+
+We can read that in this simpler way for a quick data set to act as an index.
+
+``` r
+system.time({
+  d <- purrr::map_df(f$fullname, read_gdal_table)
+  d$bbox <- unlist(purrr::map(f$fullname, to_bblob), recursive = FALSE)
+})
+#>    user  system elapsed 
+#>  18.263   3.816  22.431
+
+pryr::object_size(d)
+#> 177 MB
+d
+#> # A tibble: 411,017 x 20
+#>      CID VOLUME FOLIO   PID POT_PID     LPI      CAD_TYPE1
+#>    <chr>  <chr> <int> <chr>   <chr>   <chr>          <chr>
+#>  1       169864     2                 FEV10 Private Parcel
+#>  2                  0                 KKL85 Authority Land
+#>  3                  0                       Authority Land
+#>  4       136703     1                 HSY23 Authority Land
+#>  5                  0                 GES42 Authority Land
+#>  6                  0                             Casement
+#>  7       212990     1               4802445 Private Parcel
+#>  8       244941     1               4802444 Private Parcel
+#>  9                  0                 KKL85 Authority Land
+#> 10       142603     1                 HSY18 Authority Land
+#> # ... with 411,007 more rows, and 13 more variables: CAD_TYPE2 <chr>,
+#> #   TENURE_TY <chr>, FEAT_NAME <chr>, STRATA_LEV <chr>, COMP_AREA <dbl>,
+#> #   MEAS_AREA <dbl>, UFI <chr>, FMP <chr>, CREATED_ON <chr>,
+#> #   LIST_GUID <chr>, SHAPE_AREA <dbl>, SHAPE_LEN <dbl>, bbox <list>
 ```
 
 Set up

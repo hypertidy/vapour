@@ -1,6 +1,64 @@
 #include "ogrsf_frmts.h"
+#include "ogr_api.h"
 #include <Rcpp.h>
 using namespace Rcpp;
+
+
+
+//' Read GDAL geometry bblob
+//'
+//' @param dsource data source name (path to file, connection string, URL)
+//' @param layer integer of layer to work with, defaults to the first (0)
+//' @examples
+//' sfile <- system.file("shape/nc.shp", package="sf")
+//' to_bblob(sfile)
+//' @export
+// [[Rcpp::export]]
+List to_bblob(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
+{
+  GDALAllRegister();
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    printf( "Open failed.\n" );
+    exit( 1 );
+  }
+  OGRLayer  *poLayer;
+  poLayer =  poDS->GetLayer(layer[0]);
+  OGRFeature *poFeature;
+  poLayer->ResetReading();
+  //  poFeature = poLayer->GetNextFeature();
+  int iField;
+  int nFeature = poLayer->GetFeatureCount();
+  OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+  Rcpp::List binary = Rcpp::List(nFeature);
+  if (nFeature == 0) {
+    printf("no features found");
+    //    return(out);
+  }
+  int iFeature = 0;
+  //std::string istring = "";
+  while( (poFeature = poLayer->GetNextFeature()) != NULL )
+  {
+    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+    OGRGeometry *poGeometry;
+    poGeometry = poFeature->GetGeometryRef();
+    OGREnvelope env;
+    OGR_G_GetEnvelope(poGeometry, &env);
+    binary[iFeature] = Rcpp::NumericVector {env.MinX, env.MaxX, env.MinY, env.MaxY};
+    //https://github.com/r-spatial/sf/blob/798068d3044a65797c52bf3b42bc4a5d83b45e9a/src/gdal.cpp#L207
+   // Rcpp::RawVector raw(poGeometry->WkbSize());
+    //todo we probably need better err handling see sf handle_error
+    //poGeometry->exportToWkb(wkbNDR, &(raw[0]), wkbVariantIso);
+    //binary[iFeature] = raw;
+    OGRFeature::DestroyFeature( poFeature );
+    iFeature = iFeature + 1;
+  }
+
+  GDALClose( poDS );
+  return(binary);
+}
 
 
 // copied from Edzer Pebesma, https://github.com/r-spatial/sf/blob/master/src/gdal_read.cpp
