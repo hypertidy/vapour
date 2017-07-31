@@ -1,23 +1,21 @@
 library(dplyr)
 f <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullname), grepl("shp$", fullname))
 library(vapour)
+library(blob)
+system.time(purrr::map(f$fullname, sf::read_sf))
+# user  system elapsed
+# 43.124   2.857  39.386
 
 
-x <- dplyr::bind_rows(x)
-x[["wkb"]] <- lapply(f$fullname, read_gdal_geometry)
+system.time({
+d <- purrr::map(f$fullname, read_gdal_table)
+d <- dplyr::bind_rows(d)
+g <- purrr::map(f$fullname, read_gdal_geometry)
+d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
+})
+# user  system elapsed
+# 16.400   2.882  23.227
 
+pryr::object_size(d)
+## 359 MB
 
-
-
-
-
-
-
-i <- 1
-i <- i + 1
-f1 <- f %>%  slice(i) %>% pull(fullname)
-read_gdal_table(f1)
-
-
-tibble::as_tibble(vapour:::vapour(f))
-d <- sf::read_sf(f)
