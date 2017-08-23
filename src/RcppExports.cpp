@@ -5,6 +5,17 @@
 
 using namespace Rcpp;
 
+// rasterio
+NumericVector rasterio(const char* pszFilename);
+RcppExport SEXP _vapour_rasterio(SEXP pszFilenameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const char* >::type pszFilename(pszFilenameSEXP);
+    rcpp_result_gen = Rcpp::wrap(rasterio(pszFilename));
+    return rcpp_result_gen;
+END_RCPP
+}
 // to_bblob
 List to_bblob(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer);
 RcppExport SEXP _vapour_to_bblob(SEXP dsourceSEXP, SEXP layerSEXP) {
