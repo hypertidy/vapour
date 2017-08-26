@@ -5,6 +5,60 @@ using namespace Rcpp;
 
 
 
+// copied from Edzer Pebesma, https://github.com/r-spatial/sf/blob/master/src/gdal_read.cpp
+Rcpp::List allocate_attribute(OGRFeatureDefn *poFDefn, int n_features, bool int64_as_string) {
+
+  int n = poFDefn->GetFieldCount(); //+ poFDefn->GetGeomFieldCount();
+  Rcpp::List out(n);
+  Rcpp::CharacterVector names(n);
+  for (int i = 0; i < poFDefn->GetFieldCount(); i++) {
+    OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn(i);
+    switch (poFieldDefn->GetType()) {
+    case OFTInteger:
+      out[i] = Rcpp::IntegerVector(n_features);
+      break;
+    case OFTDate: {
+      Rcpp::NumericVector ret(n_features);
+      ret.attr("class") = "Date";
+      out[i] = ret;
+    } break;
+    case OFTDateTime: {
+      Rcpp::NumericVector ret(n_features);
+      Rcpp::CharacterVector cls(2);
+      cls(0) = "POSIXct";
+      cls(1) = "POSIXt";
+      ret.attr("class") = cls;
+      out[i] = ret;
+    } break;
+    case OFTInteger64: // fall through: converts Int64 -> double
+      if (int64_as_string)
+        out[i] = Rcpp::CharacterVector(n_features);
+      else
+        out[i] = Rcpp::NumericVector(n_features);
+      break;
+    case OFTReal:
+      out[i] = Rcpp::NumericVector(n_features);
+      break;
+    case OFTString:
+      out[i] = Rcpp::CharacterVector(n_features);
+      break;
+    case OFTStringList:
+    case OFTRealList:
+    case OFTIntegerList:
+      out[i] = Rcpp::List(n_features);
+      break;
+    default:
+      Rcpp::stop("Unrecognized field type\n"); // #nocov
+    break;
+    }
+    names[i] = poFieldDefn->GetNameRef();
+  }
+
+  out.attr("names") = names;
+  return out;
+}
+
+
 //' Vector attributes read
 //'
 //' Read layer attributes, optionally after SQL select
@@ -16,12 +70,10 @@ using namespace Rcpp;
 //' vapour_read_attributes(sfile)
 //' sfile <- system.file("shape/nc.shp", package="sf")
 //' vapour_read_attributes(sfile, sql = "SELECT * FROM nc WHERE FID < 5")
-//'
-//' pfile <- "inst/extdata/point.shp"
-//' vapour(pfile)
 //' @export
 // [[Rcpp::export]]
-List vapour_read_attributes(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0,
+List vapour_read_attributes(Rcpp::CharacterVector dsource,
+                            Rcpp::IntegerVector layer = 0,
                             Rcpp::CharacterVector sql = "")
 {
   GDALAllRegister();
@@ -32,8 +84,9 @@ List vapour_read_attributes(Rcpp::CharacterVector dsource, Rcpp::IntegerVector l
     Rcpp::stop("Open failed.\n");
   }
 
-  Rcpp::CharacterVector empty = " ";
+
   OGRLayer  *poLayer;
+  Rcpp::CharacterVector empty = " ";
   if (sql[0] != "") {
     poLayer =  poDS->ExecuteSQL(sql[0],
                                 NULL,
@@ -100,18 +153,21 @@ List vapour_read_attributes(Rcpp::CharacterVector dsource, Rcpp::IntegerVector l
 }
 
 
-//'  GDAL geometry bounding box
+//'  GDAL geometry extent
 //'
-//' Read a GDAL geometry summary as just the native bounding box.
+//' Read a GDAL geometry summary as just the native bounding box, the four
+//' numbers xmin, xmax, ymin, ymax in the usual simple convention.
 //'
 //' @param dsource data source name (path to file, connection string, URL)
 //' @param layer integer of layer to work with, defaults to the first (0)
 //' @examples
 //' sfile <- system.file("shape/nc.shp", package="sf")
-//' to_bblob(sfile)
+//' vapour_read_geometry_extent(sfile)
 //' @export
 // [[Rcpp::export]]
-List to_bblob(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
+List vapour_read_extent(Rcpp::CharacterVector dsource,
+                        Rcpp::IntegerVector layer = 0,
+                        Rcpp::CharacterVector sql = "")
 {
 
   GDALAllRegister();
@@ -119,10 +175,27 @@ List to_bblob(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
   poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
   {
-   Rcpp::stop("Open failed.\n");
+    Rcpp::stop("Open failed.\n");
   }
   OGRLayer  *poLayer;
-  poLayer =  poDS->GetLayer(layer[0]);
+
+  Rcpp::CharacterVector empty = " ";
+  if (sql[0] != "") {
+    poLayer =  poDS->ExecuteSQL(sql[0],
+                                NULL,
+                                empty[0] );
+
+    if (poLayer == NULL) {
+      Rcpp::stop("SQL execution failed.\n");
+    }
+
+  } else {
+    poLayer =  poDS->GetLayer(layer[0]);
+  }
+  if (poLayer == NULL) {
+    Rcpp::stop("Layer open failed.\n");
+  }
+
   OGRFeature *poFeature;
   poLayer->ResetReading();
   //  poFeature = poLayer->GetNextFeature();
@@ -145,7 +218,7 @@ List to_bblob(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
     OGR_G_GetEnvelope(poGeometry, &env);
     binary[iFeature] = Rcpp::NumericVector {env.MinX, env.MaxX, env.MinY, env.MaxY};
     //https://github.com/r-spatial/sf/blob/798068d3044a65797c52bf3b42bc4a5d83b45e9a/src/gdal.cpp#L207
-   // Rcpp::RawVector raw(poGeometry->WkbSize());
+    // Rcpp::RawVector raw(poGeometry->WkbSize());
     //todo we probably need better err handling see sf handle_error
     //poGeometry->exportToWkb(wkbNDR, &(raw[0]), wkbVariantIso);
     //binary[iFeature] = raw;
@@ -157,133 +230,6 @@ List to_bblob(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
   return(binary);
 }
 
-
-// copied from Edzer Pebesma, https://github.com/r-spatial/sf/blob/master/src/gdal_read.cpp
-Rcpp::List allocate_attribute(OGRFeatureDefn *poFDefn, int n_features, bool int64_as_string) {
-
-  int n = poFDefn->GetFieldCount(); //+ poFDefn->GetGeomFieldCount();
-  Rcpp::List out(n);
-  Rcpp::CharacterVector names(n);
-  for (int i = 0; i < poFDefn->GetFieldCount(); i++) {
-    OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn(i);
-    switch (poFieldDefn->GetType()) {
-    case OFTInteger:
-      out[i] = Rcpp::IntegerVector(n_features);
-      break;
-    case OFTDate: {
-      Rcpp::NumericVector ret(n_features);
-      ret.attr("class") = "Date";
-      out[i] = ret;
-    } break;
-    case OFTDateTime: {
-      Rcpp::NumericVector ret(n_features);
-      Rcpp::CharacterVector cls(2);
-      cls(0) = "POSIXct";
-      cls(1) = "POSIXt";
-      ret.attr("class") = cls;
-      out[i] = ret;
-    } break;
-    case OFTInteger64: // fall through: converts Int64 -> double
-      if (int64_as_string)
-        out[i] = Rcpp::CharacterVector(n_features);
-      else
-        out[i] = Rcpp::NumericVector(n_features);
-      break;
-    case OFTReal:
-      out[i] = Rcpp::NumericVector(n_features);
-      break;
-    case OFTString:
-      out[i] = Rcpp::CharacterVector(n_features);
-      break;
-    case OFTStringList:
-    case OFTRealList:
-    case OFTIntegerList:
-      out[i] = Rcpp::List(n_features);
-      break;
-    default:
-      Rcpp::stop("Unrecognized field type\n"); // #nocov
-    break;
-    }
-    names[i] = poFieldDefn->GetNameRef();
-  }
-
-  out.attr("names") = names;
-  return out;
-}
-
-
-//' Test GDAL read
-//'
-//' Simple pointless function to learn the GDAL API.
-//'
-//' Microprocessors, databases, servers.
-//' @param dsource data source name (path to file, connection string, URL)
-//' @param layer integer of layer to work with, defaults to the first (0)
-//' @examples
-//' sfile <- system.file("shape/nc.shp", package="sf")
-//' vapour(sfile)
-//' pfile <- "inst/extdata/point.shp"
-//' vapour(pfile)
-//' @export
-// [[Rcpp::export]]
-List vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
-{
-  GDALAllRegister();
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  OGRLayer  *poLayer;
-  poLayer =  poDS->GetLayer(layer[0]);
-  OGRFeature *poFeature;
-  poLayer->ResetReading();
-  //  poFeature = poLayer->GetNextFeature();
-  int iField;
-  int nFeature = poLayer->GetFeatureCount();
-  OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-  bool int64_as_string = true;
-  Rcpp::List out = allocate_attribute(poFDefn, nFeature, int64_as_string);
-
-  if (nFeature == 0) {
-    printf("no features found");
-    return(out);
-  }
-  int iFeature = 0;
-  while( (poFeature = poLayer->GetNextFeature()) != NULL )
-  {
-    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-
-  int iField;
-  for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
-  {
-    OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
-    if( poFieldDefn->GetType() == OFTInteger ) {
-      Rcpp::IntegerVector nv;
-      nv = out[iField];
-      nv[iFeature] = poFeature->GetFieldAsInteger( iField );
-    }
-  //  if( poFieldDefn->GetType() == OFTInteger64 )
-  //    printf( CPL_FRMT_GIB ",", poFeature->GetFieldAsInteger64( iField ) );
-    if( poFieldDefn->GetType() == OFTReal ) {
-      Rcpp::NumericVector nv;
-      nv = out[iField];
-      nv[iFeature] = poFeature->GetFieldAsDouble( iField );
-    }
-
-    if( poFieldDefn->GetType() == OFTString ) {
-      Rcpp::CharacterVector nv;
-      nv = out[iField];
-      nv[iFeature] = poFeature->GetFieldAsString( iField );
-
-    }
-  }
-  iFeature = iFeature + 1;
-  }
-  GDALClose( poDS );
-  return(out);
-}
 
 
 //' Read GDAL geometry as blob
@@ -301,8 +247,10 @@ List vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
 //' to_binary(pfile)
 //' @export
 // [[Rcpp::export]]
-List to_binary(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
-  {
+List vapour_read_geometry(Rcpp::CharacterVector dsource,
+                          Rcpp::IntegerVector layer = 0,
+                          Rcpp::CharacterVector sql = "")
+{
   GDALAllRegister();
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -311,7 +259,25 @@ List to_binary(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
     Rcpp::stop("Open failed.\n");
   }
   OGRLayer  *poLayer;
-  poLayer =  poDS->GetLayer(layer[0]);
+
+  Rcpp::CharacterVector empty = " ";
+  if (sql[0] != "") {
+    poLayer =  poDS->ExecuteSQL(sql[0],
+                                NULL,
+                                empty[0] );
+
+    if (poLayer == NULL) {
+      Rcpp::stop("SQL execution failed.\n");
+    }
+
+  } else {
+    poLayer =  poDS->GetLayer(layer[0]);
+  }
+  if (poLayer == NULL) {
+    Rcpp::stop("Layer open failed.\n");
+  }
+
+
   OGRFeature *poFeature;
   poLayer->ResetReading();
   //  poFeature = poLayer->GetNextFeature();
@@ -335,7 +301,7 @@ List to_binary(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
     //todo we probably need better err handling see sf handle_error
     poGeometry->exportToWkb(wkbNDR, &(raw[0]), wkbVariantIso);
     binary[iFeature] = raw;
-        OGRFeature::DestroyFeature( poFeature );
+    OGRFeature::DestroyFeature( poFeature );
     iFeature = iFeature + 1;
   }
 
@@ -359,7 +325,10 @@ List to_binary(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
 //' to_format(pfile)
 //' @export
 // [[Rcpp::export]]
-CharacterVector to_format(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0, Rcpp::CharacterVector format = "json")
+CharacterVector vapour_read_geometry_text(Rcpp::CharacterVector dsource,
+                                          Rcpp::IntegerVector layer = 0,
+                                          Rcpp::CharacterVector sql = "",
+                                          Rcpp::CharacterVector format = "json")
 {
   GDALAllRegister();
   GDALDataset       *poDS;
@@ -369,7 +338,24 @@ CharacterVector to_format(Rcpp::CharacterVector dsource, Rcpp::IntegerVector lay
     Rcpp::stop("Open failed.\n");
   }
   OGRLayer  *poLayer;
-  poLayer =  poDS->GetLayer(layer[0]);
+
+  Rcpp::CharacterVector empty = " ";
+  if (sql[0] != "") {
+    poLayer =  poDS->ExecuteSQL(sql[0],
+                                NULL,
+                                empty[0] );
+
+    if (poLayer == NULL) {
+      Rcpp::stop("SQL execution failed.\n");
+    }
+
+  } else {
+    poLayer =  poDS->GetLayer(layer[0]);
+  }
+  if (poLayer == NULL) {
+    Rcpp::stop("Layer open failed.\n");
+  }
+
   OGRFeature *poFeature;
   poLayer->ResetReading();
   //  poFeature = poLayer->GetNextFeature();
@@ -379,7 +365,7 @@ CharacterVector to_format(Rcpp::CharacterVector dsource, Rcpp::IntegerVector lay
   Rcpp::CharacterVector out = Rcpp::CharacterVector(nFeature);
   if (nFeature == 0) {
     printf("no features found");
-//    return(out);
+    //    return(out);
   }
   int iFeature = 0;
   //std::string istring = "";
@@ -389,7 +375,7 @@ CharacterVector to_format(Rcpp::CharacterVector dsource, Rcpp::IntegerVector lay
     OGRGeometry *poGeometry;
     poGeometry = poFeature->GetGeometryRef();
     if (format[0] == "json") {
-     out[iFeature] = poGeometry->exportToJson();
+      out[iFeature] = poGeometry->exportToJson();
     }
     if (format[0] == "gml") {
       out[iFeature] = poGeometry->exportToGML();
@@ -415,4 +401,6 @@ CharacterVector to_format(Rcpp::CharacterVector dsource, Rcpp::IntegerVector lay
   GDALClose( poDS );
   return(out);
 }
+
+
 

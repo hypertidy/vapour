@@ -17,55 +17,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// to_bblob
-List to_bblob(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer);
-RcppExport SEXP _vapour_to_bblob(SEXP dsourceSEXP, SEXP layerSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
-    rcpp_result_gen = Rcpp::wrap(to_bblob(dsource, layer));
-    return rcpp_result_gen;
-END_RCPP
-}
-// vapour
-List vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer);
-RcppExport SEXP _vapour_vapour(SEXP dsourceSEXP, SEXP layerSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
-    rcpp_result_gen = Rcpp::wrap(vapour(dsource, layer));
-    return rcpp_result_gen;
-END_RCPP
-}
-// to_binary
-List to_binary(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer);
-RcppExport SEXP _vapour_to_binary(SEXP dsourceSEXP, SEXP layerSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
-    rcpp_result_gen = Rcpp::wrap(to_binary(dsource, layer));
-    return rcpp_result_gen;
-END_RCPP
-}
-// to_format
-CharacterVector to_format(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector format);
-RcppExport SEXP _vapour_to_format(SEXP dsourceSEXP, SEXP layerSEXP, SEXP formatSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type format(formatSEXP);
-    rcpp_result_gen = Rcpp::wrap(to_format(dsource, layer, format));
-    return rcpp_result_gen;
-END_RCPP
-}
 // vapour_read_attributes
 List vapour_read_attributes(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector sql);
 RcppExport SEXP _vapour_vapour_read_attributes(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP) {
@@ -76,6 +27,46 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
     Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type sql(sqlSEXP);
     rcpp_result_gen = Rcpp::wrap(vapour_read_attributes(dsource, layer, sql));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vapour_read_extent
+List vapour_read_extent(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector sql);
+RcppExport SEXP _vapour_vapour_read_extent(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type sql(sqlSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_read_extent(dsource, layer, sql));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vapour_read_geometry
+List vapour_read_geometry(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector sql);
+RcppExport SEXP _vapour_vapour_read_geometry(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type sql(sqlSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_read_geometry(dsource, layer, sql));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vapour_read_geometry_text
+CharacterVector vapour_read_geometry_text(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector sql, Rcpp::CharacterVector format);
+RcppExport SEXP _vapour_vapour_read_geometry_text(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP formatSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type sql(sqlSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type format(formatSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_read_geometry_text(dsource, layer, sql, format));
     return rcpp_result_gen;
 END_RCPP
 }

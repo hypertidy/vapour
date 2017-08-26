@@ -9,19 +9,17 @@
 
 /* .Call calls */
 extern SEXP _vapour_rasterio(SEXP, SEXP);
-extern SEXP _vapour_to_bblob(SEXP, SEXP);
-extern SEXP _vapour_to_binary(SEXP, SEXP);
-extern SEXP _vapour_to_format(SEXP, SEXP, SEXP);
-extern SEXP _vapour_vapour(SEXP, SEXP);
 extern SEXP _vapour_vapour_read_attributes(SEXP, SEXP, SEXP);
+extern SEXP _vapour_vapour_read_extent(SEXP, SEXP, SEXP);
+extern SEXP _vapour_vapour_read_geometry(SEXP, SEXP, SEXP);
+extern SEXP _vapour_vapour_read_geometry_text(SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_vapour_rasterio",               (DL_FUNC) &_vapour_rasterio,               2},
-    {"_vapour_to_bblob",               (DL_FUNC) &_vapour_to_bblob,               2},
-    {"_vapour_to_binary",              (DL_FUNC) &_vapour_to_binary,              2},
-    {"_vapour_to_format",              (DL_FUNC) &_vapour_to_format,              3},
-    {"_vapour_vapour",                 (DL_FUNC) &_vapour_vapour,                 2},
-    {"_vapour_vapour_read_attributes", (DL_FUNC) &_vapour_vapour_read_attributes, 3},
+    {"_vapour_rasterio",                  (DL_FUNC) &_vapour_rasterio,                  2},
+    {"_vapour_vapour_read_attributes",    (DL_FUNC) &_vapour_vapour_read_attributes,    3},
+    {"_vapour_vapour_read_extent",        (DL_FUNC) &_vapour_vapour_read_extent,        3},
+    {"_vapour_vapour_read_geometry",      (DL_FUNC) &_vapour_vapour_read_geometry,      3},
+    {"_vapour_vapour_read_geometry_text", (DL_FUNC) &_vapour_vapour_read_geometry_text, 4},
     {NULL, NULL, 0}
 };
 

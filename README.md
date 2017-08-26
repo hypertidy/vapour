@@ -2,23 +2,21 @@
 vapour
 ======
 
-WARNING: do NOT use this package, it's completely reckless and unstable and most likely just won't work when you try.
+The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
 
-The goal of vapour is to learn C++ enough to help create a **GDAL API** package for R so that R package developers have a common foundation to extend. A common foundation is required so that general tools can be developed from a general resource, and so specific goals and choices made for other projects can be maintained separately. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools.
-
-Currently all it does is read the geometry as text and / or read the attribute table from a vector source (only integer, double and character types are supported.) This is inspired by and draws heavily on [the sf package, simple features for R](https://github.com/r-spatial/sf).
+Currently all it does is read vector data attributes or geometry. This is inspired by and draws heavily on work done [the sf package, simple features for R and rgdal and rgdal2](https://github.com/r-spatial/sf).
 
 Big thanks to Edzer Pebesma and Roger Bivand for prior art that I crib and copy from.
 
 Examples
 --------
 
-There's a low level function `vapour` that returns the attributes as list of vectors.
+There's a function `vapour_read_attributes` that returns the attributes as list of vectors.
 
 ``` r
 pfile <- system.file("extdata", "point.shp", package = "vapour")
 library(vapour)
-vapour(pfile)
+vapour_read_attributes(pfile)
 #> $a
 #>  [1]  1  2  3  4  5  6  7  8  9 10
 ```
@@ -51,17 +49,24 @@ There are many useful higher level operations that can be used with this. The si
 A low-level function will return a character vector of JSON, GML, KML or WKT.
 
 ``` r
-to_format(pfile)[5:6]  ## format = "json"
+vapour_read_geometry(pfile)[5:6]  ## format = "WKB"
+#> [[1]]
+#>  [1] 01 01 00 00 00 00 00 60 08 18 ad ec 3f 00 00 e0 9a ec 77 e2 3f
+#> 
+#> [[2]]
+#>  [1] 01 01 00 00 00 00 00 c0 40 3c bb d0 3f 00 00 80 0e 30 25 d5 3f
+
+vapour_read_geometry_text(pfile)[5:6]  ## format = "json"
 #> [1] "{ \"type\": \"Point\", \"coordinates\": [ 0.89612962375395, 0.577139189234003 ] }" 
 #> [2] "{ \"type\": \"Point\", \"coordinates\": [ 0.261427939636633, 0.330394758377224 ] }"
 
 sfile <- system.file("shape/nc.shp", package="sf")
 
-to_format(sfile, format = "gml")[99:100]
+vapour_read_geometry_text(sfile, format = "gml")[99:100]
 #> [1] "<gml:Polygon srsName=\"EPSG:4267\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-77.9607315063477,34.1892433166504 -77.9658660888672,34.2422866821289 -77.9752807617188,34.2433624267578 -77.9831466674805,34.2616806030273 -78.0002212524414,34.2678833007812 -77.9953918457031,34.2827987670898 -78.0070190429688,34.2848167419434 -78.0113067626953,34.312614440918 -78.0259246826172,34.3287696838379 -77.9866790771484,34.339916229248 -77.9944534301758,34.3623161315918 -77.9790725708008,34.3756866455078 -77.9498138427734,34.3660850524902 -77.9439392089844,34.3564376831055 -77.9217834472656,34.3733139038086 -77.888069152832,34.364070892334 -77.8283843994141,34.3879699707031 -77.8091430664062,34.359432220459 -77.7505264282227,34.305046081543 -77.864387512207,34.1927375793457 -77.894401550293,34.0691795349121 -77.9267578125,34.0620346069336 -77.9607315063477,34.1892433166504</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>"                                                                                                                                             
 #> [2] "<gml:Polygon srsName=\"EPSG:4267\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-78.6557159423828,33.948673248291 -78.6347198486328,33.9779777526855 -78.6302719116211,34.0102005004883 -78.5877838134766,34.0306053161621 -78.5634307861328,34.0589447021484 -78.5442810058594,34.134162902832 -78.5272369384766,34.154857635498 -78.4927444458008,34.158504486084 -78.4254302978516,34.1380653381348 -78.3611221313477,34.1867218017578 -78.3735733032227,34.2023506164551 -78.2610626220703,34.2152633666992 -78.15478515625,34.3622436523438 -78.130241394043,34.3641242980957 -78.0259246826172,34.3287696838379 -78.0113067626953,34.312614440918 -78.0070190429688,34.2848167419434 -77.9953918457031,34.2827987670898 -78.0002212524414,34.2678833007812 -77.9831466674805,34.2616806030273 -77.9752807617188,34.2433624267578 -77.9658660888672,34.2422866821289 -77.9607315063477,34.1892433166504 -77.9585266113281,33.9925804138184 -78.0348052978516,33.9142913818359 -78.579719543457,33.8819923400879 -78.6557159423828,33.948673248291</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>"
 
-to_format(sfile, format = "kml")[1:2]
+vapour_read_geometry_text(sfile, format = "kml")[1:2]
 #> [1] "<Polygon><outerBoundaryIs><LinearRing><coordinates>-81.4727554321289,36.2343559265137 -81.5408401489258,36.2725067138672 -81.5619812011719,36.2735939025879 -81.6330642700195,36.3406867980957 -81.7410736083984,36.3917846679688 -81.6982803344727,36.4717788696289 -81.7027969360352,36.5193405151367 -81.6699981689453,36.5896492004395 -81.3452987670898,36.5728645324707 -81.347541809082,36.537914276123 -81.3247756958008,36.5136795043945 -81.3133239746094,36.4806976318359 -81.2662353515625,36.4372062683105 -81.2628402709961,36.4050407409668 -81.2406921386719,36.3794174194336 -81.2398910522461,36.365364074707 -81.2642440795898,36.3524131774902 -81.3289947509766,36.3635025024414 -81.3613739013672,36.3531608581543 -81.3656921386719,36.3390502929688 -81.354133605957,36.2997169494629 -81.3674545288086,36.2786979675293 -81.4063873291016,36.2850532531738 -81.4123306274414,36.2672920227051 -81.431037902832,36.2607192993164 -81.4528884887695,36.2395858764648 -81.4727554321289,36.2343559265137</coordinates></LinearRing></outerBoundaryIs></Polygon>"
 #> [2] "<Polygon><outerBoundaryIs><LinearRing><coordinates>-81.2398910522461,36.365364074707 -81.2406921386719,36.3794174194336 -81.2628402709961,36.4050407409668 -81.2662353515625,36.4372062683105 -81.3133239746094,36.4806976318359 -81.3247756958008,36.5136795043945 -81.347541809082,36.537914276123 -81.3452987670898,36.5728645324707 -80.9034423828125,36.5652122497559 -80.9335479736328,36.4983139038086 -80.9657745361328,36.4672203063965 -80.9496688842773,36.4147338867188 -80.9563903808594,36.4037971496582 -80.9779510498047,36.3913764953613 -80.9828414916992,36.3718338012695 -81.0027770996094,36.3666801452637 -81.0246429443359,36.3778343200684 -81.0428009033203,36.4103355407715 -81.0842514038086,36.4299201965332 -81.0985641479492,36.43115234375 -81.1133117675781,36.4228515625 -81.1293792724609,36.4263305664062 -81.1383972167969,36.4176254272461 -81.1533660888672,36.4247398376465 -81.1766738891602,36.4154434204102 -81.2398910522461,36.365364074707</coordinates></LinearRing></outerBoundaryIs></Polygon>"
 ```
@@ -70,7 +75,7 @@ We can combine these together to get a custom data set.
 
 ``` r
 library(dplyr)
-dat <- read_gdal_table(sfile) %>% dplyr::mutate(kml = to_format(sfile, format = "kml"))
+dat <- read_gdal_table(sfile) %>% dplyr::mutate(kml = vapour_read_geometry_text(sfile, format = "kml"))
 glimpse(dat)
 #> Observations: 100
 #> Variables: 15
@@ -94,11 +99,11 @@ glimpse(dat)
 Fast summary
 ------------
 
-There is a basic function `to_bblob` to return a straight forward bounding box vector for every feature, so that we can flexibly build an index of a data set for later use.
+There is a basic function `vapour_read_extent` to return a straight forward bounding box vector for every feature, so that we can flexibly build an index of a data set for later use.
 
 ``` r
 sfile <- system.file("shape/nc.shp", package="sf")
-str(to_bblob(sfile))
+str(vapour_read_extent(sfile))
 #> List of 100
 #>  $ : num [1:4] -81.7 -81.2 36.2 36.6
 #>  $ : num [1:4] -81.3 -80.9 36.4 36.6
@@ -213,7 +218,7 @@ library(raster)
 #> The following object is masked from 'package:dplyr':
 #> 
 #>     select
-dat$bbox <- to_bblob(sfile)
+dat$bbox <- vapour_read_extent(sfile)
 
 plot(purrr::reduce(lapply(dat$bbox, raster::extent), raster::union))
 purrr::walk(lapply(dat$bbox, raster::extent), plot, add = TRUE)
@@ -225,19 +230,27 @@ An example is this set of 29 property boundary shapefiles, read into a few hundr
 
 ``` r
 library(dplyr)
-f <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullname), grepl("shp$", fullname))
+files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullname), grepl("shp$", fullname))
+#> Warning in raadfiles::thelist_files(format = ""): datadir and file root
+#> don't match?
 library(vapour)
-##library(blob)
-##system.time(purrr::map(f$fullname, sf::read_sf))
+system.time(purrr::map(files$fullname, sf::read_sf))
+#>    user  system elapsed 
+#>  26.574   1.015  27.734
 # user  system elapsed
 # 43.124   2.857  39.386
+library(blob)
 
-#system.time({
-#d <- purrr::map(f$fullname, read_gdal_table)
-#d <- dplyr::bind_rows(d)
-#g <- purrr::map(f$fullname, read_gdal_geometry)
-#d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
-#})
+## our timing is competitive, and we get to choose what is read
+## and when
+system.time({
+d <- purrr::map(files$fullname, read_gdal_table)
+d <- dplyr::bind_rows(d)
+g <- purrr::map(files$fullname, read_gdal_geometry)
+d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
+})
+#>    user  system elapsed 
+#>  14.282   1.239  15.720
 # user  system elapsed
 # 16.400   2.882  23.227
 #pryr::object_size(d)
@@ -248,32 +261,37 @@ We can read that in this simpler way for a quick data set to act as an index.
 
 ``` r
 system.time({
-  d <- purrr::map_df(f$fullname, read_gdal_table)
-  d$bbox <- unlist(purrr::map(f$fullname, to_bblob), recursive = FALSE)
+  d <- purrr::map_df(files$fullname, read_gdal_table)
+  d$bbox <- unlist(purrr::map(files$fullname, vapour_read_extent), recursive = FALSE)
 })
 #>    user  system elapsed 
-#>  18.263   3.816  22.431
+#>  11.481   0.891  12.547
 
 pryr::object_size(d)
 #> 177 MB
-d
-#> # A tibble: 411,017 x 20
-#>      CID VOLUME FOLIO   PID POT_PID     LPI      CAD_TYPE1
-#>    <chr>  <chr> <int> <chr>   <chr>   <chr>          <chr>
-#>  1       169864     2                 FEV10 Private Parcel
-#>  2                  0                 KKL85 Authority Land
-#>  3                  0                       Authority Land
-#>  4       136703     1                 HSY23 Authority Land
-#>  5                  0                 GES42 Authority Land
-#>  6                  0                             Casement
-#>  7       212990     1               4802445 Private Parcel
-#>  8       244941     1               4802444 Private Parcel
-#>  9                  0                 KKL85 Authority Land
-#> 10       142603     1                 HSY18 Authority Land
-#> # ... with 411,007 more rows, and 13 more variables: CAD_TYPE2 <chr>,
-#> #   TENURE_TY <chr>, FEAT_NAME <chr>, STRATA_LEV <chr>, COMP_AREA <dbl>,
-#> #   MEAS_AREA <dbl>, UFI <chr>, FMP <chr>, CREATED_ON <chr>,
-#> #   LIST_GUID <chr>, SHAPE_AREA <dbl>, SHAPE_LEN <dbl>, bbox <list>
+glimpse(d)
+#> Observations: 411,017
+#> Variables: 20
+#> $ CID        <chr> "", "", "", "", "", "", "", "", "", "", "", "", "",...
+#> $ VOLUME     <chr> "169864", "", "", "136703", "", "", "212990", "2449...
+#> $ FOLIO      <int> 2, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 9, 0, 1, 0, 8, ...
+#> $ PID        <chr> "", "", "", "", "", "", "", "", "", "", "", "", "",...
+#> $ POT_PID    <chr> "", "", "", "", "", "", "", "", "", "", "", "", "",...
+#> $ LPI        <chr> "FEV10", "KKL85", "", "HSY23", "GES42", "", "480244...
+#> $ CAD_TYPE1  <chr> "Private Parcel", "Authority Land", "Authority Land...
+#> $ CAD_TYPE2  <chr> "Private Parcel", "Forestry Tasmania", "Forestry Ta...
+#> $ TENURE_TY  <chr> "Freehold Title", "Crown Land", "Crown Land", "Crow...
+#> $ FEAT_NAME  <chr> "", "", "", "", "", "", "", "", "", "", "", "", "",...
+#> $ STRATA_LEV <chr> "Not Applicable", "Not Applicable", "Not Applicable...
+#> $ COMP_AREA  <dbl> 1200513.096, 23096.094, 148147.128, 4603209.423, 48...
+#> $ MEAS_AREA  <dbl> 1207000, 0, 0, 0, 0, 0, 0, 136700, 0, 0, 0, 18260, ...
+#> $ UFI        <chr> "cad013844403", "cad013933348", "cad013933302", "ca...
+#> $ FMP        <chr> "cad000029000", "cad000029000", "cad000029000", "ca...
+#> $ CREATED_ON <chr> "2015-08-25 14:31:57", "2016-04-07 10:22:12", "2016...
+#> $ LIST_GUID  <chr> "{d1b80f74-2873-46d1-a6ed-d1d27a45bd6e}", "{3cb147d...
+#> $ SHAPE_AREA <dbl> 1200513.096, 23096.094, 148147.128, 4603209.423, 48...
+#> $ SHAPE_LEN  <dbl> 4382.7258, 2365.0896, 14870.8324, 16288.4164, 14990...
+#> $ bbox       <list> [<551456.8, 552738.1, 5413518.9, 5414799.6>, <5544...
 ```
 
 Set up

@@ -17,15 +17,9 @@ library(dplyr)
 
 # vapour
 
-WARNING: do NOT use this package, it's completely reckless and unstable and most likely just won't work when you try.
+The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
 
-
-The goal of vapour is to learn C++ enough to help create a **GDAL API** package for R
-so that R package developers have a common foundation to extend. A common foundation is
-required so that general tools can be developed from a general resource, and so specific goals
-and choices made for other projects can be maintained separately. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. 
-
-Currently all it does is read the geometry as text and / or read the attribute table from a vector source (only integer, double and character types are supported.) This is inspired by and draws heavily on [the sf package, simple features for R](https://github.com/r-spatial/sf). 
+Currently all it does is read vector data attributes or geometry.  This is inspired by and draws heavily on work done [the sf package, simple features for R and rgdal and rgdal2](https://github.com/r-spatial/sf). 
 
 Big thanks to Edzer Pebesma and Roger Bivand for prior art that I crib and copy from. 
 
@@ -34,12 +28,12 @@ Big thanks to Edzer Pebesma and Roger Bivand for prior art that I crib and copy 
 
 ## Examples
 
-There's a low level function `vapour` that returns the attributes as  list of vectors. 
+There's a function `vapour_read_attributes` that returns the attributes as  list of vectors. 
 
 ```{r}
 pfile <- system.file("extdata", "point.shp", package = "vapour")
 library(vapour)
-vapour(pfile)
+vapour_read_attributes(pfile)
 ```
 
 A higher level function `read_gdal_attribute` wraps that function to return a data frame. 
@@ -55,13 +49,15 @@ There are many useful higher level operations that can be used with this. The si
 A low-level function will return a character vector of JSON, GML, KML or WKT. 
 
 ```{r}
-to_format(pfile)[5:6]  ## format = "json"
+vapour_read_geometry(pfile)[5:6]  ## format = "WKB"
+
+vapour_read_geometry_text(pfile)[5:6]  ## format = "json"
 
 sfile <- system.file("shape/nc.shp", package="sf")
 
-to_format(sfile, format = "gml")[99:100]
+vapour_read_geometry_text(sfile, format = "gml")[99:100]
 
-to_format(sfile, format = "kml")[1:2]
+vapour_read_geometry_text(sfile, format = "kml")[1:2]
 ```
 
 
@@ -69,18 +65,18 @@ We can combine these together to get a custom data set.
 
 ```{r}
 library(dplyr)
-dat <- read_gdal_table(sfile) %>% dplyr::mutate(kml = to_format(sfile, format = "kml"))
+dat <- read_gdal_table(sfile) %>% dplyr::mutate(kml = vapour_read_geometry_text(sfile, format = "kml"))
 glimpse(dat)
 ```
 
 ## Fast summary 
 
-There is a basic function `to_bblob` to return a straight forward bounding box vector for every feature, so that
+There is a basic function `vapour_read_extent` to return a straight forward bounding box vector for every feature, so that
 we can flexibly build an index of a data set for later use. 
 
 ```{r}
 sfile <- system.file("shape/nc.shp", package="sf")
-str(to_bblob(sfile))
+str(vapour_read_extent(sfile))
 
 ```
 
@@ -89,7 +85,7 @@ This makes for a very lightweight summary data set that will scale to hundreds o
 ```{r}
 dat <- read_gdal_table(sfile)
 library(raster)
-dat$bbox <- to_bblob(sfile)
+dat$bbox <- vapour_read_extent(sfile)
 
 plot(purrr::reduce(lapply(dat$bbox, raster::extent), raster::union))
 purrr::walk(lapply(dat$bbox, raster::extent), plot, add = TRUE)
@@ -100,23 +96,19 @@ An example is this set of 29 property boundary shapefiles, read into a few hundr
 
 ```{r}
 library(dplyr)
-f <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullname), grepl("shp$", fullname))
+files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullname), grepl("shp$", fullname))
 library(vapour)
-##library(blob)
-##system.time(purrr::map(f$fullname, sf::read_sf))
-# user  system elapsed
-# 43.124   2.857  39.386
+system.time(purrr::map(files$fullname, sf::read_sf))
+library(blob)
 
-#system.time({
-#d <- purrr::map(f$fullname, read_gdal_table)
-#d <- dplyr::bind_rows(d)
-#g <- purrr::map(f$fullname, read_gdal_geometry)
-#d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
-#})
-# user  system elapsed
-# 16.400   2.882  23.227
-#pryr::object_size(d)
-## 359 MB
+## our timing is competitive, and we get to choose what is read
+## and when
+system.time({
+d <- purrr::map(files$fullname, read_gdal_table)
+d <- dplyr::bind_rows(d)
+g <- purrr::map(files$fullname, read_gdal_geometry)
+d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
+})
 
 ```
 
@@ -124,12 +116,12 @@ We can read that in this simpler way for a quick data set to act as an index.
 
 ```{r}
 system.time({
-  d <- purrr::map_df(f$fullname, read_gdal_table)
-  d$bbox <- unlist(purrr::map(f$fullname, to_bblob), recursive = FALSE)
+  d <- purrr::map_df(files$fullname, read_gdal_table)
+  d$bbox <- unlist(purrr::map(files$fullname, vapour_read_extent), recursive = FALSE)
 })
 
 pryr::object_size(d)
-d
+glimpse(d)
 
 ```
 

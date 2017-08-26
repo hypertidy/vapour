@@ -20,8 +20,5 @@ Read layer attributes, optionally after SQL select
 sfile <- system.file("shape/nc.shp", package="sf")
 vapour_read_attributes(sfile)
 sfile <- system.file("shape/nc.shp", package="sf")
-vapour_read_attributes(sfile, "SELECT * FROM nc WHERE FID < 5")
-
-pfile <- "inst/extdata/point.shp"
-vapour(pfile)
+vapour_read_attributes(sfile, sql = "SELECT * FROM nc WHERE FID < 5")
 }

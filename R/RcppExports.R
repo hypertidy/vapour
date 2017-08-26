@@ -14,35 +14,35 @@ rasterio <- function(pszFilename, subfact = 5L) {
     .Call('_vapour_rasterio', PACKAGE = 'vapour', pszFilename, subfact)
 }
 
-#'  GDAL geometry bounding box
+#' Vector attributes read
 #'
-#' Read a GDAL geometry summary as just the native bounding box.
-#'
+#' Read layer attributes, optionally after SQL select
 #' @param dsource data source name (path to file, connection string, URL)
 #' @param layer integer of layer to work with, defaults to the first (0)
+#' @param sql if not empty this is executed against the data source (layer will be ignored)
 #' @examples
 #' sfile <- system.file("shape/nc.shp", package="sf")
-#' to_bblob(sfile)
+#' vapour_read_attributes(sfile)
+#' sfile <- system.file("shape/nc.shp", package="sf")
+#' vapour_read_attributes(sfile, sql = "SELECT * FROM nc WHERE FID < 5")
 #' @export
-to_bblob <- function(dsource, layer = 0L) {
-    .Call('_vapour_to_bblob', PACKAGE = 'vapour', dsource, layer)
+vapour_read_attributes <- function(dsource, layer = 0L, sql = "") {
+    .Call('_vapour_vapour_read_attributes', PACKAGE = 'vapour', dsource, layer, sql)
 }
 
-#' Test GDAL read
+#'  GDAL geometry extent
 #'
-#' Simple pointless function to learn the GDAL API.
+#' Read a GDAL geometry summary as just the native bounding box, the four
+#' numbers xmin, xmax, ymin, ymax in the usual simple convention.
 #'
-#' Microprocessors, databases, servers.
 #' @param dsource data source name (path to file, connection string, URL)
 #' @param layer integer of layer to work with, defaults to the first (0)
 #' @examples
 #' sfile <- system.file("shape/nc.shp", package="sf")
-#' vapour(sfile)
-#' pfile <- "inst/extdata/point.shp"
-#' vapour(pfile)
+#' vapour_read_geometry_extent(sfile)
 #' @export
-vapour <- function(dsource, layer = 0L) {
-    .Call('_vapour_vapour', PACKAGE = 'vapour', dsource, layer)
+vapour_read_extent <- function(dsource, layer = 0L, sql = "") {
+    .Call('_vapour_vapour_read_extent', PACKAGE = 'vapour', dsource, layer, sql)
 }
 
 #' Read GDAL geometry as blob
@@ -59,8 +59,8 @@ vapour <- function(dsource, layer = 0L) {
 #' pfile <- "inst/extdata/point.shp"
 #' to_binary(pfile)
 #' @export
-to_binary <- function(dsource, layer = 0L) {
-    .Call('_vapour_to_binary', PACKAGE = 'vapour', dsource, layer)
+vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
+    .Call('_vapour_vapour_read_geometry', PACKAGE = 'vapour', dsource, layer, sql)
 }
 
 #' Read GDAL geometry as text
@@ -77,25 +77,7 @@ to_binary <- function(dsource, layer = 0L) {
 #' pfile <- "inst/extdata/point.shp"
 #' to_format(pfile)
 #' @export
-to_format <- function(dsource, layer = 0L, format = "json") {
-    .Call('_vapour_to_format', PACKAGE = 'vapour', dsource, layer, format)
-}
-
-#' Vector attributes read
-#'
-#' Read layer attributes, optionally after SQL select
-#' @param dsource data source name (path to file, connection string, URL)
-#' @param layer integer of layer to work with, defaults to the first (0)
-#' @param sql if not empty this is executed against the data source (layer will be ignored)
-#' @examples
-#' sfile <- system.file("shape/nc.shp", package="sf")
-#' vapour_read_attributes(sfile)
-#' vapour_read_attributes(sfile, sql = "SELECT * FROM nc WHERE FID < 5")
-#'
-#' pfile <- "inst/extdata/point.shp"
-#' vapour(pfile)
-#' @export
-vapour_read_attributes <- function(dsource, layer = 0L, sql = "") {
-    .Call('_vapour_vapour_read_attributes', PACKAGE = 'vapour', dsource, layer, sql)
+vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", format = "json") {
+    .Call('_vapour_vapour_read_geometry_text', PACKAGE = 'vapour', dsource, layer, sql, format)
 }
 
