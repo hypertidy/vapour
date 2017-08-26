@@ -4,7 +4,7 @@
 \alias{read_gdal_geometry}
 \title{Read geometry from source as a blob vector.}
 \usage{
-read_gdal_geometry(dsource, layer = 0)
+read_gdal_geometry(dsource, layer = 0, sql = NULL)
 }
 \arguments{
 \item{dsource}{data source string}

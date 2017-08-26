@@ -4,16 +4,17 @@ using namespace Rcpp;
 
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
+
+
 //' Raster IO
 //'
-//' @export
+//' @noRd
 //' @examples
 //' f <- system.file("extdata", "volcano.tif", package = "vapour")
 //' fact <- 2
 //' m <- matrix(rasterio(f, fact), ncol(volcano)/fact)
 //' image(m)
 //' contour(t(volcano), add = TRUE)
-// [[Rcpp::export]]
 NumericVector rasterio (const char* pszFilename, NumericVector subfact = 5)
 {
 

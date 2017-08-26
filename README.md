@@ -4,9 +4,7 @@ vapour
 
 The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
 
-Currently all it does is read vector data attributes or geometry. This is inspired by and draws heavily on work done [the sf package, simple features for R and rgdal and rgdal2](https://github.com/r-spatial/sf).
-
-Big thanks to Edzer Pebesma and Roger Bivand for prior art that I crib and copy from.
+Currently all it does is read vector data attributes or geometry. This is inspired by and draws heavily on work done [the sf package](https://github.com/r-spatial/sf) and rgdal and rgdal2.
 
 Examples
 --------
@@ -21,27 +19,27 @@ vapour_read_attributes(pfile)
 #>  [1]  1  2  3  4  5  6  7  8  9 10
 ```
 
-A higher level function `read_gdal_attribute` wraps that function to return a data frame.
+A higher level wraps that function to return a data frame.
 
 ``` r
-sfile <- system.file("shape/nc.shp", package="sf")
+mvfile <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package="vapour")
 
-read_gdal_table(sfile)
-#> # A tibble: 100 x 14
-#>     AREA PERIMETER CNTY_ CNTY_ID        NAME  FIPS FIPSNO CRESS_ID BIR74
-#>    <dbl>     <dbl> <dbl>   <dbl>       <chr> <chr>  <dbl>    <int> <dbl>
-#>  1 0.114     1.442  1825    1825        Ashe 37009  37009        5  1091
-#>  2 0.061     1.231  1827    1827   Alleghany 37005  37005        3   487
-#>  3 0.143     1.630  1828    1828       Surry 37171  37171       86  3188
-#>  4 0.070     2.968  1831    1831   Currituck 37053  37053       27   508
-#>  5 0.153     2.206  1832    1832 Northampton 37131  37131       66  1421
-#>  6 0.097     1.670  1833    1833    Hertford 37091  37091       46  1452
-#>  7 0.062     1.547  1834    1834      Camden 37029  37029       15   286
-#>  8 0.091     1.284  1835    1835       Gates 37073  37073       37   420
-#>  9 0.118     1.421  1836    1836      Warren 37185  37185       93   968
-#> 10 0.124     1.428  1837    1837      Stokes 37169  37169       85  1612
-#> # ... with 90 more rows, and 5 more variables: SID74 <dbl>, NWBIR74 <dbl>,
-#> #   BIR79 <dbl>, SID79 <dbl>, NWBIR79 <dbl>
+read_gdal_table(mvfile)
+#> # A tibble: 58 x 11
+#>    LOCAL_ID          NAME POSTCODE PLAN_REF   GAZ_DATE NOM_REG_NO
+#>       <dbl>         <chr>    <int>    <chr>     <date>      <chr>
+#>  1   100422      Caveside     7304  CPR5322 1970-01-01       947L
+#>  2   100366       Weegena     7304  CPR5327 1970-01-01      1300M
+#>  3   100337     Kimberley     7304  CPR5361 1970-01-01      1063T
+#>  4   100308       Parkham     7304  CPR5327 1970-01-01      1179Y
+#>  5   100263     Frankford     7275  CPR5142 1970-01-01      1003Q
+#>  6   100311   Bridgenorth     7277  CPR5140 1970-01-01       925X
+#>  7   100377    Summerhill     7250  CPR5150 1970-01-01      4806G
+#>  8   100407      Mayberry     7304  CPR5321 1970-01-01      1116M
+#>  9   100429 Western Creek     7304  CPR5322 1970-01-01      1304X
+#> 10   100423       Meander     7304  CPR5322 1970-01-01      1117P
+#> # ... with 48 more rows, and 5 more variables: UFI <chr>,
+#> #   CREATED_ON <chr>, LIST_GUID <chr>, SHAPE_AREA <dbl>, SHAPE_LEN <dbl>
 ```
 
 There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables.
@@ -60,157 +58,105 @@ vapour_read_geometry_text(pfile)[5:6]  ## format = "json"
 #> [1] "{ \"type\": \"Point\", \"coordinates\": [ 0.89612962375395, 0.577139189234003 ] }" 
 #> [2] "{ \"type\": \"Point\", \"coordinates\": [ 0.261427939636633, 0.330394758377224 ] }"
 
-sfile <- system.file("shape/nc.shp", package="sf")
+cfile <- system.file("extdata/sst_c.gpkg", package = "vapour")
+vapour_read_geometry_text(pfile, format = "gml")[2]
+#> [1] "<gml:Point><gml:coordinates>0.145755324047059,0.395469118840992</gml:coordinates></gml:Point>"
 
-vapour_read_geometry_text(sfile, format = "gml")[99:100]
-#> [1] "<gml:Polygon srsName=\"EPSG:4267\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-77.9607315063477,34.1892433166504 -77.9658660888672,34.2422866821289 -77.9752807617188,34.2433624267578 -77.9831466674805,34.2616806030273 -78.0002212524414,34.2678833007812 -77.9953918457031,34.2827987670898 -78.0070190429688,34.2848167419434 -78.0113067626953,34.312614440918 -78.0259246826172,34.3287696838379 -77.9866790771484,34.339916229248 -77.9944534301758,34.3623161315918 -77.9790725708008,34.3756866455078 -77.9498138427734,34.3660850524902 -77.9439392089844,34.3564376831055 -77.9217834472656,34.3733139038086 -77.888069152832,34.364070892334 -77.8283843994141,34.3879699707031 -77.8091430664062,34.359432220459 -77.7505264282227,34.305046081543 -77.864387512207,34.1927375793457 -77.894401550293,34.0691795349121 -77.9267578125,34.0620346069336 -77.9607315063477,34.1892433166504</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>"                                                                                                                                             
-#> [2] "<gml:Polygon srsName=\"EPSG:4267\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-78.6557159423828,33.948673248291 -78.6347198486328,33.9779777526855 -78.6302719116211,34.0102005004883 -78.5877838134766,34.0306053161621 -78.5634307861328,34.0589447021484 -78.5442810058594,34.134162902832 -78.5272369384766,34.154857635498 -78.4927444458008,34.158504486084 -78.4254302978516,34.1380653381348 -78.3611221313477,34.1867218017578 -78.3735733032227,34.2023506164551 -78.2610626220703,34.2152633666992 -78.15478515625,34.3622436523438 -78.130241394043,34.3641242980957 -78.0259246826172,34.3287696838379 -78.0113067626953,34.312614440918 -78.0070190429688,34.2848167419434 -77.9953918457031,34.2827987670898 -78.0002212524414,34.2678833007812 -77.9831466674805,34.2616806030273 -77.9752807617188,34.2433624267578 -77.9658660888672,34.2422866821289 -77.9607315063477,34.1892433166504 -77.9585266113281,33.9925804138184 -78.0348052978516,33.9142913818359 -78.579719543457,33.8819923400879 -78.6557159423828,33.948673248291</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>"
+## don't do this with a non-longlat data set like cfile
+vapour_read_geometry_text(pfile, format = "kml")[1:2]
+#> [1] "<Point><coordinates>0.623376188334078,0.380098037654534</coordinates></Point>"
+#> [2] "<Point><coordinates>0.145755324047059,0.395469118840992</coordinates></Point>"
 
-vapour_read_geometry_text(sfile, format = "kml")[1:2]
-#> [1] "<Polygon><outerBoundaryIs><LinearRing><coordinates>-81.4727554321289,36.2343559265137 -81.5408401489258,36.2725067138672 -81.5619812011719,36.2735939025879 -81.6330642700195,36.3406867980957 -81.7410736083984,36.3917846679688 -81.6982803344727,36.4717788696289 -81.7027969360352,36.5193405151367 -81.6699981689453,36.5896492004395 -81.3452987670898,36.5728645324707 -81.347541809082,36.537914276123 -81.3247756958008,36.5136795043945 -81.3133239746094,36.4806976318359 -81.2662353515625,36.4372062683105 -81.2628402709961,36.4050407409668 -81.2406921386719,36.3794174194336 -81.2398910522461,36.365364074707 -81.2642440795898,36.3524131774902 -81.3289947509766,36.3635025024414 -81.3613739013672,36.3531608581543 -81.3656921386719,36.3390502929688 -81.354133605957,36.2997169494629 -81.3674545288086,36.2786979675293 -81.4063873291016,36.2850532531738 -81.4123306274414,36.2672920227051 -81.431037902832,36.2607192993164 -81.4528884887695,36.2395858764648 -81.4727554321289,36.2343559265137</coordinates></LinearRing></outerBoundaryIs></Polygon>"
-#> [2] "<Polygon><outerBoundaryIs><LinearRing><coordinates>-81.2398910522461,36.365364074707 -81.2406921386719,36.3794174194336 -81.2628402709961,36.4050407409668 -81.2662353515625,36.4372062683105 -81.3133239746094,36.4806976318359 -81.3247756958008,36.5136795043945 -81.347541809082,36.537914276123 -81.3452987670898,36.5728645324707 -80.9034423828125,36.5652122497559 -80.9335479736328,36.4983139038086 -80.9657745361328,36.4672203063965 -80.9496688842773,36.4147338867188 -80.9563903808594,36.4037971496582 -80.9779510498047,36.3913764953613 -80.9828414916992,36.3718338012695 -81.0027770996094,36.3666801452637 -81.0246429443359,36.3778343200684 -81.0428009033203,36.4103355407715 -81.0842514038086,36.4299201965332 -81.0985641479492,36.43115234375 -81.1133117675781,36.4228515625 -81.1293792724609,36.4263305664062 -81.1383972167969,36.4176254272461 -81.1533660888672,36.4247398376465 -81.1766738891602,36.4154434204102 -81.2398910522461,36.365364074707</coordinates></LinearRing></outerBoundaryIs></Polygon>"
+str(vapour_read_geometry_text(cfile, format = "wkt")[1:2])
+#>  chr [1:2] "MULTILINESTRING ((-16254.4210476553 -3269904.98849485,-48956.5880244328 -3282652.40200143,-82133.8545994558 -33"| __truncated__ ...
 ```
 
 We can combine these together to get a custom data set.
 
 ``` r
 library(dplyr)
-dat <- read_gdal_table(sfile) %>% dplyr::mutate(kml = vapour_read_geometry_text(sfile, format = "kml"))
+dat <- read_gdal_table(cfile) %>% dplyr::mutate(wkt = vapour_read_geometry_text(cfile, format = "wkt"))
 glimpse(dat)
-#> Observations: 100
-#> Variables: 15
-#> $ AREA      <dbl> 0.114, 0.061, 0.143, 0.070, 0.153, 0.097, 0.062, 0.0...
-#> $ PERIMETER <dbl> 1.442, 1.231, 1.630, 2.968, 2.206, 1.670, 1.547, 1.2...
-#> $ CNTY_     <dbl> 1825, 1827, 1828, 1831, 1832, 1833, 1834, 1835, 1836...
-#> $ CNTY_ID   <dbl> 1825, 1827, 1828, 1831, 1832, 1833, 1834, 1835, 1836...
-#> $ NAME      <chr> "Ashe", "Alleghany", "Surry", "Currituck", "Northamp...
-#> $ FIPS      <chr> "37009", "37005", "37171", "37053", "37131", "37091"...
-#> $ FIPSNO    <dbl> 37009, 37005, 37171, 37053, 37131, 37091, 37029, 370...
-#> $ CRESS_ID  <int> 5, 3, 86, 27, 66, 46, 15, 37, 93, 85, 17, 79, 39, 73...
-#> $ BIR74     <dbl> 1091, 487, 3188, 508, 1421, 1452, 286, 420, 968, 161...
-#> $ SID74     <dbl> 1, 0, 5, 1, 9, 7, 0, 0, 4, 1, 2, 16, 4, 4, 4, 18, 3,...
-#> $ NWBIR74   <dbl> 10, 10, 208, 123, 1066, 954, 115, 254, 748, 160, 550...
-#> $ BIR79     <dbl> 1364, 542, 3616, 830, 1606, 1838, 350, 594, 1190, 20...
-#> $ SID79     <dbl> 0, 3, 6, 2, 3, 5, 2, 2, 2, 5, 2, 5, 4, 4, 6, 17, 4, ...
-#> $ NWBIR79   <dbl> 19, 12, 260, 145, 1197, 1237, 139, 371, 844, 176, 59...
-#> $ kml       <chr> "<Polygon><outerBoundaryIs><LinearRing><coordinates>...
+#> Observations: 7
+#> Variables: 3
+#> $ level <chr> "275", "280", "285", "290", "295", "300", "305"
+#> $ sst   <dbl> 1.85, 6.85, 11.85, 16.85, 21.85, 26.85, 31.85
+#> $ wkt   <chr> "MULTILINESTRING ((-16254.4210476553 -3269904.98849485,-...
 ```
 
 Fast summary
 ------------
 
-There is a basic function `vapour_read_extent` to return a straight forward bounding box vector for every feature, so that we can flexibly build an index of a data set for later use.
+There is a basic function `vapour_read_extent` to return a straightforward bounding box vector for every feature, so that we can flexibly build an index of a data set for later use.
 
 ``` r
-sfile <- system.file("shape/nc.shp", package="sf")
-str(vapour_read_extent(sfile))
-#> List of 100
-#>  $ : num [1:4] -81.7 -81.2 36.2 36.6
-#>  $ : num [1:4] -81.3 -80.9 36.4 36.6
-#>  $ : num [1:4] -81 -80.4 36.2 36.6
-#>  $ : num [1:4] -76.3 -75.8 36.1 36.6
-#>  $ : num [1:4] -77.9 -77.1 36.2 36.6
-#>  $ : num [1:4] -77.2 -76.7 36.2 36.6
-#>  $ : num [1:4] -76.6 -76 36.2 36.6
-#>  $ : num [1:4] -77 -76.5 36.3 36.6
-#>  $ : num [1:4] -78.3 -77.9 36.2 36.6
-#>  $ : num [1:4] -80.5 -80 36.3 36.6
-#>  $ : num [1:4] -79.5 -79.1 36.2 36.5
-#>  $ : num [1:4] -80 -79.5 36.2 36.5
-#>  $ : num [1:4] -78.8 -78.5 36 36.5
-#>  $ : num [1:4] -79.2 -78.8 36.2 36.5
-#>  $ : num [1:4] -78.5 -78.3 36.2 36.5
-#>  $ : num [1:4] -78 -77.2 36 36.5
-#>  $ : num [1:4] -76.5 -76.1 36.1 36.5
-#>  $ : num [1:4] -81.5 -80.9 36 36.4
-#>  $ : num [1:4] -81.9 -81.5 36.1 36.4
-#>  $ : num [1:4] -76.6 -76.3 36.1 36.4
-#>  $ : num [1:4] -76.7 -76.4 36 36.3
-#>  $ : num [1:4] -82.1 -81.7 35.9 36.3
-#>  $ : num [1:4] -80.9 -80.4 36 36.3
-#>  $ : num [1:4] -78.5 -78 35.8 36.3
-#>  $ : num [1:4] -80.5 -80 36 36.3
-#>  $ : num [1:4] -80 -79.5 35.9 36.3
-#>  $ : num [1:4] -79.5 -79.2 35.8 36.2
-#>  $ : num [1:4] -77.3 -76.7 35.8 36.2
-#>  $ : num [1:4] -79.3 -79 35.9 36.2
-#>  $ : num [1:4] -79 -78.7 35.9 36.2
-#>  $ : num [1:4] -78.3 -77.7 35.7 36.2
-#>  $ : num [1:4] -82.4 -82 35.8 36.1
-#>  $ : num [1:4] -77.8 -77.3 35.7 36.1
-#>  $ : num [1:4] -81.8 -81.3 35.8 36.1
-#>  $ : num [1:4] -82.5 -82.1 35.7 36.1
-#>  $ : num [1:4] -77.4 -76.8 35.7 36.1
-#>  $ : num [1:4] -79 -78.3 35.5 36.1
-#>  $ : num [1:4] -83 -82.4 35.7 36.1
-#>  $ : num [1:4] -81.1 -80.7 35.5 36.1
-#>  $ : num [1:4] -80.7 -80.4 35.7 36.1
-#>  $ : num [1:4] -81.3 -81 35.8 36
-#>  $ : num [1:4] -80.5 -80 35.5 36
-#>  $ : num [1:4] -82 -81.4 35.6 36
-#>  $ : num [1:4] -76.8 -76.4 35.7 36
-#>  $ : num [1:4] -76.4 -76 35.6 36
-#>  $ : num [1:4] -82.3 -81.8 35.5 36
-#>  $ : num [1:4] -80.1 -79.5 35.5 35.9
-#>  $ : num [1:4] -79.6 -78.9 35.5 35.9
-#>  $ : num [1:4] -78.2 -77.7 35.6 35.9
-#>  $ : num [1:4] -80.8 -80.2 35.5 35.9
-#>  $ : num [1:4] -77.7 -77.1 35.3 35.8
-#>  $ : num [1:4] -81.5 -80.9 35.5 35.8
-#>  $ : num [1:4] -82.9 -82.2 35.4 35.8
-#>  $ : num [1:4] -78.7 -78.1 35.2 35.8
-#>  $ : num [1:4] -83.3 -82.7 35.3 35.8
-#>  $ : num [1:4] -76 -75.5 35.2 36.2
-#>  $ : num [1:4] -77.2 -76.5 35.2 35.7
-#>  $ : num [1:4] -84 -83.2 35.3 35.7
-#>  $ : num [1:4] -77.8 -77.5 35.3 35.7
-#>  $ : num [1:4] -79.4 -79 35.3 35.6
-#>  $ : num [1:4] -82.3 -81.7 35.2 35.6
-#>  $ : num [1:4] -78.3 -77.8 35.1 35.6
-#>  $ : num [1:4] -79.2 -78.5 35.2 35.6
-#>  $ : num [1:4] -81.8 -81.3 35.2 35.6
-#>  $ : num [1:4] -81.5 -80.9 35.4 35.6
-#>  $ : num [1:4] -83.4 -82.9 35 35.5
-#>  $ : num [1:4] -79.8 -79.1 35 35.5
-#>  $ : num [1:4] -81.1 -80.5 35 35.5
-#>  $ : num [1:4] -80.8 -80.3 35.2 35.5
-#>  $ : num [1:4] -80.2 -79.6 35.1 35.5
-#>  $ : num [1:4] -80.5 -80.1 35.1 35.5
-#>  $ : num [1:4] -82.7 -82.3 35.1 35.5
-#>  $ : num [1:4] -84 -83.6 35.2 35.5
-#>  $ : num [1:4] -77.8 -77.4 35 35.4
-#>  $ : num [1:4] -83.1 -82.6 35 35.4
-#>  $ : num [1:4] -81.4 -80.9 35.1 35.4
-#>  $ : num [1:4] -82.4 -82 35.2 35.4
-#>  $ : num [1:4] -83.7 -83.1 35 35.3
-#>  $ : num [1:4] -78.7 -78.1 34.6 35.3
-#>  $ : num [1:4] -77 -76.5 35 35.3
-#>  $ : num [1:4] -84.3 -83.7 35 35.3
-#>  $ : num [1:4] -79.1 -78.5 34.8 35.3
-#>  $ : num [1:4] -77.7 -77 34.8 35.2
-#>  $ : num [1:4] -80.8 -80.3 34.8 35.2
-#>  $ : num [1:4] -80.3 -79.9 34.8 35.2
-#>  $ : num [1:4] -79.5 -79 34.8 35.2
-#>  $ : num [1:4] -76.6 -75.8 35.1 35.7
-#>  $ : num [1:4] -78.2 -77.7 34.7 35.2
-#>  $ : num [1:4] -80.1 -79.5 34.8 35.2
-#>  $ : num [1:4] -84 -83.5 35 35.1
-#>  $ : num [1:4] -77.5 -76.6 34.8 35.4
-#>  $ : num [1:4] -79.7 -79.3 34.6 35
-#>  $ : num [1:4] -77.7 -77.1 34.5 35
-#>  $ : num [1:4] -79.5 -78.8 34.3 35
-#>  $ : num [1:4] -77.2 -76.3 34.6 35
-#>  $ : num [1:4] -78.9 -78.2 34.4 34.9
-#>  $ : num [1:4] -78.3 -77.5 34.3 34.7
-#>  $ : num [1:4] -79.1 -78.2 33.9 34.5
-#>  $ : num [1:4] -78 -77.8 34.1 34.4
-#>   [list output truncated]
+mvfile <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package="vapour")
+str(vapour_read_extent(mvfile))
+#> List of 58
+#>  $ : num [1:4] 448353 457706 5386606 5397352
+#>  $ : num [1:4] 453544 459318 5403972 5412505
+#>  $ : num [1:4] 454840 461042 5411562 5417892
+#>  $ : num [1:4] 461505 476213 5410911 5424854
+#>  $ : num [1:4] 471573 483157 5417110 5424645
+#>  $ : num [1:4] 491638 494048 5417262 5419331
+#>  $ : num [1:4] 508512 510057 5408709 5409648
+#>  $ : num [1:4] 435993 444517 5392900 5402213
+#>  $ : num [1:4] 453298 462671 5383592 5393869
+#>  $ : num [1:4] 457592 473357 5377059 5397051
+#>  $ : num [1:4] 465137 477418 5394645 5408531
+#>  $ : num [1:4] 495773 507915 5396427 5405789
+#>  $ : num [1:4] 489939 499712 5410677 5418328
+#>  $ : num [1:4] 459056 471905 5418849 5425154
+#>  $ : num [1:4] 455980 463979 5392870 5399259
+#>  $ : num [1:4] 475889 493826 5379077 5389494
+#>  $ : num [1:4] 480223 490958 5397052 5414286
+#>  $ : num [1:4] 485858 494029 5407194 5418267
+#>  $ : num [1:4] 505330 508582 5407832 5411813
+#>  $ : num [1:4] 412719 433694 5364102 5392659
+#>  $ : num [1:4] 418130 431437 5352613 5368181
+#>  $ : num [1:4] 452420 460772 5395775 5404447
+#>  $ : num [1:4] 459779 470225 5398391 5405474
+#>  $ : num [1:4] 471219 485530 5383849 5395087
+#>  $ : num [1:4] 457719 469430 5407328 5420616
+#>  $ : num [1:4] 486794 497211 5391896 5400794
+#>  $ : num [1:4] 488190 498092 5396973 5409378
+#>  $ : num [1:4] 479268 487581 5412326 5419668
+#>  $ : num [1:4] 487082 491200 5405846 5410168
+#>  $ : num [1:4] 507192 508682 5409572 5411550
+#>  $ : num [1:4] 432998 441413 5402891 5406595
+#>  $ : num [1:4] 457813 463400 5408117 5415279
+#>  $ : num [1:4] 470867 483434 5404320 5419938
+#>  $ : num [1:4] 481800 490524 5388711 5398922
+#>  $ : num [1:4] 493483 506413 5403349 5412391
+#>  $ : num [1:4] 416790 424281 5390142 5396738
+#>  $ : num [1:4] 432186 439291 5396541 5404521
+#>  $ : num [1:4] 462417 469412 5391797 5398604
+#>  $ : num [1:4] 473323 481800 5392390 5399469
+#>  $ : num [1:4] 466298 472556 5407297 5412735
+#>  $ : num [1:4] 488006 497239 5385526 5393899
+#>  $ : num [1:4] 500476 505427 5409888 5413864
+#>  $ : num [1:4] 422718 443693 5364752 5398969
+#>  $ : num [1:4] 436393 455345 5390197 5405569
+#>  $ : num [1:4] 448464 450390 5404212 5404797
+#>  $ : num [1:4] 459377 465847 5397255 5404093
+#>  $ : num [1:4] 475502 482058 5400269 5408109
+#>  $ : num [1:4] 476793 484115 5394878 5400905
+#>  $ : num [1:4] 495936 499733 5389589 5396934
+#>  $ : num [1:4] 425270 449448 5353987 5383046
+#>  $ : num [1:4] 439927 462874 5358223 5393865
+#>  $ : num [1:4] 468039 477380 5378281 5388344
+#>  $ : num [1:4] 457541 466788 5403285 5409104
+#>  $ : num [1:4] 495086 500372 5393786 5399069
+#>  $ : num [1:4] 503880 507861 5396801 5404336
+#>  $ : num [1:4] 502595 507481 5402752 5406382
+#>  $ : num [1:4] 506075 509426 5404305 5408099
+#>  $ : num [1:4] 506637 511687 5405460 5409603
 ```
 
 This makes for a very lightweight summary data set that will scale to hundreds of large inputs.
 
 ``` r
-dat <- read_gdal_table(sfile)
+dat <- read_gdal_table(mvfile)
 library(raster)
 #> Loading required package: sp
 #> 
@@ -218,7 +164,7 @@ library(raster)
 #> The following object is masked from 'package:dplyr':
 #> 
 #>     select
-dat$bbox <- vapour_read_extent(sfile)
+dat$bbox <- vapour_read_extent(mvfile)
 
 plot(purrr::reduce(lapply(dat$bbox, raster::extent), raster::union))
 purrr::walk(lapply(dat$bbox, raster::extent), plot, add = TRUE)
@@ -236,9 +182,7 @@ files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullna
 library(vapour)
 system.time(purrr::map(files$fullname, sf::read_sf))
 #>    user  system elapsed 
-#>  26.574   1.015  27.734
-# user  system elapsed
-# 43.124   2.857  39.386
+#>  27.996   1.003  29.273
 library(blob)
 
 ## our timing is competitive, and we get to choose what is read
@@ -250,11 +194,7 @@ g <- purrr::map(files$fullname, read_gdal_geometry)
 d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
 })
 #>    user  system elapsed 
-#>  14.282   1.239  15.720
-# user  system elapsed
-# 16.400   2.882  23.227
-#pryr::object_size(d)
-## 359 MB
+#>  15.614   1.199  16.989
 ```
 
 We can read that in this simpler way for a quick data set to act as an index.
@@ -265,7 +205,7 @@ system.time({
   d$bbox <- unlist(purrr::map(files$fullname, vapour_read_extent), recursive = FALSE)
 })
 #>    user  system elapsed 
-#>  11.481   0.891  12.547
+#>  11.634   1.062  12.872
 
 pryr::object_size(d)
 #> 177 MB
@@ -306,6 +246,19 @@ This must be run when your function definitions change:
 ``` r
 tools::package_native_routine_registration_skeleton("../vapour", "src/init.c",character_only = FALSE)
 ```
+
+Context
+-------
+
+My first real attempt at DBI abstraction is here, this is still an aspect that is desperately needed in R to help bring tidyverse attention to spatial:
+
+<https://github.com/mdsumner/RGDALSQL>
+
+Before that I had worked on getting sp and dplyr to at least work together <https://github.com/dis-organization/sp_dplyrexpt> and recently rgdal was updated to allow tibbles to be used, something that spbabel and spdplyr really needed to avoid friction.
+
+Early exploration of allow non-geometry read with rgdal was tried here: <https://github.com/r-gris/gladr>
+
+Big thanks to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an automatable build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured my ravings about wanting this level of control for many years.
 
 Code of conduct
 ===============

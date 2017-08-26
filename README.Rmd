@@ -19,9 +19,7 @@ library(dplyr)
 
 The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
 
-Currently all it does is read vector data attributes or geometry.  This is inspired by and draws heavily on work done [the sf package, simple features for R and rgdal and rgdal2](https://github.com/r-spatial/sf). 
-
-Big thanks to Edzer Pebesma and Roger Bivand for prior art that I crib and copy from. 
+Currently all it does is read vector data attributes or geometry.  This is inspired by and draws heavily on work done [the sf package](https://github.com/r-spatial/sf) and rgdal and rgdal2. 
 
 
 
@@ -36,12 +34,12 @@ library(vapour)
 vapour_read_attributes(pfile)
 ```
 
-A higher level function `read_gdal_attribute` wraps that function to return a data frame. 
+A higher level wraps that function to return a data frame. 
 
 ```{r}
-sfile <- system.file("shape/nc.shp", package="sf")
+mvfile <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package="vapour")
 
-read_gdal_table(sfile)
+read_gdal_table(mvfile)
 ```
 
 There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables. 
@@ -53,11 +51,14 @@ vapour_read_geometry(pfile)[5:6]  ## format = "WKB"
 
 vapour_read_geometry_text(pfile)[5:6]  ## format = "json"
 
-sfile <- system.file("shape/nc.shp", package="sf")
+cfile <- system.file("extdata/sst_c.gpkg", package = "vapour")
+vapour_read_geometry_text(pfile, format = "gml")[2]
 
-vapour_read_geometry_text(sfile, format = "gml")[99:100]
+## don't do this with a non-longlat data set like cfile
+vapour_read_geometry_text(pfile, format = "kml")[1:2]
 
-vapour_read_geometry_text(sfile, format = "kml")[1:2]
+str(vapour_read_geometry_text(cfile, format = "wkt")[1:2])
+
 ```
 
 
@@ -65,27 +66,27 @@ We can combine these together to get a custom data set.
 
 ```{r}
 library(dplyr)
-dat <- read_gdal_table(sfile) %>% dplyr::mutate(kml = vapour_read_geometry_text(sfile, format = "kml"))
+dat <- read_gdal_table(cfile) %>% dplyr::mutate(wkt = vapour_read_geometry_text(cfile, format = "wkt"))
 glimpse(dat)
 ```
 
 ## Fast summary 
 
-There is a basic function `vapour_read_extent` to return a straight forward bounding box vector for every feature, so that
+There is a basic function `vapour_read_extent` to return a straightforward bounding box vector for every feature, so that
 we can flexibly build an index of a data set for later use. 
 
 ```{r}
-sfile <- system.file("shape/nc.shp", package="sf")
-str(vapour_read_extent(sfile))
+mvfile <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package="vapour")
+str(vapour_read_extent(mvfile))
 
 ```
 
 This makes for a very lightweight summary data set that will scale to hundreds of large inputs. 
 
 ```{r}
-dat <- read_gdal_table(sfile)
+dat <- read_gdal_table(mvfile)
 library(raster)
-dat$bbox <- vapour_read_extent(sfile)
+dat$bbox <- vapour_read_extent(mvfile)
 
 plot(purrr::reduce(lapply(dat$bbox, raster::extent), raster::union))
 purrr::walk(lapply(dat$bbox, raster::extent), plot, add = TRUE)
@@ -138,6 +139,18 @@ This must be run when your function definitions change:
 tools::package_native_routine_registration_skeleton("../vapour", "src/init.c",character_only = FALSE)
 ```
 
+## Context
+
+My first real attempt at DBI abstraction is here, this is still an aspect that is desperately needed in R to help bring tidyverse attention to spatial: 
+
+https://github.com/mdsumner/RGDALSQL
+
+Before that I had worked on getting sp and dplyr to at least work together https://github.com/dis-organization/sp_dplyrexpt and recently rgdal was updated to allow tibbles to be used, something that spbabel and spdplyr really needed to avoid friction. 
+
+Early exploration of allow non-geometry read with rgdal was tried here: https://github.com/r-gris/gladr
+
+
+Big thanks to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an automatable build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured my ravings about wanting this level of control for many years.
 
 
 # Code of conduct

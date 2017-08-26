@@ -5,18 +5,6 @@
 
 using namespace Rcpp;
 
-// rasterio
-NumericVector rasterio(const char* pszFilename, NumericVector subfact);
-RcppExport SEXP _vapour_rasterio(SEXP pszFilenameSEXP, SEXP subfactSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const char* >::type pszFilename(pszFilenameSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type subfact(subfactSEXP);
-    rcpp_result_gen = Rcpp::wrap(rasterio(pszFilename, subfact));
-    return rcpp_result_gen;
-END_RCPP
-}
 // vapour_read_attributes
 List vapour_read_attributes(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector sql);
 RcppExport SEXP _vapour_vapour_read_attributes(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP) {
