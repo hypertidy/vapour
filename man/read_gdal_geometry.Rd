@@ -15,9 +15,7 @@ read_gdal_geometry(dsource, layer = 0, sql = NULL)
 Read geometry from source as a blob vector.
 }
 \examples{
-f <- system.file("extdata", "point.shp", package = "vapour")
-tibble::tibble(wkb = read_gdal_geometry(f))
-sfile <- system.file("shape/nc.shp", package="sf")
-#vapour(sfile)
-read_gdal_table(sfile)
+file <- "list_locality_postcode_meander_valley.tab"
+mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+tibble::tibble(wkb = read_gdal_geometry(mvfile))
 }

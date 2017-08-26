@@ -19,7 +19,8 @@ See here for SQL details http://www.gdal.org/ogr_sql.html
 \examples{
 f <- system.file("extdata", "point.shp", package = "vapour")
 read_gdal_table(f, sql = "SELECT * FROM point WHERE FID > 4 AND FID < 8")
-sfile <- system.file("shape/nc.shp", package="sf")
-read_gdal_table(sfile, sql = "SELECT NAME, AREA, SID79 * 10 FROM nc WHERE PERIMETER < 1.2")
-read_gdal_table(sfile)
+file <- "list_locality_postcode_meander_valley.tab"
+mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+read_gdal_table(mvfile, sql = "SELECT NAME, PLAN_REF, SHAPE_AREA * 2 AS area FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7304")
+read_gdal_table(mvfile)
 }
