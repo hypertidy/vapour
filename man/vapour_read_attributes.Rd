@@ -17,8 +17,9 @@ vapour_read_attributes(dsource, layer = 0L, sql = "")
 Read layer attributes, optionally after SQL select
 }
 \examples{
-sfile <- system.file("shape/nc.shp", package="sf")
-vapour_read_attributes(sfile)
-sfile <- system.file("shape/nc.shp", package="sf")
-vapour_read_attributes(sfile, sql = "SELECT * FROM nc WHERE FID < 5")
+file <- "list_locality_postcode_meander_valley.tab"
+mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+vapour_read_attributes(mvfile)
+sq <- "SELECT * FROM list_locality_postcode_meander_valley WHERE FID < 5"
+vapour_read_attributes(mvfile, sql = sq)
 }

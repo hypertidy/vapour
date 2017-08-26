@@ -11,16 +11,16 @@ vapour_read_geometry_text(dsource, layer = 0L, sql = "", format = "json")
 \item{dsource}{data source name (path to file, connection string, URL)}
 
 \item{layer}{integer of layer to work with, defaults to the first (0)}
+
+\item{sql}{if not empty this is executed against the data source (layer will be ignored)}
 }
 \description{
 Simple read of geometry-only as text format.
 }
-\details{
-Microprocessors, databases, servers.
-}
 \examples{
-sfile <- system.file("shape/nc.shp", package="sf")
-to_format(sfile)
+file <- "list_locality_postcode_meander_valley.tab"
+mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+vapour_read_geometry_text(mvfile)
 pfile <- "inst/extdata/point.shp"
-to_format(pfile)
+vapour_read_geometry_text(pfile)
 }

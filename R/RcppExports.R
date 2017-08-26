@@ -8,10 +8,11 @@
 #' @param layer integer of layer to work with, defaults to the first (0)
 #' @param sql if not empty this is executed against the data source (layer will be ignored)
 #' @examples
-#' sfile <- system.file("shape/nc.shp", package="sf")
-#' vapour_read_attributes(sfile)
-#' sfile <- system.file("shape/nc.shp", package="sf")
-#' vapour_read_attributes(sfile, sql = "SELECT * FROM nc WHERE FID < 5")
+#' file <- "list_locality_postcode_meander_valley.tab"
+#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+#' vapour_read_attributes(mvfile)
+#' sq <- "SELECT * FROM list_locality_postcode_meander_valley WHERE FID < 5"
+#' vapour_read_attributes(mvfile, sql = sq)
 #' @export
 vapour_read_attributes <- function(dsource, layer = 0L, sql = "") {
     .Call('_vapour_vapour_read_attributes', PACKAGE = 'vapour', dsource, layer, sql)
@@ -22,11 +23,11 @@ vapour_read_attributes <- function(dsource, layer = 0L, sql = "") {
 #' Read a GDAL geometry summary as just the native bounding box, the four
 #' numbers xmin, xmax, ymin, ymax in the usual simple convention.
 #'
-#' @param dsource data source name (path to file, connection string, URL)
-#' @param layer integer of layer to work with, defaults to the first (0)
+#' @inheritParams vapour_read_attributes
 #' @examples
-#' sfile <- system.file("shape/nc.shp", package="sf")
-#' vapour_read_geometry_extent(sfile)
+#' file <- "list_locality_postcode_meander_valley.tab"
+#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+#' vapour_read_geometry_extent(mvfile)
 #' @export
 vapour_read_extent <- function(dsource, layer = 0L, sql = "") {
     .Call('_vapour_vapour_read_extent', PACKAGE = 'vapour', dsource, layer, sql)
@@ -37,14 +38,15 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "") {
 #' Simple read of geometry-only as WKB format.
 #'
 #'
-#' @param dsource data source name (path to file, connection string, URL)
-#' @param layer integer of layer to work with, defaults to the first (0)
+#' @inheritParams vapour_read_attributes
 #' @format indicate text output format, available are "json" (default), "gml", "kml", "wkt"
 #' @examples
-#' sfile <- system.file("shape/nc.shp", package="sf")
-#' tib <- tibble::tibble(wkb = to_binary(sfile)) %>% bind_cols(read_gdal_table(sfile))
+#' file <- "list_locality_postcode_meander_valley.tab"
+#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+#' tib <- tibble::tibble(wkb = vapour_read_geometry(mvfile)) %>%
+#'   bind_cols(read_gdal_table(mvfile))
 #' pfile <- "inst/extdata/point.shp"
-#' to_binary(pfile)
+#' vapour_read_geometry(pfile)
 #' @export
 vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
     .Call('_vapour_vapour_read_geometry', PACKAGE = 'vapour', dsource, layer, sql)
@@ -54,15 +56,15 @@ vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
 #'
 #' Simple read of geometry-only as text format.
 #'
-#' Microprocessors, databases, servers.
-#' @param dsource data source name (path to file, connection string, URL)
-#' @param layer integer of layer to work with, defaults to the first (0)
+#'
+#' @inheritParams vapour_read_attributes
 #' @format indicate text output format, available are "json" (default), "gml", "kml", "wkt"
 #' @examples
-#' sfile <- system.file("shape/nc.shp", package="sf")
-#' to_format(sfile)
+#' file <- "list_locality_postcode_meander_valley.tab"
+#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+#' vapour_read_geometry_text(mvfile)
 #' pfile <- "inst/extdata/point.shp"
-#' to_format(pfile)
+#' vapour_read_geometry_text(pfile)
 #' @export
 vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", format = "json") {
     .Call('_vapour_vapour_read_geometry_text', PACKAGE = 'vapour', dsource, layer, sql, format)

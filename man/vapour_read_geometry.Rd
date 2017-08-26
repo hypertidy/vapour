@@ -11,13 +11,17 @@ vapour_read_geometry(dsource, layer = 0L, sql = "")
 \item{dsource}{data source name (path to file, connection string, URL)}
 
 \item{layer}{integer of layer to work with, defaults to the first (0)}
+
+\item{sql}{if not empty this is executed against the data source (layer will be ignored)}
 }
 \description{
 Simple read of geometry-only as WKB format.
 }
 \examples{
-sfile <- system.file("shape/nc.shp", package="sf")
-tib <- tibble::tibble(wkb = to_binary(sfile)) \%>\% bind_cols(read_gdal_table(sfile))
+file <- "list_locality_postcode_meander_valley.tab"
+mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+tib <- tibble::tibble(wkb = vapour_read_geometry(mvfile)) \%>\%
+  bind_cols(read_gdal_table(mvfile))
 pfile <- "inst/extdata/point.shp"
-to_binary(pfile)
+vapour_read_geometry(pfile)
 }
