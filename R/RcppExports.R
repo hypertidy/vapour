@@ -4,11 +4,19 @@
 #' Raster IO
 #'
 #' @export
-rasterio <- function(pszFilename) {
-    .Call('_vapour_rasterio', PACKAGE = 'vapour', pszFilename)
+#' @examples
+#' f <- system.file("extdata", "volcano.tif", package = "vapour")
+#' fact <- 2
+#' m <- matrix(rasterio(f, fact), ncol(volcano)/fact)
+#' image(m)
+#' contour(t(volcano), add = TRUE)
+rasterio <- function(pszFilename, subfact = 5L) {
+    .Call('_vapour_rasterio', PACKAGE = 'vapour', pszFilename, subfact)
 }
 
-#' Read GDAL geometry bblob
+#'  GDAL geometry bounding box
+#'
+#' Read a GDAL geometry summary as just the native bounding box.
 #'
 #' @param dsource data source name (path to file, connection string, URL)
 #' @param layer integer of layer to work with, defaults to the first (0)

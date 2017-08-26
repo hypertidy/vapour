@@ -4,8 +4,15 @@
 \alias{rasterio}
 \title{Raster IO}
 \usage{
-rasterio(pszFilename)
+rasterio(pszFilename, subfact = 5L)
 }
 \description{
 Raster IO
+}
+\examples{
+f <- system.file("extdata", "volcano.tif", package = "vapour")
+fact <- 2
+m <- matrix(rasterio(f, fact), ncol(volcano)/fact)
+image(m)
+contour(t(volcano), add = TRUE)
 }

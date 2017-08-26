@@ -7,9 +7,17 @@ using namespace Rcpp;
 //' Raster IO
 //'
 //' @export
+//' @examples
+//' f <- system.file("extdata", "volcano.tif", package = "vapour")
+//' fact <- 2
+//' m <- matrix(rasterio(f, fact), ncol(volcano)/fact)
+//' image(m)
+//' contour(t(volcano), add = TRUE)
 // [[Rcpp::export]]
-NumericVector rasterio (const char* pszFilename)
+NumericVector rasterio (const char* pszFilename, NumericVector subfact = 5)
 {
+
+  // need a check for subfact >= 0 :)
   GDALDataset  *poDataset;
   GDALAllRegister();
   poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
@@ -67,13 +75,27 @@ NumericVector rasterio (const char* pszFilename)
 
 
    float *pafScanline;
-   int   nXSize = poBand->GetXSize();
-   pafScanline = (float *) CPLMalloc(sizeof(float)*nXSize);
-   poBand->RasterIO( GF_Read, 0, 0, nXSize, 1,
-                     pafScanline, nXSize, 1, GDT_Float32,
+   int nXSize = poBand->GetXSize();
+   int nYSize = poBand->GetYSize();
+   int sub = subfact[0];
+
+   float f_outXSize = nXSize/sub;
+   float f_outYSize = nYSize/sub;
+
+   int outXSize = f_outXSize;
+   int outYSize = f_outYSize;
+
+   if (outXSize < 1) outXSize = 1;
+   if (outYSize < 1) outYSize = 1;
+
+
+
+   pafScanline = (float *) CPLMalloc(sizeof(float)*outXSize*outYSize);
+   poBand->RasterIO( GF_Read, 0, 0, nXSize, nYSize,
+                     pafScanline, outXSize, outYSize, GDT_Float32,
                      0, 0 );
 
-   NumericVector out(nXSize);
-   for (int i = 0; i < nXSize; i++) out[i] = pafScanline[i];
+   NumericVector out(outXSize*outYSize);
+   for (int i = 0; i < (outXSize*outYSize); i++) out[i] = pafScanline[i];
   return out;
 }

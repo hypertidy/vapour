@@ -3,9 +3,9 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-
-
-//' Read GDAL geometry bblob
+//'  GDAL geometry bounding box
+//'
+//' Read a GDAL geometry summary as just the native bounding box.
 //'
 //' @param dsource data source name (path to file, connection string, URL)
 //' @param layer integer of layer to work with, defaults to the first (0)
@@ -21,8 +21,7 @@ List to_bblob(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
   poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
   {
-    printf( "Open failed.\n" );
-    exit( 1 );
+   Rcpp::stop("Open failed.\n");
   }
   OGRLayer  *poLayer;
   poLayer =  poDS->GetLayer(layer[0]);
@@ -136,8 +135,7 @@ List vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
   poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
   {
-    printf( "Open failed.\n" );
-    exit( 1 );
+    Rcpp::stop("Open failed.\n");
   }
   OGRLayer  *poLayer;
   poLayer =  poDS->GetLayer(layer[0]);
@@ -212,8 +210,7 @@ List to_binary(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
   poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
   {
-    printf( "Open failed.\n" );
-    exit( 1 );
+    Rcpp::stop("Open failed.\n");
   }
   OGRLayer  *poLayer;
   poLayer =  poDS->GetLayer(layer[0]);
@@ -271,8 +268,7 @@ CharacterVector to_format(Rcpp::CharacterVector dsource, Rcpp::IntegerVector lay
   poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
   {
-    printf( "Open failed.\n" );
-    exit( 1 );
+    Rcpp::stop("Open failed.\n");
   }
   OGRLayer  *poLayer;
   poLayer =  poDS->GetLayer(layer[0]);
@@ -343,9 +339,8 @@ List sql_vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0,
   poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
   {
-    printf( "Open failed.\n" );
-    exit( 1 );
-  }
+    Rcpp::stop("Open failed.\n");
+}
 
   Rcpp::CharacterVector empty = " ";
   OGRLayer  *poLayer;
@@ -353,6 +348,9 @@ List sql_vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0,
                                NULL,
                                empty[0] );
 
+  if (poLayer == NULL) {
+    Rcpp::stop("SQL execution failed.\n");
+ }
  // poLayer =  poDS->GetLayer(layer[0]);
   OGRFeature *poFeature;
   poLayer->ResetReading();

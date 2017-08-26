@@ -6,13 +6,14 @@
 using namespace Rcpp;
 
 // rasterio
-NumericVector rasterio(const char* pszFilename);
-RcppExport SEXP _vapour_rasterio(SEXP pszFilenameSEXP) {
+NumericVector rasterio(const char* pszFilename, NumericVector subfact);
+RcppExport SEXP _vapour_rasterio(SEXP pszFilenameSEXP, SEXP subfactSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const char* >::type pszFilename(pszFilenameSEXP);
-    rcpp_result_gen = Rcpp::wrap(rasterio(pszFilename));
+    Rcpp::traits::input_parameter< NumericVector >::type subfact(subfactSEXP);
+    rcpp_result_gen = Rcpp::wrap(rasterio(pszFilename, subfact));
     return rcpp_result_gen;
 END_RCPP
 }

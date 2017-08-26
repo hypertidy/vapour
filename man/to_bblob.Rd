@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{to_bblob}
 \alias{to_bblob}
-\title{Read GDAL geometry bblob}
+\title{GDAL geometry bounding box}
 \usage{
 to_bblob(dsource, layer = 0L)
 }
@@ -12,7 +12,7 @@ to_bblob(dsource, layer = 0L)
 \item{layer}{integer of layer to work with, defaults to the first (0)}
 }
 \description{
-Read GDAL geometry bblob
+Read a GDAL geometry summary as just the native bounding box.
 }
 \examples{
 sfile <- system.file("shape/nc.shp", package="sf")
