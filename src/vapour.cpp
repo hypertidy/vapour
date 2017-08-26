@@ -3,6 +3,103 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
+
+
+//' Vector attributes read
+//'
+//' Read layer attributes, optionally after SQL select
+//' @param dsource data source name (path to file, connection string, URL)
+//' @param layer integer of layer to work with, defaults to the first (0)
+//' @param sql if not empty this is executed against the data source (layer will be ignored)
+//' @examples
+//' sfile <- system.file("shape/nc.shp", package="sf")
+//' vapour_read_attributes(sfile)
+//' sfile <- system.file("shape/nc.shp", package="sf")
+//' vapour_read_attributes(sfile, sql = "SELECT * FROM nc WHERE FID < 5")
+//'
+//' pfile <- "inst/extdata/point.shp"
+//' vapour(pfile)
+//' @export
+// [[Rcpp::export]]
+List vapour_read_attributes(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0,
+                            Rcpp::CharacterVector sql = "")
+{
+  GDALAllRegister();
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+
+  Rcpp::CharacterVector empty = " ";
+  OGRLayer  *poLayer;
+  if (sql[0] != "") {
+    poLayer =  poDS->ExecuteSQL(sql[0],
+                                NULL,
+                                empty[0] );
+
+    if (poLayer == NULL) {
+      Rcpp::stop("SQL execution failed.\n");
+    }
+
+  } else {
+    poLayer =  poDS->GetLayer(layer[0]);
+  }
+  if (poLayer == NULL) {
+    Rcpp::stop("Layer open failed.\n");
+  }
+
+  // poLayer =  poDS->GetLayer(layer[0]);
+  OGRFeature *poFeature;
+  poLayer->ResetReading();
+  //  poFeature = poLayer->GetNextFeature();
+  int iField;
+  int nFeature = poLayer->GetFeatureCount();
+  OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+  bool int64_as_string = true;
+  Rcpp::List out = allocate_attribute(poFDefn, nFeature, int64_as_string);
+
+  if (nFeature == 0) {
+    printf("no features found");
+    return(out);
+  }
+  int iFeature = 0;
+  while( (poFeature = poLayer->GetNextFeature()) != NULL )
+  {
+    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+
+    int iField;
+    for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
+    {
+      OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
+      if( poFieldDefn->GetType() == OFTInteger ) {
+        Rcpp::IntegerVector nv;
+        nv = out[iField];
+        nv[iFeature] = poFeature->GetFieldAsInteger( iField );
+      }
+      //  if( poFieldDefn->GetType() == OFTInteger64 )
+      //    printf( CPL_FRMT_GIB ",", poFeature->GetFieldAsInteger64( iField ) );
+      if( poFieldDefn->GetType() == OFTReal ) {
+        Rcpp::NumericVector nv;
+        nv = out[iField];
+        nv[iFeature] = poFeature->GetFieldAsDouble( iField );
+      }
+
+      if( poFieldDefn->GetType() == OFTString ) {
+        Rcpp::CharacterVector nv;
+        nv = out[iField];
+        nv[iFeature] = poFeature->GetFieldAsString( iField );
+
+      }
+    }
+    iFeature = iFeature + 1;
+  }
+  GDALClose( poDS );
+  return(out);
+}
+
+
 //'  GDAL geometry bounding box
 //'
 //' Read a GDAL geometry summary as just the native bounding box.
@@ -16,6 +113,7 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 List to_bblob(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0)
 {
+
   GDALAllRegister();
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -318,84 +416,3 @@ CharacterVector to_format(Rcpp::CharacterVector dsource, Rcpp::IntegerVector lay
   return(out);
 }
 
-
-//' SQL layer read
-//'
-//' Read layer attributes after SQL select
-//' @param dsource data source name (path to file, connection string, URL)
-//' @param layer integer of layer to work with, defaults to the first (0)
-//' @examples
-//' sfile <- system.file("shape/nc.shp", package="sf")
-//' vapour(sfile)
-//' pfile <- "inst/extdata/point.shp"
-//' vapour(pfile)
-//' @export
-// [[Rcpp::export]]
-List sql_vapour(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer = 0,
-                Rcpp::CharacterVector sql = "")
-{
-  GDALAllRegister();
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-}
-
-  Rcpp::CharacterVector empty = " ";
-  OGRLayer  *poLayer;
-  poLayer =  poDS->ExecuteSQL(sql[0],
-                               NULL,
-                               empty[0] );
-
-  if (poLayer == NULL) {
-    Rcpp::stop("SQL execution failed.\n");
- }
- // poLayer =  poDS->GetLayer(layer[0]);
-  OGRFeature *poFeature;
-  poLayer->ResetReading();
-  //  poFeature = poLayer->GetNextFeature();
-  int iField;
-  int nFeature = poLayer->GetFeatureCount();
-  OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-  bool int64_as_string = true;
-  Rcpp::List out = allocate_attribute(poFDefn, nFeature, int64_as_string);
-
-  if (nFeature == 0) {
-    printf("no features found");
-    return(out);
-  }
-  int iFeature = 0;
-  while( (poFeature = poLayer->GetNextFeature()) != NULL )
-  {
-    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-
-    int iField;
-    for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
-    {
-      OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
-      if( poFieldDefn->GetType() == OFTInteger ) {
-        Rcpp::IntegerVector nv;
-        nv = out[iField];
-        nv[iFeature] = poFeature->GetFieldAsInteger( iField );
-      }
-      //  if( poFieldDefn->GetType() == OFTInteger64 )
-      //    printf( CPL_FRMT_GIB ",", poFeature->GetFieldAsInteger64( iField ) );
-      if( poFieldDefn->GetType() == OFTReal ) {
-        Rcpp::NumericVector nv;
-        nv = out[iField];
-        nv[iFeature] = poFeature->GetFieldAsDouble( iField );
-      }
-
-      if( poFieldDefn->GetType() == OFTString ) {
-        Rcpp::CharacterVector nv;
-        nv = out[iField];
-        nv[iFeature] = poFeature->GetFieldAsString( iField );
-
-      }
-    }
-    iFeature = iFeature + 1;
-  }
-  GDALClose( poDS );
-  return(out);
-}
