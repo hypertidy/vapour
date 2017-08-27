@@ -4,7 +4,20 @@ vapour
 
 The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
 
-Currently all it does is read vector data attributes or geometry. This is inspired by and draws heavily on work done [the sf package](https://github.com/r-spatial/sf) and rgdal and rgdal2.
+This is inspired by and draws heavily on work done [the sf package](https://github.com/r-spatial/sf) and rgdal and rgdal2.
+
+Purpose
+=======
+
+Current we have control to do the following:
+
+-   read attributes only
+-   read geometry only
+-   read geometry as raw binary, or various text forms
+-   read geometry bounding box only
+-   (optionally) apply OGRSQL to a layer prior to any of the above <http://www.gdal.org/ogr_sql.html>
+
+Limitations, work-in-progress and other discussion are active here: <https://github.com/hypertidy/vapour/issues/4>
 
 Examples
 --------
@@ -182,7 +195,7 @@ files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullna
 library(vapour)
 system.time(purrr::map(files$fullname, sf::read_sf))
 #>    user  system elapsed 
-#>  28.133   0.984  29.227
+#>  30.625   2.249  32.990
 library(blob)
 
 ## our timing is competitive, and we get to choose what is read
@@ -194,7 +207,7 @@ g <- purrr::map(files$fullname, read_gdal_geometry)
 d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
 })
 #>    user  system elapsed 
-#>  15.788   1.147  17.085
+#>  17.887   2.618  20.699
 ```
 
 We can read that in this simpler way for a quick data set to act as an index.
@@ -205,7 +218,7 @@ system.time({
   d$bbox <- unlist(purrr::map(files$fullname, vapour_read_extent), recursive = FALSE)
 })
 #>    user  system elapsed 
-#>  11.900   0.975  13.036
+#>  12.561   2.159  14.866
 
 pryr::object_size(d)
 #> 177 MB
