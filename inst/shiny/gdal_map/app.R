@@ -1,4 +1,8 @@
 library(vapour)
+srcfile <- "D:\\data\\topography\\etopo2\\subset.tif"
+
+if (FALSE) plot_raster(srcfile)
+
 ui <- fluidPage(
   # Some custom CSS for a smaller font for preformatted text
   tags$head(
@@ -53,7 +57,7 @@ ui <- fluidPage(
 server <- function(input, output) {
   output$plot1 <- renderPlot({
     if (input$plot_type == "base") {
-      plot(mtcars$wt, mtcars$mpg)
+      plot_raster(srcfile)
     } else if (input$plot_type == "ggplot2") {
       ggplot(mtcars, aes(wt, mpg)) + geom_point()
     }

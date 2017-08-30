@@ -4,7 +4,7 @@
 \alias{plot_raster}
 \title{Plot GDAL matrix.}
 \usage{
-plot_raster(filename, add = FALSE)
+plot_raster(filename, add = FALSE, ext = NULL)
 }
 \arguments{
 \item{filename}{source}

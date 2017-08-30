@@ -11,7 +11,6 @@ using namespace Rcpp;
 //' @export
 //' @examples
 //' f <- system.file("extdata", "sst.tif", package = "vapour")
-
 // [[Rcpp::export]]
 List raster_info (const char* pszFilename)
 {
