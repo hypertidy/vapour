@@ -23,6 +23,8 @@ NULL
 #' @examples
 #' ## library(sf)
 #' ## plot(sst_c)
-#' f <- system.file("extdata/sst_c.gpkg", package = "vapour")#
+#' f <- system.file("extdata/sst_c.gpkg", package = "vapour")
 #' #d <- read_gdal_table(f) %>% mutate(json =  to_format(f, format = "json"))
 NULL
+
+

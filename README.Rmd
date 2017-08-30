@@ -6,6 +6,13 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+[![Travis-CI Build Status](https://travis-ci.org/hypertidy/vapour.svg?branch=master)](https://travis-ci.org/hypertidy/vapour)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/hypertidy/vapour?branch=master&svg=true)](https://ci.appveyor.com/project/hypertidy/vapour)
+[![Coverage Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
+
+
+
 ```{r, echo = FALSE, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,

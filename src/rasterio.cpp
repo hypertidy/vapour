@@ -106,7 +106,7 @@ List raster_info (const char* pszFilename)
 //' raster_io(f, window = c(0, 0, 10, 10, 5, 5))
 //' ## find the information first
 //' ri <- raster_info(f)
-//' str(matrix(raster_io(f, c(0, 0, ri$dimXY, ri$dimXY))), ri$dimXY[1]))
+//' str(matrix(raster_io(f, c(0, 0, ri$dimXY, ri$dimXY)), ri$dimXY[1]))
 //' ## the method can be used to up-sample as well
 //' str(matrix(raster_io(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 //' ## a future version will provide access to different methods

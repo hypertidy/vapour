@@ -81,27 +81,27 @@ gcc: fatal error: no input files
 compilation terminated.
 configure:2551: $? = 1
 configure:2571: checking whether the C compiler works
-configure:2593: gcc -std=gnu99 -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal -Wl,-z,relro conftest.c  >&5
+configure:2593: gcc -std=gnu99 -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal -Wl,-z,relro conftest.c  >&5
 configure:2597: $? = 0
 configure:2645: result: yes
 configure:2648: checking for C compiler default output file name
 configure:2650: result: a.out
 configure:2656: checking for suffix of executables
-configure:2663: gcc -std=gnu99 -o conftest -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal -Wl,-z,relro conftest.c  >&5
+configure:2663: gcc -std=gnu99 -o conftest -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal -Wl,-z,relro conftest.c  >&5
 configure:2667: $? = 0
 configure:2689: result: 
 configure:2711: checking whether we are cross compiling
-configure:2719: gcc -std=gnu99 -o conftest -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal -Wl,-z,relro conftest.c  >&5
+configure:2719: gcc -std=gnu99 -o conftest -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal -Wl,-z,relro conftest.c  >&5
 configure:2723: $? = 0
 configure:2730: ./conftest
 configure:2734: $? = 0
 configure:2749: result: no
 configure:2754: checking for suffix of object files
-configure:2776: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal conftest.c >&5
+configure:2776: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal conftest.c >&5
 configure:2780: $? = 0
 configure:2801: result: o
 configure:2805: checking whether we are using the GNU C compiler
-configure:2824: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal conftest.c >&5
+configure:2824: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal conftest.c >&5
 configure:2824: $? = 0
 configure:2833: result: yes
 configure:2842: checking whether gcc -std=gnu99 accepts -g
@@ -109,7 +109,7 @@ configure:2862: gcc -std=gnu99 -c -g   -I/usr/include/gdal conftest.c >&5
 configure:2862: $? = 0
 configure:2903: result: yes
 configure:2920: checking for gcc -std=gnu99 option to accept ISO C89
-configure:2983: gcc -std=gnu99  -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal conftest.c >&5
+configure:2983: gcc -std=gnu99  -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal conftest.c >&5
 configure:2983: $? = 0
 configure:2996: result: none needed
 configure:3022: checking how to run the C preprocessor
@@ -137,51 +137,75 @@ configure:3213: result: /bin/grep
 configure:3218: checking for egrep
 configure:3280: result: /bin/grep -E
 configure:3285: checking for ANSI C header files
-configure:3305: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal conftest.c >&5
+configure:3305: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal conftest.c >&5
 configure:3305: $? = 0
-configure:3378: gcc -std=gnu99 -o conftest -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal -Wl,-z,relro conftest.c  >&5
+configure:3378: gcc -std=gnu99 -o conftest -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal -Wl,-z,relro conftest.c  >&5
 configure:3378: $? = 0
 configure:3378: ./conftest
 configure:3378: $? = 0
 configure:3389: result: yes
 configure:3402: checking for sys/types.h
-configure:3402: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal conftest.c >&5
+configure:3402: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal conftest.c >&5
 configure:3402: $? = 0
 configure:3402: result: yes
 configure:3402: checking for sys/stat.h
-configure:3402: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal conftest.c >&5
+configure:3402: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal conftest.c >&5
 configure:3402: $? = 0
 configure:3402: result: yes
 configure:3402: checking for stdlib.h
-configure:3402: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal conftest.c >&5
+configure:3402: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal conftest.c >&5
 configure:3402: $? = 0
 configure:3402: result: yes
 configure:3402: checking for string.h
-configure:3402: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal conftest.c >&5
+configure:3402: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal conftest.c >&5
 configure:3402: $? = 0
 configure:3402: result: yes
 configure:3402: checking for memory.h
-configure:3402: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal conftest.c >&5
+configure:3402: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal conftest.c >&5
 configure:3402: $? = 0
 configure:3402: result: yes
 configure:3402: checking for strings.h
-configure:3402: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal conftest.c >&5
+configure:3402: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal conftest.c >&5
 configure:3402: $? = 0
 configure:3402: result: yes
 configure:3402: checking for inttypes.h
-configure:3402: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal conftest.c >&5
+configure:3402: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal conftest.c >&5
 configure:3402: $? = 0
 configure:3402: result: yes
 configure:3402: checking for stdint.h
-configure:3402: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal conftest.c >&5
+configure:3402: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal conftest.c >&5
 configure:3402: $? = 0
 configure:3402: result: yes
 configure:3402: checking for unistd.h
-configure:3402: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal conftest.c >&5
+configure:3402: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal conftest.c >&5
 configure:3402: $? = 0
 configure:3402: result: yes
 configure:3416: checking gdal.h usability
-configure:3416: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal conftest.c >&5
+configure:3416: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal conftest.c >&5
+In file included from /usr/include/gdal/ogr_api.h:45:0,
+                 from /usr/include/gdal/gdal.h:47,
+                 from conftest.c:52:
+/usr/include/gdal/ogr_core.h:394:19: warning: ISO C restricts enumerator values to range of 'int' [-Wpedantic]
+     wkbPoint25D = 0x80000001, /**< 2.5D extension as per 99-402 */
+                   ^~~~~~~~~~
+/usr/include/gdal/ogr_core.h:395:24: warning: ISO C restricts enumerator values to range of 'int' [-Wpedantic]
+     wkbLineString25D = 0x80000002, /**< 2.5D extension as per 99-402 */
+                        ^~~~~~~~~~
+/usr/include/gdal/ogr_core.h:396:21: warning: ISO C restricts enumerator values to range of 'int' [-Wpedantic]
+     wkbPolygon25D = 0x80000003, /**< 2.5D extension as per 99-402 */
+                     ^~~~~~~~~~
+/usr/include/gdal/ogr_core.h:397:24: warning: ISO C restricts enumerator values to range of 'int' [-Wpedantic]
+     wkbMultiPoint25D = 0x80000004, /**< 2.5D extension as per 99-402 */
+                        ^~~~~~~~~~
+/usr/include/gdal/ogr_core.h:398:29: warning: ISO C restricts enumerator values to range of 'int' [-Wpedantic]
+     wkbMultiLineString25D = 0x80000005, /**< 2.5D extension as per 99-402 */
+                             ^~~~~~~~~~
+/usr/include/gdal/ogr_core.h:399:26: warning: ISO C restricts enumerator values to range of 'int' [-Wpedantic]
+     wkbMultiPolygon25D = 0x80000006, /**< 2.5D extension as per 99-402 */
+                          ^~~~~~~~~~
+/usr/include/gdal/ogr_core.h:400:32: warning: ISO C restricts enumerator values to range of 'int' [-Wpedantic]
+     wkbGeometryCollection25D = 0x80000007 /**< 2.5D extension as per 99-402 */
+                                ^~~~~~~~~~
 configure:3416: $? = 0
 configure:3416: result: yes
 configure:3416: checking gdal.h presence
@@ -200,7 +224,7 @@ configure:3584: checking GDAL: checking whether PROJ.4 is available fur running:
 configure:3593: result: yes
 configure:3609: pkg-config proj exists, will use it
 configure:3641: checking proj_api.h usability
-configure:3641: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal -I/usr/local/include conftest.c >&5
+configure:3641: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal -I/usr/local/include conftest.c >&5
 configure:3641: $? = 0
 configure:3641: result: yes
 configure:3641: checking proj_api.h presence
@@ -211,7 +235,7 @@ configure:3641: checking for proj_api.h
 configure:3641: result: yes
 configure:3673: PROJ: 4.9.3
 configure:3683: checking for pj_init_plus in -lproj
-configure:3708: gcc -std=gnu99 -o conftest -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal -I/usr/local/include -Wl,-z,relro conftest.c -lproj    -L/usr/lib -lgdal -L/usr/local/lib -lproj  >&5
+configure:3708: gcc -std=gnu99 -o conftest -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal -I/usr/local/include -Wl,-z,relro conftest.c -lproj    -L/usr/lib -lgdal -L/usr/local/lib -lproj  >&5
 configure:3708: $? = 0
 configure:3717: result: yes
 configure:3797: checking PROJ.4: epsg found and readable
@@ -227,7 +251,7 @@ configure:3985: GEOS: 3.5.1
 configure:3987: checking GEOS version >= 3.3.0
 configure:3995: result: yes
 configure:4017: checking geos_c.h usability
-configure:4017: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal -I/usr/local/include  -I/usr/local/include -I/usr/include/gdal -I/usr/include conftest.c >&5
+configure:4017: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal -I/usr/local/include  -I/usr/local/include -I/usr/include/gdal -I/usr/include conftest.c >&5
 configure:4017: $? = 0
 configure:4017: result: yes
 configure:4017: checking geos_c.h presence
@@ -239,7 +263,7 @@ configure:4017: result: yes
 configure:4054: checking geos: linking with -L/usr/lib/x86_64-linux-gnu -lgeos_c
 configure:4064: result: yes
 configure:4111: checking liblwgeom.h usability
-configure:4111: gcc -std=gnu99 -c -g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g   -I/usr/include/gdal -I/usr/local/include  -I/usr/local/include -I/usr/include/gdal -I/usr/include conftest.c >&5
+configure:4111: gcc -std=gnu99 -c -UNDEBUG -Wall -pedantic -g -O0   -I/usr/include/gdal -I/usr/local/include  -I/usr/local/include -I/usr/include/gdal -I/usr/include conftest.c >&5
 conftest.c:56:10: fatal error: liblwgeom.h: No such file or directory
  #include <liblwgeom.h>
           ^~~~~~~~~~~~~
@@ -357,7 +381,7 @@ generated by GNU Autoconf 2.69.  Invocation command line was
 
 on thirtyonetwentyone
 
-config.status:731: creating src/Makevars
+config.status:730: creating src/Makevars
 
 ## ---------------- ##
 ## Cache variables. ##
@@ -366,8 +390,8 @@ config.status:731: creating src/Makevars
 ac_cv_c_compiler_gnu=yes
 ac_cv_env_CC_set=
 ac_cv_env_CC_value=
-ac_cv_env_CFLAGS_set=
-ac_cv_env_CFLAGS_value=
+ac_cv_env_CFLAGS_set=set
+ac_cv_env_CFLAGS_value='-UNDEBUG -Wall -pedantic -g -O0'
 ac_cv_env_CPPFLAGS_set=
 ac_cv_env_CPPFLAGS_value=
 ac_cv_env_CPP_set=
@@ -412,7 +436,7 @@ ac_cv_prog_cc_g=yes
 ## ----------------- ##
 
 CC='gcc -std=gnu99'
-CFLAGS='-g -O2 -fdebug-prefix-map=/build/r-base-5SFKJk/r-base-3.4.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g'
+CFLAGS='-UNDEBUG -Wall -pedantic -g -O0'
 CPP='gcc -std=gnu99 -E'
 CPPFLAGS='  -I/usr/include/gdal -I/usr/local/include  -I/usr/local/include -I/usr/include/gdal -I/usr/include'
 DEFS='-DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_GDAL_H=1 -DHAVE_PROJ_API_H=1 -DHAVE_LIBPROJ=1 -DHAVE_GEOS_C_H=1'

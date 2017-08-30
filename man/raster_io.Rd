@@ -13,11 +13,11 @@ raster_io(filename, window)
 }
 \description{
 Read a window of data from a GDAL raster source. The first argument is the source
-name and the second is a 6-element `window` of offset, source dimension, and output dimension.
+name and the second is a 6-element \code{window} of offset, source dimension, and output dimension.
 }
 \details{
-This is analgous to the `rgdal` function `readGDAL` with its arguments `offset`,  `region.dim`
-and `output.dim`.
+This is analgous to the \code{rgdal} function \code{readGDAL} with its arguments \code{offset},  \code{region.dim}
+and \code{output.dim}.
 }
 \examples{
 f <- system.file("extdata", "sst.tif", package = "vapour")
