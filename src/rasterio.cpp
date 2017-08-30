@@ -3,6 +3,7 @@ using namespace Rcpp;
 
 
 #include "gdal_priv.h"
+#include "gdalwarper.h"
 #include "cpl_conv.h" // for CPLMalloc()
 
 //' Raster IO
@@ -120,10 +121,15 @@ NumericVector raster_io(CharacterVector filename, IntegerVector window)
   poBand = poDataset->GetRasterBand( 1 );
 
   float *pafScanline;
+
+  // can't see how to pass this in?
+  GDALResampleAlg eResampleAlg = GRA_NearestNeighbour;
+
   pafScanline = (float *) CPLMalloc(sizeof(float)*outXSize*outYSize);
   poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
                   pafScanline, outXSize, outYSize, GDT_Float32,
-                  0, 0 );
+                  0, 0);
+
 
   // close up
   GDALClose( (GDALDatasetH) poDataset );
