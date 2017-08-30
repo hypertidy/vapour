@@ -4,7 +4,7 @@
 \alias{plot_raster}
 \title{Plot GDAL matrix.}
 \usage{
-plot_raster(filename, add = FALSE, ext = NULL)
+plot_raster(filename, add = FALSE, ext = NULL, cols = NULL)
 }
 \arguments{
 \item{filename}{source}
@@ -22,9 +22,13 @@ read only that window from the source at the right resolution.
 \examples{
 ## this file takes 5s to read in total from NetCDF, 24 seconds via GDAL
 filename <- "/rdsi/PRIVATE/raad/data_local/www.bodc.ac.uk/gebco/GRIDONE_2D.nc"
+#filename <- raadtools::topofile()
+#filename <- "D:/data/topography/etopo2/subset.tif"
 library(vapour)
-## read in to match the device it's less than a second
+## read in to match the device and it's quicker
 plot_raster(filename)
+#zoom(wrld_simpl, new = FALSE)
+#plot_raster(filename, ext = spex::spex(), add = T, col = rainbow(100))
 #maps::map(add = TRUE)
 ## library(sf); plot(st_transform(sst_c, 4326), add = T)
 }
