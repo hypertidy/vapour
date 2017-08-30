@@ -13,6 +13,8 @@
 #' library(vapour)
 #' ## read in to match the device it's less than a second
 #' plot_raster(filename)
+#' #maps::map(add = TRUE)
+#' ## library(sf); plot(st_transform(sst_c, 4326), add = T)
 plot_raster <- function(filename, add = FALSE) {
   ri <- raster_info(filename)
   xlim <- ri$geotransform[1] - ri$geotransform[2]/2
