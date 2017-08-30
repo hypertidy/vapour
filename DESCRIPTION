@@ -4,7 +4,7 @@ Version: 0.0.1
 Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre")), 
              person("Edzer", "Pebesma", role = "aut", comment = "Wrote the logic for the geometry and attribute read from GDAL in sf, and much of that is included here."))
 Description: Providing low-level access to GDAL functionality for building R packages.
-Depends: R (>= 3.4.1)
+Depends: R (>= 3.3.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
