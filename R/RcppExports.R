@@ -3,6 +3,14 @@
 
 #' Raster IO
 #'
+#' @param pszFilename data source
+#' @export
+#' @examples
+#' f <- system.file("extdata", "sst.tif", package = "vapour")
+NULL
+
+#' Raster IO
+#'
 #' @noRd
 #' @examples
 #' f <- system.file("extdata", "volcano.tif", package = "vapour")
@@ -12,12 +20,6 @@
 #' contour(t(volcano), add = TRUE)
 NULL
 
-#' Raster IO
-#'
-#' @param pszFilename data source
-#' @export
-#' @examples
-#' f <- system.file("extdata", "sst.tif", package = "vapour")
 raster_info <- function(pszFilename) {
     .Call('_vapour_raster_info', PACKAGE = 'vapour', pszFilename)
 }
