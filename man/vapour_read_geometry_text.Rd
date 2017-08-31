@@ -3,7 +3,6 @@
 \name{vapour_read_geometry_text}
 \alias{vapour_read_geometry_text}
 \title{Read GDAL geometry as text}
-\format{indicate text output format, available are "json" (default), "gml", "kml", "wkt"}
 \usage{
 vapour_read_geometry_text(dsource, layer = 0L, sql = "", format = "json")
 }
@@ -13,6 +12,8 @@ vapour_read_geometry_text(dsource, layer = 0L, sql = "", format = "json")
 \item{layer}{integer of layer to work with, defaults to the first (0)}
 
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
+
+\item{format}{indicate text output format, available are "json" (default), "gml", "kml", "wkt"}
 }
 \description{
 Simple read of geometry-only as text format.
@@ -21,6 +22,6 @@ Simple read of geometry-only as text format.
 file <- "list_locality_postcode_meander_valley.tab"
 mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 vapour_read_geometry_text(mvfile)
-pfile <- "inst/extdata/point.shp"
+pfile <- system.file("extdata/point.shp", package = "vapour")
 vapour_read_geometry_text(pfile)
 }

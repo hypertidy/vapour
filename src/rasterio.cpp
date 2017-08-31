@@ -12,6 +12,7 @@ using namespace Rcpp;
 //' @export
 //' @examples
 //' f <- system.file("extdata", "sst.tif", package = "vapour")
+//' raster_info(f)
 // [[Rcpp::export]]
 List raster_info (const char* pszFilename)
 {
@@ -105,10 +106,10 @@ List raster_info (const char* pszFilename)
 //' ## a 5*5 window from a 10*10 region
 //' raster_io(f, window = c(0, 0, 10, 10, 5, 5))
 //' ## find the information first
-//' ri <- raster_info(f)
-//' str(matrix(raster_io(f, c(0, 0, ri$dimXY, ri$dimXY)), ri$dimXY[1]))
+//' #ri <- raster_info(f)
+//' #str(matrix(raster_io(f, c(0, 0, ri$dimXY, ri$dimXY)), ri$dimXY[1]))
 //' ## the method can be used to up-sample as well
-//' str(matrix(raster_io(f, window = c(0, 0, 10, 10, 15, 25)), 15))
+//' #str(matrix(raster_io(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 //' ## a future version will provide access to different methods
 // [[Rcpp::export]]
 NumericVector raster_io(CharacterVector filename, IntegerVector window)

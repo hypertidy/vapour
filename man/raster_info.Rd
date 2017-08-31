@@ -14,4 +14,5 @@ Raster IO
 }
 \examples{
 f <- system.file("extdata", "sst.tif", package = "vapour")
+raster_info(f)
 }

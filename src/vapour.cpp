@@ -163,7 +163,7 @@ List vapour_read_attributes(Rcpp::CharacterVector dsource,
 //' @examples
 //' file <- "list_locality_postcode_meander_valley.tab"
 //' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-//' vapour_read_geometry_extent(mvfile)
+//' vapour_read_extent(mvfile)
 //' @export
 // [[Rcpp::export]]
 List vapour_read_extent(Rcpp::CharacterVector dsource,
@@ -243,9 +243,9 @@ List vapour_read_extent(Rcpp::CharacterVector dsource,
 //' @examples
 //' file <- "list_locality_postcode_meander_valley.tab"
 //' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-//' tib <- tibble::tibble(wkb = vapour_read_geometry(mvfile)) %>%
-//'   bind_cols(read_gdal_table(mvfile))
-//' pfile <- "inst/extdata/point.shp"
+//' #tib <- tibble::tibble(wkb = vapour_read_geometry(mvfile)) %>%
+//' #  bind_cols(read_gdal_table(mvfile))
+//' pfile <- system.file("extdata/point.shp", package = "vapour")
 //' vapour_read_geometry(pfile)
 //' @export
 // [[Rcpp::export]]
@@ -318,12 +318,12 @@ List vapour_read_geometry(Rcpp::CharacterVector dsource,
 //'
 //'
 //' @inheritParams vapour_read_attributes
-//' @format indicate text output format, available are "json" (default), "gml", "kml", "wkt"
+//' @param format indicate text output format, available are "json" (default), "gml", "kml", "wkt"
 //' @examples
 //' file <- "list_locality_postcode_meander_valley.tab"
 //' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 //' vapour_read_geometry_text(mvfile)
-//' pfile <- "inst/extdata/point.shp"
+//' pfile <- system.file("extdata/point.shp", package = "vapour")
 //' vapour_read_geometry_text(pfile)
 //' @export
 // [[Rcpp::export]]

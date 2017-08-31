@@ -20,8 +20,8 @@ Simple read of geometry-only as WKB format.
 \examples{
 file <- "list_locality_postcode_meander_valley.tab"
 mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-tib <- tibble::tibble(wkb = vapour_read_geometry(mvfile)) \%>\%
-  bind_cols(read_gdal_table(mvfile))
-pfile <- "inst/extdata/point.shp"
+#tib <- tibble::tibble(wkb = vapour_read_geometry(mvfile)) \%>\%
+#  bind_cols(read_gdal_table(mvfile))
+pfile <- system.file("extdata/point.shp", package = "vapour")
 vapour_read_geometry(pfile)
 }

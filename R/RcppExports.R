@@ -7,6 +7,7 @@
 #' @export
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
+#' raster_info(f)
 raster_info <- function(pszFilename) {
     .Call('_vapour_raster_info', PACKAGE = 'vapour', pszFilename)
 }
@@ -26,10 +27,10 @@ raster_info <- function(pszFilename) {
 #' ## a 5*5 window from a 10*10 region
 #' raster_io(f, window = c(0, 0, 10, 10, 5, 5))
 #' ## find the information first
-#' ri <- raster_info(f)
-#' str(matrix(raster_io(f, c(0, 0, ri$dimXY, ri$dimXY))), ri$dimXY[1]))
+#' #ri <- raster_info(f)
+#' #str(matrix(raster_io(f, c(0, 0, ri$dimXY, ri$dimXY)), ri$dimXY[1]))
 #' ## the method can be used to up-sample as well
-#' str(matrix(raster_io(f, window = c(0, 0, 10, 10, 15, 25)), 15))
+#' #str(matrix(raster_io(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 #' ## a future version will provide access to different methods
 raster_io <- function(filename, window) {
     .Call('_vapour_raster_io', PACKAGE = 'vapour', filename, window)
@@ -61,7 +62,7 @@ vapour_read_attributes <- function(dsource, layer = 0L, sql = "") {
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' vapour_read_geometry_extent(mvfile)
+#' vapour_read_extent(mvfile)
 #' @export
 vapour_read_extent <- function(dsource, layer = 0L, sql = "") {
     .Call('_vapour_vapour_read_extent', PACKAGE = 'vapour', dsource, layer, sql)
@@ -77,9 +78,9 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "") {
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' tib <- tibble::tibble(wkb = vapour_read_geometry(mvfile)) %>%
-#'   bind_cols(read_gdal_table(mvfile))
-#' pfile <- "inst/extdata/point.shp"
+#' #tib <- tibble::tibble(wkb = vapour_read_geometry(mvfile)) %>%
+#' #  bind_cols(read_gdal_table(mvfile))
+#' pfile <- system.file("extdata/point.shp", package = "vapour")
 #' vapour_read_geometry(pfile)
 #' @export
 vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
@@ -92,12 +93,12 @@ vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
 #'
 #'
 #' @inheritParams vapour_read_attributes
-#' @format indicate text output format, available are "json" (default), "gml", "kml", "wkt"
+#' @param format indicate text output format, available are "json" (default), "gml", "kml", "wkt"
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' vapour_read_geometry_text(mvfile)
-#' pfile <- "inst/extdata/point.shp"
+#' pfile <- system.file("extdata/point.shp", package = "vapour")
 #' vapour_read_geometry_text(pfile)
 #' @export
 vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", format = "json") {

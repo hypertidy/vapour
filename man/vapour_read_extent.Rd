@@ -20,5 +20,5 @@ numbers xmin, xmax, ymin, ymax in the usual simple convention.
 \examples{
 file <- "list_locality_postcode_meander_valley.tab"
 mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-vapour_read_geometry_extent(mvfile)
+vapour_read_extent(mvfile)
 }
