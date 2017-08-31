@@ -4,3 +4,5 @@
 windows/
 inst/gdal
 inst/proj
+src/Makevars
+config.*
