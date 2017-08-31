@@ -51,12 +51,18 @@ library(vapour)
 vapour_read_attributes(pfile)
 ```
 
-A higher level wraps that function to return a data frame. 
+A higher level function *somewhere else* could wrap that function to return a data frame, but we don't want that in `vapour` because
+it's not aligned with the goals of being lightweight and 
+reducing the level of interpretation applied. The `data.frame` 
+function in R is actually a very primitive implememtation for
+data frames, so we avoid putting that interpretation on the data
+and leave that up to the developer / user. 
 
 ```{r}
 mvfile <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package="vapour")
 
-read_gdal_table(mvfile)
+as.data.frame(vapour_read_attributes(mvfile),  stringsAsFactors = FALSE)
+
 ```
 
 There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables. 
@@ -83,7 +89,7 @@ We can combine these together to get a custom data set.
 
 ```{r}
 library(dplyr)
-dat <- read_gdal_table(cfile) %>% dplyr::mutate(wkt = vapour_read_geometry_text(cfile, format = "wkt"))
+dat <- as.data.frame(vapour_read_attributes(cfile),  stringsAsFactors = FALSE) %>% dplyr::mutate(wkt = vapour_read_geometry_text(cfile, format = "wkt"))
 glimpse(dat)
 ```
 
@@ -101,7 +107,8 @@ str(vapour_read_extent(mvfile))
 This makes for a very lightweight summary data set that will scale to hundreds of large inputs. 
 
 ```{r}
-dat <- read_gdal_table(mvfile)
+dat <- as.data.frame(vapour_read_attributes(mvfile), 
+                     stringsAsFactors = FALSE)
 library(raster)
 dat$bbox <- vapour_read_extent(mvfile)
 
@@ -110,21 +117,23 @@ purrr::walk(lapply(dat$bbox, raster::extent), plot, add = TRUE)
 
 ```
 
-An example is this set of 29 property boundary shapefiles, read into a few hundred Mb of simple features. 
+An example is this set of *some number of* property boundary shapefiles, read into a few hundred Mb of simple features. 
 
 ```{r}
 library(dplyr)
-files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullname), grepl("shp$", fullname))
+files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullname), grepl("shp$", fullname)) %>% 
+  slice(1:8)
 library(vapour)
 system.time(purrr::map(files$fullname, sf::read_sf))
 library(blob)
 
 ## our timing is competitive, and we get to choose what is read
 ## and when
+read_table <- function(file) as.data.frame(vapour_read_attributes(file),  stringsAsFactors = FALSE)
 system.time({
-d <- purrr::map(files$fullname, read_gdal_table)
+d <- purrr::map(files$fullname, read_table)
 d <- dplyr::bind_rows(d)
-g <- purrr::map(files$fullname, read_gdal_geometry)
+g <- purrr::map(files$fullname, vapour_read_geometry)
 d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
 })
 
@@ -134,7 +143,7 @@ We can read that in this simpler way for a quick data set to act as an index.
 
 ```{r}
 system.time({
-  d <- purrr::map_df(files$fullname, read_gdal_table)
+  d <- purrr::map_df(files$fullname, read_table)
   d$bbox <- unlist(purrr::map(files$fullname, vapour_read_extent), recursive = FALSE)
 })
 
