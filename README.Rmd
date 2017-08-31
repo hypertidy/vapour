@@ -61,9 +61,31 @@ and leave that up to the developer / user.
 ```{r}
 mvfile <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package="vapour")
 
-as.data.frame(vapour_read_attributes(mvfile),  stringsAsFactors = FALSE)
+dat <- as.data.frame(vapour_read_attributes(mvfile),  stringsAsFactors = FALSE)
+
+dim(dat)
+
+head(dat)
+```
+
+## OGRSQL
+
+Note that each lower-level function accepts a `sql` argument, 
+which sends a query to the GDAL library to be executed against
+the data source, this can create custom layers and so is independent of and ignores the `layer` argument. 
+
+```{r}
+vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7310")
+
+
+vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF, FID FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7306")
+
 
 ```
+
+Also note that FID is a special row number value, to be used a as general facility for selecting by structural row. 
+
+See http://www.gdal.org/ogr_sql.html
 
 There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables. 
 
