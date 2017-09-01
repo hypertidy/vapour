@@ -134,8 +134,9 @@ dat <- as.data.frame(vapour_read_attributes(mvfile),
 library(raster)
 dat$bbox <- vapour_read_extent(mvfile)
 
-plot(purrr::reduce(lapply(dat$bbox, raster::extent), raster::union))
-purrr::walk(lapply(dat$bbox, raster::extent), plot, add = TRUE)
+all_extent <- purrr::reduce(lapply(dat$bbox, raster::extent), raster::union)
+##plot(all_extent)
+##purrr::walk(lapply(dat$bbox, raster::extent), plot, add = TRUE)
 
 ```
 

@@ -115,7 +115,8 @@ List vapour_read_attributes(Rcpp::CharacterVector dsource,
   Rcpp::List out = allocate_attribute(poFDefn, nFeature, int64_as_string);
 
   if (nFeature == 0) {
-    printf("no features found");
+    Rcout << "no features found";
+
     return(out);
   }
   int iFeature = 0;
@@ -132,8 +133,6 @@ List vapour_read_attributes(Rcpp::CharacterVector dsource,
         nv = out[iField];
         nv[iFeature] = poFeature->GetFieldAsInteger( iField );
       }
-      //  if( poFieldDefn->GetType() == OFTInteger64 )
-      //    printf( CPL_FRMT_GIB ",", poFeature->GetFieldAsInteger64( iField ) );
       if( poFieldDefn->GetType() == OFTReal ) {
         Rcpp::NumericVector nv;
         nv = out[iField];
@@ -205,8 +204,8 @@ List vapour_read_extent(Rcpp::CharacterVector dsource,
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   Rcpp::List binary = Rcpp::List(nFeature);
   if (nFeature == 0) {
-    printf("no features found");
-    //    return(out);
+    Rcout << "no features found";
+
   }
   int iFeature = 0;
   //std::string istring = "";
@@ -288,8 +287,8 @@ List vapour_read_geometry(Rcpp::CharacterVector dsource,
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   Rcpp::List binary = Rcpp::List(nFeature);
   if (nFeature == 0) {
-    printf("no features found");
-    //    return(out);
+    Rcout << "no features found";
+
   }
   int iFeature = 0;
   //std::string istring = "";
@@ -366,8 +365,8 @@ CharacterVector vapour_read_geometry_text(Rcpp::CharacterVector dsource,
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   Rcpp::CharacterVector out = Rcpp::CharacterVector(nFeature);
   if (nFeature == 0) {
-    printf("no features found");
-    //    return(out);
+    Rcout << "no features found";
+
   }
   int iFeature = 0;
   //std::string istring = "";

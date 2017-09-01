@@ -1,5 +1,5 @@
 Package: vapour
-Title: Lightweight Access to the GDAL API
+Title: Lightweight Access to the 'GDAL' 'API'
 Version: 0.0.1
 Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre")), 
              person("Edzer", "Pebesma", role = "aut", 
@@ -17,3 +17,4 @@ Imports: Rcpp
 RoxygenNote: 6.0.1
 Roxygen: list(markdown = TRUE)
 Suggests: covr
+SystemRequirements: GDAL (>= 2.0.0), PROJ.4 (>= 4.8.0)

@@ -8,3 +8,5 @@
 ^\.travis\.yml$
 ^codecov\.yml$
 ^docs$
+^gdal$
+^libs

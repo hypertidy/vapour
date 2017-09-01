@@ -11,8 +11,8 @@ devtools::use_data(sst_c)
 
 sf::st_write(sst_c, "inst/extdata/sst_c.gpkg", driver = "GPKG")
 
-sst <- aggregate(crop(sst, extent(130, 150, -60, -40)), fun = median, fact = 5)
-writeRaster(sst, "inst/extdata/sst.tif")
+sst <- aggregate(crop(sst, extent(140, 150, -60, -40)), fun = median, fact = 7)
+writeRaster(sst, "inst/extdata/sst.tif", options = c("COMPRESS=LZW"), datatype = "FLT4S")
 
 
 sds <- 'NETCDF:"/rdsi/PUBLIC/raad/data/podaac-ftp.jpl.nasa.gov/allData/ghrsst/data/GDS2/L4/GLOB/JPL/MUR/v4.1/2002/152/20020601090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.nc":analysed_sst'
