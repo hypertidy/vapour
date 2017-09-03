@@ -1,4 +1,4 @@
-https://raw.githubusercontent.com/mpadge/sftest/master/.travis.yml
+# https://raw.githubusercontent.com/mpadge/sftest/master/.travis.yml
 
 language: r
 warnings_are_errors: true
