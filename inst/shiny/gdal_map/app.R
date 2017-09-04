@@ -1,6 +1,8 @@
 library(vapour)
-srcfile <- "D:\\data\\topography\\etopo2\\subset.tif"
-
+#srcfile <- "D:\\data\\topography\\etopo2\\subset.tif"
+#srcfile <- raadtools::topofile("etopo2")
+srcfile <- "/rdsi/PRIVATE/raad/data_local/www.bodc.ac.uk/gebco/GRIDONE_2D.nc"
+library(gladr)
 if (FALSE) plot_raster(srcfile)
 
 ui <- fluidPage(
@@ -14,70 +16,27 @@ ui <- fluidPage(
     ),
 
   fluidRow(
-    column(width = 4, wellPanel(
-      radioButtons("plot_type", "Plot type",
-                   c("base", "ggplot2")
-      )
-    )),
-    column(width = 4,
+    column(width = 12,
            # In a plotOutput, passing values for click, dblclick, hover, or brush
            # will enable those interactions.
-           plotOutput("plot1", height = 350,
-                      # Equivalent to: click = clickOpts(id = "plot_click")
-                      click = "plot_click",
-                      dblclick = dblclickOpts(
-                        id = "plot_dblclick"
-                      ),
-                      hover = hoverOpts(
-                        id = "plot_hover"
-                      ),
+           plotOutput("plot1", height = 750,
                       brush = brushOpts(
                         id = "plot_brush"
-                      )
-           )
-    )
-  ),
-  fluidRow(
-    column(width = 3,
-           verbatimTextOutput("click_info")
-    ),
-    column(width = 3,
-           verbatimTextOutput("dblclick_info")
-    ),
-    column(width = 3,
-           verbatimTextOutput("hover_info")
-    ),
-    column(width = 3,
-           verbatimTextOutput("brush_info")
-    )
-  )
-    )
+                      ))))
+)
 
 
 server <- function(input, output) {
+  get_extent <- reactive({
+    if (is.null(input$plot_brush)) NULL else
+      raster::extent(input$plot_brush$xmin,
+                     input$plot_brush$xmax,
+                     input$plot_brush$ymin,
+                     input$plot_brush$ymax)
+  })
   output$plot1 <- renderPlot({
-    if (input$plot_type == "base") {
-      plot_raster(srcfile)
-    } else if (input$plot_type == "ggplot2") {
-      ggplot(mtcars, aes(wt, mpg)) + geom_point()
-    }
-  })
+      plot_raster(srcfile, ext = get_extent())
 
-  output$click_info <- renderPrint({
-    cat("input$plot_click:\n")
-    str(input$plot_click)
-  })
-  output$hover_info <- renderPrint({
-    cat("input$plot_hover:\n")
-    str(input$plot_hover)
-  })
-  output$dblclick_info <- renderPrint({
-    cat("input$plot_dblclick:\n")
-    str(input$plot_dblclick)
-  })
-  output$brush_info <- renderPrint({
-    cat("input$plot_brush:\n")
-    str(input$plot_brush)
   })
 
 }
