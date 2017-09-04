@@ -1,11 +1,7 @@
 Package: vapour
 Title: Lightweight Access to the 'GDAL' 'API'
 Version: 0.0.1
-Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre")), 
-             person("Edzer", "Pebesma", role = "aut", 
-             comment = "Wrote the logic for the geometry and attribute read from GDAL in sf."), 
-             person("Roger", "Bivand", role = "aut", 
-             comment = "Wrote the configure.ac and much of prior art in rgdal."))
+Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre")))
 Description: Provides low-level access to GDAL functionality for R packages. The aim is to minimize
   the level of interpretation put on the GDAL facilities, to enable direct use of it for various purposes. 
 Depends: R (>= 3.3.0)
