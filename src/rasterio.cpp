@@ -115,14 +115,19 @@ NumericVector raster_io(CharacterVector filename, IntegerVector window)
 
   float *pafScanline;
 
- // GDALRasterIOExtraArg* psExtraArg;
- // psExtraArg->eResampleAlg = GRIORA_Bilinear;
+  GDALRasterIOExtraArg psExtraArg;
+  INIT_RASTERIO_EXTRA_ARG(psExtraArg);
+  // TODO expose the resampling options to user
+  psExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
   pafScanline = (float *) CPLMalloc(sizeof(float)*outXSize*outYSize);
-  poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+  CPLErr err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
                   pafScanline, outXSize, outYSize, GDT_Float32,
-                  0, 0);
+                  0, 0, &psExtraArg);
 
-
+  if(err != CE_None) {
+    // Report failure somehow.
+    Rcpp::stop("raster read failed");
+  }
   // close up
   GDALClose( (GDALDatasetH) poDataset );
   NumericVector out(outXSize*outYSize);

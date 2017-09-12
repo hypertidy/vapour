@@ -71,6 +71,9 @@ Rcpp::List allocate_attribute(OGRFeatureDefn *poFDefn, int n_features, bool int6
 //' vapour_read_attributes(mvfile)
 //' sq <- "SELECT * FROM list_locality_postcode_meander_valley WHERE FID < 5"
 //' vapour_read_attributes(mvfile, sql = sq)
+//' dsource <- "inst/extdata/tab/list_locality_postcode_meander_valley.tab"
+//' .Call('_vapour_vapour_read_attributes', PACKAGE = 'vapour', dsource, layer, sql)
+//'
 //' @export
 // [[Rcpp::export]]
 List vapour_read_attributes(Rcpp::CharacterVector dsource,

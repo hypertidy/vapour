@@ -48,6 +48,9 @@ raster_io <- function(filename, window) {
 #' vapour_read_attributes(mvfile)
 #' sq <- "SELECT * FROM list_locality_postcode_meander_valley WHERE FID < 5"
 #' vapour_read_attributes(mvfile, sql = sq)
+#' dsource <- "inst/extdata/tab/list_locality_postcode_meander_valley.tab"
+#' .Call('_vapour_vapour_read_attributes', PACKAGE = 'vapour', dsource, layer, sql)
+#'
 #' @export
 vapour_read_attributes <- function(dsource, layer = 0L, sql = "") {
     .Call('_vapour_vapour_read_attributes', PACKAGE = 'vapour', dsource, layer, sql)
