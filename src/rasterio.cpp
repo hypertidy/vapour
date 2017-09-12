@@ -22,7 +22,7 @@ List raster_info (const char* pszFilename)
   {
     Rcpp::stop("cannot open dataset");
   }
-
+poDataset->GetMetadata();
   double        adfGeoTransform[6];
   poDataset->GetGeoTransform( adfGeoTransform );
 
@@ -115,14 +115,14 @@ NumericVector raster_io(CharacterVector filename, IntegerVector window)
 
   float *pafScanline;
 
-  GDALRasterIOExtraArg psExtraArg;
-  INIT_RASTERIO_EXTRA_ARG(psExtraArg);
+  //GDALRasterIOExtraArg psExtraArg;
+  //INIT_RASTERIO_EXTRA_ARG(psExtraArg);
   // TODO expose the resampling options to user
-  psExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
+  //psExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
   pafScanline = (float *) CPLMalloc(sizeof(float)*outXSize*outYSize);
   CPLErr err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
                   pafScanline, outXSize, outYSize, GDT_Float32,
-                  0, 0, &psExtraArg);
+                  0, 0);
 
   if(err != CE_None) {
     // Report failure somehow.

@@ -1,7 +1,9 @@
 library(vapour)
 #srcfile <- "D:\\data\\topography\\etopo2\\subset.tif"
-#srcfile <- raadtools::topofile("etopo2")
+#srcfile <- raadtools::topofile("etopo1")
 srcfile <- "/rdsi/PRIVATE/raad/data_local/www.bodc.ac.uk/gebco/GRIDONE_2D.nc"
+#srcfile <- "/rdsi/PUBLIC/raad/data/www.ngdc.noaa.gov/mgg/global/relief/ETOPO1/data/ice_surface/grid_registered/netcdf/ETOPO1_Ice_g_gdal.grd"
+#srcfile <- "/rdsi/PUBLIC/raad/data/www.ngdc.noaa.gov/mgg/global/relief/ETOPO2/ETOPO2v2-2006/ETOPO2v2c/netCDF/ETOPO2v2c_f4.nc"
 library(gladr)
 if (FALSE) plot_raster(srcfile)
 
