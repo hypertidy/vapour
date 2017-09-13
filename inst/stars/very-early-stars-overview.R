@@ -33,7 +33,7 @@ transform6 <- function(x, dim) {
             dims = dim)
 }
 dummy_discrete <- function() {
-  data.frame(name = c("x", "y"), min = c(0, 0), max = c(3, 4), dim = c(3, 4))
+  as.data.frame(list(name = c("x", "y"), min = c(0, 0), max = c(3, 4), dim = c(3, 4)), stringsAsFactors = FALSE)
 }
 #' table of axes
 #' @param mins minimum coordinates
@@ -79,13 +79,26 @@ quad_mesh <- function(x, ...) {
 }
 #' fast creation of simple features tiles from abstract
 #' axis specification
-tile_gon <- function(x, ...) {
+#' methods? raster_info, geotransform/dim, raster
+tile_gon <- function(x, crs = NA_character_, ...) {
   qm <- quad_mesh(x)
+  close_ring <- c(1L, 2L, 3L, 4L, 1L)
   ## spex:::polygonize.RasterLayer
-  l <- lapply(split(t(qm$vb[1:2, qm$ib]), rep(seq_len(ncol(qm$ib)),
-                                              each = 4)), function(x) structure(list(matrix(x, ncol = 2)[c(1,
-                                                                                                           2, 3, 4, 1), ]), class = c("XY", "POLYGON", "sfg")))
-  st_sf(geometry = st_sfc(l))
+  l <- lapply(split(t(qm$vb[1:2, qm$ib]),
+                    rep(seq_len(ncol(qm$ib)), each = 4L)),
+            function(x) structure(list(matrix(x, ncol = 2L)[close_ring, ]),
+                                  class = c("XY", "POLYGON", "sfg")))
+  ##  too slow
+  #st_sf(geometry = st_sfc(l))
+  sf1 <- list(tile = seq_along(l))
+
+  sf1[["geometry"]] <- structure(l, n_empty = 0L, crs = structure(list(epsg = NA_integer_,
+                                                                       proj4string = NA_character_), class = "crs"),
+                                 precision = 0, bbox = structure(c(xmin = x$min[1],
+                                                                   ymin = x$min[2], xmax = x$max[1], ymax = x$max[2]),
+                                                                 class = "bbox"), class = c("sfc_POLYGON", "sfc"))
+
+  st_as_sf(as.data.frame(sf1))
 }
 
 ## let's assume we did this without raster
