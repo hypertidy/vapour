@@ -5,18 +5,18 @@ f <- 'NETCDF:"/rdsi/PUBLIC/raad/data/eclipse.ncdc.noaa.gov/pub/OI-daily-v2/NetCD
 
 # required components
 ## TILING
-## - line is a fall back, might have internal tiling
-## - or impose an arbitrary one
-## - needs index-alignment, tiling done in index space, converted to sf
+## -[ ] line is a fall back, might have internal tiling
+## -[ ] or impose an arbitrary one
+## -[ ] needs index-alignment, tiling done in index space, converted to sf
 
 ## POLYGONS
-## - non-raster conversion to sf from extent/dims
-## -
+## -[x] non-raster conversion to sf from extent/dims
+## -[ ]
 ## EXTENT / BBOX
-## - a "discrete" class which is xmin, ymin, xmax, ymax, nx, ny
-## - conversion of GDAL 6-figure transform to "discrete"
-## - tile index conversion to cell edge, so c(offsetX, offsetY, windowX, windowY) <-> c(xmin, ymin, xmax, ymax)
-
+## -[x] a "discrete" class which is xmin, ymin, xmax, ymax, nx, ny
+## -[x] conversion of GDAL 6-figure transform to "discrete"
+## -[ ] tile index conversion to cell edge, so c(offsetX, offsetY, windowX, windowY) <-> c(xmin, ymin, xmax, ymax)
+## -[ ] spatial extent <-> index extent, based on "discrete"
 #' @param dim is the size of the grid
 #' @param tile is the size of the tiles
 tile_dim <- function(dim, tile = NULL) {
@@ -89,13 +89,13 @@ tile_gon <- function(x, ...) {
 }
 
 ## let's assume we did this without raster
-library(raster)
-r <- raster(f)
-projection(r) <- "+init=epsg:4326"
-tiles <- spex::polygonize(raster(raster::extent(r), crs = projection(r),
-                                 nrow = nrow(r) / 240, ncol = ncol(r)/240))
-#ri <- raster_info(f)
-#tiles <- tile_gon(transform6(ri$geotransform, ri$dimXY/240))
+# library(raster)
+# r <- raster(f)
+# projection(r) <- "+init=epsg:4326"
+# tiles <- spex::polygonize(raster(raster::extent(r), crs = projection(r),
+#                                  nrow = nrow(r) / 240, ncol = ncol(r)/240))
+ri <- raster_info(f)
+tiles <- tile_gon(transform6(ri$geotransform, ri$dimXY/240))
 
 
 populate_raster <- function(n, tile = NULL, data = NULL) {
