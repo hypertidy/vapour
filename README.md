@@ -6,7 +6,16 @@ vapour
 
 The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
 
-This is inspired by and draws heavily on work done [the sf package](https://github.com/r-spatial/sf) and rgdal and rgdal2.
+This is inspired by and draws on work done [the sf package](https://github.com/r-spatial/sf) and rgdal and rgdal2.
+
+Warning
+======
+
+There's a number of fragile areas in vapour, one in particular is the use of raster data sources that contain subdatasets - 
+these are not handled, and they are not dealt with safely - if your source (NetCDF for example) contains subdatasets 
+vapour currently will treat it like a raster and crash :)  Use at your own risk, this won't be fixed for a while ...
+
+
 
 Purpose
 =======
