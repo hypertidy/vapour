@@ -287,8 +287,13 @@ List vapour_read_geometry(Rcpp::CharacterVector dsource,
   //  poFeature = poLayer->GetNextFeature();
   int iField;
   int nFeature = poLayer->GetFeatureCount();
+  if (nFeature < 1) {
+
+  Rcpp::stop("no features present");
+  }
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   Rcpp::List binary = Rcpp::List(nFeature);
+
   if (nFeature == 0) {
     Rcout << "no features found";
 

@@ -91,7 +91,7 @@ poDataset->GetMetadata();
 //' #str(matrix(raster_io(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 //' ## a future version will provide access to different methods
 // [[Rcpp::export]]
-NumericVector raster_io(CharacterVector filename, IntegerVector window)
+NumericVector raster_io(CharacterVector filename, IntegerVector window, IntegerVector band = 1)
 {
 
   int Xoffset = window[0];
@@ -111,8 +111,11 @@ NumericVector raster_io(CharacterVector filename, IntegerVector window)
   }
 
   GDALRasterBand  *poBand;
-  poBand = poDataset->GetRasterBand( 1 );
-
+  poBand = poDataset->GetRasterBand( band[0] );
+  if( poBand == NULL )
+  {
+    Rcpp::stop("cannot get band");
+  }
   float *pafScanline;
 
   //GDALRasterIOExtraArg psExtraArg;
