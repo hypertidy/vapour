@@ -6,7 +6,9 @@ vapour
 
 The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
 
-This is inspired by and draws heavily on work done [the sf package](https://github.com/r-spatial/sf) and rgdal and rgdal2.
+This is inspired by and draws heavily on work done [the sf package](https://github.com/r-spatial/sf) and rgdal and rgdal2. \# Warning
+
+There's a number of fragile areas in vapour, one in particular is the use of raster data sources that contain subdatasets - these are not handled, and they are not dealt with safely - if your source (NetCDF for example) contains subdatasets vapour currently will treat it like a raster and crash :) Use at your own risk, this won't be fixed for a while ...
 
 Purpose
 =======
@@ -75,6 +77,7 @@ Note that each lower-level function accepts a `sql` argument, which sends a quer
 
 ``` r
 vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7310")
+#> no features found
 #> $NAME
 #> character(0)
 #> 
@@ -110,33 +113,42 @@ vapour_read_geometry(pfile)[5:6]  ## format = "WKB"
 #>  [1] 01 01 00 00 00 00 00 c0 40 3c bb d0 3f 00 00 80 0e 30 25 d5 3f
 
 vapour_read_geometry_text(pfile)[5:6]  ## format = "json"
-#> [1] "{ \"type\": \"Point\", \"coordinates\": [ 0.89612962375395, 0.577139189234003 ] }" 
-#> [2] "{ \"type\": \"Point\", \"coordinates\": [ 0.261427939636633, 0.330394758377224 ] }"
+#> [[1]]
+#> [1] "{ \"type\": \"Point\", \"coordinates\": [ 0.89612962375395, 0.577139189234003 ] }"
+#> 
+#> [[2]]
+#> [1] "{ \"type\": \"Point\", \"coordinates\": [ 0.261427939636633, 0.330394758377224 ] }"
 
 cfile <- system.file("extdata/sst_c.gpkg", package = "vapour")
-vapour_read_geometry_text(pfile, format = "gml")[2]
+vapour_read_geometry_text(pfile, textformat = "gml")[2]
+#> [[1]]
 #> [1] "<gml:Point><gml:coordinates>0.145755324047059,0.395469118840992</gml:coordinates></gml:Point>"
 
 ## don't do this with a non-longlat data set like cfile
-vapour_read_geometry_text(pfile, format = "kml")[1:2]
+vapour_read_geometry_text(pfile, textformat = "kml")[1:2]
+#> [[1]]
 #> [1] "<Point><coordinates>0.623376188334078,0.380098037654534</coordinates></Point>"
-#> [2] "<Point><coordinates>0.145755324047059,0.395469118840992</coordinates></Point>"
+#> 
+#> [[2]]
+#> [1] "<Point><coordinates>0.145755324047059,0.395469118840992</coordinates></Point>"
 
-str(vapour_read_geometry_text(cfile, format = "wkt")[1:2])
-#>  chr [1:2] "MULTILINESTRING ((-16254.4210476553 -3269904.98849485,-48956.5880244328 -3282652.40200143,-82133.8545994558 -33"| __truncated__ ...
+str(vapour_read_geometry_text(cfile, textformat = "wkt")[1:2])
+#> List of 2
+#>  $ : chr "MULTILINESTRING ((-16254.4210476553 -3269904.98849485,-48956.5880244328 -3282652.40200143,-82133.8545994558 -33"| __truncated__
+#>  $ : chr "MULTILINESTRING ((-18812.5003359828 -3784514.28779524,-40153.6937313319 -3789439.97415405,-37747.2881609 -38569"| __truncated__
 ```
 
 We can combine these together to get a custom data set.
 
 ``` r
 library(dplyr)
-dat <- as.data.frame(vapour_read_attributes(cfile),  stringsAsFactors = FALSE) %>% dplyr::mutate(wkt = vapour_read_geometry_text(cfile, format = "wkt"))
+dat <- as.data.frame(vapour_read_attributes(cfile),  stringsAsFactors = FALSE) %>% dplyr::mutate(wkt = vapour_read_geometry_text(cfile, textformat = "wkt"))
 glimpse(dat)
 #> Observations: 7
 #> Variables: 3
 #> $ level <chr> "275", "280", "285", "290", "295", "300", "305"
 #> $ sst   <dbl> 1.85, 6.85, 11.85, 16.85, 21.85, 26.85, 31.85
-#> $ wkt   <chr> "MULTILINESTRING ((-16254.4210476553 -3269904.98849485,-...
+#> $ wkt   <list> ["MULTILINESTRING ((-16254.4210476553 -3269904.98849485...
 ```
 
 Fast summary
@@ -222,11 +234,10 @@ library(raster)
 #>     select
 dat$bbox <- vapour_read_extent(mvfile)
 
-plot(purrr::reduce(lapply(dat$bbox, raster::extent), raster::union))
-purrr::walk(lapply(dat$bbox, raster::extent), plot, add = TRUE)
+all_extent <- purrr::reduce(lapply(dat$bbox, raster::extent), raster::union)
+##plot(all_extent)
+##purrr::walk(lapply(dat$bbox, raster::extent), plot, add = TRUE)
 ```
-
-![](README-unnamed-chunk-8-1.png)
 
 An example is this set of *some number of* property boundary shapefiles, read into a few hundred Mb of simple features.
 
@@ -234,12 +245,10 @@ An example is this set of *some number of* property boundary shapefiles, read in
 library(dplyr)
 files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullname), grepl("shp$", fullname)) %>% 
   slice(1:8)
-#> Warning in raadfiles::thelist_files(format = ""): datadir and file root
-#> don't match?
 library(vapour)
 system.time(purrr::map(files$fullname, sf::read_sf))
 #>    user  system elapsed 
-#>   9.272   0.437   9.801
+#>  11.252   0.748  16.152
 library(blob)
 
 ## our timing is competitive, and we get to choose what is read
@@ -252,7 +261,7 @@ g <- purrr::map(files$fullname, vapour_read_geometry)
 d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
 })
 #>    user  system elapsed 
-#>   3.132   0.280   3.444
+#>   4.060   0.632   5.918
 ```
 
 We can read that in this simpler way for a quick data set to act as an index.
@@ -263,7 +272,7 @@ system.time({
   d$bbox <- unlist(purrr::map(files$fullname, vapour_read_extent), recursive = FALSE)
 })
 #>    user  system elapsed 
-#>   2.987   0.336   3.357
+#>   3.488   0.752   5.613
 
 pryr::object_size(d)
 #> 46.7 MB

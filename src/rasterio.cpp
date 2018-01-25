@@ -78,6 +78,7 @@ poDataset->GetMetadata();
 //' This is analgous to the `rgdal` function `readGDAL` with its arguments `offset`,  `region.dim`
 //' and `output.dim`.
 //' @param filename data source
+//' @param band index of which band to read
 //' @param window src_offset, src_dim, out_dim
 //' @export
 //' @examples

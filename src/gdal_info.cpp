@@ -9,7 +9,6 @@ using namespace Rcpp;
 //'
 //' @param pszFilename data source
 //' @export
-//' @examples
 // [[Rcpp::export]]
 List gdal_info (const char* pszFilename)
 {

@@ -5,7 +5,6 @@
 #'
 #' @param pszFilename data source
 #' @export
-#' @examples
 gdal_info <- function(pszFilename) {
     .Call('_vapour_gdal_info', PACKAGE = 'vapour', pszFilename)
 }
@@ -29,6 +28,7 @@ raster_info <- function(pszFilename) {
 #' This is analgous to the `rgdal` function `readGDAL` with its arguments `offset`,  `region.dim`
 #' and `output.dim`.
 #' @param filename data source
+#' @param band index of which band to read
 #' @param window src_offset, src_dim, out_dim
 #' @export
 #' @examples
@@ -56,37 +56,27 @@ raster_io <- function(filename, window, band = 1L) {
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' vapour_read_attributes(mvfile)
 #' sq <- "SELECT * FROM list_locality_postcode_meander_valley WHERE FID < 5"
-#' vapour_read_attributes(mvfile, sql = sq)
+#' att <- vapour_read_attributes(mvfile, sql = sq)
 #' dsource <- "inst/extdata/tab/list_locality_postcode_meander_valley.tab"
-#' .Call('_vapour_vapour_read_attributes', PACKAGE = 'vapour', dsource, layer, sql)
 #'
 #' @export
 vapour_read_attributes <- function(dsource, layer = 0L, sql = "") {
     .Call('_vapour_vapour_read_attributes', PACKAGE = 'vapour', dsource, layer, sql)
 }
 
-#'  GDAL geometry extent
+#' Read GDAL feature thing 'what'
 #'
-#' Read a GDAL geometry summary as just the native bounding box, the four
-#' numbers xmin, xmax, ymin, ymax in the usual simple convention.
+#' Read GDAL geometry as blob, text, or numeric extent.
 #'
-#' @inheritParams vapour_read_attributes
-#' @examples
-#' file <- "list_locality_postcode_meander_valley.tab"
-#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' vapour_read_extent(mvfile)
-#' @export
-vapour_read_extent <- function(dsource, layer = 0L, sql = "") {
-    .Call('_vapour_vapour_read_extent', PACKAGE = 'vapour', dsource, layer, sql)
-}
-
-#' Read GDAL geometry as blob
+#' `vapour_read_feature_what` will read a feature in various ways, as binary WKB, various text formats, a numeric
+#' extent, and for each an option SQL string will be evaluated against the data source before reading.
+#' The extent is the native bounding box, the four numbers xmin, xmax, ymin, ymax.
 #'
-#' Simple read of geometry-only as WKB format.
-#'
-#'
-#' @inheritParams vapour_read_attributes
-#' @format indicate text output format, available are "json" (default), "gml", "kml", "wkt"
+#' @param dsource data source
+#' @param layer layer
+#' @param sql sql
+#' @param what what to read, "geometry", "text", "extent"
+#' @param textformat indicate text output format, available are "json" (default), "gml", "kml", "wkt"
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
@@ -94,26 +84,18 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "") {
 #' #  bind_cols(read_gdal_table(mvfile))
 #' pfile <- system.file("extdata/point.shp", package = "vapour")
 #' vapour_read_geometry(pfile)
-#' @export
-vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
-    .Call('_vapour_vapour_read_geometry', PACKAGE = 'vapour', dsource, layer, sql)
-}
-
-#' Read GDAL geometry as text
 #'
-#' Simple read of geometry-only as text format.
-#'
-#'
-#' @inheritParams vapour_read_attributes
-#' @param format indicate text output format, available are "json" (default), "gml", "kml", "wkt"
-#' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' vapour_read_geometry_text(mvfile)
 #' pfile <- system.file("extdata/point.shp", package = "vapour")
 #' vapour_read_geometry_text(pfile)
+#'
+#' file <- "list_locality_postcode_meander_valley.tab"
+#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+#' vapour_read_extent(mvfile)
 #' @export
-vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", format = "json") {
-    .Call('_vapour_vapour_read_geometry_text', PACKAGE = 'vapour', dsource, layer, sql, format)
+vapour_read_feature_what <- function(dsource, layer = 0L, sql = "", what = "geometry", textformat = "json") {
+    .Call('_vapour_vapour_read_feature_what', PACKAGE = 'vapour', dsource, layer, sql, what, textformat)
 }
 
