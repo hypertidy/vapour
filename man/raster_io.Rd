@@ -4,12 +4,14 @@
 \alias{raster_io}
 \title{Raster IO (read)}
 \usage{
-raster_io(filename, window)
+raster_io(filename, window, band = 1L)
 }
 \arguments{
 \item{filename}{data source}
 
 \item{window}{src_offset, src_dim, out_dim}
+
+\item{band}{index of which band to read}
 }
 \description{
 Read a window of data from a GDAL raster source. The first argument is the source

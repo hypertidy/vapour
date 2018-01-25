@@ -27,6 +27,13 @@ library(dplyr)
 The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
 
 This is inspired by and draws heavily on work done [the sf package](https://github.com/r-spatial/sf) and rgdal and rgdal2. 
+# Warning
+
+There's a number of fragile areas in vapour, one in particular is the use of raster data sources that contain subdatasets - 
+these are not handled, and they are not dealt with safely - if your source (NetCDF for example) contains subdatasets 
+vapour currently will treat it like a raster and crash :)  Use at your own risk, this won't be fixed for a while ...
+
+
 
 # Purpose
 
@@ -97,12 +104,12 @@ vapour_read_geometry(pfile)[5:6]  ## format = "WKB"
 vapour_read_geometry_text(pfile)[5:6]  ## format = "json"
 
 cfile <- system.file("extdata/sst_c.gpkg", package = "vapour")
-vapour_read_geometry_text(pfile, format = "gml")[2]
+vapour_read_geometry_text(pfile, textformat = "gml")[2]
 
 ## don't do this with a non-longlat data set like cfile
-vapour_read_geometry_text(pfile, format = "kml")[1:2]
+vapour_read_geometry_text(pfile, textformat = "kml")[1:2]
 
-str(vapour_read_geometry_text(cfile, format = "wkt")[1:2])
+str(vapour_read_geometry_text(cfile, textformat = "wkt")[1:2])
 
 ```
 
@@ -111,7 +118,7 @@ We can combine these together to get a custom data set.
 
 ```{r}
 library(dplyr)
-dat <- as.data.frame(vapour_read_attributes(cfile),  stringsAsFactors = FALSE) %>% dplyr::mutate(wkt = vapour_read_geometry_text(cfile, format = "wkt"))
+dat <- as.data.frame(vapour_read_attributes(cfile),  stringsAsFactors = FALSE) %>% dplyr::mutate(wkt = vapour_read_geometry_text(cfile, textformat = "wkt"))
 glimpse(dat)
 ```
 
