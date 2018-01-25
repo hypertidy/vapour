@@ -3,6 +3,7 @@
 export(gdal_info)
 export(raster_info)
 export(raster_io)
+export(vapour_layer_names)
 export(vapour_read_attributes)
 export(vapour_read_extent)
 export(vapour_read_feature_what)

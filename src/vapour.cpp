@@ -4,7 +4,38 @@
 #include "CollectorList.h"
 using namespace Rcpp;
 
+//' Layer names
+//'
+//' @inheritParams vapour_read_feature_what
+//' @return character vector of layer names
+//'
+//' @examples
+//' file <- "list_locality_postcode_meander_valley.tab"
+//' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+//' vapour_layers(mvfile)
+//' @export
+// [[Rcpp::export]]
+Rcpp::CharacterVector vapour_layer_names(Rcpp::CharacterVector dsource,
+                            Rcpp::CharacterVector sql = "")
+{
+  GDALAllRegister();
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
 
+
+  int nlayer = poDS->GetLayerCount();
+  Rcpp::CharacterVector lnames = Rcpp::CharacterVector(nlayer);
+  OGRLayer  *poLayer;
+  for (int ilayer = 0; ilayer < nlayer; ilayer++) {
+    poLayer = poDS->GetLayer(ilayer);
+    lnames[ilayer] = poLayer->GetName();
+  }
+  return(lnames);
+}
 
 // copied from Edzer Pebesma, https://github.com/r-spatial/sf/blob/master/src/gdal_read.cpp
 Rcpp::List allocate_attribute(OGRFeatureDefn *poFDefn, int n_features, bool int64_as_string) {

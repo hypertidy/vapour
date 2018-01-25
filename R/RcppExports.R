@@ -45,6 +45,20 @@ raster_io <- function(filename, window, band = 1L) {
     .Call('_vapour_raster_io', PACKAGE = 'vapour', filename, window, band)
 }
 
+#' Layer names
+#'
+#' @inheritParams vapour_read_feature_what
+#' @return character vector of layer names
+#'
+#' @examples
+#' file <- "list_locality_postcode_meander_valley.tab"
+#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+#' vapour_layers(mvfile)
+#' @export
+vapour_layer_names <- function(dsource, sql = "") {
+    .Call('_vapour_vapour_layer_names', PACKAGE = 'vapour', dsource, sql)
+}
+
 #' Vector attributes read
 #'
 #' Read layer attributes, optionally after SQL select
