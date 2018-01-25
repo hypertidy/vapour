@@ -34,6 +34,7 @@ Rcpp::CharacterVector vapour_layer_names(Rcpp::CharacterVector dsource,
     poLayer = poDS->GetLayer(ilayer);
     lnames[ilayer] = poLayer->GetName();
   }
+  GDALClose(poDS);
   return(lnames);
 }
 
