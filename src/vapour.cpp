@@ -115,14 +115,21 @@ List vapour_read_attributes(Rcpp::CharacterVector dsource,
   int nFeature = poLayer->GetFeatureCount();
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = true;
+  // for now we do this for attributes, need to figure out the
+  // ListCollector logic here ...
+  if (nFeature < 0) {
+    nFeature = 0;
+    while( (poFeature = poLayer->GetNextFeature()) != NULL )
+    {
+     nFeature++;
+    }
+  }
+  poLayer->ResetReading();
   Rcpp::List out = allocate_attribute(poFDefn, nFeature, int64_as_string);
 
-  if (nFeature == 0) {
-    Rcout << "no features found";
 
-    return(out);
-  }
   int iFeature = 0;
+
   while( (poFeature = poLayer->GetNextFeature()) != NULL )
   {
     OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
