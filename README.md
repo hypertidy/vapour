@@ -6,7 +6,10 @@ vapour
 
 The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
 
-This is inspired by and draws heavily on work done [the sf package](https://github.com/r-spatial/sf) and rgdal and rgdal2. \# Warning
+This is inspired by and draws heavily on work done [the sf package](https://github.com/r-spatial/sf) and rgdal and rgdal2.
+
+Warning
+=======
 
 There's a number of fragile areas in vapour, one in particular is the use of raster data sources that contain subdatasets - these are not handled, and they are not dealt with safely - if your source (NetCDF for example) contains subdatasets vapour currently will treat it like a raster and crash :) Use at your own risk, this won't be fixed for a while ...
 
@@ -77,7 +80,6 @@ Note that each lower-level function accepts a `sql` argument, which sends a quer
 
 ``` r
 vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7310")
-#> no features found
 #> $NAME
 #> character(0)
 #> 
@@ -248,7 +250,7 @@ files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullna
 library(vapour)
 system.time(purrr::map(files$fullname, sf::read_sf))
 #>    user  system elapsed 
-#>  11.084   0.708  14.726
+#>  11.896   0.892  16.875
 library(blob)
 
 ## our timing is competitive, and we get to choose what is read
@@ -261,7 +263,7 @@ g <- purrr::map(files$fullname, vapour_read_geometry)
 d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
 })
 #>    user  system elapsed 
-#>   4.424   0.684   5.669
+#>   3.972   1.028   8.938
 ```
 
 We can read that in this simpler way for a quick data set to act as an index.
@@ -272,7 +274,7 @@ system.time({
   d$bbox <- unlist(purrr::map(files$fullname, vapour_read_extent), recursive = FALSE)
 })
 #>    user  system elapsed 
-#>   3.800   0.712   4.851
+#>   3.520   0.632   6.589
 
 pryr::object_size(d)
 #> 46.7 MB
