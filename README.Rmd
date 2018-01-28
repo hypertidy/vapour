@@ -40,8 +40,7 @@ these are not handled, and they are not dealt with safely - if your source (NetC
 vapour currently will treat it like a raster and crash :)  Use at your own risk, this won't be fixed for a while ...
 
 
-It's possible to give problematic "SELECT" statements via the `sql` argument. Note that the geometry readers `vapour_read_geometry`, `vapour_read_geometry_text`, and `vapour_read_extent` will strip out the `SELECT ... FROM` clause and replace it with `SELECT * FROM` to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or `dplyr` to create any `SELECT` statement. The function `vapour_read_geometry_what` does not have this protection, and so the C++ needs to be updated to not crash if the geometry is missing ...
-
+It's possible to give problematic "SELECT" statements via the `sql` argument. Note that the geometry readers `vapour_read_geometry`, `vapour_read_geometry_text`, and `vapour_read_extent` will strip out the `SELECT ... FROM` clause and replace it with `SELECT * FROM` to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or `dplyr` to create any `SELECT` statement. The function `vapour_read_geometry_what` will return a list of NULLs, in  this case. 
 
 I haven't tried this against a real database, I'm not sure if we need `AsBinary()` around EWKB geoms, for example - but at any rate these can be ingested by `sf`. 
 
@@ -89,7 +88,7 @@ head(dat)
 
 Note that each lower-level function accepts a `sql` argument, 
 which sends a query to the GDAL library to be executed against
-the data source, this can create custom layers and so is independent of and ignores the `layer` argument. 
+the data source, this can create custom layers and so is independent of and ignores the `layer` argument. Note that the same sql statement can be passed to the geometry readers, so we get the matching sets of information. `vapour_read_feature_what` will return NULL for each missing geometry if the statement doesn't include geometry explicitly or implicitly, but `vapour_read_geometry`, `vapour_read_geometry_text` and `vapour_read_extent` all explicitly modify the statement "SELECT *". (We are also assuming the data source hasn't changed between accesses ... let me know if this causes you problems!). 
 
 ```{r}
 vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7310")

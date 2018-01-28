@@ -263,14 +263,22 @@ List vapour_read_feature_what(Rcpp::CharacterVector dsource,
   poLayer->ResetReading();
   int iField;
 
-  OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+  //OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   CollectorList feature_xx;
   int iFeature = 0;
+  int warncount = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL )
   {
+
+
     OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
     OGRGeometry *poGeometry;
     poGeometry = poFeature->GetGeometryRef();
+    if (poGeometry == NULL) {
+      warncount++;
+      feature_xx.push_back(R_NilValue);
+      if (warncount == 1) Rcpp::warning("at least one geometry is NULL, perhaps the 'sql' argument excludes the native geometry?\n(use 'SELECT * FROM ..') ");
+    } else {
     // GEOMETRY
     // geometry native binary
     // text     various text forms
@@ -278,6 +286,7 @@ List vapour_read_feature_what(Rcpp::CharacterVector dsource,
     if (what[0] == "geometry") {
       //https://github.com/r-spatial/sf/blob/798068d3044a65797c52bf3b42bc4a5d83b45e9a/src/gdal.cpp#L207
       Rcpp::RawVector raw(poGeometry->WkbSize());
+
       //todo we probably need better err handling see sf handle_error
       poGeometry->exportToWkb(wkbNDR, &(raw[0]), wkbVariantIso);
       feature_xx.push_back(raw);
@@ -316,6 +325,7 @@ List vapour_read_feature_what(Rcpp::CharacterVector dsource,
       feature_xx.push_back(extent);
       iFeature = iFeature + 1;
 
+    }
     }
     OGRFeature::DestroyFeature( poFeature );
 
