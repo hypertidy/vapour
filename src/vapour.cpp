@@ -18,6 +18,7 @@ using namespace Rcpp;
 Rcpp::CharacterVector vapour_layer_names(Rcpp::CharacterVector dsource,
                             Rcpp::CharacterVector sql = "")
 {
+
   GDALAllRegister();
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );

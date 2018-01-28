@@ -4,14 +4,22 @@
 vapour
 ======
 
-The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize. A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
+The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize.
+
+An example is [RGDALSQL](https://github.com/mdsumner/RGDASQL) aiming to leverage the facilities of GDAL to provide data *on-demand* for many sources *as if* they were databases.
+
+A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
 
 This is inspired by and draws heavily on work done [the sf package](https://github.com/r-spatial/sf) and rgdal and rgdal2.
 
-Warning
-=======
+Warnings
+========
 
 There's a number of fragile areas in vapour, one in particular is the use of raster data sources that contain subdatasets - these are not handled, and they are not dealt with safely - if your source (NetCDF for example) contains subdatasets vapour currently will treat it like a raster and crash :) Use at your own risk, this won't be fixed for a while ...
+
+It's possible to give problematic "SELECT" statements via the `sql` argument. Note that the geometry readers `vapour_read_geometry`, `vapour_read_geometry_text`, and `vapour_read_extent` will strip out the `SELECT ... FROM` clause and replace it with `SELECT * FROM` to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or `dplyr` to create any `SELECT` statement. The function `vapour_read_geometry_what` does not have this protection, and so the C++ needs to be updated to not crash if the geometry is missing ...
+
+I haven't tried this against a real database, I'm not sure if we need `AsBinary()` around EWKB geoms, for example - but at any rate these can be ingested by `sf`.
 
 Purpose
 =======
@@ -250,7 +258,7 @@ files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullna
 library(vapour)
 system.time(purrr::map(files$fullname, sf::read_sf))
 #>    user  system elapsed 
-#>  11.896   0.892  16.875
+#>  11.068   0.812  11.932
 library(blob)
 
 ## our timing is competitive, and we get to choose what is read
@@ -263,7 +271,7 @@ g <- purrr::map(files$fullname, vapour_read_geometry)
 d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
 })
 #>    user  system elapsed 
-#>   3.972   1.028   8.938
+#>   4.040   0.892   4.971
 ```
 
 We can read that in this simpler way for a quick data set to act as an index.
@@ -274,7 +282,7 @@ system.time({
   d$bbox <- unlist(purrr::map(files$fullname, vapour_read_extent), recursive = FALSE)
 })
 #>    user  system elapsed 
-#>   3.520   0.632   6.589
+#>   3.804   0.948   5.045
 
 pryr::object_size(d)
 #> 46.7 MB

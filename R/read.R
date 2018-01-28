@@ -10,9 +10,16 @@
 #' vapour_read_extent(mvfile)
 #' @export
 vapour_read_extent <- function(dsource, layer = 0L, sql = "") {
+  sql <- asterisk_select(sql)
   vapour_read_feature_what(dsource = dsource, layer = layer, sql = sql, what = "extent", textformat = "")
 }
 
+asterisk_select <- function(x) {
+  if (nchar(x) < 1) return(x)
+  sprintf("SELECT * FROM %s",
+          substr(x, gregexpr("FROM ", x)[[1]][1] + 5, nchar(x)))
+
+}
 
 #' Read GDAL geometry as blob
 #'
@@ -30,6 +37,7 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "") {
 #' vapour_read_geometry(pfile)
 #' @export
 vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
+  sql <- asterisk_select(sql)
   vapour_read_feature_what(dsource = dsource, layer = layer, sql = sql, what = "geometry", textformat = "")
 }
 #' Read GDAL geometry as text
@@ -46,5 +54,6 @@ vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
 #' vapour_read_geometry_text(pfile)
 #' @export
 vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat = "json") {
+  sql <- asterisk_select(sql)
   vapour_read_feature_what(dsource = dsource, layer = layer, sql = sql, what = "text", textformat = textformat)
 }
