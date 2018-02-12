@@ -54,7 +54,7 @@ raster_io <- function(filename, window, band = 1L) {
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' vapour_layers(mvfile)
+#' vapour_layer_names(mvfile)
 #' @export
 vapour_layer_names <- function(dsource, sql = "") {
     .Call('_vapour_vapour_layer_names', PACKAGE = 'vapour', dsource, sql)

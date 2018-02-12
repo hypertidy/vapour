@@ -13,7 +13,7 @@ using namespace Rcpp;
 //' @examples
 //' file <- "list_locality_postcode_meander_valley.tab"
 //' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-//' vapour_layers(mvfile)
+//' vapour_layer_names(mvfile)
 //' @export
 // [[Rcpp::export]]
 Rcpp::CharacterVector vapour_layer_names(Rcpp::CharacterVector dsource,
