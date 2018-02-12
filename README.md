@@ -1,5 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Travis-CI Build Status](https://travis-ci.org/hypertidy/vapour.svg?branch=master)](https://travis-ci.org/hypertidy/vapour) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/hypertidy/vapour?branch=master&svg=true)](https://ci.appveyor.com/project/hypertidy/vapour) [![Coverage Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
+[![Build Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_clang&label=trusty_clang)](https://travis-ci.org/hypertidy/vapour) [![Build Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=osx_release&label=osx_release)](https://travis-ci.org/hypertidy/vapour) [![Coverage Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
 
 vapour
 ======
@@ -258,7 +258,7 @@ files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullna
 library(vapour)
 system.time(purrr::map(files$fullname, sf::read_sf))
 #>    user  system elapsed 
-#>  11.140   0.828  12.195
+#>   9.935   0.306  11.268
 library(blob)
 
 ## our timing is competitive, and we get to choose what is read
@@ -271,7 +271,7 @@ g <- purrr::map(files$fullname, vapour_read_geometry)
 d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
 })
 #>    user  system elapsed 
-#>   4.308   0.784   5.149
+#>   3.503   0.474   4.017
 ```
 
 We can read that in this simpler way for a quick data set to act as an index.
@@ -282,12 +282,12 @@ system.time({
   d$bbox <- unlist(purrr::map(files$fullname, vapour_read_extent), recursive = FALSE)
 })
 #>    user  system elapsed 
-#>   3.868   0.672   4.566
+#>   2.936   0.597   3.567
 
 pryr::object_size(d)
-#> 46.7 MB
+#> 46.9 MB
 glimpse(d)
-#> Observations: 107,854
+#> Observations: 108,414
 #> Variables: 20
 #> $ CID        <chr> "", "", "", "", "", "", "", "", "", "", "", "", "",...
 #> $ VOLUME     <chr> "169864", "", "", "136703", "", "", "212990", "2449...
@@ -306,7 +306,7 @@ glimpse(d)
 #> $ FMP        <chr> "cad000029000", "cad000029000", "cad000029000", "ca...
 #> $ CREATED_ON <chr> "2015-08-25 14:31:57", "2016-04-07 10:22:12", "2016...
 #> $ LIST_GUID  <chr> "{d1b80f74-2873-46d1-a6ed-d1d27a45bd6e}", "{3cb147d...
-#> $ SHAPE_AREA <dbl> 1200513.096, 23096.094, 148147.128, 4603209.423, 48...
+#> $ SHAPE_AREA <dbl> 1.200513e+06, 2.309609e+04, 1.481471e+05, 4.603209e...
 #> $ SHAPE_LEN  <dbl> 4382.7258, 2365.0896, 14870.8324, 16288.4164, 14990...
 #> $ bbox       <list> [<551456.8, 552738.1, 5413518.9, 5414799.6>, <5544...
 ```
