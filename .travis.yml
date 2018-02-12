@@ -32,6 +32,18 @@ matrix:
       env:
         - BUILD_NAME=osx
         - DETAILS="debug build, libtool"
+    - os: linux
+      compiler: clang
+      language: cpp
+      sudo: required
+      dist: trusty
+      cache:
+        apt: true
+        directories:
+          - $HOME/.ccache
+      env:
+        - BUILD_NAME=mingw_w64
+        - DETAILS="optimized build, libtool"
 
 ## afaict you really need all three scripts to run for this to work
 ## before_install.sh, install.sh, and script.sh
