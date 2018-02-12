@@ -15,7 +15,7 @@ vapour_layer_names(dsource, sql = "")
 character vector of layer names
 }
 \description{
-Layer names
+Obtain the names of available layers from a GDAL vector source.
 }
 \examples{
 file <- "list_locality_postcode_meander_valley.tab"

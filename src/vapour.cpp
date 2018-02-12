@@ -6,6 +6,7 @@ using namespace Rcpp;
 
 //' Layer names
 //'
+//' Obtain the names of available layers from a GDAL vector source.
 //' @inheritParams vapour_read_feature_what
 //' @return character vector of layer names
 //'
