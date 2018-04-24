@@ -10,3 +10,4 @@
 ^docs$
 ^gdal$
 ^libs
+^cran-comments\.md$

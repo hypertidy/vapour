@@ -8,17 +8,15 @@
 */
 
 /* .Call calls */
-extern SEXP _vapour_gdal_info(SEXP);
-extern SEXP _vapour_raster_info(SEXP);
-extern SEXP _vapour_raster_io(SEXP, SEXP, SEXP);
+extern SEXP _vapour_raster_info_cpp(SEXP);
+extern SEXP _vapour_raster_io_cpp(SEXP, SEXP, SEXP);
 extern SEXP _vapour_vapour_layer_names(SEXP, SEXP);
 extern SEXP _vapour_vapour_read_attributes(SEXP, SEXP, SEXP);
 extern SEXP _vapour_vapour_read_feature_what(SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_vapour_gdal_info",                (DL_FUNC) &_vapour_gdal_info,                1},
-    {"_vapour_raster_info",              (DL_FUNC) &_vapour_raster_info,              1},
-    {"_vapour_raster_io",                (DL_FUNC) &_vapour_raster_io,                3},
+    {"_vapour_raster_info_cpp",          (DL_FUNC) &_vapour_raster_info_cpp,          1},
+    {"_vapour_raster_io_cpp",            (DL_FUNC) &_vapour_raster_io_cpp,            3},
     {"_vapour_vapour_layer_names",       (DL_FUNC) &_vapour_vapour_layer_names,       2},
     {"_vapour_vapour_read_attributes",   (DL_FUNC) &_vapour_vapour_read_attributes,   3},
     {"_vapour_vapour_read_feature_what", (DL_FUNC) &_vapour_vapour_read_feature_what, 5},

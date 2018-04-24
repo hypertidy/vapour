@@ -5,11 +5,6 @@ using namespace Rcpp;
 //#include "gdalwarper.h"
 //#include "cpl_conv.h" // for CPLMalloc()
 
-//' GDAL info
-//'
-//' @param pszFilename data source
-//' @export
-// [[Rcpp::export]]
 List gdal_info (const char* pszFilename)
 {
   GDALDataset  *poDataset;

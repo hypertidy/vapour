@@ -28,11 +28,11 @@ library(dplyr)
 
 The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize. 
 
-An example is [RGDALSQL](https://github.com/mdsumner/RGDASQL) aiming to leverage the facilities of GDAL to provide data *on-demand* for many sources *as if* they were databases. 
+An example is [RGDALSQL](https://github.com/mdsumner/RGDALSQL) aiming to leverage the facilities of GDAL to provide data *on-demand* for many sources *as if* they were databases. 
 
 A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
 
-This is inspired by and draws heavily on work done [the sf package](https://github.com/r-spatial/sf) and rgdal and rgdal2. 
+This is inspired by and draws on work done in [the sf package](https://github.com/r-spatial/sf) and in packages `rgdal` and `rgdal2`. 
 
 
 # Warnings
@@ -48,15 +48,16 @@ I haven't tried this against a real database, I'm not sure if we need `AsBinary(
 
 # Purpose
 
-Current we have control to do the following: 
+Currently we have control to do the following: 
 
 * read attributes only
 * read geometry only
 * read geometry as raw binary, or various text forms
 * read geometry bounding box only
-* (optionally) apply OGRSQL to a layer prior to any of the above http://www.gdal.org/ogr_sql.html
+* optionally, apply [OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to above read calls
 
-Limitations, work-in-progress and other discussion are active here: https://github.com/hypertidy/vapour/issues/4
+Limitations, work-in-progress and other discussion are active here: 
+https://github.com/hypertidy/vapour/issues/4
 
 
 ## Examples
@@ -98,12 +99,12 @@ vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF FROM list_locality_p
 
 vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF, FID FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7306")
 
-
 ```
 
-Also note that FID is a special row number value, to be used a as general facility for selecting by structural row. 
+Also note that FID is a special row number value, to be used a as general facility for selecting by structural row. This FID is driver-dependent, it can be 0- or 1-based, or completely arbitrary. 
 
 See http://www.gdal.org/ogr_sql.html
+
 
 There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables. 
 
@@ -125,7 +126,7 @@ str(vapour_read_geometry_text(cfile, textformat = "wkt")[1:2])
 ```
 
 
-We can combine these together to get a custom data set. 
+Combine these together to get a custom data set. 
 
 ```{r}
 library(dplyr)
@@ -135,7 +136,7 @@ glimpse(dat)
 
 ## Fast summary 
 
-There is a basic function `vapour_read_extent` to return a straightforward bounding box vector for every feature, so that
+There is a function `vapour_read_extent` to return a straightforward bounding box vector for every feature, so that
 we can flexibly build an index of a data set for later use. 
 
 ```{r}

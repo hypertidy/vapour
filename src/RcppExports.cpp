@@ -5,38 +5,27 @@
 
 using namespace Rcpp;
 
-// gdal_info
-List gdal_info(const char* pszFilename);
-RcppExport SEXP _vapour_gdal_info(SEXP pszFilenameSEXP) {
+// raster_info_cpp
+List raster_info_cpp(const char* pszFilename);
+RcppExport SEXP _vapour_raster_info_cpp(SEXP pszFilenameSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const char* >::type pszFilename(pszFilenameSEXP);
-    rcpp_result_gen = Rcpp::wrap(gdal_info(pszFilename));
+    rcpp_result_gen = Rcpp::wrap(raster_info_cpp(pszFilename));
     return rcpp_result_gen;
 END_RCPP
 }
-// raster_info
-List raster_info(const char* pszFilename);
-RcppExport SEXP _vapour_raster_info(SEXP pszFilenameSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const char* >::type pszFilename(pszFilenameSEXP);
-    rcpp_result_gen = Rcpp::wrap(raster_info(pszFilename));
-    return rcpp_result_gen;
-END_RCPP
-}
-// raster_io
-NumericVector raster_io(CharacterVector filename, IntegerVector window, IntegerVector band);
-RcppExport SEXP _vapour_raster_io(SEXP filenameSEXP, SEXP windowSEXP, SEXP bandSEXP) {
+// raster_io_cpp
+NumericVector raster_io_cpp(CharacterVector filename, IntegerVector window, IntegerVector band);
+RcppExport SEXP _vapour_raster_io_cpp(SEXP filenameSEXP, SEXP windowSEXP, SEXP bandSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterVector >::type filename(filenameSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type window(windowSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
-    rcpp_result_gen = Rcpp::wrap(raster_io(filename, window, band));
+    rcpp_result_gen = Rcpp::wrap(raster_io_cpp(filename, window, band));
     return rcpp_result_gen;
 END_RCPP
 }
