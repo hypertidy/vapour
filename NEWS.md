@@ -1,5 +1,7 @@
 # vapour 0.0.1
 
+* Upgraded to rwinlib gdal 2.2.3. 
+
 * added function `vapour_layer_names` to return character layer names, and
  implicitly provide a layer count
 
