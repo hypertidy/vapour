@@ -32,6 +32,7 @@ a standard facility used in GDAL. Easiest way to compare results is with gdal_tr
 f <- system.file("extdata", "sst.tif", package = "vapour")
 ## a 5*5 window from a 10*10 region
 raster_io(f, window = c(0, 0, 10, 10, 5, 5))
+raster_io(f, window = c(0, 0, 10, 10, 5, 5), resample = "Lanczos")
 ## find the information first
 #ri <- raster_info(f)
 #str(matrix(raster_io(f, c(0, 0, ri$dimXY, ri$dimXY)), ri$dimXY[1]))
