@@ -1,5 +1,7 @@
 # vapour 0.0.1
 
+* Resampling options added to raster data read. 
+
 * Upgraded to rwinlib gdal 2.2.3. 
 
 * added function `vapour_layer_names` to return character layer names, and

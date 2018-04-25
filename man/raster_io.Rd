@@ -4,7 +4,7 @@
 \alias{raster_io}
 \title{Raster IO (read)}
 \usage{
-raster_io(x, band = 1, window)
+raster_io(x, band = 1, window, resample = "NearestNeighbour")
 }
 \arguments{
 \item{x}{data source}
@@ -12,6 +12,8 @@ raster_io(x, band = 1, window)
 \item{band}{index of which band to read}
 
 \item{window}{src_offset, src_dim, out_dim}
+
+\item{resample}{resampling method used (see details)}
 }
 \description{
 Read a window of data from a GDAL raster source. The first argument is the source
@@ -20,6 +22,11 @@ name and the second is a 6-element \code{window} of offset, source dimension, an
 \details{
 This is analgous to the \code{rgdal} function \code{readGDAL} with its arguments \code{offset},  \code{region.dim}
 and \code{output.dim}.
+
+Resampling options will depend on GDAL version,  but currently 'NearestNeighbour' (default),
+'Average', 'Bilinear', 'Cubic', 'CubicSpline',  'Gauss', 'Lanczos', 'Mode' are potentially
+available. Detailed use of this is barely tried or tested with vapour, but is
+a standard facility used in GDAL. Easiest way to compare results is with gdal_translate.
 }
 \examples{
 f <- system.file("extdata", "sst.tif", package = "vapour")

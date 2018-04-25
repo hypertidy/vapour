@@ -65,7 +65,10 @@ poDataset->GetMetadata();
 
 
 // [[Rcpp::export]]
-NumericVector raster_io_cpp(CharacterVector filename, IntegerVector window, IntegerVector band = 1)
+NumericVector raster_io_cpp(CharacterVector filename,
+                            IntegerVector window,
+                            IntegerVector band = 1,
+                            CharacterVector resample = "NearestNeighbour")
 {
 
   int Xoffset = window[0];
@@ -92,14 +95,40 @@ NumericVector raster_io_cpp(CharacterVector filename, IntegerVector window, Inte
   }
   float *pafScanline;
 
-  //GDALRasterIOExtraArg psExtraArg;
-  //INIT_RASTERIO_EXTRA_ARG(psExtraArg);
-  // TODO expose the resampling options to user
-  //psExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
+  // how to do this is here:
+  // https://stackoverflow.com/questions/45978178/how-to-pass-in-a-gdalresamplealg-to-gdals-rasterio
+  GDALRasterIOExtraArg psExtraArg;
+  INIT_RASTERIO_EXTRA_ARG(psExtraArg);
+
+  if (resample[0] == "Average") {
+    psExtraArg.eResampleAlg = GRIORA_Average;
+  }
+  if (resample[0] == "Bilinear") {
+    psExtraArg.eResampleAlg = GRIORA_Bilinear;
+  }
+  if (resample[0] == "Cubic") {
+    psExtraArg.eResampleAlg = GRIORA_Cubic;
+  }
+
+  if (resample[0] == "CubicSpline") {
+    psExtraArg.eResampleAlg = GRIORA_CubicSpline;
+  }
+  if (resample[0] == "Gauss") {
+    psExtraArg.eResampleAlg = GRIORA_Gauss;
+  }
+  if (resample[0] == "Lanczos") {
+    psExtraArg.eResampleAlg = GRIORA_Lanczos;
+  }
+  if (resample[0] == "Mode") {
+    psExtraArg.eResampleAlg = GRIORA_Mode;
+  }
+  if (resample[0] == "NearestNeighbour") {
+    psExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
+  }
   pafScanline = (float *) CPLMalloc(sizeof(float)*outXSize*outYSize);
   CPLErr err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
                   pafScanline, outXSize, outYSize, GDT_Float32,
-                  0, 0);
+                  0, 0, &psExtraArg);
 
   if(err != CE_None) {
     // Report failure somehow.

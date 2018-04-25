@@ -17,15 +17,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // raster_io_cpp
-NumericVector raster_io_cpp(CharacterVector filename, IntegerVector window, IntegerVector band);
-RcppExport SEXP _vapour_raster_io_cpp(SEXP filenameSEXP, SEXP windowSEXP, SEXP bandSEXP) {
+NumericVector raster_io_cpp(CharacterVector filename, IntegerVector window, IntegerVector band, CharacterVector resample);
+RcppExport SEXP _vapour_raster_io_cpp(SEXP filenameSEXP, SEXP windowSEXP, SEXP bandSEXP, SEXP resampleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterVector >::type filename(filenameSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type window(windowSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
-    rcpp_result_gen = Rcpp::wrap(raster_io_cpp(filename, window, band));
+    Rcpp::traits::input_parameter< CharacterVector >::type resample(resampleSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_io_cpp(filename, window, band, resample));
     return rcpp_result_gen;
 END_RCPP
 }
