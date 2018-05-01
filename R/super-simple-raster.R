@@ -1,5 +1,21 @@
 ## stub for a demand-paged raster for plotting
 
+#' Super simple raster
+#'
+#' A very light class to hold a GDAL source, and a promise to
+#' pull the data into a raster pull_ssraster
+#' @param x filename (or dsn, GDAL)
+#'
+#' @return ssraster
+#'
+#' @examples
+#' ff <- system.file("extdata/sst.tif", package= "vapour")
+#' ss <- ssraster(ff)
+#' ss
+#' pull_ssraster(ss, pulldim = c(36, 18), resample = "Lanczos")
+#' ## works up as well as down
+#' pull_ssraster(ss, pulldim = c(100, 360), resample = "Lanczos")
+#' pull_ssraster(ss, pulldim = c(100, 360), resample = "Gauss")
 ssraster <- function(x) {
   structure(list(source = x,
                  info = raster_info(x)), class = "ssraster")
@@ -19,8 +35,6 @@ print.ssraster <- function(x) {
   cat(sprintf("   File: %s (%sMb)", !is.na(size), size))
 }
 
-sr <- ssraster(f)
-sr
 to_extent <- function(x) {
   xmin <- x$info$geotransform[1]
   xmax <- xmin + x$info$dimXY[1] * x$info$geotransform[2]
@@ -46,16 +60,19 @@ to_raster <- function(x, dim = NULL) {
 #
 # To plot actually takes a minute or so but it works!
 # plot(x)
-plot.ssraster <- function(x, resample = "NearestNeighbour") {
+# TODO: pull paging logic out, this is really the "reader"
+## and the plot should just be of a raster layer, after calling read to raster
+pull_ssraster <- function(x, pulldim = NULL, resample = "NearestNeighbour") {
   ## TODO: this needs to account for the "usr" bounds, the current
   ## bounds that will be plotted to
-  plotdim <- dev.size("px")
+  if (is.null(pulldim)) pulldim <- dev.size("px")
   ## TODO raster from ssraster, override with dim
-  r <- to_raster(x, dim = plotdim)
+  r <- to_raster(x, dim = pulldim)
   ## TODO pull window spec from info/plotdim, allow choice of resampling
-  vals <- raster_io(f, window = c(0, 0, x$info$dimXY[1], x$info$dimXY[2], plotdim[1], plotdim[2]),
+  vals <- raster_io(x$source, window = c(0, 0, x$info$dimXY[1], x$info$dimXY[2],
+                    pulldim[1], pulldim[2]),
                     resample = resample)
   ## TODO clamp values to info$minmax - set NA
   vals[vals < x$info$minmax[1] | vals > x$info$minmax[2]] <- NA
-  plot(setValues(r, vals))
+  raster::setValues(r, vals)
 }
