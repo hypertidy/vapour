@@ -4,7 +4,7 @@
 \alias{raster_info}
 \title{Raster information}
 \usage{
-raster_info(x)
+raster_info(x, ..., sds = NULL)
 }
 \arguments{
 \item{x}{data source string (i.e. file name or URL or database connection string)}

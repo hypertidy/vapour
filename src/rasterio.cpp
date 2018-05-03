@@ -16,6 +16,7 @@ List raster_info_cpp (const char* pszFilename)
   {
     Rcpp::stop("cannot open dataset");
   }
+
 poDataset->GetMetadata();
   double        adfGeoTransform[6];
   poDataset->GetGeoTransform( adfGeoTransform );

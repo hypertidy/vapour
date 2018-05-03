@@ -30,6 +30,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// sds_info_cpp
+CharacterVector sds_info_cpp(const char* pszFilename);
+RcppExport SEXP _vapour_sds_info_cpp(SEXP pszFilenameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const char* >::type pszFilename(pszFilenameSEXP);
+    rcpp_result_gen = Rcpp::wrap(sds_info_cpp(pszFilename));
+    return rcpp_result_gen;
+END_RCPP
+}
 // vapour_layer_names
 Rcpp::CharacterVector vapour_layer_names(Rcpp::CharacterVector dsource, Rcpp::CharacterVector sql);
 RcppExport SEXP _vapour_vapour_layer_names(SEXP dsourceSEXP, SEXP sqlSEXP) {

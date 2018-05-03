@@ -19,6 +19,47 @@
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' raster_info(f)
-raster_info <- function(x) {
-  raster_info_cpp(pszFilename = x)
+raster_info <- function(x, ..., sds = NULL) {
+  ## use sds wrapper to target the first by default
+  datavars <- as.data.frame(sds_info(x), stringsAsFactors = FALSE)
+  if (is.null(sds)) {
+    sds <- 1L
+    varnames <- unlist(lapply(strsplit(datavars$subdataset, ":"), tail, 1L))
+    message("subdataset (variable) used is %s (1)", varnames[1])
+    message("If that is not correct, set it to one of ", paste(sprintf("%i (%s)", seq_len(nrow(datavars))[-1], varnames[-1]), collapse = ", "))
+  }
+  stopifnot(length(sds) == 1L)
+
+  if (sds < 1) stop("sds must be 1 at minimum")
+  if (sds > nrow(datavars)) stop(sprint("'sds' must not exceed number of subdatasets (%i)", nrow(datavars)))
+  raster_info_cpp(pszFilename = datavars$subdataset[sds])
+}
+
+#' Information on GDAL raster variables
+#'
+#' A 'subdataset' is a collection abstraction for a number of variables within a single GDAL source. If there's only one
+#' the datasource and its variable have the same data source string. If there's more than one the subdatasets have the form
+#' 'DRIVER:"datasourcename":varname'. Each subdataset name can stand in place of a data source name that has only one variable,
+#' so we always treat a source as a subdataset, even if there's only one.
+#'
+#' Returns a list of `datasource` and `subdataset`. In the case of a single
+#' @param x a data source string, filename, database connection string, Thredds or other URL
+#'
+#' @return list of character vectors, see Details
+#' @export
+#'
+#' @examples
+#' f <- system.file("extdata", "sst.tif", package = "vapour")
+#' sds_info(f)
+sds_info <- function(x) {
+  stopifnot(length(x) == 1L)
+  sources <- sds_info_cpp(x)
+  if (length(sources) > 1) {
+    if (length(sources) %% 2 != 0) warning(sprintf("length of subdataset info not a factor of 2 (NAME and DESC expected)"))
+    sources0 <- sources
+    if (!sum(grepl("NAME=", sources)) == length(sources)/2) warning("sds mismatch")
+    sources <- sources[seq(1, length(sources), by = 2L)]
+    sources <- unlist(lapply(strsplit(sources, "="), "[", 2))
+  }
+  list(datasource = rep(x, length(sources)), subdataset = sources)
 }

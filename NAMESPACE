@@ -2,6 +2,7 @@
 
 export(raster_info)
 export(raster_io)
+export(sds_info)
 export(vapour_layer_names)
 export(vapour_read_attributes)
 export(vapour_read_extent)
