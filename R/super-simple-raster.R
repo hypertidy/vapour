@@ -1,78 +1,61 @@
-## stub for a demand-paged raster for plotting
-
-#' Super simple raster
-#'
-#' A very light class to hold a GDAL source, and a promise to
-#' pull the data into a raster pull_ssraster
-#' @param x filename (or dsn, GDAL)
-#'
-#' @return ssraster
-#'
-#' @examples
-#' ff <- system.file("extdata/sst.tif", package= "vapour")
-#' ss <- ssraster(ff)
-#' ss
-#' pull_ssraster(ss, pulldim = c(36, 18), resample = "Lanczos")
-#' ## works up as well as down
-#' pull_ssraster(ss, pulldim = c(100, 360), resample = "Lanczos")
-#' pull_ssraster(ss, pulldim = c(100, 360), resample = "Gauss")
-ssraster <- function(x) {
-  structure(list(source = x,
-                 info = raster_info(x)), class = "ssraster")
-}
-
-print.ssraster <- function(x) {
-  cat("Super simple raster\n")
-  cat("\n")
-  cat(sprintf(" source: %s\n", x$source))
-  cat(sprintf("    dim: %ix%i\n", x$info$dimXY[1], x$info$dimXY[2]))
-  cat(sprintf("topleft: %f, %f\n", x$info$geotransform[1], x$info$geotransform[4]))
-  cat(sprintf("  scale: %f, %f\n", x$info$geotransform[2], x$info$geotransform[6]))
-  size <- NA_character_
-  ## TODO: estimate size from all files, not just the dsn name
-  ## GDAL can tell us all the files involved
-  if (file.exists(x$source)) size <- file.info(x$source)$size/1e6
-  cat(sprintf("   File: %s (%sMb)", !is.na(size), size))
-}
-
-to_extent <- function(x) {
-  xmin <- x$info$geotransform[1]
-  xmax <- xmin + x$info$dimXY[1] * x$info$geotransform[2]
-  ymax <- x$info$geotransform[4]
-  ymin <- ymax + x$info$dimXY[2] * x$info$geotransform[6]
-  raster::extent(c(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax))
-}
-to_raster <- function(x, dim = NULL) {
-  ## assume ssraster
-  if (is.null(dim)) dim <- x$info$dimXY
-  raster::raster(to_extent(x), nrows = dim[2], ncols = dim[1])
-}
-
-# ## a really massive file source, 72Gb uncompressed
-# f <- "elvis.ga.gov.au/elevation/1sec-srtm/a05f7893-0050-7506-e044-00144fdd4fa6"
-# x <- ssraster(f)
-# #Super simple raster
+# ## see hypertidy/lazyraster
+# ssraster <- function(x) {
+#   structure(list(source = x,
+#                  info = raster_info(x)), class = "ssraster")
+# }
 #
-# #source: /rdsi/PUBLIC/raad/data/elvis.ga.gov.au/elevation/1sec-srtm/a05f7893-0050-7506-e044-00144fdd4fa6
-# #dim: 147600x122400
-# #topleft: 112.999861, -10.000139
-# #scale: 0.000278, -0.000278
+# print.ssraster <- function(x) {
+#   cat("Super simple raster\n")
+#   cat("\n")
+#   cat(sprintf(" source: %s\n", x$source))
+#   cat(sprintf("    dim: %ix%i\n", x$info$dimXY[1], x$info$dimXY[2]))
+#   cat(sprintf("topleft: %f, %f\n", x$info$geotransform[1], x$info$geotransform[4]))
+#   cat(sprintf("  scale: %f, %f\n", x$info$geotransform[2], x$info$geotransform[6]))
+#   size <- NA_character_
+#   ## TODO: estimate size from all files, not just the dsn name
+#   ## GDAL can tell us all the files involved
+#   if (file.exists(x$source)) size <- file.info(x$source)$size/1e6
+#   cat(sprintf("   File: %s (%sMb)", !is.na(size), size))
+# }
 #
-# To plot actually takes a minute or so but it works!
-# plot(x)
-# TODO: pull paging logic out, this is really the "reader"
-## and the plot should just be of a raster layer, after calling read to raster
-pull_ssraster <- function(x, pulldim = NULL, resample = "NearestNeighbour") {
-  ## TODO: this needs to account for the "usr" bounds, the current
-  ## bounds that will be plotted to
-  if (is.null(pulldim)) pulldim <- dev.size("px")
-  ## TODO raster from ssraster, override with dim
-  r <- to_raster(x, dim = pulldim)
-  ## TODO pull window spec from info/plotdim, allow choice of resampling
-  vals <- raster_io(x$source, window = c(0, 0, x$info$dimXY[1], x$info$dimXY[2],
-                    pulldim[1], pulldim[2]),
-                    resample = resample)
-  ## TODO clamp values to info$minmax - set NA
-  vals[vals < x$info$minmax[1] | vals > x$info$minmax[2]] <- NA
-  raster::setValues(r, vals)
-}
+# to_extent <- function(x) {
+#   xmin <- x$info$geotransform[1]
+#   xmax <- xmin + x$info$dimXY[1] * x$info$geotransform[2]
+#   ymax <- x$info$geotransform[4]
+#   ymin <- ymax + x$info$dimXY[2] * x$info$geotransform[6]
+#   raster::extent(c(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax))
+# }
+# to_raster <- function(x, dim = NULL) {
+#   ## assume ssraster
+#   if (is.null(dim)) dim <- x$info$dimXY
+#   raster::raster(to_extent(x), nrows = dim[2], ncols = dim[1])
+# }
+#
+# # ## a really massive file source, 72Gb uncompressed
+# # f <- "elvis.ga.gov.au/elevation/1sec-srtm/a05f7893-0050-7506-e044-00144fdd4fa6"
+# # x <- ssraster(f)
+# # #Super simple raster
+# #
+# # #source: /rdsi/PUBLIC/raad/data/elvis.ga.gov.au/elevation/1sec-srtm/a05f7893-0050-7506-e044-00144fdd4fa6
+# # #dim: 147600x122400
+# # #topleft: 112.999861, -10.000139
+# # #scale: 0.000278, -0.000278
+# #
+# # To plot actually takes a minute or so but it works!
+# # plot(x)
+# # TODO: pull paging logic out, this is really the "reader"
+# ## and the plot should just be of a raster layer, after calling read to raster
+# pull_ssraster <- function(x, pulldim = NULL, resample = "NearestNeighbour") {
+#   ## TODO: this needs to account for the "usr" bounds, the current
+#   ## bounds that will be plotted to
+#   if (is.null(pulldim)) pulldim <- dev.size("px")
+#   ## TODO raster from ssraster, override with dim
+#   r <- to_raster(x, dim = pulldim)
+#   ## TODO pull window spec from info/plotdim, allow choice of resampling
+#   vals <- raster_io(x$source, window = c(0, 0, x$info$dimXY[1], x$info$dimXY[2],
+#                     pulldim[1], pulldim[2]),
+#                     resample = resample)
+#   ## TODO clamp values to info$minmax - set NA
+#   vals[vals < x$info$minmax[1] | vals > x$info$minmax[2]] <- NA
+#   raster::setValues(r, vals)
+# }
