@@ -20,10 +20,16 @@
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' raster_info(f)
 raster_info <- function(x, ..., sds = NULL) {
+  datasourcename <- sds_boilerplate_checks(x, sds = sds)
+  raster_info_cpp(pszFilename = datasourcename)
+}
+
+sds_boilerplate_checks <- function(x, sds = NULL) {
   ## use sds wrapper to target the first by default
   datavars <- as.data.frame(sds_info(x), stringsAsFactors = FALSE)
-  if (is.null(sds)) {
-    sds <- 1L
+  wasnull <- is.null(sds)
+  if (wasnull) sds <- 1
+  if (wasnull && nrow(datavars) > 1L) {
     varnames <- unlist(lapply(strsplit(datavars$subdataset, ":"), tail, 1L))
     message("subdataset (variable) used is %s (1)", varnames[1])
     message("If that is not correct, set it to one of ", paste(sprintf("%i (%s)", seq_len(nrow(datavars))[-1], varnames[-1]), collapse = ", "))
@@ -31,10 +37,9 @@ raster_info <- function(x, ..., sds = NULL) {
   stopifnot(length(sds) == 1L)
 
   if (sds < 1) stop("sds must be 1 at minimum")
-  if (sds > nrow(datavars)) stop(sprint("'sds' must not exceed number of subdatasets (%i)", nrow(datavars)))
-  raster_info_cpp(pszFilename = datavars$subdataset[sds])
+  if (sds > nrow(datavars)) stop(sprintf("'sds' must not exceed number of subdatasets (%i)", nrow(datavars)))
+  datavars$subdataset[sds]
 }
-
 #' Information on GDAL raster variables
 #'
 #' A 'subdataset' is a collection abstraction for a number of variables within a single GDAL source. If there's only one

@@ -4,7 +4,8 @@
 \alias{raster_io}
 \title{Raster IO (read)}
 \usage{
-raster_io(x, band = 1, window, resample = "NearestNeighbour")
+raster_io(x, band = 1, window, resample = "NearestNeighbour", ...,
+  sds = NULL)
 }
 \arguments{
 \item{x}{data source}
@@ -14,6 +15,10 @@ raster_io(x, band = 1, window, resample = "NearestNeighbour")
 \item{window}{src_offset, src_dim, out_dim}
 
 \item{resample}{resampling method used (see details)}
+
+\item{...}{reserverd}
+
+\item{sds}{index of subdataset to read (usually 1)}
 }
 \description{
 Read a window of data from a GDAL raster source. The first argument is the source

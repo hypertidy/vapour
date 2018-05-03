@@ -14,6 +14,8 @@
 #' @param band index of which band to read
 #' @param window src_offset, src_dim, out_dim
 #' @param resample resampling method used (see details)
+#' @param ... reserverd
+#' @param sds index of subdataset to read (usually 1)
 #' @export
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
@@ -26,6 +28,7 @@
 #' ## the method can be used to up-sample as well
 #' #str(matrix(raster_io(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 #' ## a future version will provide access to different methods
-raster_io <- function(x, band = 1, window, resample = "NearestNeighbour") {
-  raster_io_cpp(filename = x, window  = window, band = band, resample = resample[1L])
+raster_io <- function(x, band = 1, window, resample = "NearestNeighbour", ..., sds = NULL) {
+  datasourcename <- sds_boilerplate_checks(x, sds = sds)
+  raster_io_cpp(filename = datasourcename, window  = window, band = band, resample = resample[1L])
 }
