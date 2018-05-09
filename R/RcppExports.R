@@ -5,7 +5,7 @@ raster_info_cpp <- function(pszFilename) {
     .Call('_vapour_raster_info_cpp', PACKAGE = 'vapour', pszFilename)
 }
 
-raster_io_cpp <- function(filename, window, band = 1L, resample = "NearestNeighbour") {
+raster_io_cpp <- function(filename, window, band = 1L, resample = "nearestneighbour") {
     .Call('_vapour_raster_io_cpp', PACKAGE = 'vapour', filename, window, band, resample)
 }
 

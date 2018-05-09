@@ -4,17 +4,18 @@
 #' name and the second is a 6-element `window` of offset, source dimension, and output dimension.
 #'
 #' This is analgous to the `rgdal` function `readGDAL` with its arguments `offset`,  `region.dim`
-#' and `output.dim`.
+#' and `output.dim`.  There's no semantic wrapper for this in vapour, but see `https://github.com/hypertidy/lazyraster` for
+#' one approach.
 #'
-#' Resampling options will depend on GDAL version,  but currently 'NearestNeighbour' (default),
+#' Resampling options will depend on GDAL version,  but currently  'NearestNeighbour' (default),
 #' 'Average', 'Bilinear', 'Cubic', 'CubicSpline',  'Gauss', 'Lanczos', 'Mode' are potentially
-#' available. Detailed use of this is barely tried or tested with vapour, but is
+#' available. These are compared internally by converting to lower-case. Detailed use of this is barely tried or tested with vapour, but is
 #' a standard facility used in GDAL. Easiest way to compare results is with gdal_translate.
 #' @param x data source
 #' @param band index of which band to read
 #' @param window src_offset, src_dim, out_dim
 #' @param resample resampling method used (see details)
-#' @param ... reserverd
+#' @param ... reserved
 #' @param sds index of subdataset to read (usually 1)
 #' @export
 #' @examples
@@ -23,12 +24,33 @@
 #' raster_io(f, window = c(0, 0, 10, 10, 5, 5))
 #' raster_io(f, window = c(0, 0, 10, 10, 5, 5), resample = "Lanczos")
 #' ## find the information first
-#' #ri <- raster_info(f)
-#' #str(matrix(raster_io(f, c(0, 0, ri$dimXY, ri$dimXY)), ri$dimXY[1]))
+#' ri <- raster_info(f)
+#' str(matrix(raster_io(f, window = c(0, 0, ri$dimXY, ri$dimXY)), ri$dimXY[1]))
 #' ## the method can be used to up-sample as well
-#' #str(matrix(raster_io(f, window = c(0, 0, 10, 10, 15, 25)), 15))
-#' ## a future version will provide access to different methods
-raster_io <- function(x, band = 1, window, resample = "NearestNeighbour", ..., sds = NULL) {
+#' str(matrix(raster_io(f, window = c(0, 0, 10, 10, 15, 25)), 15))
+#'
+raster_io <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL) {
   datasourcename <- sds_boilerplate_checks(x, sds = sds)
+  resample <- tolower(resample)  ## ensure check internally is lower case
+  if (!resample %in% c("nearestneighbour", "average", "bilinear", "cubic", "cubicspline",
+                       "gauss", "lanczos", "mode")) {
+    warning(sprintf("resample mode %s unknown?", resample))
+  }
+  ri <- raster_info(x, sds = sds)
+  ## turn these warning cases into errors here, + tests
+  ## rationale is that dev can still call the internal R wrapper function to
+  ## get these errors, but not the R user
+
+
+  ## these error at the GDAL level
+  if (any(window[1:2] < 0)) stop("window cannot index lower than 0")
+  if (any(window[1:2] > (ri$dimXY-1))) stop("window offset cannot index higher than grid dimension")
+  ## this does not error in GDAL, gives an out of bounds value
+  if (any(window[3:4] < 1)) stop("window size cannot be less than 1")
+
+  ## GDAL error
+  if (any((window[1:2] + window[3:4]) > ri$dimXY)) stop("window size cannot exceed grid dimension")
+  ## GDAL error
+  if (any(window[5:6] < 1)) stop("requested output dimension cannot be less than 1")
   raster_io_cpp(filename = datasourcename, window  = window, band = band, resample = resample[1L])
 }

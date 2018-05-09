@@ -4,7 +4,7 @@
 \alias{raster_io}
 \title{Raster IO (read)}
 \usage{
-raster_io(x, band = 1, window, resample = "NearestNeighbour", ...,
+raster_io(x, band = 1, window, resample = "nearestneighbour", ...,
   sds = NULL)
 }
 \arguments{
@@ -26,11 +26,12 @@ name and the second is a 6-element \code{window} of offset, source dimension, an
 }
 \details{
 This is analgous to the \code{rgdal} function \code{readGDAL} with its arguments \code{offset},  \code{region.dim}
-and \code{output.dim}.
+and \code{output.dim}.  There's no semantic wrapper for this in vapour, but see \code{https://github.com/hypertidy/lazyraster} for
+one approach.
 
-Resampling options will depend on GDAL version,  but currently 'NearestNeighbour' (default),
+Resampling options will depend on GDAL version,  but currently  'NearestNeighbour' (default),
 'Average', 'Bilinear', 'Cubic', 'CubicSpline',  'Gauss', 'Lanczos', 'Mode' are potentially
-available. Detailed use of this is barely tried or tested with vapour, but is
+available. These are compared internally by converting to lower-case. Detailed use of this is barely tried or tested with vapour, but is
 a standard facility used in GDAL. Easiest way to compare results is with gdal_translate.
 }
 \examples{
@@ -39,9 +40,9 @@ f <- system.file("extdata", "sst.tif", package = "vapour")
 raster_io(f, window = c(0, 0, 10, 10, 5, 5))
 raster_io(f, window = c(0, 0, 10, 10, 5, 5), resample = "Lanczos")
 ## find the information first
-#ri <- raster_info(f)
+ri <- raster_info(f)
 #str(matrix(raster_io(f, c(0, 0, ri$dimXY, ri$dimXY)), ri$dimXY[1]))
 ## the method can be used to up-sample as well
 #str(matrix(raster_io(f, window = c(0, 0, 10, 10, 15, 25)), 15))
-## a future version will provide access to different methods
+
 }

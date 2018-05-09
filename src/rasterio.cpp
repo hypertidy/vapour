@@ -69,7 +69,7 @@ poDataset->GetMetadata();
 NumericVector raster_io_cpp(CharacterVector filename,
                             IntegerVector window,
                             IntegerVector band = 1,
-                            CharacterVector resample = "NearestNeighbour")
+                            CharacterVector resample = "nearestneighbour")
 {
 
   int Xoffset = window[0];
@@ -101,29 +101,29 @@ NumericVector raster_io_cpp(CharacterVector filename,
   GDALRasterIOExtraArg psExtraArg;
   INIT_RASTERIO_EXTRA_ARG(psExtraArg);
 
-  if (resample[0] == "Average") {
+  if (resample[0] == "average") {
     psExtraArg.eResampleAlg = GRIORA_Average;
   }
-  if (resample[0] == "Bilinear") {
+  if (resample[0] == "bilinear") {
     psExtraArg.eResampleAlg = GRIORA_Bilinear;
   }
-  if (resample[0] == "Cubic") {
+  if (resample[0] == "cubic") {
     psExtraArg.eResampleAlg = GRIORA_Cubic;
   }
 
-  if (resample[0] == "CubicSpline") {
+  if (resample[0] == "cubicspline") {
     psExtraArg.eResampleAlg = GRIORA_CubicSpline;
   }
-  if (resample[0] == "Gauss") {
+  if (resample[0] == "gauss") {
     psExtraArg.eResampleAlg = GRIORA_Gauss;
   }
-  if (resample[0] == "Lanczos") {
+  if (resample[0] == "lanczos") {
     psExtraArg.eResampleAlg = GRIORA_Lanczos;
   }
-  if (resample[0] == "Mode") {
+  if (resample[0] == "mode") {
     psExtraArg.eResampleAlg = GRIORA_Mode;
   }
-  if (resample[0] == "NearestNeighbour") {
+  if (resample[0] == "nearestneighbour") {
     psExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
   }
   pafScanline = (float *) CPLMalloc(sizeof(float)*outXSize*outYSize);

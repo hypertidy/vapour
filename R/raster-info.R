@@ -25,6 +25,9 @@ raster_info <- function(x, ..., sds = NULL) {
 }
 
 sds_boilerplate_checks <- function(x, sds = NULL) {
+  ## don't pass relative paths to GDAL
+  ## but also don't prevent access to non-files
+  if (file.exists(x)) x <- base::normalizePath(x, mustWork = FALSE)
   ## use sds wrapper to target the first by default
   datavars <- as.data.frame(sds_info(x), stringsAsFactors = FALSE)
   wasnull <- is.null(sds)
