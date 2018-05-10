@@ -57,3 +57,9 @@ vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat 
   sql <- asterisk_select(sql)
   vapour_read_feature_what(dsource = dsource, layer = layer, sql = sql, what = "text", textformat = textformat)
 }
+
+
+vapour_read_names <- function(dsource, layer = 0L, sql = "", ...) {
+  layers <- vapour_layer_names(dsource)
+  vapour_read_attributes(dsource, layer = layer, sql = sprintf("SELECT FID FROM %s", layers[layer + 1]))[["FID"]]
+}
