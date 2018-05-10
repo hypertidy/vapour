@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Authors • vapour</title>
+<title>SST contours — sst_c • vapour</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -22,13 +22,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script>
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script>
+<script src="../pkgdown.js"></script>
 
 
 
-<meta property="og:title" content="Authors" />
+<meta property="og:title" content="SST contours — sst_c" />
+
+<meta property="og:description" content="Southern Ocean GHRSST contours from 2017-07-28, read from" />
+<meta name="twitter:card" content="summary" />
 
 
 <!-- mathjax -->
@@ -43,7 +46,7 @@
   </head>
 
   <body>
-    <div class="container template-authors">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -54,7 +57,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">vapour</a>
+        <a class="navbar-link" href="../index.html">vapour</a>
         <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.1</span>
       </span>
     </div>
@@ -62,16 +65,16 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="news/index.html">Changelog</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -87,42 +90,47 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Authors</h1>
+    <h1>SST contours</h1>
+    
+    <div class="hidden name"><code>sst_c.Rd</code></div>
     </div>
 
-    <ul class="list-unstyled">
-      <li>
-        <p><strong>Michael Sumner</strong>. Author, maintainer. <a href='https://orcid.org/0000-0002-2471-7511' target='orcid.widget'><img src='https://members.orcid.org/sites/default/files/vector_iD_icon.svg' class='orcid' height='16'></a>
-        </p>
-      </li>
-      <li>
-        <p><strong>Simon Wotherspoon</strong>. Contributor. 
-        <br /><small>figured out the mechanism for the resampling algorithm</small></p>
-      </li>
-      <li>
-        <p><strong>Mark Padgham</strong>. Contributor. 
-        <br /><small>helped get started :)</small></p>
-      </li>
-      <li>
-        <p><strong>Edzer Pebesma</strong>. Contributor. 
-        <br /><small>wrote allocate_attribute, copied here from sf</small></p>
-      </li>
-      <li>
-        <p><strong>Roger Bivand</strong>. Contributor. 
-        <br /><small>wrote configure.ac, copied here from rgdal</small></p>
-      </li>
-      <li>
-        <p><strong>Jim Hester</strong>. Contributor. 
-        <br /><small>wrote CollectorList.h, copied here from fs package</small></p>
-      </li>
+    <div class="ref-description">
+    
+    <p>Southern Ocean GHRSST contours from 2017-07-28, read from</p>
+    
+    </div>
+
+        
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>podaac-ftp.jpl.nasa.gov/allData/ghrsst/data/GDS2/L4
+GLOB/JPL/MUR/v4.1/2017/209/
+20170728090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.nc</p>
+<p>See data-raw/sst_c.R for the derivation column <code>sst_c</code> in Celsius.</p>
+<p>Also stored in GeoPackage format in
+<code>system.file("extdata/sst_c.gpkg", package = "vapour")</code></p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'>## library(sf)</span>
+<span class='co'>## plot(sst_c)</span>
+<span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='st'>"extdata/sst_c.gpkg"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"vapour"</span>)
+<span class='co'>#d &lt;- read_gdal_table(f) %&gt;% mutate(json =  to_format(f, format = "json"))</span></div></pre>
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>
-
 </div>
-
 
       <footer>
       <div class="copyright">

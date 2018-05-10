@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Authors • vapour</title>
+<title>Changelog • vapour</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -22,13 +22,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script>
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script>
+<script src="../pkgdown.js"></script>
 
 
 
-<meta property="og:title" content="Authors" />
+<meta property="og:title" content="Changelog" />
 
 
 <!-- mathjax -->
@@ -43,7 +43,7 @@
   </head>
 
   <body>
-    <div class="container template-authors">
+    <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -54,7 +54,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">vapour</a>
+        <a class="navbar-link" href="../index.html">vapour</a>
         <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.1</span>
       </span>
     </div>
@@ -62,16 +62,16 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="news/index.html">Changelog</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -87,42 +87,38 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Authors</h1>
+      <h1>Changelog <small></small></h1>
+      
     </div>
 
-    <ul class="list-unstyled">
-      <li>
-        <p><strong>Michael Sumner</strong>. Author, maintainer. <a href='https://orcid.org/0000-0002-2471-7511' target='orcid.widget'><img src='https://members.orcid.org/sites/default/files/vector_iD_icon.svg' class='orcid' height='16'></a>
-        </p>
-      </li>
-      <li>
-        <p><strong>Simon Wotherspoon</strong>. Contributor. 
-        <br /><small>figured out the mechanism for the resampling algorithm</small></p>
-      </li>
-      <li>
-        <p><strong>Mark Padgham</strong>. Contributor. 
-        <br /><small>helped get started :)</small></p>
-      </li>
-      <li>
-        <p><strong>Edzer Pebesma</strong>. Contributor. 
-        <br /><small>wrote allocate_attribute, copied here from sf</small></p>
-      </li>
-      <li>
-        <p><strong>Roger Bivand</strong>. Contributor. 
-        <br /><small>wrote configure.ac, copied here from rgdal</small></p>
-      </li>
-      <li>
-        <p><strong>Jim Hester</strong>. Contributor. 
-        <br /><small>wrote CollectorList.h, copied here from fs package</small></p>
-      </li>
-    </ul>
+    <div id="vapour-0-0-1" class="section level1">
+<h1 class="page-header">
+<a href="#vapour-0-0-1" class="anchor"></a>vapour 0.0.1</h1>
+<ul>
+<li><p>Subdatasets are now supported.</p></li>
+<li><p>Added sanity check behaviour to <code>raster_io</code> to avoid out of bounds read attempts.</p></li>
+<li><p>Resampling options added to raster data read.</p></li>
+<li><p>Upgraded to rwinlib gdal 2.2.3.</p></li>
+<li><p>added function <code>vapour_layer_names</code> to return character layer names, and implicitly provide a layer count</p></li>
+<li><p>feature iteration now avoids “GetFeatureCount” and collects each element in a growing list, thanks to Jim Hester</p></li>
+<li><p>renamed <code>format</code> argument to <code>textformat</code>, this is ignored unless <code>what = "text"</code></p></li>
+<li><p>Created a single C++ feature read to remove repeated logic, <code>vapour_read_geometry</code>, <code>vapour_read_geometry_text</code>, and <code>vapour_read_extent</code> all call <code>vapour_read_geometry_what</code>.</p></li>
+</ul>
+</div>
+  </div>
 
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <div id="tocnav">
+      <h2>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="#vapour-0-0-1">0.0.1</a></li>
+      </ul>
+    </div>
   </div>
 
 </div>
-
 
       <footer>
       <div class="copyright">
