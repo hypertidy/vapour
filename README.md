@@ -320,7 +320,7 @@ files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullna
 library(vapour)
 system.time(purrr::map(files$fullname, sf::read_sf))
 #>    user  system elapsed 
-#>   7.579   0.264   8.119
+#>   7.381   0.324   7.861
 library(blob)
 
 ## our timing is competitive, and we get to choose what is read
@@ -333,7 +333,7 @@ g <- purrr::map(files$fullname, vapour_read_geometry)
 d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
 })
 #>    user  system elapsed 
-#>   3.553   0.225   3.805
+#>   3.235   0.356   3.622
 ```
 
 We can read that in this simpler way for a quick data set to act as an
@@ -345,7 +345,7 @@ system.time({
   d$bbox <- unlist(purrr::map(files$fullname, vapour_read_extent), recursive = FALSE)
 })
 #>    user  system elapsed 
-#>   3.032   0.268   3.326
+#>   2.670   0.405   3.111
 
 pryr::object_size(d)
 #> 50.5 MB

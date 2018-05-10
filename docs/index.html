@@ -74,8 +74,8 @@
 <a href="#vapour" class="anchor"></a>vapour</h1></div>
 <p>The goal of vapour is to provide a basic <strong>GDAL API</strong> package for R. Ideally, this could become a common foundation for other packages to specialize.</p>
 <p>A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are <em>simple features</em> and <em>affine-based regular rasters composed of 2D slices</em>. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )</p>
-<p>This is inspired by and draws on work done in <a href="https://github.com/r-spatial/sf">the sf package</a> and in packages <code>rgdal</code> and <code>rgdal2</code>.</p>
-<p>Examples of packages that use vapour are <a href="https://github.com/mdsumner/RGDALSQL">RGDALSQL</a> and <a href="https://github.com/hypertidy/lazyraster">lazyraster</a>. <code>RGDALSQL</code> aims to leverage the facilities of GDAL to provide data <em>on-demand</em> for many sources <em>as if</em> they were databases. <code>lazyraster</code> uses the level-of-detail facility of GDAL to read just enough resolution from a raster source.</p>
+<p>This partly draws on work done in <a href="https://github.com/r-spatial/sf">the sf package</a> and in packages <code>rgdal</code> and <code>rgdal2</code>. I’m amazed that something as powerful and general as GDAL is still only available through these lenses, but recentish improvements make things much easier to use and share. Specifically Rcpp means that access to external libs is simplified, easier to learn and easier to get started and make progress. The other part is that cross-platform support is now much better, with more consistency on the libraries available on the CRAN machines and in other contexts.</p>
+<p>Examples of packages that use vapour are <a href="https://github.com/mdsumner/RGDALSQL">RGDALSQL</a> and <a href="https://github.com/hypertidy/lazyraster">lazyraster</a>. <code>RGDALSQL</code> aims to leverage the facilities of GDAL to provide data <em>on-demand</em> for many sources <em>as if</em> they were databases. <code>lazyraster</code> uses the level-of-detail facility of GDAL to read just enough resolution from a raster source using traditional window techniques.</p>
 </div>
 <div id="purpose" class="section level1">
 <h1 class="hasAnchor">
@@ -288,7 +288,7 @@
 <a class="sourceLine" id="cb8-4" data-line-number="4"><span class="kw">library</span>(vapour)</a>
 <a class="sourceLine" id="cb8-5" data-line-number="5"><span class="kw">system.time</span>(purrr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/purrr/topics/map">map</a></span>(files<span class="op">$</span>fullname, sf<span class="op">::</span>read_sf))</a>
 <a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt;   8.351   0.348   8.900</span></a>
+<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt;   8.751   0.264   9.208</span></a>
 <a class="sourceLine" id="cb8-8" data-line-number="8"><span class="kw">library</span>(blob)</a>
 <a class="sourceLine" id="cb8-9" data-line-number="9"></a>
 <a class="sourceLine" id="cb8-10" data-line-number="10">## our timing is competitive, and we get to choose what is read</a>
@@ -301,14 +301,14 @@
 <a class="sourceLine" id="cb8-17" data-line-number="17">d[[<span class="st">"wkb"</span>]] &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/blob/topics/blob">new_blob</a></span>(<span class="kw">unlist</span>(g, <span class="dt">recursive =</span> <span class="ot">FALSE</span>))</a>
 <a class="sourceLine" id="cb8-18" data-line-number="18">})</a>
 <a class="sourceLine" id="cb8-19" data-line-number="19"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb8-20" data-line-number="20"><span class="co">#&gt;   3.825   0.447   4.409</span></a></code></pre></div>
+<a class="sourceLine" id="cb8-20" data-line-number="20"><span class="co">#&gt;   3.348   0.561   3.941</span></a></code></pre></div>
 <p>We can read that in this simpler way for a quick data set to act as an index.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">system.time</span>({</a>
 <a class="sourceLine" id="cb9-2" data-line-number="2">  d &lt;-<span class="st"> </span>purrr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/purrr/topics/map">map_df</a></span>(files<span class="op">$</span>fullname, read_table)</a>
 <a class="sourceLine" id="cb9-3" data-line-number="3">  d<span class="op">$</span>bbox &lt;-<span class="st"> </span><span class="kw">unlist</span>(purrr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/purrr/topics/map">map</a></span>(files<span class="op">$</span>fullname, vapour_read_extent), <span class="dt">recursive =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb9-4" data-line-number="4">})</a>
 <a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt;   2.891   0.298   3.275</span></a>
+<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt;   2.979   0.356   3.370</span></a>
 <a class="sourceLine" id="cb9-7" data-line-number="7"></a>
 <a class="sourceLine" id="cb9-8" data-line-number="8">pryr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/pryr/topics/object_size">object_size</a></span>(d)</a>
 <a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt; 50.5 MB</span></a>
