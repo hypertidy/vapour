@@ -24,7 +24,13 @@ will always be value in having modularity in an ecosystem of tools. )
 
 This partly draws on work done in [the sf
 package](https://github.com/r-spatial/sf) and in packages `rgdal` and
-`rgdal2`.
+`rgdal2`. I’m amazed that something as powerful and general as GDAL is
+still only available through these lenses, but recentish improvements
+make things much easier to use and share. Specifically Rcpp means that
+access to external libs is simplified, easier to learn and easier to get
+started and make progress. The other part is that cross-platform support
+is now much better, with more consistency on the libraries available on
+the CRAN machines and in other contexts.
 
 Examples of packages that use vapour are
 [RGDALSQL](https://github.com/mdsumner/RGDALSQL) and
@@ -314,7 +320,7 @@ files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullna
 library(vapour)
 system.time(purrr::map(files$fullname, sf::read_sf))
 #>    user  system elapsed 
-#>   7.572   0.189   7.862
+#>   7.579   0.264   8.119
 library(blob)
 
 ## our timing is competitive, and we get to choose what is read
@@ -327,7 +333,7 @@ g <- purrr::map(files$fullname, vapour_read_geometry)
 d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
 })
 #>    user  system elapsed 
-#>   3.611   0.271   3.906
+#>   3.553   0.225   3.805
 ```
 
 We can read that in this simpler way for a quick data set to act as an
@@ -339,7 +345,7 @@ system.time({
   d$bbox <- unlist(purrr::map(files$fullname, vapour_read_extent), recursive = FALSE)
 })
 #>    user  system elapsed 
-#>   3.017   0.365   3.411
+#>   3.032   0.268   3.326
 
 pryr::object_size(d)
 #> 50.5 MB
