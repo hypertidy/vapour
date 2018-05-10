@@ -2,7 +2,7 @@
 
 * Subdatasets are now supported. 
 
-* Added sanity check behaviour to `raster_io` to avoid out of bounds checks. 
+* Added sanity check behaviour to `raster_io` to avoid out of bounds read attempts. 
 
 * Resampling options added to raster data read. 
 

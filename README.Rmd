@@ -28,23 +28,14 @@ library(dplyr)
 
 The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize. 
 
-An example is [RGDALSQL](https://github.com/mdsumner/RGDALSQL) aiming to leverage the facilities of GDAL to provide data *on-demand* for many sources *as if* they were databases. 
 
 A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
 
 This is inspired by and draws on work done in [the sf package](https://github.com/r-spatial/sf) and in packages `rgdal` and `rgdal2`. 
 
-
-# Warnings
-
-There's a number of fragile areas in vapour, one in particular is the use of raster data sources that contain subdatasets - 
-these are not handled, and they are not dealt with safely - if your source (NetCDF for example) contains subdatasets 
-vapour currently will treat it like a raster and crash :)  Use at your own risk, this won't be fixed for a while ...
+Examples of packages that use vapour are [RGDALSQL](https://github.com/mdsumner/RGDALSQL) and [lazyraster](https://github.com/hypertidy/lazyraster). `RGDALSQL` aims to leverage the facilities of GDAL to provide data *on-demand* for many sources *as if* they were databases.  `lazyraster` uses the level-of-detail facility of GDAL to read just enough resolution from a raster source. 
 
 
-It's possible to give problematic "SELECT" statements via the `sql` argument. Note that the geometry readers `vapour_read_geometry`, `vapour_read_geometry_text`, and `vapour_read_extent` will strip out the `SELECT ... FROM` clause and replace it with `SELECT * FROM` to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or `dplyr` to create any `SELECT` statement. The function `vapour_read_geometry_what` will return a list of NULLs, in  this case. 
-
-I haven't tried this against a real database, I'm not sure if we need `AsBinary()` around EWKB geoms, for example - but at any rate these can be ingested by `sf`. 
 
 # Purpose
 
@@ -58,6 +49,12 @@ Currently we have control to do the following:
 
 Limitations, work-in-progress and other discussion are active here: 
 https://github.com/hypertidy/vapour/issues/4
+
+# Warnings
+
+It's possible to give problematic "SELECT" statements via the `sql` argument. Note that the geometry readers `vapour_read_geometry`, `vapour_read_geometry_text`, and `vapour_read_extent` will strip out the `SELECT ... FROM` clause and replace it with `SELECT * FROM` to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or `dplyr` to create any `SELECT` statement. The function `vapour_read_geometry_what` will return a list of NULLs, in  this case. 
+
+I haven't tried this against a real database, I'm not sure if we need `AsBinary()` around EWKB geoms, for example - but at any rate these can be ingested by `sf`. 
 
 
 ## Examples
