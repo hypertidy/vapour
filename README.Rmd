@@ -31,9 +31,11 @@ The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, th
 
 A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
 
-This is inspired by and draws on work done in [the sf package](https://github.com/r-spatial/sf) and in packages `rgdal` and `rgdal2`. 
+This partly draws on work done in [the sf package](https://github.com/r-spatial/sf) and in packages `rgdal` and `rgdal2`. I'm amazed that something as powerful and general as GDAL is 
+still only available through these lenses, but recentish improvements make things much easier to 
+use and share. Specifically Rcpp means that access to external libs is simplified, easier to learn and easier to get started and make progress. The other part is that cross-platform support is now much better, with more consistency on the libraries available on the CRAN machines and in other contexts. 
 
-Examples of packages that use vapour are [RGDALSQL](https://github.com/mdsumner/RGDALSQL) and [lazyraster](https://github.com/hypertidy/lazyraster). `RGDALSQL` aims to leverage the facilities of GDAL to provide data *on-demand* for many sources *as if* they were databases.  `lazyraster` uses the level-of-detail facility of GDAL to read just enough resolution from a raster source. 
+Examples of packages that use vapour are [RGDALSQL](https://github.com/mdsumner/RGDALSQL) and [lazyraster](https://github.com/hypertidy/lazyraster). `RGDALSQL` aims to leverage the facilities of GDAL to provide data *on-demand* for many sources *as if* they were databases.  `lazyraster` uses the level-of-detail facility of GDAL to read just enough resolution from a raster source using traditional window techniques. 
 
 
 

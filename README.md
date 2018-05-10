@@ -22,7 +22,7 @@ features* and *affine-based regular rasters composed of 2D slices*.
 (GDAL will possibly remove these limitations over time but still there
 will always be value in having modularity in an ecosystem of tools. )
 
-This is inspired by and draws on work done in [the sf
+This partly draws on work done in [the sf
 package](https://github.com/r-spatial/sf) and in packages `rgdal` and
 `rgdal2`.
 
@@ -32,7 +32,7 @@ Examples of packages that use vapour are
 to leverage the facilities of GDAL to provide data *on-demand* for many
 sources *as if* they were databases. `lazyraster` uses the
 level-of-detail facility of GDAL to read just enough resolution from a
-raster source.
+raster source using traditional window techniques.
 
 Purpose
 =======
@@ -314,7 +314,7 @@ files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullna
 library(vapour)
 system.time(purrr::map(files$fullname, sf::read_sf))
 #>    user  system elapsed 
-#>   7.916   0.457   8.930
+#>   7.572   0.189   7.862
 library(blob)
 
 ## our timing is competitive, and we get to choose what is read
@@ -327,7 +327,7 @@ g <- purrr::map(files$fullname, vapour_read_geometry)
 d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
 })
 #>    user  system elapsed 
-#>   3.879   0.455   4.403
+#>   3.611   0.271   3.906
 ```
 
 We can read that in this simpler way for a quick data set to act as an
@@ -339,7 +339,7 @@ system.time({
   d$bbox <- unlist(purrr::map(files$fullname, vapour_read_extent), recursive = FALSE)
 })
 #>    user  system elapsed 
-#>   3.045   0.432   3.511
+#>   3.017   0.365   3.411
 
 pryr::object_size(d)
 #> 50.5 MB
