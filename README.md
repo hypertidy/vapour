@@ -1,43 +1,75 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Build Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_clang&label=trusty_clang)](https://travis-ci.org/hypertidy/vapour) [![Build Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=osx&label=osx)](https://travis-ci.org/hypertidy/vapour) [![Build Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=mingw_w64&label=mingw_w64)](https://travis-ci.org/hypertidy/vapour) [![Coverage Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
+[![Build
+Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_clang&label=trusty_clang)](https://travis-ci.org/hypertidy/vapour)
+[![Build
+Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=osx&label=osx)](https://travis-ci.org/hypertidy/vapour)
+[![Build
+Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=mingw_w64&label=mingw_w64)](https://travis-ci.org/hypertidy/vapour)
+[![Coverage
+Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
 
 vapour
 ======
 
-The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize.
+The goal of vapour is to provide a basic **GDAL API** package for R.
+Ideally, this could become a common foundation for other packages to
+specialize.
 
-An example is [RGDALSQL](https://github.com/mdsumner/RGDASQL) aiming to leverage the facilities of GDAL to provide data *on-demand* for many sources *as if* they were databases.
+A parallel goal is to be freed from the powerful but sometimes limiting
+high-level data models of GDAL itself, specifically these are *simple
+features* and *affine-based regular rasters composed of 2D slices*.
+(GDAL will possibly remove these limitations over time but still there
+will always be value in having modularity in an ecosystem of tools. )
 
-A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
+This is inspired by and draws on work done in [the sf
+package](https://github.com/r-spatial/sf) and in packages `rgdal` and
+`rgdal2`.
 
-This is inspired by and draws heavily on work done [the sf package](https://github.com/r-spatial/sf) and rgdal and rgdal2.
-
-Warnings
-========
-
-There's a number of fragile areas in vapour, one in particular is the use of raster data sources that contain subdatasets - these are not handled, and they are not dealt with safely - if your source (NetCDF for example) contains subdatasets vapour currently will treat it like a raster and crash :) Use at your own risk, this won't be fixed for a while ...
-
-It's possible to give problematic "SELECT" statements via the `sql` argument. Note that the geometry readers `vapour_read_geometry`, `vapour_read_geometry_text`, and `vapour_read_extent` will strip out the `SELECT ... FROM` clause and replace it with `SELECT * FROM` to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or `dplyr` to create any `SELECT` statement. The function `vapour_read_geometry_what` will return a list of NULLs, in this case.
-
-I haven't tried this against a real database, I'm not sure if we need `AsBinary()` around EWKB geoms, for example - but at any rate these can be ingested by `sf`.
+Examples of packages that use vapour are
+[RGDALSQL](https://github.com/mdsumner/RGDALSQL) and
+[lazyraster](https://github.com/hypertidy/lazyraster). `RGDALSQL` aims
+to leverage the facilities of GDAL to provide data *on-demand* for many
+sources *as if* they were databases. `lazyraster` uses the
+level-of-detail facility of GDAL to read just enough resolution from a
+raster source.
 
 Purpose
 =======
 
-Current we have control to do the following:
+Currently we have control to do the following:
 
 -   read attributes only
 -   read geometry only
 -   read geometry as raw binary, or various text forms
 -   read geometry bounding box only
--   (optionally) apply OGRSQL to a layer prior to any of the above <http://www.gdal.org/ogr_sql.html>
+-   optionally, apply [OGRSQL](http://www.gdal.org/ogr_sql.html) to a
+    layer prior to above read calls
 
-Limitations, work-in-progress and other discussion are active here: <https://github.com/hypertidy/vapour/issues/4>
+Limitations, work-in-progress and other discussion are active here:
+<https://github.com/hypertidy/vapour/issues/4>
+
+Warnings
+========
+
+It’s possible to give problematic “SELECT” statements via the `sql`
+argument. Note that the geometry readers `vapour_read_geometry`,
+`vapour_read_geometry_text`, and `vapour_read_extent` will strip out the
+`SELECT ... FROM` clause and replace it with `SELECT * FROM` to ensure
+that the geometry is accessible, though the attributes are ignored. This
+means we can allow the user or `dplyr` to create any `SELECT` statement.
+The function `vapour_read_geometry_what` will return a list of NULLs, in
+this case.
+
+I haven’t tried this against a real database, I’m not sure if we need
+`AsBinary()` around EWKB geoms, for example - but at any rate these can
+be ingested by `sf`.
 
 Examples
 --------
 
-There's a function `vapour_read_attributes` that returns the attributes as list of vectors.
+There’s a function `vapour_read_attributes` that returns the attributes
+as list of vectors.
 
 ``` r
 pfile <- system.file("extdata", "point.shp", package = "vapour")
@@ -47,7 +79,12 @@ vapour_read_attributes(pfile)
 #>  [1]  1  2  3  4  5  6  7  8  9 10
 ```
 
-A higher level function *somewhere else* could wrap that function to return a data frame, but we don't want that in `vapour` because it's not aligned with the goals of being lightweight and reducing the level of interpretation applied. The `data.frame` function in R is actually a very primitive implememtation for data frames, so we avoid putting that interpretation on the data and leave that up to the developer / user.
+A higher level function *somewhere else* could wrap that function to
+return a data frame, but we don’t want that in `vapour` because it’s not
+aligned with the goals of being lightweight and reducing the level of
+interpretation applied. The `data.frame` function in R is actually a
+very primitive implememtation for data frames, so we avoid putting that
+interpretation on the data and leave that up to the developer / user.
 
 ``` r
 mvfile <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package="vapour")
@@ -84,7 +121,17 @@ head(dat)
 OGRSQL
 ------
 
-Note that each lower-level function accepts a `sql` argument, which sends a query to the GDAL library to be executed against the data source, this can create custom layers and so is independent of and ignores the `layer` argument. Note that the same sql statement can be passed to the geometry readers, so we get the matching sets of information. `vapour_read_feature_what` will return NULL for each missing geometry if the statement doesn't include geometry explicitly or implicitly, but `vapour_read_geometry`, `vapour_read_geometry_text` and `vapour_read_extent` all explicitly modify the statement "SELECT \*". (We are also assuming the data source hasn't changed between accesses ... let me know if this causes you problems!).
+Note that each lower-level function accepts a `sql` argument, which
+sends a query to the GDAL library to be executed against the data
+source, this can create custom layers and so is independent of and
+ignores the `layer` argument. Note that the same sql statement can be
+passed to the geometry readers, so we get the matching sets of
+information. `vapour_read_feature_what` will return NULL for each
+missing geometry if the statement doesn’t include geometry explicitly or
+implicitly, but `vapour_read_geometry`, `vapour_read_geometry_text` and
+`vapour_read_extent` all explicitly modify the statement "SELECT \*".
+(We are also assuming the data source hasn’t changed between accesses …
+let me know if this causes you problems!).
 
 ``` r
 vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7310")
@@ -106,13 +153,18 @@ vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF, FID FROM list_local
 #> [1] 20 31 36 45
 ```
 
-Also note that FID is a special row number value, to be used a as general facility for selecting by structural row.
+Also note that FID is a special row number value, to be used a as
+general facility for selecting by structural row. This FID is
+driver-dependent, it can be 0- or 1-based, or completely arbitrary.
 
 See <http://www.gdal.org/ogr_sql.html>
 
-There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables.
+There are many useful higher level operations that can be used with
+this. The simplest is the ability to use GDAL as a database-like
+connection to attribute tables.
 
-A low-level function will return a character vector of JSON, GML, KML or WKT.
+A low-level function will return a character vector of JSON, GML, KML or
+WKT.
 
 ``` r
 vapour_read_geometry(pfile)[5:6]  ## format = "WKB"
@@ -148,7 +200,7 @@ str(vapour_read_geometry_text(cfile, textformat = "wkt")[1:2])
 #>  $ : chr "MULTILINESTRING ((-18812.5003359828 -3784514.28779524,-40153.6937313319 -3789439.97415405,-37747.2881609 -38569"| __truncated__
 ```
 
-We can combine these together to get a custom data set.
+Combine these together to get a custom data set.
 
 ``` r
 library(dplyr)
@@ -164,7 +216,9 @@ glimpse(dat)
 Fast summary
 ------------
 
-There is a basic function `vapour_read_extent` to return a straightforward bounding box vector for every feature, so that we can flexibly build an index of a data set for later use.
+There is a function `vapour_read_extent` to return a straightforward
+bounding box vector for every feature, so that we can flexibly build an
+index of a data set for later use.
 
 ``` r
 mvfile <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package="vapour")
@@ -230,7 +284,8 @@ str(vapour_read_extent(mvfile))
 #>  $ : num [1:4] 506637 511687 5405460 5409603
 ```
 
-This makes for a very lightweight summary data set that will scale to hundreds of large inputs.
+This makes for a very lightweight summary data set that will scale to
+hundreds of large inputs.
 
 ``` r
 dat <- as.data.frame(vapour_read_attributes(mvfile), 
@@ -249,7 +304,8 @@ all_extent <- purrr::reduce(lapply(dat$bbox, raster::extent), raster::union)
 ##purrr::walk(lapply(dat$bbox, raster::extent), plot, add = TRUE)
 ```
 
-An example is this set of *some number of* property boundary shapefiles, read into a few hundred Mb of simple features.
+An example is this set of *some number of* property boundary shapefiles,
+read into a few hundred Mb of simple features.
 
 ``` r
 library(dplyr)
@@ -258,7 +314,7 @@ files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullna
 library(vapour)
 system.time(purrr::map(files$fullname, sf::read_sf))
 #>    user  system elapsed 
-#>  10.178   0.292  10.792
+#>   7.916   0.457   8.930
 library(blob)
 
 ## our timing is competitive, and we get to choose what is read
@@ -271,10 +327,11 @@ g <- purrr::map(files$fullname, vapour_read_geometry)
 d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
 })
 #>    user  system elapsed 
-#>   3.427   0.439   3.911
+#>   3.879   0.455   4.403
 ```
 
-We can read that in this simpler way for a quick data set to act as an index.
+We can read that in this simpler way for a quick data set to act as an
+index.
 
 ``` r
 system.time({
@@ -282,10 +339,10 @@ system.time({
   d$bbox <- unlist(purrr::map(files$fullname, vapour_read_extent), recursive = FALSE)
 })
 #>    user  system elapsed 
-#>   3.281   0.499   3.828
+#>   3.045   0.432   3.511
 
 pryr::object_size(d)
-#> 46.9 MB
+#> 50.5 MB
 glimpse(d)
 #> Observations: 108,414
 #> Variables: 20
@@ -314,7 +371,7 @@ glimpse(d)
 Set up
 ------
 
-I've kept a record of a minimal GDAL wrapper package here:
+I’ve kept a record of a minimal GDAL wrapper package here:
 
 <https://github.com/mdsumner/gdalmin>
 
@@ -327,17 +384,30 @@ tools::package_native_routine_registration_skeleton("../vapour", "src/init.c",ch
 Context
 -------
 
-My first real attempt at DBI abstraction is here, this is still an aspect that is desperately needed in R to help bring tidyverse attention to spatial:
+My first real attempt at DBI abstraction is here, this is still an
+aspect that is desperately needed in R to help bring tidyverse attention
+to spatial:
 
 <https://github.com/mdsumner/RGDALSQL>
 
-Before that I had worked on getting sp and dplyr to at least work together <https://github.com/dis-organization/sp_dplyrexpt> and recently rgdal was updated to allow tibbles to be used, something that spbabel and spdplyr really needed to avoid friction.
+Before that I had worked on getting sp and dplyr to at least work
+together <https://github.com/dis-organization/sp_dplyrexpt> and recently
+rgdal was updated to allow tibbles to be used, something that spbabel
+and spdplyr really needed to avoid friction.
 
-Early exploration of allow non-geometry read with rgdal was tried here: <https://github.com/r-gris/gladr>
+Early exploration of allow non-geometry read with rgdal was tried here:
+<https://github.com/r-gris/gladr>
 
-Big thanks to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an automatable build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured my ravings about wanting this level of control for many years.
+Big thanks to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art
+that I crib and copy from. Jeroen Ooms helped the R community hugely by
+providing an automatable build process for libraries on Windows. Mark
+Padgham helped kick me over a huge obstacle in using C++ libraries with
+R. Simon Wotherspoon and Ben Raymond have endured my ravings about
+wanting this level of control for many years.
 
 Code of conduct
 ===============
 
-Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+Please note that this project is released with a [Contributor Code of
+Conduct](CONDUCT.md). By participating in this project you agree to
+abide by its terms.
