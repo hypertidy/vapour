@@ -11,6 +11,9 @@
 #' 'Average', 'Bilinear', 'Cubic', 'CubicSpline',  'Gauss', 'Lanczos', 'Mode' are potentially
 #' available. These are compared internally by converting to lower-case. Detailed use of this is barely tried or tested with vapour, but is
 #' a standard facility used in GDAL. Easiest way to compare results is with gdal_translate.
+#'
+#' There is no write support in vapour.
+#'
 #' @param x data source
 #' @param band index of which band to read
 #' @param window src_offset, src_dim, out_dim

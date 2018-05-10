@@ -8,12 +8,18 @@ raster_info(x, ..., sds = NULL)
 }
 \arguments{
 \item{x}{data source string (i.e. file name or URL or database connection string)}
+
+\item{...}{currently unused}
+
+\item{sds}{a subdataset number, if necessary}
 }
 \description{
-Return the basic structural metadata of a raster source understood by GDAL.
+Return the basic structural metadata of a raster source understood by GDAL. Subdatasets
+may be specified by number, starting at 1.
 }
 \details{
-These are
+The structural metadata are
+
 \describe{
 \item{geotransform}{the affine transform}
 \item{dimXY}{dimensions x-y, columns*rows}
@@ -21,12 +27,56 @@ These are
 \item{tilesXY}{dimensions x-y of internal tiling scheme}
 \item{projection}{text version of map projection parameter string}
 }
-The affine transform is the six parameter conversion of row-col position to map coordinates.
-Usually the shear components are zero, and so these correspond to the offset and scale used to
+
+On access to a source vapour functions will report on the existence of subdatasets while
+defaulting to the first subdataset found.
+}
+\section{Subdatasets}{
+
+
+Some sources provide multiple data sets, where a dataset is described by a 2 (or more) dimensional
+grid whose structure is described by the metadata described above. Note that sub dataset is a
+different concept to band or dimension. Sources that may have multiple data
+sets are HDF4/HDF5 and NetCDF, and they are loosely analogous to the concept of \emph{layer} in
+GDAL vector data.
+
+If subdatasets are present but not specified the first is queried. The choice of subdataset is
+analogous to the way that the \code{raster} package behaves, and uses the argument \code{varname}. Variables
+in NetCDF correspond to subdatasets, but a single data set might have multiple variables in different
+bands or in dimensions, so this guide does not hold across various systems.
+}
+
+\section{The Geo Transform}{
+
+From \url{http://www.gdal.org/gdal_datamodel.html}.
+
+The affine transform consists of six coefficients returned by \code{GDALDataset::GetGeoTransform()} which map pixel/line coordinates into georeferenced space using the following relationship:
+
+\code{Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)}
+
+\code{Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)}
+
+They are
+\describe{
+\item{GT0, xmin}{the x position of the lower left corner of the lower left pixel}
+\item{GT1, xres}{the scale of the x-axis, the width of the pixel in x-units}
+\item{GT2, yskew}{y component of the pixel width}
+\item{GT3, ymin}{the y position of the upper left corner of the upper left pixel}
+\item{GT4, xskew}{x component of the pixel height}
+\item{GT5, yres}{the scale of the y-axis, the height of the pixel in \emph{negative} y-units}
+}
+Please note that these coefficients are equivalent to the contents of a \emph{world file} but that
+the order is not the same and the world file uses cell centre convention rather than edge. \url{https://en.wikipedia.org/wiki/World_file}
+
+Usually the skew components are zero, and so only four coefficients are relevant and correspond to the offset and scale used to
 position the raster - in combination with the number of rows and columns of data they
 provide the spatial extent and the pixel size in each direction.
 }
+
 \examples{
 f <- system.file("extdata", "sst.tif", package = "vapour")
 raster_info(f)
+}
+\seealso{
+sds_info
 }

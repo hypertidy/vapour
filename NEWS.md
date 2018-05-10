@@ -1,5 +1,9 @@
 # vapour 0.0.1
 
+* Subdatasets are now supported. 
+
+* Added sanity check behaviour to `raster_io` to avoid out of bounds checks. 
+
 * Resampling options added to raster data read. 
 
 * Upgraded to rwinlib gdal 2.2.3. 

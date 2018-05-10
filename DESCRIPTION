@@ -17,7 +17,9 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 LinkingTo: Rcpp
-Imports: Rcpp
+Imports: 
+    Rcpp,
+    utils
 RoxygenNote: 6.0.1
 Roxygen: list(markdown = TRUE)
 Suggests: covr,

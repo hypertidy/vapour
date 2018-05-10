@@ -16,7 +16,7 @@ raster_io(x, band = 1, window, resample = "nearestneighbour", ...,
 
 \item{resample}{resampling method used (see details)}
 
-\item{...}{reserverd}
+\item{...}{reserved}
 
 \item{sds}{index of subdataset to read (usually 1)}
 }
@@ -33,6 +33,8 @@ Resampling options will depend on GDAL version,  but currently  'NearestNeighbou
 'Average', 'Bilinear', 'Cubic', 'CubicSpline',  'Gauss', 'Lanczos', 'Mode' are potentially
 available. These are compared internally by converting to lower-case. Detailed use of this is barely tried or tested with vapour, but is
 a standard facility used in GDAL. Easiest way to compare results is with gdal_translate.
+
+There is no write support in vapour.
 }
 \examples{
 f <- system.file("extdata", "sst.tif", package = "vapour")
@@ -41,8 +43,8 @@ raster_io(f, window = c(0, 0, 10, 10, 5, 5))
 raster_io(f, window = c(0, 0, 10, 10, 5, 5), resample = "Lanczos")
 ## find the information first
 ri <- raster_info(f)
-#str(matrix(raster_io(f, c(0, 0, ri$dimXY, ri$dimXY)), ri$dimXY[1]))
+str(matrix(raster_io(f, window = c(0, 0, ri$dimXY, ri$dimXY)), ri$dimXY[1]))
 ## the method can be used to up-sample as well
-#str(matrix(raster_io(f, window = c(0, 0, 10, 10, 15, 25)), 15))
+str(matrix(raster_io(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 
 }
