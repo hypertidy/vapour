@@ -38,7 +38,7 @@ poDataset->GetMetadata();
   float *pafScanline;
   int nXSize = poBand->GetXSize();
   int nYSize = poBand->GetYSize();
-  int nn = 5;
+  int nn = 6;
   Rcpp::List out(nn);
   Rcpp::CharacterVector names(nn);
   out[0] = trans;
@@ -54,12 +54,18 @@ poDataset->GetMetadata();
 
   const char *proj;
   proj = poDataset->GetProjectionRef();
-  // close up
-  GDALClose( (GDALDatasetH) poDataset );
 
   out[4] = Rcpp::CharacterVector::create(proj);
   names[4] = "projection";
   out.attr("names") = names;
+
+  // get band number
+  int nBands = poDataset->GetRasterCount();
+  out[5] = nBands;
+  names[5] = "bands";
+  // close up
+  GDALClose( (GDALDatasetH) poDataset );
+
   return out;
 
 }

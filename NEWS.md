@@ -1,5 +1,11 @@
 # vapour 0.0.1
 
+* `raster_info` now includes `bands` as the count of available bands. 
+
+* The IO read now allows a 4-element `window` to return data at native resolution, by
+ copying the third and fourth values (source dimension) to the fifth and sixth values
+ (output dimension) respectively. 
+ 
 * Subdatasets are now supported. 
 
 * Added sanity check behaviour to `raster_io` to avoid out of bounds read attempts. 

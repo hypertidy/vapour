@@ -41,13 +41,26 @@ Examples of packages that use vapour are [RGDALSQL](https://github.com/mdsumner/
 
 # Purpose
 
-Currently we have control to do the following: 
+We aim to provide access to the basic functions available in GDAL, which loosely provides both a [raster](http://www.gdal.org/gdal_datamodel.html) and a [vector](http://www.gdal.org/ogr_arch.html) data model. 
+
+The workflows available are intended to support development of applications in R for these vector and [raster data](https://en.wikipedia.org/wiki/Raster_data) without being constrained to any particular data model. 
+
+
+## Vector data
+
 
 * read attributes only
 * read geometry only
 * read geometry as raw binary, or various text forms
 * read geometry bounding box only
 * optionally, apply [OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to above read calls
+
+## Raster data
+
+* find structural metadata for a single raster source
+* find available single rasters within a complex source
+* read from a raster arbitrarily using GDAL very flexible [IO framework](http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1). 
+
 
 Limitations, work-in-progress and other discussion are active here: 
 https://github.com/hypertidy/vapour/issues/4
@@ -193,6 +206,23 @@ glimpse(d)
 
 ```
 
+## Raster data
+
+Find raster info. 
+
+
+```{r raster}
+f <- system.file("extdata", "sst.tif", package = "vapour")
+raster_info(f)
+
+## will reveal local file system path
+#sds_info(f)
+
+u <- "http://rs-data1-mel.csiro.au/thredds/dodsC/imos-srs/sst/ghrsst/L3S-3d/ngt/2018/20180404152000-ABOM-L3S_GHRSST-SSTskin-AVHRR_D-3d_night-v02.0-fv01.0.nc"
+u <- 'NetCDF:"http://rs-data1-mel.csiro.au/thredds/dodsC/imos-srs/sst/ghrsst/L3S-3d/ngt/2018/20180404152000-ABOM-L3S_GHRSST-SSTskin-AVHRR_D-3d_night-v02.0-fv01.0.nc":sea_surface_temperature'
+raster_info(u)
+sds_info(u)
+```
 
 ## Set up
 
