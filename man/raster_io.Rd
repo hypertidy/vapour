@@ -25,6 +25,9 @@ Read a window of data from a GDAL raster source. The first argument is the sourc
 name and the second is a 6-element \code{window} of offset, source dimension, and output dimension.
 }
 \details{
+The value of \code{window} may be input as only 4 elements, in which case the source dimension
+Will be used as the output dimension.
+
 This is analgous to the \code{rgdal} function \code{readGDAL} with its arguments \code{offset},  \code{region.dim}
 and \code{output.dim}.  There's no semantic wrapper for this in vapour, but see \code{https://github.com/hypertidy/lazyraster} for
 one approach.

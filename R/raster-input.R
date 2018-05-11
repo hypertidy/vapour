@@ -3,6 +3,9 @@
 #' Read a window of data from a GDAL raster source. The first argument is the source
 #' name and the second is a 6-element `window` of offset, source dimension, and output dimension.
 #'
+#' The value of `window` may be input as only 4 elements, in which case the source dimension
+#' Will be used as the output dimension.
+#'
 #' This is analgous to the `rgdal` function `readGDAL` with its arguments `offset`,  `region.dim`
 #' and `output.dim`.  There's no semantic wrapper for this in vapour, but see `https://github.com/hypertidy/lazyraster` for
 #' one approach.
@@ -45,6 +48,10 @@ raster_io <- function(x, band = 1, window, resample = "nearestneighbour", ..., s
   ## get these errors, but not the R user
 
 
+
+  stopifnot(length(window) %in% c(4L, 6L))
+  ## use src dim as out dim by default
+ if (length(window) == 4L) window <- c(window, window[3:4])
   ## these error at the GDAL level
   if (any(window[1:2] < 0)) stop("window cannot index lower than 0")
   if (any(window[1:2] > (ri$dimXY-1))) stop("window offset cannot index higher than grid dimension")
