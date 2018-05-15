@@ -10,18 +10,24 @@
 #' We include functions for raster and vector sources.
 #'
 #' \tabular{ll}{
-#'  \code{\link{raster_info}} \tab structural metadata of a source
-#'  \code{\link{sds_info}} \tab list individual raster sources in a source containing subdatasets
-#' \code{\link{raster_io}} \tab read data direct from a window of a raster band source
+#'  \code{\link{raster_info}} \tab structural metadata of a source \cr
+#' \code{\link{raster_io}} \tab read data direct from a window of a raster band source \cr
+#'  \code{\link{sds_info}} \tab list individual raster sources in a source containing subdatasets  \cr
 #'  }
 #' \tabular{ll}{
-#'  \code{\link{vapour_layer_names}} \tab list names of vector layers
-#'  \code{\link{vapour_read_attributes}} \tab read attributes, the columnar data associated with each geometry
-#' \code{\link{vapour_read_extent}} \tab read the extent of geometries
-#' \code{\link{vapour_read_feature_what}} \tab read feature into specified format
-#' \code{\link{vapour_read_geometry}} \tab read feature into binary form
-#' \code{\link{vapour_read_geometry_text}} \tab read feature into text form
+#'  \code{\link{vapour_layer_names}} \tab list names of vector layers \cr
+#'  \code{\link{vapour_read_attributes}} \tab read attributes, the columnar data associated with each geometry \cr
+#' \code{\link{vapour_read_extent}} \tab read the extent of geometries \cr
+#' \code{\link{vapour_read_feature_what}} \tab read feature into specified format \cr
+#' \code{\link{vapour_read_geometry}} \tab read feature into binary form \cr
+#' \code{\link{vapour_read_geometry_text}} \tab read feature into text form \cr
 #'  }
+#'
+#'  As far as possible vapour aims to minimize the level of interpretation
+#'  provided for the functions, so that developers can choose how things are
+#'  implemented. This means we return raw lists or vectors rather than data
+#'  frames or classed types.
+#'
 #' @name vapour
 #' @docType package
 #' @useDynLib vapour
