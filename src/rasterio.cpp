@@ -5,7 +5,6 @@ using namespace Rcpp;
 #include "gdalwarper.h"
 #include "cpl_conv.h" // for CPLMalloc()
 
-
 // [[Rcpp::export]]
 List raster_info_cpp (const char* pszFilename)
 {
@@ -17,7 +16,7 @@ List raster_info_cpp (const char* pszFilename)
     Rcpp::stop("cannot open dataset");
   }
 
-poDataset->GetMetadata();
+  poDataset->GetMetadata();
   double        adfGeoTransform[6];
   poDataset->GetGeoTransform( adfGeoTransform );
 
@@ -72,7 +71,7 @@ poDataset->GetMetadata();
 
 
 // [[Rcpp::export]]
-NumericVector raster_io_cpp(CharacterVector filename,
+List raster_io_cpp(CharacterVector filename,
                             IntegerVector window,
                             IntegerVector band = 1,
                             CharacterVector resample = "nearestneighbour")
@@ -96,11 +95,12 @@ NumericVector raster_io_cpp(CharacterVector filename,
 
   GDALRasterBand  *poBand;
   poBand = poDataset->GetRasterBand( band[0] );
+  GDALDataType band_type =  poBand->GetRasterDataType();
+
   if( poBand == NULL )
   {
     Rcpp::stop("cannot get band");
   }
-  float *pafScanline;
 
   // how to do this is here:
   // https://stackoverflow.com/questions/45978178/how-to-pass-in-a-gdalresamplealg-to-gdals-rasterio
@@ -132,10 +132,35 @@ NumericVector raster_io_cpp(CharacterVector filename,
   if (resample[0] == "nearestneighbour") {
     psExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
   }
-  pafScanline = (float *) CPLMalloc(sizeof(float)*outXSize*outYSize);
-  CPLErr err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
-                  pafScanline, outXSize, outYSize, GDT_Float32,
-                  0, 0, &psExtraArg);
+
+  // TODO: generalize from Float32
+  float *pafScanline;
+
+  //float  *float_scanline;
+  double *double_scanline;
+  int    *integer_scanline;
+
+  List out(1);
+  CPLErr err;
+
+  if (band_type == GDT_Byte | band_type == GDT_Int16 | band_type == GDT_Int32 | band_type == GDT_UInt16 | band_type == GDT_UInt32) {
+    integer_scanline = (int *) CPLMalloc(sizeof(int)*outXSize*outYSize);
+    err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+                            integer_scanline, outXSize, outYSize, GDT_Int32,
+                            0, 0, &psExtraArg);
+    IntegerVector res(outXSize*outYSize);
+    for (int i = 0; i < (outXSize*outYSize); i++) res[i] = integer_scanline[i];
+    out[0] = res;
+  }
+  if (band_type == GDT_Float64 | band_type == GDT_Float32) {
+    double_scanline = (double *) CPLMalloc(sizeof(double)*outXSize*outYSize);
+    err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+                            double_scanline, outXSize, outYSize, GDT_Float64,
+                            0, 0, &psExtraArg);
+    NumericVector res(outXSize*outYSize);
+    for (int i = 0; i < (outXSize*outYSize); i++) res[i] = double_scanline[i];
+    out[0] = res;
+  }
 
   if(err != CE_None) {
     // Report failure somehow.
@@ -143,9 +168,10 @@ NumericVector raster_io_cpp(CharacterVector filename,
   }
   // close up
   GDALClose( (GDALDatasetH) poDataset );
-  NumericVector out(outXSize*outYSize);
-  for (int i = 0; i < (outXSize*outYSize); i++) out[i] = pafScanline[i];
+
   return out;
 }
+
+
 
 

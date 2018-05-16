@@ -5,6 +5,18 @@
 
 using namespace Rcpp;
 
+// read_binary
+List read_binary(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer);
+RcppExport SEXP _vapour_read_binary(SEXP dsourceSEXP, SEXP layerSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
+    rcpp_result_gen = Rcpp::wrap(read_binary(dsource, layer));
+    return rcpp_result_gen;
+END_RCPP
+}
 // raster_info_cpp
 List raster_info_cpp(const char* pszFilename);
 RcppExport SEXP _vapour_raster_info_cpp(SEXP pszFilenameSEXP) {
@@ -17,7 +29,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // raster_io_cpp
-NumericVector raster_io_cpp(CharacterVector filename, IntegerVector window, IntegerVector band, CharacterVector resample);
+List raster_io_cpp(CharacterVector filename, IntegerVector window, IntegerVector band, CharacterVector resample);
 RcppExport SEXP _vapour_raster_io_cpp(SEXP filenameSEXP, SEXP windowSEXP, SEXP bandSEXP, SEXP resampleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

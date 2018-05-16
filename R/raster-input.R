@@ -62,5 +62,6 @@ raster_io <- function(x, band = 1, window, resample = "nearestneighbour", ..., s
   if (any((window[1:2] + window[3:4]) > ri$dimXY)) stop("window size cannot exceed grid dimension")
   ## GDAL error
   if (any(window[5:6] < 1)) stop("requested output dimension cannot be less than 1")
-  raster_io_cpp(filename = datasourcename, window  = window, band = band, resample = resample[1L])
+  ## pull a swifty here with [[  to return numeric or integer
+  raster_io_cpp(filename = datasourcename, window  = window, band = band, resample = resample[1L])[[1L]]
 }
