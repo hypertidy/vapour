@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>vapour. — vapour • vapour</title>
+<title>vapour — vapour • vapour</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -28,9 +28,9 @@
 
 
 
-<meta property="og:title" content="vapour. — vapour" />
+<meta property="og:title" content="vapour — vapour" />
 
-<meta property="og:description" content="vapour." />
+<meta property="og:description" content="A lightweight GDAL API package for R." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -71,6 +71,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/vapour.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -92,24 +95,51 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>vapour.</h1>
+    <h1>vapour</h1>
     
     <div class="hidden name"><code>vapour.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>vapour.</p>
+    <p>A lightweight GDAL API package for R.</p>
     
     </div>
 
         
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Lightweight means we access parts of the GDAL API as near as
+possible to their native usage. GDAL is not a particularly lightweight
+library, but it does provide a very nice abstraction over format details.</p>
+<p>We include functions for raster and vector sources.</p>
+<table class='table'>
+<tr><td><code><a href='raster_info.html'>raster_info</a></code></td><td>structural metadata of a source</td></tr>
+<tr><td><code><a href='raster_io.html'>raster_io</a></code></td><td>read data direct from a window of a raster band source</td></tr>
+<tr><td><code><a href='sds_info.html'>sds_info</a></code></td><td>list individual raster sources in a source containing subdatasets</td></tr>
+</table>
+    <table class='table'>
+<tr><td><code><a href='vapour_layer_names.html'>vapour_layer_names</a></code></td><td>list names of vector layers</td></tr>
+<tr><td><code><a href='vapour_read_attributes.html'>vapour_read_attributes</a></code></td><td>read attributes, the columnar data associated with each geometry</td></tr>
+<tr><td><code><a href='vapour_read_extent.html'>vapour_read_extent</a></code></td><td>read the extent of geometries</td></tr>
+<tr><td><code><a href='vapour_read_feature_what.html'>vapour_read_feature_what</a></code></td><td>read feature into specified format</td></tr>
+<tr><td><code><a href='vapour_read_geometry.html'>vapour_read_geometry</a></code></td><td>read feature into binary form</td></tr>
+<tr><td><code><a href='vapour_read_geometry_text.html'>vapour_read_geometry_text</a></code></td><td>read feature into text form</td></tr>
+<tr><td><code><a href='vapour_read_names.html'>vapour_read_names</a></code></td><td>read the 'names' of each feature, the 'FID'</td></tr>
+</table>
+    <p>As far as possible vapour aims to minimize the level of interpretation
+provided for the functions, so that developers can choose how things are
+implemented. This means we return raw lists or vectors rather than data
+frames or classed types.</p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-                </ul>
+      
+      <li><a href="#details">Details</a></li>
+          </ul>
 
   </div>
 </div>

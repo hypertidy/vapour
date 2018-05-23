@@ -102,9 +102,6 @@ https://github.com/mdsumner/gdalmin
 
 This must be run when your function definitions change: 
 
-```R
-tools::package_native_routine_registration_skeleton("../vapour", "src/init.c",character_only = FALSE)
-```
 
 ## Context
 

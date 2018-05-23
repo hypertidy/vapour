@@ -72,6 +72,9 @@ name and the second is a 6-element window of offset, source dimension, and outpu
   </a>
 </li>
 <li>
+  <a href="../articles/vapour.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -139,7 +142,9 @@ name and the second is a 6-element <code>window</code> of offset, source dimensi
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This is analgous to the <code>rgdal</code> function <code>readGDAL</code> with its arguments <code>offset</code>,  <code>region.dim</code>
+    <p>The value of <code>window</code> may be input as only 4 elements, in which case the source dimension
+Will be used as the output dimension.</p>
+<p>This is analgous to the <code>rgdal</code> function <code>readGDAL</code> with its arguments <code>offset</code>,  <code>region.dim</code>
 and <code>output.dim</code>.  There's no semantic wrapper for this in vapour, but see <code>https://github.com/hypertidy/lazyraster</code> for
 one approach.</p>
 <p>Resampling options will depend on GDAL version,  but currently  'NearestNeighbour' (default),

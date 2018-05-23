@@ -68,6 +68,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/vapour.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -97,6 +100,10 @@
 <h1 class="page-header">
 <a href="#vapour-0-0-1" class="anchor"></a>vapour 0.0.1</h1>
 <ul>
+<li><p>New function <code>vapour_read_names</code> to return the vector of FID values.</p></li>
+<li><p>The read for raster data now returns numeric or integer appropriately.</p></li>
+<li><p><code>raster_info</code> now includes <code>bands</code> as the count of available bands.</p></li>
+<li><p>The IO read now allows a 4-element <code>window</code> to return data at native resolution, by copying the third and fourth values (source dimension) to the fifth and sixth values (output dimension) respectively.</p></li>
 <li><p>Subdatasets are now supported.</p></li>
 <li><p>Added sanity check behaviour to <code>raster_io</code> to avoid out of bounds read attempts.</p></li>
 <li><p>Resampling options added to raster data read.</p></li>
