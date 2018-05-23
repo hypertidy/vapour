@@ -95,7 +95,8 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' 'DRIVER:"datasourcename":varname'. Each subdataset name can stand in place of a data source name that has only one variable,
 #' so we always treat a source as a subdataset, even if there's only one.
 #'
-#' Returns a list of `datasource` and `subdataset`. In the case of a single
+#' Returns a list of `datasource` and `subdataset`. In the case of a normal data source, with
+#' no subdatasets the value of both entries is the `datasource`.
 #' @param x a data source string, filename, database connection string, Thredds or other URL
 #'
 #' @return list of character vectors, see Details

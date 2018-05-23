@@ -1,5 +1,5 @@
 Package: vapour
-Title: Lightweight Access to the Geospatial Data Abstraction Library ('GDAL')
+Title: Lightweight Access to the 'Geospatial Data Abstraction Library' ('GDAL')
 Version: 0.0.1
 Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-2471-7511")), 
              person("Simon", "Wotherspoon", role = "ctb", comment = "figured out the mechanism for the resampling algorithm"), 
@@ -9,9 +9,10 @@ Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c(
              person("Jim", "Hester", role = "ctb", comment = "wrote CollectorList.h, copied here from fs package"))
 Description: Provides low-level access to 'GDAL' functionality for R packages. The aim is to minimize
   the level of interpretation put on the 'GDAL' facilities, to enable direct use of it for a variety of purposes. 
-  'GDAL' is the Geospatial Data Abstraction Library a translator for raster and vector geospatial data formats 
+  'GDAL' is the 'Geospatial Data Abstraction Library' a translator for raster and vector geospatial data formats 
   that presents a single raster abstract data model and single vector abstract data model to the calling application 
-  for all supported formats <http://gdal.org/>. 
+  for all supported formats <http://gdal.org/>. Other available packages 'rgdal' and 'sf' also provide access to 
+  the 'GDAL' library, but neither can be used for these lower level tasks, and both do many other tasks. 
 Depends: R (>= 3.3.0)
 License: GPL-3
 Encoding: UTF-8
@@ -22,6 +23,10 @@ Imports:
     utils
 RoxygenNote: 6.0.1
 Roxygen: list(markdown = TRUE)
-Suggests: covr,
-    testthat
+Suggests: 
+    covr,
+    testthat,
+    knitr,
+    rmarkdown
 SystemRequirements: GDAL (>= 2.0.0), PROJ.4 (>= 4.8.0)
+VignetteBuilder: knitr

@@ -1,5 +1,9 @@
 # vapour 0.0.1
 
+* New function  `vapour_read_names` to return the vector of FID values. 
+
+* The read for raster data now returns numeric or integer appropriately. 
+
 * `raster_info` now includes `bands` as the count of available bands. 
 
 * The IO read now allows a 4-element `window` to return data at native resolution, by

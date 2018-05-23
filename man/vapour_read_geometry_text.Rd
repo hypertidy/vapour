@@ -22,7 +22,7 @@ Simple read of geometry-only as text format.
 \examples{
 file <- "list_locality_postcode_meander_valley.tab"
 mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-vapour_read_geometry_text(mvfile)
+tx_post_json <- vapour_read_geometry_text(mvfile)
 pfile <- system.file("extdata/point.shp", package = "vapour")
-vapour_read_geometry_text(pfile)
+tx_point_json <- vapour_read_geometry_text(pfile)
 }

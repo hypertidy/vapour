@@ -27,6 +27,7 @@ We include functions for raster and vector sources.
 \code{\link{vapour_read_feature_what}} \tab read feature into specified format \cr
 \code{\link{vapour_read_geometry}} \tab read feature into binary form \cr
 \code{\link{vapour_read_geometry_text}} \tab read feature into text form \cr
+\code{\link{vapour_read_names}} \tab read the 'names' of each feature, the 'FID' \cr
 }
 
 As far as possible vapour aims to minimize the level of interpretation

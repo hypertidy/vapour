@@ -133,7 +133,7 @@ List raster_io_cpp(CharacterVector filename,
     psExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
   }
 
-  // TODO: generalize from Float32
+
   float *pafScanline;
 
   //float  *float_scanline;
@@ -143,6 +143,9 @@ List raster_io_cpp(CharacterVector filename,
   List out(1);
   CPLErr err;
 
+  bool band_type_not_supported = true;
+  // here we catch byte, int* as R's 32-bit integer
+  // or Float32/64 as R's 64-bit numeric
   if (band_type == GDT_Byte | band_type == GDT_Int16 | band_type == GDT_Int32 | band_type == GDT_UInt16 | band_type == GDT_UInt32) {
     integer_scanline = (int *) CPLMalloc(sizeof(int)*outXSize*outYSize);
     err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
@@ -151,6 +154,7 @@ List raster_io_cpp(CharacterVector filename,
     IntegerVector res(outXSize*outYSize);
     for (int i = 0; i < (outXSize*outYSize); i++) res[i] = integer_scanline[i];
     out[0] = res;
+    band_type_not_supported = false;
   }
   if (band_type == GDT_Float64 | band_type == GDT_Float32) {
     double_scanline = (double *) CPLMalloc(sizeof(double)*outXSize*outYSize);
@@ -160,8 +164,16 @@ List raster_io_cpp(CharacterVector filename,
     NumericVector res(outXSize*outYSize);
     for (int i = 0; i < (outXSize*outYSize); i++) res[i] = double_scanline[i];
     out[0] = res;
+
+    band_type_not_supported = false;
   }
 
+
+  // safe but lazy way of not supporting Complex, TypeCount or Unknown types
+  // (see GDT_ checks above)
+  if (band_type_not_supported) {
+    Rcpp::stop("band type not supported (is it Complex? report at hypertidy/vapour/issues)");
+  }
   if(err != CE_None) {
     // Report failure somehow.
     Rcpp::stop("raster read failed");

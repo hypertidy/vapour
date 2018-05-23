@@ -6,3 +6,4 @@ inst/gdal
 inst/proj
 src/Makevars
 config.*
+inst/doc

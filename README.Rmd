@@ -26,28 +26,40 @@ library(dplyr)
 
 # vapour
 
-The goal of vapour is to provide a basic **GDAL API** package for R. Ideally, this could become a common foundation for other packages to specialize. 
-
-
-A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
-
-This partly draws on work done in [the sf package](https://github.com/r-spatial/sf) and in packages `rgdal` and `rgdal2`. I'm amazed that something as powerful and general as GDAL is 
-still only available through these lenses, but recentish improvements make things much easier to 
-use and share. Specifically Rcpp means that access to external libs is simplified, easier to learn and easier to get started and make progress. The other part is that cross-platform support is now much better, with more consistency on the libraries available on the CRAN machines and in other contexts. 
-
-Examples of packages that use vapour are [RGDALSQL](https://github.com/mdsumner/RGDALSQL) and [lazyraster](https://github.com/hypertidy/lazyraster). `RGDALSQL` aims to leverage the facilities of GDAL to provide data *on-demand* for many sources *as if* they were databases.  `lazyraster` uses the level-of-detail facility of GDAL to read just enough resolution from a raster source using traditional window techniques. 
-
-
-
-# Purpose
 
 We aim to provide access to the basic functions available in GDAL, which loosely provides both a [raster](http://www.gdal.org/gdal_datamodel.html) and a [vector](http://www.gdal.org/ogr_arch.html) data model. 
 
 The workflows available are intended to support development of applications in R for these vector and [raster data](https://en.wikipedia.org/wiki/Raster_data) without being constrained to any particular data model. 
 
+## Installation
+
+The package can be installed from Github.
+
+```R
+devtools::install_github("hypertidy/vapour")
+```
+
+You will need development tools for building R packages. 
+
+On Linux and MacOS you'll need an available GDAL installation, but on Windows the ROpenSci rwinlib tools are used and the required GDAL will be downloaded and compiled against when building the package. 
+
+## Purpose 
+
+The goal of vapour is to provide a basic **GDAL API** package for R.  The priority is to give low-level access to key functionality, not comprehensive coverage of the library. There is only read-only facilities, and no conversion to specialist types in R. Ideally, this could become a common foundation for other packages to specialize, but at the very least provides minimal examples to use GDAL for specialist needs.  
+
+A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
+
+This partly draws on work done in [the sf package](https://github.com/r-spatial/sf) and in packages `rgdal` and `rgdal2`. I'm amazed that something as powerful and general as GDAL is 
+still only available through these lenses, but recentish improvements make things much easier touse and share. Specifically `Rcpp` means that access to external libs is simplified, easier to learn and easier to get started and make progress. The other part is that cross-platform support is now much better, with more consistency on the libraries available on the CRAN machines and in other contexts. 
+
+Examples of packages that use vapour are in development,  [RGDALSQL](https://github.com/mdsumner/RGDALSQL) and [lazyraster](https://github.com/hypertidy/lazyraster). `RGDALSQL` aims to leverage the facilities of GDAL to provide data *on-demand* for many sources *as if* they were databases.  `lazyraster` uses the level-of-detail facility of GDAL to read just enough resolution from a raster source using traditional window techniques. 
+
+
+# GDAL for data
+
+There are tools for reading from both vector and raster data sources. 
 
 ## Vector data
-
 
 * read attributes only
 * read geometry only
@@ -74,155 +86,13 @@ I haven't tried this against a real database, I'm not sure if we need `AsBinary(
 
 ## Examples
 
-There's a function `vapour_read_attributes` that returns the attributes as  list of vectors. 
+The package documentation page gives an overview of available functions. 
 
-```{r}
-pfile <- system.file("extdata", "point.shp", package = "vapour")
-library(vapour)
-vapour_read_attributes(pfile)
+```R
+help("vapour-package")
 ```
+See the vignettes and documentation for examples. 
 
-A higher level function *somewhere else* could wrap that function to return a data frame, but we don't want that in `vapour` because
-it's not aligned with the goals of being lightweight and 
-reducing the level of interpretation applied. The `data.frame` 
-function in R is actually a very primitive implememtation for
-data frames, so we avoid putting that interpretation on the data
-and leave that up to the developer / user. 
-
-```{r}
-mvfile <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package="vapour")
-
-dat <- as.data.frame(vapour_read_attributes(mvfile),  stringsAsFactors = FALSE)
-
-dim(dat)
-
-head(dat)
-```
-
-## OGRSQL
-
-Note that each lower-level function accepts a `sql` argument, 
-which sends a query to the GDAL library to be executed against
-the data source, this can create custom layers and so is independent of and ignores the `layer` argument. Note that the same sql statement can be passed to the geometry readers, so we get the matching sets of information. `vapour_read_feature_what` will return NULL for each missing geometry if the statement doesn't include geometry explicitly or implicitly, but `vapour_read_geometry`, `vapour_read_geometry_text` and `vapour_read_extent` all explicitly modify the statement "SELECT *". (We are also assuming the data source hasn't changed between accesses ... let me know if this causes you problems!). 
-
-```{r}
-vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7310")
-
-
-vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF, FID FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7306")
-
-```
-
-Also note that FID is a special row number value, to be used a as general facility for selecting by structural row. This FID is driver-dependent, it can be 0- or 1-based, or completely arbitrary. 
-
-See http://www.gdal.org/ogr_sql.html
-
-
-There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables. 
-
-A low-level function will return a character vector of JSON, GML, KML or WKT. 
-
-```{r}
-vapour_read_geometry(pfile)[5:6]  ## format = "WKB"
-
-vapour_read_geometry_text(pfile)[5:6]  ## format = "json"
-
-cfile <- system.file("extdata/sst_c.gpkg", package = "vapour")
-vapour_read_geometry_text(pfile, textformat = "gml")[2]
-
-## don't do this with a non-longlat data set like cfile
-vapour_read_geometry_text(pfile, textformat = "kml")[1:2]
-
-str(vapour_read_geometry_text(cfile, textformat = "wkt")[1:2])
-
-```
-
-
-Combine these together to get a custom data set. 
-
-```{r}
-library(dplyr)
-dat <- as.data.frame(vapour_read_attributes(cfile),  stringsAsFactors = FALSE) %>% dplyr::mutate(wkt = vapour_read_geometry_text(cfile, textformat = "wkt"))
-glimpse(dat)
-```
-
-## Fast summary 
-
-There is a function `vapour_read_extent` to return a straightforward bounding box vector for every feature, so that
-we can flexibly build an index of a data set for later use. 
-
-```{r}
-mvfile <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package="vapour")
-str(vapour_read_extent(mvfile))
-
-```
-
-This makes for a very lightweight summary data set that will scale to hundreds of large inputs. 
-
-```{r}
-dat <- as.data.frame(vapour_read_attributes(mvfile), 
-                     stringsAsFactors = FALSE)
-library(raster)
-dat$bbox <- vapour_read_extent(mvfile)
-
-all_extent <- purrr::reduce(lapply(dat$bbox, raster::extent), raster::union)
-##plot(all_extent)
-##purrr::walk(lapply(dat$bbox, raster::extent), plot, add = TRUE)
-
-```
-
-An example is this set of *some number of* property boundary shapefiles, read into a few hundred Mb of simple features. 
-
-```{r}
-library(dplyr)
-files <- raadfiles::thelist_files(format = "") %>% filter(grepl("parcel", fullname), grepl("shp$", fullname)) %>% 
-  slice(1:8)
-library(vapour)
-system.time(purrr::map(files$fullname, sf::read_sf))
-library(blob)
-
-## our timing is competitive, and we get to choose what is read
-## and when
-read_table <- function(file) as.data.frame(vapour_read_attributes(file),  stringsAsFactors = FALSE)
-system.time({
-d <- purrr::map(files$fullname, read_table)
-d <- dplyr::bind_rows(d)
-g <- purrr::map(files$fullname, vapour_read_geometry)
-d[["wkb"]] <- new_blob(unlist(g, recursive = FALSE))
-})
-
-```
-
-We can read that in this simpler way for a quick data set to act as an index. 
-
-```{r}
-system.time({
-  d <- purrr::map_df(files$fullname, read_table)
-  d$bbox <- unlist(purrr::map(files$fullname, vapour_read_extent), recursive = FALSE)
-})
-
-pryr::object_size(d)
-glimpse(d)
-
-```
-
-## Raster data
-
-Find raster info. 
-
-
-```{r raster}
-f <- system.file("extdata", "sst.tif", package = "vapour")
-raster_info(f)
-
-## will reveal local file system path
-#sds_info(f)
-
-u <- "http://rs-data1-mel.csiro.au/thredds/dodsC/imos-srs/sst/ghrsst/L3S-3d/ngt/2018/20180404152000-ABOM-L3S_GHRSST-SSTskin-AVHRR_D-3d_night-v02.0-fv01.0.nc"
-u <- 'NetCDF:"http://rs-data1-mel.csiro.au/thredds/dodsC/imos-srs/sst/ghrsst/L3S-3d/ngt/2018/20180404152000-ABOM-L3S_GHRSST-SSTskin-AVHRR_D-3d_night-v02.0-fv01.0.nc":sea_surface_temperature'
-raster_info(u)
-sds_info(u)
-```
 
 ## Set up
 

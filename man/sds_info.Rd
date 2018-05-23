@@ -19,7 +19,8 @@ the datasource and its variable have the same data source string. If there's mor
 so we always treat a source as a subdataset, even if there's only one.
 }
 \details{
-Returns a list of \code{datasource} and \code{subdataset}. In the case of a single
+Returns a list of \code{datasource} and \code{subdataset}. In the case of a normal data source, with
+no subdatasets the value of both entries is the \code{datasource}.
 }
 \examples{
 f <- system.file("extdata", "sst.tif", package = "vapour")

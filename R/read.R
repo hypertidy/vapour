@@ -49,16 +49,31 @@ vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' vapour_read_geometry_text(mvfile)
+#' tx_post_json <- vapour_read_geometry_text(mvfile)
 #' pfile <- system.file("extdata/point.shp", package = "vapour")
-#' vapour_read_geometry_text(pfile)
+#' tx_point_json <- vapour_read_geometry_text(pfile)
 #' @export
 vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat = "json") {
   sql <- asterisk_select(sql)
   vapour_read_feature_what(dsource = dsource, layer = layer, sql = sql, what = "text", textformat = textformat)
 }
 
-
+#' Read feature names
+#'
+#' Obtains the internal 'Feature ID (FID)' for a data source.
+#'
+#' This may be virtual (created by GDAL for the SQL interface) and may be 0- or
+#' 1- based. Some drivers have actual names, and they are persistent and
+#' arbitrary. Please use with caution, this function can return the current
+#' FIDs, but there's no guarantee of what it represents for subsequent access.
+#'
+#' @inheritParams vapour_read_attributes
+#' @export
+#' @examples
+#' file <- "list_locality_postcode_meander_valley.tab"
+#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+#' range(fids <- vapour_read_names(mvfile))
+#' length(fids)
 vapour_read_names <- function(dsource, layer = 0L, sql = "", ...) {
   layers <- vapour_layer_names(dsource)
   vapour_read_attributes(dsource, layer = layer, sql = sprintf("SELECT FID FROM %s", layers[layer + 1]))[["FID"]]

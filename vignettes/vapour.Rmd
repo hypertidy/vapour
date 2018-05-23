@@ -1,0 +1,105 @@
+---
+title: "Vapour - lightweight GDAL"
+author: "Michael D. Sumner"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vapour}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+There's a function `vapour_read_attributes` that returns the attributes as  list of vectors. 
+
+
+```{r}
+pfile <- system.file("extdata", "point.shp", package = "vapour")
+library(vapour)
+vapour_read_attributes(pfile)
+```
+
+A higher level function *somewhere else* could wrap that function to return a data frame, but we don't want that in `vapour` because
+it's not aligned with the goals of being lightweight and 
+reducing the level of interpretation applied. The `data.frame` 
+function in R is actually a very primitive implememtation for
+data frames, so we avoid putting that interpretation on the data
+and leave that up to the developer / user. 
+
+```{r}
+mvfile <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package="vapour")
+
+dat <- as.data.frame(vapour_read_attributes(mvfile),  stringsAsFactors = FALSE)
+
+dim(dat)
+
+head(dat)
+```
+
+
+A low-level function will return a character vector of JSON, GML, KML or WKT. 
+
+```{r}
+vapour_read_geometry(pfile)[5:6]  ## format = "WKB"
+
+vapour_read_geometry_text(pfile)[5:6]  ## format = "json"
+
+cfile <- system.file("extdata/sst_c.gpkg", package = "vapour")
+vapour_read_geometry_text(pfile, textformat = "gml")[2]
+
+## don't do this with a non-longlat data set like cfile
+vapour_read_geometry_text(pfile, textformat = "kml")[1:2]
+
+str(vapour_read_geometry_text(cfile, textformat = "wkt")[1:2])
+
+```
+
+
+Combine these together to get a custom data set. 
+
+```{r}
+library(dplyr)
+dat <- as.data.frame(vapour_read_attributes(cfile),  stringsAsFactors = FALSE) %>% dplyr::mutate(wkt = vapour_read_geometry_text(cfile, textformat = "wkt"))
+glimpse(dat)
+```
+
+
+There is a function `vapour_read_extent` to return a straightforward bounding box vector for every feature, so that
+we can flexibly build an index of a data set for later use. 
+
+```{r}
+mvfile <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package="vapour")
+str(vapour_read_extent(mvfile))
+
+```
+
+This makes for a very lightweight summary data set that will scale to hundreds of large inputs. 
+
+
+
+
+## Raster data
+
+Find raster info. 
+
+
+```{r raster}
+f <- system.file("extdata", "sst.tif", package = "vapour")
+raster_info(f)
+
+## will reveal local file system path
+#sds_info(f)
+
+u <- "http://rs-data1-mel.csiro.au/thredds/dodsC/imos-srs/sst/ghrsst/L3S-3d/ngt/2018/20180404152000-ABOM-L3S_GHRSST-SSTskin-AVHRR_D-3d_night-v02.0-fv01.0.nc"
+u <- 'NetCDF:"http://rs-data1-mel.csiro.au/thredds/dodsC/imos-srs/sst/ghrsst/L3S-3d/ngt/2018/20180404152000-ABOM-L3S_GHRSST-SSTskin-AVHRR_D-3d_night-v02.0-fv01.0.nc":sea_surface_temperature'
+raster_info(u)
+sds_info(u)
+```
+
