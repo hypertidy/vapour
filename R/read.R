@@ -68,6 +68,7 @@ vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat 
 #' FIDs, but there's no guarantee of what it represents for subsequent access.
 #'
 #' @inheritParams vapour_read_attributes
+#' @param ... ignored
 #' @export
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"

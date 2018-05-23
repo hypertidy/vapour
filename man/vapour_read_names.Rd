@@ -12,6 +12,8 @@ vapour_read_names(dsource, layer = 0L, sql = "", ...)
 \item{layer}{integer of layer to work with, defaults to the first (0)}
 
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
+
+\item{...}{ignored}
 }
 \description{
 Obtains the internal 'Feature ID (FID)' for a data source.
