@@ -1,19 +1,15 @@
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-vapour
-======
 
-[![Build
-Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_clang&label=trusty_clang)](https://travis-ci.org/hypertidy/vapour)
-[![Build
-Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=osx&label=osx)](https://travis-ci.org/hypertidy/vapour)
-[![Build
-Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=mingw_w64&label=mingw_w64)](https://travis-ci.org/hypertidy/vapour)
-[![Coverage
-Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master)
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# vapour
+
+[![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_clang&label=trusty_clang)](https://travis-ci.org/hypertidy/vapour)
+[![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=osx&label=osx)](https://travis-ci.org/hypertidy/vapour)
+[![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=mingw_w64&label=mingw_w64)](https://travis-ci.org/hypertidy/vapour)
+[![Coverage\_Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
 
-Overview
---------
+## Overview
 
 The vapour package provides access to the basic *read* functions
 available in [GDAL](http://www.gdal.org/)for both
@@ -25,10 +21,10 @@ provide access to the component entities independently.
 
 For vector data vapour provides:
 
--   read access to feature attributes.
--   read access to raw binary geometry.
--   read access to geometry in text forms (GeoJSON, WKT, GML, KML).
--   read access to the extent, or bounding box, of feature geometries.
+  - read access to feature attributes.
+  - read access to raw binary geometry.
+  - read access to geometry in text forms (GeoJSON, WKT, GML, KML).
+  - read access to the extent, or bounding box, of feature geometries.
 
 All vector/feature read tasks can optionally apply
 [OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to data
@@ -36,10 +32,10 @@ extraction.
 
 For raster data vapour provides:
 
--   read access to the list of available rasters within a collection
+  - read access to the list of available rasters within a collection
     source (subdatasets).
--   read access to *structural metadata* for individual raster sources.
--   read access for raw data using GDAL’s [RasterIO
+  - read access to *structural metadata* for individual raster sources.
+  - read access for raw data using GDAL’s [RasterIO
     framework](http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1)
     and its dynamic image decimation / replication resampling
     algorithms.
@@ -49,8 +45,7 @@ applications in R for these vector and [raster
 data](https://en.wikipedia.org/wiki/Raster_data) without being
 constrained to any particular data model.
 
-Installation
-------------
+## Installation
 
 The package can be installed from Github.
 
@@ -66,8 +61,7 @@ required GDAL will be downloaded and used when building the package.
 This installation is self-contained and only affects the use of R, it
 can be used alongside other applications using GDAL.
 
-Purpose
--------
+## Purpose
 
 The goal of vapour is to provide a basic **GDAL API** package for R. The
 key functions provide vector geometry or attributes and raster data and
@@ -115,8 +109,7 @@ raster source using traditional window techniques.
 Limitations, work-in-progress and other discussion are active here:
 <https://github.com/hypertidy/vapour/issues/4>
 
-Warnings
---------
+## Warnings
 
 It’s possible to give problematic “SELECT” statements via the `sql`
 argument. Note that the geometry readers `vapour_read_geometry`,
@@ -131,8 +124,7 @@ I haven’t tried this against a real database, I’m not sure if we need
 `AsBinary()` around EWKB geoms, for example - but at any rate these can
 be ingested by `sf`.
 
-Examples
---------
+## Examples
 
 The package documentation page gives an overview of available functions.
 
@@ -146,8 +138,7 @@ See the vignettes and documentation for examples.
 browseVignettes(package = "vapour")
 ```
 
-Context
--------
+## Context
 
 My first real attempt at DBI abstraction is here:
 
@@ -172,8 +163,7 @@ Padgham helped kick me over a huge obstacle in using C++ libraries with
 R. Simon Wotherspoon and Ben Raymond have endured my ravings about
 wanting this level of control for many years.
 
-Code of conduct
-===============
+# Code of conduct
 
 Please note that this project is released with a [Contributor Code of
 Conduct](CONDUCT.md). By participating in this project you agree to
