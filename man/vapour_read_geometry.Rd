@@ -40,34 +40,3 @@ For each function an optional SQL string will be evaluated against the data sour
 \code{vapour_read_geometry_cpp} will read a feature for each of the ways listed above and is used by those functions. It's recommended
 to use the more specialist functions rather than this more general one.
 }
-\examples{
-file <- "list_locality_postcode_meander_valley.tab"
-mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#tib <- tibble::tibble(wkb = vapour_read_geometry(mvfile)) \%>\%
-#  bind_cols(read_gdal_table(mvfile))
-pfile <- system.file("extdata/point.shp", package = "vapour")
-vapour_read_geometry(pfile)
-
-file <- "list_locality_postcode_meander_valley.tab"
-mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-vapour_read_geometry_text(mvfile)
-pfile <- system.file("extdata/point.shp", package = "vapour")
-vapour_read_geometry_text(pfile)
-
-file <- "list_locality_postcode_meander_valley.tab"
-mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-vapour_read_extent(mvfile)
-
-file <- "list_locality_postcode_meander_valley.tab"
-mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#tib <- tibble::tibble(wkb = vapour_read_geometry(mvfile)) \%>\%
-#  bind_cols(read_gdal_table(mvfile))
-pfile <- system.file("extdata/point.shp", package = "vapour")
-vapour_read_geometry(pfile)
-
-file <- "list_locality_postcode_meander_valley.tab"
-mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-tx_post_json <- vapour_read_geometry_text(mvfile)
-pfile <- system.file("extdata/point.shp", package = "vapour")
-tx_point_json <- vapour_read_geometry_text(pfile)
-}

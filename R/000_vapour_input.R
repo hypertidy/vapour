@@ -130,35 +130,27 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "") {
 #' @param textformat indicate text output format, available are "json" (default), "gml", "kml", "wkt"
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
+#' ## A MapInfo TAB file with polygons
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' #tib <- tibble::tibble(wkb = vapour_read_geometry(mvfile)) %>%
-#' #  bind_cols(read_gdal_table(mvfile))
+#' ## A shapefile with points
 #' pfile <- system.file("extdata/point.shp", package = "vapour")
-#' vapour_read_geometry(pfile)
 #'
-#' file <- "list_locality_postcode_meander_valley.tab"
-#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' vapour_read_geometry_text(mvfile)
-#' pfile <- system.file("extdata/point.shp", package = "vapour")
-#' vapour_read_geometry_text(pfile)
+#' ## raw binary WKB points in a list
+#' ptgeom <- vapour_read_geometry(pfile)
+#' ## create a filter query to ensure data read is small
+#' SQL <- "SELECT FID FROM list_locality_postcode_meander_valley WHERE FID < 3"
+#' ## polygons in raw binary (WKB)
+#' plgeom <- vapour_read_geometry_text(mvfile, sql = SQL)
+#' ## polygons in raw text (GeoJSON)
+#' txtjson <- vapour_read_geometry_text(mvfile, sql = SQL)
 #'
-#' file <- "list_locality_postcode_meander_valley.tab"
-#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' vapour_read_extent(mvfile)
+#' ## polygon extents in a list xmin, xmax, ymin, ymax
+#' exgeom <- vapour_read_extent(mvfile)
 #'
-#' file <- "list_locality_postcode_meander_valley.tab"
-#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' #tib <- tibble::tibble(wkb = vapour_read_geometry(mvfile)) %>%
-#' #  bind_cols(read_gdal_table(mvfile))
-#' pfile <- system.file("extdata/point.shp", package = "vapour")
-#' vapour_read_geometry(pfile)
-#'
-#' file <- "list_locality_postcode_meander_valley.tab"
-#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' tx_post_json <- vapour_read_geometry_text(mvfile)
-#' pfile <- system.file("extdata/point.shp", package = "vapour")
-#' tx_point_json <- vapour_read_geometry_text(pfile)
-
+#' ## points in raw text (GeoJSON)
+#' txtpointjson <- vapour_read_geometry_text(pfile)
+#' ## points in raw text (WKT)
+#' txtpointwkt <- vapour_read_geometry_text(pfile, format = "wkt)
 #' @export
 #' @aliases vapour_read_geometry vapour_read_geometry_text vapour_read_geometry_cpp
 #' @name vapour_read_geometry
