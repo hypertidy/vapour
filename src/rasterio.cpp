@@ -167,7 +167,11 @@ List raster_io_cpp(CharacterVector filename,
   bool band_type_not_supported = true;
   // here we catch byte, int* as R's 32-bit integer
   // or Float32/64 as R's 64-bit numeric
-  if (band_type == GDT_Byte | band_type == GDT_Int16 | band_type == GDT_Int32 | band_type == GDT_UInt16 | band_type == GDT_UInt32) {
+  if ((band_type == GDT_Byte) |
+      (band_type == GDT_Int16) |
+      (band_type == GDT_Int32) |
+      (band_type == GDT_UInt16) |
+      (band_type == GDT_UInt32)) {
     integer_scanline = (int *) CPLMalloc(sizeof(int)*outXSize*outYSize);
     err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
                             integer_scanline, outXSize, outYSize, GDT_Int32,
@@ -177,7 +181,7 @@ List raster_io_cpp(CharacterVector filename,
     out[0] = res;
     band_type_not_supported = false;
   }
-  if (band_type == GDT_Float64 | band_type == GDT_Float32) {
+  if ((band_type == GDT_Float64) | (band_type == GDT_Float32)) {
     double_scanline = (double *) CPLMalloc(sizeof(double)*outXSize*outYSize);
     err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
                             double_scanline, outXSize, outYSize, GDT_Float64,
