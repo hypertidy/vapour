@@ -14,8 +14,9 @@ raster_info(x, ..., sds = NULL)
 \item{sds}{a subdataset number, if necessary}
 }
 \description{
-Return the basic structural metadata of a raster source understood by GDAL. Subdatasets
-may be specified by number, starting at 1.
+Return the basic structural metadata of a raster source understood by GDAL.
+Subdatasets may be specified by number, starting at 1. See
+\code{\link[=raster_sds_info]{raster_sds_info()}} for more.
 }
 \details{
 The structural metadata are
@@ -28,29 +29,40 @@ The structural metadata are
 \item{projection}{text version of map projection parameter string}
 }
 
-On access to a source vapour functions will report on the existence of subdatasets while
+On access vapour functions will report on the existence of subdatasets while
 defaulting to the first subdataset found.
 }
 \section{Subdatasets}{
 
 
-Some sources provide multiple data sets, where a dataset is described by a 2 (or more) dimensional
-grid whose structure is described by the metadata described above. Note that sub dataset is a
-different concept to band or dimension. Sources that may have multiple data
-sets are HDF4/HDF5 and NetCDF, and they are loosely analogous to the concept of \emph{layer} in
-GDAL vector data.
+Some sources provide multiple data sets, where a dataset is described by a 2-
+(or more) dimensional grid whose structure is described by the metadata
+described above. Note that \emph{subdataset} is a different concept to \emph{band or
+dimension}. Sources that may have multiple data sets are HDF4/HDF5 and
+NetCDF, and they are loosely analogous to the concept of \emph{layer} in GDAL
+vector data. Variables are usually seen as distinct data but in GDAL and
+related 2D-interpretations this concept is leveraged as a 3rd dimension (and
+higher). In a GeoTIFF a third dimension might be implicit across bands, i.e.
+to express time varying data and so each band is not properly a variable.
+Similarly in NetCDF, the data may be any dimensional but there's only an
+implicit link for other variables that exist in that same dimensional space.
+When using GDAL you are always traversing this confusing realm.
 
-If subdatasets are present but not specified the first is queried. The choice of subdataset is
-analogous to the way that the \code{raster} package behaves, and uses the argument \code{varname}. Variables
-in NetCDF correspond to subdatasets, but a single data set might have multiple variables in different
-bands or in dimensions, so this guide does not hold across various systems.
+If subdatasets are present but not specified the first is queried. The choice
+of subdataset is analogous to the way that the \code{raster} package behaves, and
+uses the argument \code{varname}. Variables in NetCDF correspond to subdatasets,
+but a single data set might have multiple variables in different bands or in
+dimensions, so this guide does not hold across various systems.
 }
 
 \section{The Geo Transform}{
 
+
 From \url{http://www.gdal.org/gdal_datamodel.html}.
 
-The affine transform consists of six coefficients returned by \code{GDALDataset::GetGeoTransform()} which map pixel/line coordinates into georeferenced space using the following relationship:
+The affine transform consists of six coefficients returned by
+\code{GDALDataset::GetGeoTransform()} which map pixel/line coordinates into
+georeferenced space using the following relationship:
 
 \code{Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)}
 
@@ -65,12 +77,18 @@ They are
 \item{GT4, xskew}{x component of the pixel height}
 \item{GT5, yres}{the scale of the y-axis, the height of the pixel in \emph{negative} y-units}
 }
-Please note that these coefficients are equivalent to the contents of a \emph{world file} but that
-the order is not the same and the world file uses cell centre convention rather than edge. \url{https://en.wikipedia.org/wiki/World_file}
 
-Usually the skew components are zero, and so only four coefficients are relevant and correspond to the offset and scale used to
-position the raster - in combination with the number of rows and columns of data they
-provide the spatial extent and the pixel size in each direction.
+Please note that these coefficients are equivalent to the contents of a
+\emph{world file} but that the order is not the same and the world file uses cell
+centre convention rather than edge.
+\url{https://en.wikipedia.org/wiki/World_file}
+
+Usually the skew components are zero, and so only four coefficients are
+relevant and correspond to the offset and scale used to position the raster -
+in combination with the number of rows and columns of data they provide the
+spatial extent and the pixel size in each direction.  Very rarely a an actual
+affine raster will be use with this \emph{rotation} specified within the transform
+coefficients.
 }
 
 \examples{

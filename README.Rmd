@@ -27,9 +27,10 @@ library(dplyr)
 # vapour
 
 
-We aim to provide access to the basic functions available in GDAL, which loosely provides both a [raster](http://www.gdal.org/gdal_datamodel.html) and a [vector](http://www.gdal.org/ogr_arch.html) data model. 
+We aim to provide access to the basic *read* functions available in [GDAL](http://www.gdal.org/), which provides an abstraction for geospatial data including a  [raster](http://www.gdal.org/gdal_datamodel.html) and a [vector](http://www.gdal.org/ogr_arch.html) data model. 
 
 The workflows available are intended to support development of applications in R for these vector and [raster data](https://en.wikipedia.org/wiki/Raster_data) without being constrained to any particular data model. 
+
 
 ## Installation
 
@@ -41,11 +42,13 @@ devtools::install_github("hypertidy/vapour")
 
 You will need development tools for building R packages. 
 
-On Linux and MacOS you'll need an available GDAL installation, but on Windows the ROpenSci rwinlib tools are used and the required GDAL will be downloaded and compiled against when building the package. 
+On Linux and MacOS building also requires an available GDAL installation, but on Windows the ROpenSci rwinlib tools are used and the required GDAL will be downloaded and used when building the package. This installation is self-contained and only affects the use of R, it can be used alongside other applications using GDAL. 
 
 ## Purpose 
 
-The goal of vapour is to provide a basic **GDAL API** package for R.  The priority is to give low-level access to key functionality, not comprehensive coverage of the library. There is only read-only facilities, and no conversion to specialist types in R. Ideally, this could become a common foundation for other packages to specialize, but at the very least provides minimal examples to use GDAL for specialist needs.  
+The goal of vapour is to provide a basic **GDAL API** package for R. The key functions are for reading vector geometry and/or attributes and a low-level wrapper for reading raster data and raster metadata. 
+
+The priority is to give low-level access to key functionality, not comprehensive coverage of the library. There is only read-only facilities, and no conversion to specialist types in R. Ideally, this could become a common foundation for other packages to specialize, but at the very least provides minimal examples to use GDAL for specialist needs.  
 
 A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )
 
@@ -94,28 +97,23 @@ help("vapour-package")
 See the vignettes and documentation for examples. 
 
 
-## Set up
-
-I've kept a record of a minimal GDAL wrapper package here: 
-
-https://github.com/mdsumner/gdalmin
-
-This must be run when your function definitions change: 
-
 
 ## Context
 
-My first real attempt at DBI abstraction is here, this is still an aspect that is desperately needed in R to help bring tidyverse attention to spatial: 
+My first real attempt at DBI abstraction is here: 
 
 https://github.com/mdsumner/RGDALSQL
 
-Before that I had worked on getting sp and dplyr to at least work together https://github.com/dis-organization/sp_dplyrexpt and recently rgdal was updated to allow tibbles to be used, something that spbabel and spdplyr really needed to avoid friction. 
+I've kept a record of a minimal GDAL wrapper package here: 
+
+https://github.com/diminutive/gdalmin
+
+Before those I had worked on getting sp and dplyr to at least work together https://github.com/dis-organization/sp_dplyrexpt and recently rgdal was updated to allow tibbles to be used, something that spbabel and spdplyr really needed to avoid friction. 
 
 Early exploration of allow non-geometry read with rgdal was tried here: https://github.com/r-gris/gladr
 
 
-Big thanks to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an automatable build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured my ravings about wanting this level of control for many years.
-
+Thankss to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an automatable build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured my ravings about wanting this level of control for many years.
 
 # Code of conduct
 

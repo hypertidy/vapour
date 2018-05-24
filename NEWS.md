@@ -1,5 +1,15 @@
 # vapour 0.0.1
 
+
+* More C++ functions now have explicit R wrappers instead of Rcpp exports. New function `vapour_read_geometry_cpp` deprecates `vapour_read_geometry_what` - this is still exported to R but the more specialized forms still should be used in preference. 
+
+* New naming convention uses `vapour_` for vector sources, `raster_` for raster sources 
+ to make function names a little more consistent. 
+
+* New wrapper `raster_sds_info` to replace `sds_info` which is now deprecated. 
+
+* New wrapper `vapour_read_geometry_what` to replace `vapour_read_feature_what` which i  is now deprecated. 
+
 * New function  `vapour_read_names` to return the vector of FID values. 
 
 * The read for raster data now returns numeric or integer appropriately. 

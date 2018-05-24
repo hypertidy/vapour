@@ -11,24 +11,30 @@ A lightweight GDAL API package for R.
 \details{
 Lightweight means we access parts of the GDAL API as near as
 possible to their native usage. GDAL is not a particularly lightweight
-library, but it does provide a very nice abstraction over format details.
+library, but provide a very nice abstraction over format details for a very large
+number of different formats.
 
 We include functions for raster and vector sources.
 
 \tabular{ll}{
 \code{\link{raster_info}} \tab structural metadata of a source \cr
-\code{\link{raster_io}} \tab read data direct from a window of a raster band source \cr
-\code{\link{sds_info}} \tab list individual raster sources in a source containing subdatasets  \cr
+\code{\link{raster_io}}   \tab read data direct from a window of a raster band source \cr
+\code{\link{raster_sds_info}}    \tab list individual raster sources in a source containing subdatasets  \cr
 }
 \tabular{ll}{
-\code{\link{vapour_layer_names}} \tab list names of vector layers \cr
-\code{\link{vapour_read_attributes}} \tab read attributes, the columnar data associated with each geometry \cr
-\code{\link{vapour_read_extent}} \tab read the extent of geometries \cr
-\code{\link{vapour_read_feature_what}} \tab read feature into specified format \cr
-\code{\link{vapour_read_geometry}} \tab read feature into binary form \cr
-\code{\link{vapour_read_geometry_text}} \tab read feature into text form \cr
-\code{\link{vapour_read_names}} \tab read the 'names' of each feature, the 'FID' \cr
+\code{\link{vapour_layer_names}} \tab list names of vector layers in a data source \cr
+\code{\link{vapour_read_names}} \tab read the 'names' of features in a layer, the 'FID' \cr
+\code{\link{vapour_read_attributes}} \tab read attributes of features in a layer, the columnar data associated with each geometry \cr
+\code{\link{vapour_read_extent}} \tab read the extent, or bounding box, of geometries in a layer \cr
+\code{\link{vapour_read_geometry}} \tab read geometry in binary (blob, WKB) form \cr
+\code{\link{vapour_read_geometry_text}} \tab read geometry in text form, various formats \cr
+\code{\link{vapour_read_geometry_cpp}} \tab read feature into specified form \cr
 }
+
+\code{vapour_read_geometry_cpp} is a general function that will return different types of
+output for different inputs and is used by \code{vapour_read_extent},
+\code{vapour_read_geometry} and \code{vapour_read_geometry_text}. The more specific functions should
+be used in preference to the \code{_cpp} version.
 
 As far as possible vapour aims to minimize the level of interpretation
 provided for the functions, so that developers can choose how things are

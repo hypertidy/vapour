@@ -13,72 +13,17 @@ sds_info_cpp <- function(pszFilename) {
     .Call('_vapour_sds_info_cpp', PACKAGE = 'vapour', pszFilename)
 }
 
-#' Layer names
-#'
-#' Obtain the names of available layers from a GDAL vector source.
-#' @inheritParams vapour_read_feature_what
-#' @return character vector of layer names
-#'
-#' @examples
-#' file <- "list_locality_postcode_meander_valley.tab"
-#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' vapour_layer_names(mvfile)
-#' @export
-vapour_layer_names <- function(dsource, sql = "") {
-    .Call('_vapour_vapour_layer_names', PACKAGE = 'vapour', dsource, sql)
+vapour_layer_names_cpp <- function(dsource, sql = "") {
+    .Call('_vapour_vapour_layer_names_cpp', PACKAGE = 'vapour', dsource, sql)
 }
 
-#' Vector attributes read
-#'
-#' Read layer attributes, optionally after SQL select
-#' @param dsource data source name (path to file, connection string, URL)
-#' @param layer integer of layer to work with, defaults to the first (0)
-#' @param sql if not empty this is executed against the data source (layer will be ignored)
-#' @examples
-#' file <- "list_locality_postcode_meander_valley.tab"
-#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' vapour_read_attributes(mvfile)
-#' sq <- "SELECT * FROM list_locality_postcode_meander_valley WHERE FID < 5"
-#' att <- vapour_read_attributes(mvfile, sql = sq)
-#' dsource <- "inst/extdata/tab/list_locality_postcode_meander_valley.tab"
-#'
-#' @export
-vapour_read_attributes <- function(dsource, layer = 0L, sql = "") {
-    .Call('_vapour_vapour_read_attributes', PACKAGE = 'vapour', dsource, layer, sql)
+vapour_read_attributes_cpp <- function(dsource, layer = 0L, sql = "") {
+    .Call('_vapour_vapour_read_attributes_cpp', PACKAGE = 'vapour', dsource, layer, sql)
 }
 
-#' Read GDAL feature thing 'what'
-#'
-#' Read GDAL geometry as blob, text, or numeric extent.
-#'
-#' `vapour_read_feature_what` will read a feature in various ways, as binary WKB, various text formats, a numeric
-#' extent, and for each an option SQL string will be evaluated against the data source before reading.
-#' The extent is the native bounding box, the four numbers xmin, xmax, ymin, ymax.
-#'
-#' @param dsource data source
-#' @param layer layer
-#' @param sql sql
-#' @param what what to read, "geometry", "text", "extent"
-#' @param textformat indicate text output format, available are "json" (default), "gml", "kml", "wkt"
-#' @examples
-#' file <- "list_locality_postcode_meander_valley.tab"
-#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' #tib <- tibble::tibble(wkb = vapour_read_geometry(mvfile)) %>%
-#' #  bind_cols(read_gdal_table(mvfile))
-#' pfile <- system.file("extdata/point.shp", package = "vapour")
-#' vapour_read_geometry(pfile)
-#'
-#' file <- "list_locality_postcode_meander_valley.tab"
-#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' vapour_read_geometry_text(mvfile)
-#' pfile <- system.file("extdata/point.shp", package = "vapour")
-#' vapour_read_geometry_text(pfile)
-#'
-#' file <- "list_locality_postcode_meander_valley.tab"
-#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' vapour_read_extent(mvfile)
 #' @export
-vapour_read_feature_what <- function(dsource, layer = 0L, sql = "", what = "geometry", textformat = "json") {
-    .Call('_vapour_vapour_read_feature_what', PACKAGE = 'vapour', dsource, layer, sql, what, textformat)
+#' @name vapour_read_geometry
+vapour_read_geometry_cpp <- function(dsource, layer = 0L, sql = "", what = "geometry", textformat = "json") {
+    .Call('_vapour_vapour_read_geometry_cpp', PACKAGE = 'vapour', dsource, layer, sql, what, textformat)
 }
 

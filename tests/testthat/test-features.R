@@ -2,12 +2,12 @@ context("test-features.R")
 
 
 f <- system.file("extdata", "sst_c.gpkg", package = "vapour")
-gbin <- vapour_read_feature_what(f, what = "geometry")
-gjsn <- vapour_read_feature_what(f, what = "text", textformat = "json")
-ggml <- vapour_read_feature_what(f, what = "text", textformat = "gml")
-gkml <- vapour_read_feature_what(f, what = "text", textformat = "kml")
-gwkt <- vapour_read_feature_what(f, what = "text", textformat = "wkt")
-gext <- vapour_read_feature_what(f, what = "extent")
+gbin <- vapour_read_geometry_cpp(f, what = "geometry")
+gjsn <- vapour_read_geometry_cpp(f, what = "text", textformat = "json")
+ggml <- vapour_read_geometry_cpp(f, what = "text", textformat = "gml")
+gkml <- vapour_read_geometry_cpp(f, what = "text", textformat = "kml")
+gwkt <- vapour_read_geometry_cpp(f, what = "text", textformat = "wkt")
+gext <- vapour_read_geometry_cpp(f, what = "extent")
 
 
 test_that("geometry read works", {
