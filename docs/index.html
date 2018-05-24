@@ -56,7 +56,14 @@
   <a href="news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/hypertidy/vapour">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -79,8 +86,8 @@
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p>The vapour package provides access to the basic <em>read</em> functions available in <a href="http://www.gdal.org/">GDAL</a>, the Geospatial Data Abstraction Library for both <a href="http://www.gdal.org/gdal_datamodel.html">raster</a> and a <a href="http://www.gdal.org/ogr_arch.html">vector</a> data sources.</p>
-<p>The functions are deliberately <em>lower-level</em> than the data models and provide access to the component entities indpendently.</p>
+<p>The vapour package provides access to the basic <em>read</em> functions available in <a href="http://www.gdal.org/">GDAL</a>for both <a href="http://www.gdal.org/gdal_datamodel.html">raster</a> and a <a href="http://www.gdal.org/ogr_arch.html">vector</a> data sources.</p>
+<p>The functions are deliberately <em>lower-level</em> than these data models and provide access to the component entities independently.</p>
 <p>For vector data vapour provides:</p>
 <ul>
 <li>read access to feature attributes.</li>
@@ -93,7 +100,7 @@
 <ul>
 <li>read access to the list of available rasters within a collection source (subdatasets).</li>
 <li>read access to <em>structural metadata</em> for individual raster sources.</li>
-<li>read access for raw data using GDAL’s <a href="http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1">RasterIO framework</a> which <em>automatically takes care of data type translation and image decimation / replication if the buffer size is different than the size of the region being accessed</em> and provides control over the resampling algorithm used.</li>
+<li>read access for raw data using GDAL’s <a href="http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1">RasterIO framework</a> and its dynamic image decimation / replication resampling algorithms.</li>
 </ul>
 <p>The workflows available are intended to support development of applications in R for these vector and <a href="https://en.wikipedia.org/wiki/Raster_data">raster data</a> without being constrained to any particular data model.</p>
 </div>
@@ -108,9 +115,10 @@
 <div id="purpose" class="section level2">
 <h2 class="hasAnchor">
 <a href="#purpose" class="anchor"></a>Purpose</h2>
-<p>The goal of vapour is to provide a basic <strong>GDAL API</strong> package for R. The key functions are for reading vector geometry and/or attributes and a low-level wrapper for reading raster data and raster metadata.</p>
-<p>The priority is to give low-level access to key functionality, not comprehensive coverage of the library. There is only read-only facilities, and no conversion to specialist types in R. Ideally, this could become a common foundation for other packages to specialize, but at the very least provides minimal examples to use GDAL for specialist needs.</p>
-<p>A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are <em>simple features</em> and <em>affine-based regular rasters composed of 2D slices</em>. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )</p>
+<p>The goal of vapour is to provide a basic <strong>GDAL API</strong> package for R. The key functions provide vector geometry or attributes and raster data and raster metadata.</p>
+<p>The priority now is to give low-level access to key functionality rather than comprehensive coverage of the library. There access is purely read-only, and provides no conversion to specialist types in R. Ideally, this could become a common foundation for other packages to specialize, but at the very least provides minimal examples to use GDAL for specialist needs.</p>
+<p>A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are <em>simple features</em> and <em>affine-based regular rasters composed of 2D slices</em>. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools.)</p>
+<p>These loftier general needs have come out of smaller more concrete goals, one was access to the “attributes-only” capacity of GDAL as a virtual database engine, and another access to the dense structures provided by transport vector data. GDAL’s dynamic resampling of arbitrary raster windows is also very useful for interactive tools on local data, and seems under-utilized in favour of less accessible online image services.</p>
 <p>This partly draws on work done in <a href="https://github.com/r-spatial/sf">the sf package</a> and in packages <code>rgdal</code> and <code>rgdal2</code>. I’m amazed that something as powerful and general as GDAL is still only available through these lenses, but recentish improvements make things much easier touse and share. Specifically <code>Rcpp</code> means that access to external libs is simplified, easier to learn and easier to get started and make progress. The other part is that cross-platform support is now much better, with more consistency on the libraries available on the CRAN machines and in other contexts.</p>
 <p>Examples of packages that use vapour are in development, <a href="https://github.com/mdsumner/RGDALSQL">RGDALSQL</a> and <a href="https://github.com/hypertidy/lazyraster">lazyraster</a>. <code>RGDALSQL</code> aims to leverage the facilities of GDAL to provide data <em>on-demand</em> for many sources <em>as if</em> they were databases. <code>lazyraster</code> uses the level-of-detail facility of GDAL to read just enough resolution from a raster source using traditional window techniques.</p>
 <p>Limitations, work-in-progress and other discussion are active here: <a href="https://github.com/hypertidy/vapour/issues/4" class="uri">https://github.com/hypertidy/vapour/issues/4</a></p>
@@ -152,7 +160,9 @@
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
-<li>Report a bug at <br><a href="NA">NA</a>
+<li>Browse source code at <br><a href="https://github.com/hypertidy/vapour">https://​github.com/​hypertidy/​vapour</a>
+</li>
+<li>Report a bug at <br><a href="https://github.com/hypertidy/vapour/issues">https://​github.com/​hypertidy/​vapour/​issues</a>
 </li>
 </ul>
 </div>

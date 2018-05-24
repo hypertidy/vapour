@@ -16,13 +16,12 @@ Overview
 --------
 
 The vapour package provides access to the basic *read* functions
-available in [GDAL](http://www.gdal.org/), the Geospatial Data
-Abstraction Library for both
+available in [GDAL](http://www.gdal.org/)for both
 [raster](http://www.gdal.org/gdal_datamodel.html) and a
 [vector](http://www.gdal.org/ogr_arch.html) data sources.
 
-The functions are deliberately *lower-level* than the data models and
-provide access to the component entities indpendently.
+The functions are deliberately *lower-level* than these data models and
+provide access to the component entities independently.
 
 For vector data vapour provides:
 
@@ -42,10 +41,8 @@ For raster data vapour provides:
 -   read access to *structural metadata* for individual raster sources.
 -   read access for raw data using GDAL’s [RasterIO
     framework](http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1)
-    which *automatically takes care of data type translation and image
-    decimation / replication if the buffer size is different than the
-    size of the region being accessed* and provides control over the
-    resampling algorithm used.
+    and its dynamic image decimation / replication resampling
+    algorithms.
 
 The workflows available are intended to support development of
 applications in R for these vector and [raster
@@ -73,21 +70,29 @@ Purpose
 -------
 
 The goal of vapour is to provide a basic **GDAL API** package for R. The
-key functions are for reading vector geometry and/or attributes and a
-low-level wrapper for reading raster data and raster metadata.
+key functions provide vector geometry or attributes and raster data and
+raster metadata.
 
-The priority is to give low-level access to key functionality, not
-comprehensive coverage of the library. There is only read-only
-facilities, and no conversion to specialist types in R. Ideally, this
-could become a common foundation for other packages to specialize, but
-at the very least provides minimal examples to use GDAL for specialist
-needs.
+The priority now is to give low-level access to key functionality rather
+than comprehensive coverage of the library. There access is purely
+read-only, and provides no conversion to specialist types in R. Ideally,
+this could become a common foundation for other packages to specialize,
+but at the very least provides minimal examples to use GDAL for
+specialist needs.
 
 A parallel goal is to be freed from the powerful but sometimes limiting
 high-level data models of GDAL itself, specifically these are *simple
 features* and *affine-based regular rasters composed of 2D slices*.
 (GDAL will possibly remove these limitations over time but still there
-will always be value in having modularity in an ecosystem of tools. )
+will always be value in having modularity in an ecosystem of tools.)
+
+These loftier general needs have come out of smaller more concrete
+goals, one was access to the “attributes-only” capacity of GDAL as a
+virtual database engine, and another access to the dense structures
+provided by transport vector data. GDAL’s dynamic resampling of
+arbitrary raster windows is also very useful for interactive tools on
+local data, and seems under-utilized in favour of less accessible online
+image services.
 
 This partly draws on work done in [the sf
 package](https://github.com/r-spatial/sf) and in packages `rgdal` and
