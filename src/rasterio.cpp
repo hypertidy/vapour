@@ -16,19 +16,41 @@ List raster_info_cpp (const char* pszFilename)
     Rcpp::stop("cannot open dataset");
   }
 
-  poDataset->GetMetadata();
+
+  //poDataset->GetMetadata();
+
   double        adfGeoTransform[6];
+
   poDataset->GetGeoTransform( adfGeoTransform );
+
+  // bail out NOW (we have no SDS and/or no rasters)
+  // #f <- system.file("h5ex_t_enum.h5", package = "h5")
+  // #raster_sds_info(f)
+  // #raster_info(f)
+
+  if (poDataset->GetRasterCount() < 1) {
+    Rcpp::stop("no rasters found in dataset");
+  }
+  // Rprintf( "Size is %dx%dx%d\n",
+  //         poDataset->GetRasterXSize(), poDataset->GetRasterYSize(),
+  //         poDataset->GetRasterCount() );
+
 
   Rcpp::DoubleVector trans(6);
   for (int ii = 0; ii < 6; ii++) trans[ii] = adfGeoTransform[ii];
+
+
 
   GDALRasterBand  *poBand;
   int             nBlockXSize, nBlockYSize;
   int             bGotMin, bGotMax;
   double          adfMinMax[2];
+
   poBand = poDataset->GetRasterBand( 1 );
+
+  // if we don't bail out above with no rasters things go bad here
   poBand->GetBlockSize( &nBlockXSize, &nBlockYSize );
+
   adfMinMax[0] = poBand->GetMinimum( &bGotMin );
   adfMinMax[1] = poBand->GetMaximum( &bGotMax );
   if( ! (bGotMin && bGotMax) )
