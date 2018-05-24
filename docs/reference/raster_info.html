@@ -30,8 +30,9 @@
 
 <meta property="og:title" content="Raster information — raster_info" />
 
-<meta property="og:description" content="Return the basic structural metadata of a raster source understood by GDAL. Subdatasets
-may be specified by number, starting at 1." />
+<meta property="og:description" content="Return the basic structural metadata of a raster source understood by GDAL.
+Subdatasets may be specified by number, starting at 1. See
+raster_sds_info() for more." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -103,8 +104,9 @@ may be specified by number, starting at 1." />
 
     <div class="ref-description">
     
-    <p>Return the basic structural metadata of a raster source understood by GDAL. Subdatasets
-may be specified by number, starting at 1.</p>
+    <p>Return the basic structural metadata of a raster source understood by GDAL.
+Subdatasets may be specified by number, starting at 1. See
+<code><a href='raster_sds_info.html'>raster_sds_info()</a></code> for more.</p>
     
     </div>
 
@@ -137,27 +139,37 @@ may be specified by number, starting at 1.</p>
 <dt>tilesXY</dt><dd><p>dimensions x-y of internal tiling scheme</p></dd>
 <dt>projection</dt><dd><p>text version of map projection parameter string</p></dd>
 </dl>
-    <p>On access to a source vapour functions will report on the existence of subdatasets while
+    <p>On access vapour functions will report on the existence of subdatasets while
 defaulting to the first subdataset found.</p>
     
     <h2 class="hasAnchor" id="subdatasets"><a class="anchor" href="#subdatasets"></a>Subdatasets</h2>
 
     
-    <p>Some sources provide multiple data sets, where a dataset is described by a 2 (or more) dimensional
-grid whose structure is described by the metadata described above. Note that sub dataset is a
-different concept to band or dimension. Sources that may have multiple data
-sets are HDF4/HDF5 and NetCDF, and they are loosely analogous to the concept of <em>layer</em> in
-GDAL vector data.</p>
-<p>If subdatasets are present but not specified the first is queried. The choice of subdataset is
-analogous to the way that the <code>raster</code> package behaves, and uses the argument <code>varname</code>. Variables
-in NetCDF correspond to subdatasets, but a single data set might have multiple variables in different
-bands or in dimensions, so this guide does not hold across various systems.</p>
+    <p>Some sources provide multiple data sets, where a dataset is described by a 2-
+(or more) dimensional grid whose structure is described by the metadata
+described above. Note that <em>subdataset</em> is a different concept to <em>band or
+dimension</em>. Sources that may have multiple data sets are HDF4/HDF5 and
+NetCDF, and they are loosely analogous to the concept of <em>layer</em> in GDAL
+vector data. Variables are usually seen as distinct data but in GDAL and
+related 2D-interpretations this concept is leveraged as a 3rd dimension (and
+higher). In a GeoTIFF a third dimension might be implicit across bands, i.e.
+to express time varying data and so each band is not properly a variable.
+Similarly in NetCDF, the data may be any dimensional but there's only an
+implicit link for other variables that exist in that same dimensional space.
+When using GDAL you are always traversing this confusing realm.</p>
+<p>If subdatasets are present but not specified the first is queried. The choice
+of subdataset is analogous to the way that the <code>raster</code> package behaves, and
+uses the argument <code>varname</code>. Variables in NetCDF correspond to subdatasets,
+but a single data set might have multiple variables in different bands or in
+dimensions, so this guide does not hold across various systems.</p>
     
     <h2 class="hasAnchor" id="the-geo-transform"><a class="anchor" href="#the-geo-transform"></a>The Geo Transform</h2>
 
     
     <p>From <a href='http://www.gdal.org/gdal_datamodel.html'>http://www.gdal.org/gdal_datamodel.html</a>.</p>
-<p>The affine transform consists of six coefficients returned by <code>GDALDataset::GetGeoTransform()</code> which map pixel/line coordinates into georeferenced space using the following relationship:</p>
+<p>The affine transform consists of six coefficients returned by
+<code>GDALDataset::GetGeoTransform()</code> which map pixel/line coordinates into
+georeferenced space using the following relationship:</p>
 <p><code>Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)</code></p>
 <p><code>Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)</code></p>
 <p>They are</p><dl class='dl-horizontal'>
@@ -167,11 +179,17 @@ bands or in dimensions, so this guide does not hold across various systems.</p>
 <dt>GT3, ymin</dt><dd><p>the y position of the upper left corner of the upper left pixel</p></dd>
 <dt>GT4, xskew</dt><dd><p>x component of the pixel height</p></dd>
 <dt>GT5, yres</dt><dd><p>the scale of the y-axis, the height of the pixel in <em>negative</em> y-units</p></dd>
-</dl><p>Please note that these coefficients are equivalent to the contents of a <em>world file</em> but that
-the order is not the same and the world file uses cell centre convention rather than edge. <a href='https://en.wikipedia.org/wiki/World_file'>https://en.wikipedia.org/wiki/World_file</a></p>
-<p>Usually the skew components are zero, and so only four coefficients are relevant and correspond to the offset and scale used to
-position the raster - in combination with the number of rows and columns of data they
-provide the spatial extent and the pixel size in each direction.</p>
+</dl>
+    <p>Please note that these coefficients are equivalent to the contents of a
+<em>world file</em> but that the order is not the same and the world file uses cell
+centre convention rather than edge.
+<a href='https://en.wikipedia.org/wiki/World_file'>https://en.wikipedia.org/wiki/World_file</a></p>
+<p>Usually the skew components are zero, and so only four coefficients are
+relevant and correspond to the offset and scale used to position the raster -
+in combination with the number of rows and columns of data they provide the
+spatial extent and the pixel size in each direction.  Very rarely a an actual
+affine raster will be use with this <em>rotation</em> specified within the transform
+coefficients.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 

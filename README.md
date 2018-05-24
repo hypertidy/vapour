@@ -1,4 +1,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+vapour
+======
+
 [![Build
 Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_clang&label=trusty_clang)](https://travis-ci.org/hypertidy/vapour)
 [![Build
@@ -9,13 +12,40 @@ Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BU
 Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
 
-vapour
-======
+Overview
+--------
 
-We aim to provide access to the basic functions available in GDAL, which
-loosely provides both a
+The vapour package provides access to the basic *read* functions
+available in [GDAL](http://www.gdal.org/), the Geospatial Data
+Abstraction Library for both
 [raster](http://www.gdal.org/gdal_datamodel.html) and a
-[vector](http://www.gdal.org/ogr_arch.html) data model.
+[vector](http://www.gdal.org/ogr_arch.html) data sources.
+
+The functions are deliberately *lower-level* than the data models and
+provide access to the component entities indpendently.
+
+For vector data vapour provides:
+
+-   read access to feature attributes.
+-   read access to raw binary geometry.
+-   read access to geometry in text forms (GeoJSON, WKT, GML, KML).
+-   read access to the extent, or bounding box, of feature geometries.
+
+All vector/feature read tasks can optionally apply
+[OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to data
+extraction.
+
+For raster data vapour provides:
+
+-   read access to the list of available rasters within a collection
+    source (subdatasets).
+-   read access to *structural metadata* for individual raster sources.
+-   read access for raw data using GDAL’s [RasterIO
+    framework](http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1)
+    which *automatically takes care of data type translation and image
+    decimation / replication if the buffer size is different than the
+    size of the region being accessed* and provides control over the
+    resampling algorithm used.
 
 The workflows available are intended to support development of
 applications in R for these vector and [raster
@@ -33,15 +63,20 @@ devtools::install_github("hypertidy/vapour")
 
 You will need development tools for building R packages.
 
-On Linux and MacOS you’ll need an available GDAL installation, but on
-Windows the ROpenSci rwinlib tools are used and the required GDAL will
-be downloaded and compiled against when building the package.
+On Linux and MacOS building also requires an available GDAL
+installation, but on Windows the ROpenSci rwinlib tools are used and the
+required GDAL will be downloaded and used when building the package.
+This installation is self-contained and only affects the use of R, it
+can be used alongside other applications using GDAL.
 
 Purpose
 -------
 
 The goal of vapour is to provide a basic **GDAL API** package for R. The
-priority is to give low-level access to key functionality, not
+key functions are for reading vector geometry and/or attributes and a
+low-level wrapper for reading raster data and raster metadata.
+
+The priority is to give low-level access to key functionality, not
 comprehensive coverage of the library. There is only read-only
 facilities, and no conversion to specialist types in R. Ideally, this
 could become a common foundation for other packages to specialize, but
@@ -72,34 +107,11 @@ sources *as if* they were databases. `lazyraster` uses the
 level-of-detail facility of GDAL to read just enough resolution from a
 raster source using traditional window techniques.
 
-GDAL for data
-=============
-
-There are tools for reading from both vector and raster data sources.
-
-Vector data
------------
-
--   read attributes only
--   read geometry only
--   read geometry as raw binary, or various text forms
--   read geometry bounding box only
--   optionally, apply [OGRSQL](http://www.gdal.org/ogr_sql.html) to a
-    layer prior to above read calls
-
-Raster data
------------
-
--   find structural metadata for a single raster source
--   find available single rasters within a complex source
--   read from a raster arbitrarily using GDAL very flexible [IO
-    framework](http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1).
-
 Limitations, work-in-progress and other discussion are active here:
 <https://github.com/hypertidy/vapour/issues/4>
 
 Warnings
-========
+--------
 
 It’s possible to give problematic “SELECT” statements via the `sql`
 argument. Note that the geometry readers `vapour_read_geometry`,
@@ -107,7 +119,7 @@ argument. Note that the geometry readers `vapour_read_geometry`,
 `SELECT ... FROM` clause and replace it with `SELECT * FROM` to ensure
 that the geometry is accessible, though the attributes are ignored. This
 means we can allow the user or `dplyr` to create any `SELECT` statement.
-The function `vapour_read_geometry_what` will return a list of NULLs, in
+The function `vapour_read_geometry_cpp` will return a list of NULLs, in
 this case.
 
 I haven’t tried this against a real database, I’m not sure if we need
@@ -125,25 +137,22 @@ help("vapour-package")
 
 See the vignettes and documentation for examples.
 
-Set up
-------
-
-I’ve kept a record of a minimal GDAL wrapper package here:
-
-<https://github.com/mdsumner/gdalmin>
-
-This must be run when your function definitions change:
+``` r
+browseVignettes(package = "vapour")
+```
 
 Context
 -------
 
-My first real attempt at DBI abstraction is here, this is still an
-aspect that is desperately needed in R to help bring tidyverse attention
-to spatial:
+My first real attempt at DBI abstraction is here:
 
 <https://github.com/mdsumner/RGDALSQL>
 
-Before that I had worked on getting sp and dplyr to at least work
+I’ve kept a record of a minimal GDAL wrapper package here:
+
+<https://github.com/diminutive/gdalmin>
+
+Before those I had worked on getting sp and dplyr to at least work
 together <https://github.com/dis-organization/sp_dplyrexpt> and recently
 rgdal was updated to allow tibbles to be used, something that spbabel
 and spdplyr really needed to avoid friction.
@@ -151,7 +160,7 @@ and spdplyr really needed to avoid friction.
 Early exploration of allow non-geometry read with rgdal was tried here:
 <https://github.com/r-gris/gladr>
 
-Big thanks to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art
+Thankss to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art
 that I crib and copy from. Jeroen Ooms helped the R community hugely by
 providing an automatable build process for libraries on Windows. Mark
 Padgham helped kick me over a huge obstacle in using C++ libraries with

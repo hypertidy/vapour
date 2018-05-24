@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • vapour</title>
+<title>GDAL raster subdatasets (variables) — raster_sds_info • vapour</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -28,7 +28,16 @@
 
 
 
-<meta property="og:title" content="Changelog" />
+<meta property="og:title" content="GDAL raster subdatasets (variables) — raster_sds_info" />
+
+<meta property="og:description" content="A subdataset is a collection abstraction for a number of variables
+within a single GDAL source. If there's only one variable the datasource and
+the variable have the same data source string. If there is more than one the
+subdatasets have the form DRIVER:"datasourcename":varname. Each
+subdataset name can stand in place of a data source name that has only one
+variable, so we always treat a source as a subdataset, even if there's only
+one." />
+<meta name="twitter:card" content="summary" />
 
 
 <!-- mathjax -->
@@ -43,7 +52,7 @@
   </head>
 
   <body>
-    <div class="container template-news">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -92,43 +101,66 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
-      
+    <h1>GDAL raster subdatasets (variables)</h1>
+    
+    <div class="hidden name"><code>raster_sds_info.Rd</code></div>
     </div>
 
-    <div id="vapour-0-0-1" class="section level1">
-<h1 class="page-header">
-<a href="#vapour-0-0-1" class="anchor"></a>vapour 0.0.1</h1>
-<ul>
-<li><p>More C++ functions now have explicit R wrappers instead of Rcpp exports. New function <code>vapour_read_geometry_cpp</code> deprecates <code>vapour_read_geometry_what</code> - this is still exported to R but the more specialized forms still should be used in preference.</p></li>
-<li><p>New naming convention uses <code>vapour_</code> for vector sources, <code>raster_</code> for raster sources to make function names a little more consistent.</p></li>
-<li><p>New wrapper <code>raster_sds_info</code> to replace <code>sds_info</code> which is now deprecated.</p></li>
-<li><p>New wrapper <code>vapour_read_geometry_what</code> to replace <code>vapour_read_feature_what</code> which i is now deprecated.</p></li>
-<li><p>New function <code>vapour_read_names</code> to return the vector of FID values.</p></li>
-<li><p>The read for raster data now returns numeric or integer appropriately.</p></li>
-<li><p><code>raster_info</code> now includes <code>bands</code> as the count of available bands.</p></li>
-<li><p>The IO read now allows a 4-element <code>window</code> to return data at native resolution, by copying the third and fourth values (source dimension) to the fifth and sixth values (output dimension) respectively.</p></li>
-<li><p>Subdatasets are now supported.</p></li>
-<li><p>Added sanity check behaviour to <code>raster_io</code> to avoid out of bounds read attempts.</p></li>
-<li><p>Resampling options added to raster data read.</p></li>
-<li><p>Upgraded to rwinlib gdal 2.2.3.</p></li>
-<li><p>added function <code>vapour_layer_names</code> to return character layer names, and implicitly provide a layer count</p></li>
-<li><p>feature iteration now avoids “GetFeatureCount” and collects each element in a growing list, thanks to Jim Hester</p></li>
-<li><p>renamed <code>format</code> argument to <code>textformat</code>, this is ignored unless <code>what = "text"</code></p></li>
-<li><p>Created a single C++ feature read to remove repeated logic, <code>vapour_read_geometry</code>, <code>vapour_read_geometry_text</code>, and <code>vapour_read_extent</code> all call <code>vapour_read_geometry_what</code>.</p></li>
-</ul>
-</div>
-  </div>
+    <div class="ref-description">
+    
+    <p>A <strong>subdataset</strong> is a collection abstraction for a number of <strong>variables</strong>
+within a single GDAL source. If there's only one variable the datasource and
+the variable have the same data source string. If there is more than one the
+subdatasets have the form <strong>DRIVER:"datasourcename":varname</strong>. Each
+subdataset name can stand in place of a data source name that has only one
+variable, so we always treat a source as a subdataset, even if there's only
+one.</p>
+    
+    </div>
 
+    <pre class="usage"><span class='fu'>raster_sds_info</span>(<span class='no'>x</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>a data source string, filename, database connection string, Thredds or other URL</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>list of character vectors, see Details</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Returns a list of <code>datasource</code> and <code>subdataset</code>. In the case of a normal data
+source, with no subdatasets the value of both entries is the <code>datasource</code>.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='st'>"extdata"</span>, <span class='st'>"sst.tif"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"vapour"</span>)
+<span class='fu'>raster_sds_info</span>(<span class='no'>f</span>)</div><div class='output co'>#&gt; $datasource
+#&gt; [1] "/perm_storage/home/mdsumner/Git/vapour/inst/extdata/sst.tif"
+#&gt; 
+#&gt; $subdataset
+#&gt; [1] "/perm_storage/home/mdsumner/Git/vapour/inst/extdata/sst.tif"
+#&gt; </div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#vapour-0-0-1">0.0.1</a></li>
-      </ul>
-    </div>
-  </div>
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
 
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
+  </div>
 </div>
 
       <footer>

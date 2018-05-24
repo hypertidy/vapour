@@ -31,3 +31,10 @@ Suggests:
     rmarkdown
 SystemRequirements: GDAL (>= 2.0.0), PROJ.4 (>= 4.8.0)
 VignetteBuilder: knitr
+Collate: 
+    '000_vapour_input.R'
+    'RcppExports.R'
+    'raster-info.R'
+    'raster-input.R'
+    'vapour-package.R'
+    'yyy-deprecate.R'

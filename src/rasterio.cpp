@@ -27,7 +27,6 @@ List raster_info_cpp (const char* pszFilename)
   // #f <- system.file("h5ex_t_enum.h5", package = "h5")
   // #raster_sds_info(f)
   // #raster_info(f)
-
   if (poDataset->GetRasterCount() < 1) {
     Rcpp::stop("no rasters found in dataset");
   }

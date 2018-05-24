@@ -173,6 +173,8 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
 }
 
 
+// ## re include see NOTE in 000_vapour_input.R
+//' @include 000_vapour_input.R
 //' @export
 //' @name vapour_read_geometry
 // [[Rcpp::export]]

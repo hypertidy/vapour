@@ -72,83 +72,73 @@
     
     
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 <div id="vapour" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#vapour" class="anchor"></a>vapour</h1></div>
-<p>We aim to provide access to the basic functions available in GDAL, which loosely provides both a <a href="http://www.gdal.org/gdal_datamodel.html">raster</a> and a <a href="http://www.gdal.org/ogr_arch.html">vector</a> data model.</p>
+
+<div id="overview" class="section level2">
+<h2 class="hasAnchor">
+<a href="#overview" class="anchor"></a>Overview</h2>
+<p>The vapour package provides access to the basic <em>read</em> functions available in <a href="http://www.gdal.org/">GDAL</a>, the Geospatial Data Abstraction Library for both <a href="http://www.gdal.org/gdal_datamodel.html">raster</a> and a <a href="http://www.gdal.org/ogr_arch.html">vector</a> data sources.</p>
+<p>The functions are deliberately <em>lower-level</em> than the data models and provide access to the component entities indpendently.</p>
+<p>For vector data vapour provides:</p>
+<ul>
+<li>read access to feature attributes.</li>
+<li>read access to raw binary geometry.</li>
+<li>read access to geometry in text forms (GeoJSON, WKT, GML, KML).</li>
+<li>read access to the extent, or bounding box, of feature geometries.</li>
+</ul>
+<p>All vector/feature read tasks can optionally apply <a href="http://www.gdal.org/ogr_sql.html">OGRSQL</a> to a layer prior to data extraction.</p>
+<p>For raster data vapour provides:</p>
+<ul>
+<li>read access to the list of available rasters within a collection source (subdatasets).</li>
+<li>read access to <em>structural metadata</em> for individual raster sources.</li>
+<li>read access for raw data using GDAL’s <a href="http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1">RasterIO framework</a> which <em>automatically takes care of data type translation and image decimation / replication if the buffer size is different than the size of the region being accessed</em> and provides control over the resampling algorithm used.</li>
+</ul>
 <p>The workflows available are intended to support development of applications in R for these vector and <a href="https://en.wikipedia.org/wiki/Raster_data">raster data</a> without being constrained to any particular data model.</p>
+</div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>The package can be installed from Github.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"hypertidy/vapour"</span>)</a></code></pre></div>
 <p>You will need development tools for building R packages.</p>
-<p>On Linux and MacOS you’ll need an available GDAL installation, but on Windows the ROpenSci rwinlib tools are used and the required GDAL will be downloaded and compiled against when building the package.</p>
+<p>On Linux and MacOS building also requires an available GDAL installation, but on Windows the ROpenSci rwinlib tools are used and the required GDAL will be downloaded and used when building the package. This installation is self-contained and only affects the use of R, it can be used alongside other applications using GDAL.</p>
 </div>
 <div id="purpose" class="section level2">
 <h2 class="hasAnchor">
 <a href="#purpose" class="anchor"></a>Purpose</h2>
-<p>The goal of vapour is to provide a basic <strong>GDAL API</strong> package for R. The priority is to give low-level access to key functionality, not comprehensive coverage of the library. There is only read-only facilities, and no conversion to specialist types in R. Ideally, this could become a common foundation for other packages to specialize, but at the very least provides minimal examples to use GDAL for specialist needs.</p>
+<p>The goal of vapour is to provide a basic <strong>GDAL API</strong> package for R. The key functions are for reading vector geometry and/or attributes and a low-level wrapper for reading raster data and raster metadata.</p>
+<p>The priority is to give low-level access to key functionality, not comprehensive coverage of the library. There is only read-only facilities, and no conversion to specialist types in R. Ideally, this could become a common foundation for other packages to specialize, but at the very least provides minimal examples to use GDAL for specialist needs.</p>
 <p>A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are <em>simple features</em> and <em>affine-based regular rasters composed of 2D slices</em>. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools. )</p>
 <p>This partly draws on work done in <a href="https://github.com/r-spatial/sf">the sf package</a> and in packages <code>rgdal</code> and <code>rgdal2</code>. I’m amazed that something as powerful and general as GDAL is still only available through these lenses, but recentish improvements make things much easier touse and share. Specifically <code>Rcpp</code> means that access to external libs is simplified, easier to learn and easier to get started and make progress. The other part is that cross-platform support is now much better, with more consistency on the libraries available on the CRAN machines and in other contexts.</p>
 <p>Examples of packages that use vapour are in development, <a href="https://github.com/mdsumner/RGDALSQL">RGDALSQL</a> and <a href="https://github.com/hypertidy/lazyraster">lazyraster</a>. <code>RGDALSQL</code> aims to leverage the facilities of GDAL to provide data <em>on-demand</em> for many sources <em>as if</em> they were databases. <code>lazyraster</code> uses the level-of-detail facility of GDAL to read just enough resolution from a raster source using traditional window techniques.</p>
-</div>
-</div>
-<div id="gdal-for-data" class="section level1">
-<h1 class="hasAnchor">
-<a href="#gdal-for-data" class="anchor"></a>GDAL for data</h1>
-<p>There are tools for reading from both vector and raster data sources.</p>
-<div id="vector-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#vector-data" class="anchor"></a>Vector data</h2>
-<ul>
-<li>read attributes only</li>
-<li>read geometry only</li>
-<li>read geometry as raw binary, or various text forms</li>
-<li>read geometry bounding box only</li>
-<li>optionally, apply <a href="http://www.gdal.org/ogr_sql.html">OGRSQL</a> to a layer prior to above read calls</li>
-</ul>
-</div>
-<div id="raster-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#raster-data" class="anchor"></a>Raster data</h2>
-<ul>
-<li>find structural metadata for a single raster source</li>
-<li>find available single rasters within a complex source</li>
-<li>read from a raster arbitrarily using GDAL very flexible <a href="http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1">IO framework</a>.</li>
-</ul>
 <p>Limitations, work-in-progress and other discussion are active here: <a href="https://github.com/hypertidy/vapour/issues/4" class="uri">https://github.com/hypertidy/vapour/issues/4</a></p>
 </div>
-</div>
-<div id="warnings" class="section level1">
-<h1 class="hasAnchor">
-<a href="#warnings" class="anchor"></a>Warnings</h1>
-<p>It’s possible to give problematic “SELECT” statements via the <code>sql</code> argument. Note that the geometry readers <code>vapour_read_geometry</code>, <code>vapour_read_geometry_text</code>, and <code>vapour_read_extent</code> will strip out the <code>SELECT ... FROM</code> clause and replace it with <code>SELECT * FROM</code> to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or <code>dplyr</code> to create any <code>SELECT</code> statement. The function <code>vapour_read_geometry_what</code> will return a list of NULLs, in this case.</p>
+<div id="warnings" class="section level2">
+<h2 class="hasAnchor">
+<a href="#warnings" class="anchor"></a>Warnings</h2>
+<p>It’s possible to give problematic “SELECT” statements via the <code>sql</code> argument. Note that the geometry readers <code>vapour_read_geometry</code>, <code>vapour_read_geometry_text</code>, and <code>vapour_read_extent</code> will strip out the <code>SELECT ... FROM</code> clause and replace it with <code>SELECT * FROM</code> to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or <code>dplyr</code> to create any <code>SELECT</code> statement. The function <code>vapour_read_geometry_cpp</code> will return a list of NULLs, in this case.</p>
 <p>I haven’t tried this against a real database, I’m not sure if we need <code>AsBinary()</code> around EWKB geoms, for example - but at any rate these can be ingested by <code>sf</code>.</p>
+</div>
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
 <p>The package documentation page gives an overview of available functions.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">help</span>(<span class="st">"vapour-package"</span>)</a></code></pre></div>
 <p>See the vignettes and documentation for examples.</p>
-</div>
-<div id="set-up" class="section level2">
-<h2 class="hasAnchor">
-<a href="#set-up" class="anchor"></a>Set up</h2>
-<p>I’ve kept a record of a minimal GDAL wrapper package here:</p>
-<p><a href="https://github.com/mdsumner/gdalmin" class="uri">https://github.com/mdsumner/gdalmin</a></p>
-<p>This must be run when your function definitions change:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">tools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/tools/topics/package_native_routine_registration_skeleton">package_native_routine_registration_skeleton</a></span>(<span class="st">"../vapour"</span>, <span class="st">"src/init.c"</span>,<span class="dt">character_only =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">browseVignettes</span>(<span class="dt">package =</span> <span class="st">"vapour"</span>)</a></code></pre></div>
 </div>
 <div id="context" class="section level2">
 <h2 class="hasAnchor">
 <a href="#context" class="anchor"></a>Context</h2>
-<p>My first real attempt at DBI abstraction is here, this is still an aspect that is desperately needed in R to help bring tidyverse attention to spatial:</p>
+<p>My first real attempt at DBI abstraction is here:</p>
 <p><a href="https://github.com/mdsumner/RGDALSQL" class="uri">https://github.com/mdsumner/RGDALSQL</a></p>
-<p>Before that I had worked on getting sp and dplyr to at least work together <a href="https://github.com/dis-organization/sp_dplyrexpt" class="uri">https://github.com/dis-organization/sp_dplyrexpt</a> and recently rgdal was updated to allow tibbles to be used, something that spbabel and spdplyr really needed to avoid friction.</p>
+<p>I’ve kept a record of a minimal GDAL wrapper package here:</p>
+<p><a href="https://github.com/diminutive/gdalmin" class="uri">https://github.com/diminutive/gdalmin</a></p>
+<p>Before those I had worked on getting sp and dplyr to at least work together <a href="https://github.com/dis-organization/sp_dplyrexpt" class="uri">https://github.com/dis-organization/sp_dplyrexpt</a> and recently rgdal was updated to allow tibbles to be used, something that spbabel and spdplyr really needed to avoid friction.</p>
 <p>Early exploration of allow non-geometry read with rgdal was tried here: <a href="https://github.com/r-gris/gladr" class="uri">https://github.com/r-gris/gladr</a></p>
-<p>Big thanks to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an automatable build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured my ravings about wanting this level of control for many years.</p>
+<p>Thankss to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an automatable build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured my ravings about wanting this level of control for many years.</p>
 </div>
 </div>
 <div id="code-of-conduct" class="section level1">

@@ -119,7 +119,7 @@ raster_info <- function(x, ..., sds = NULL) {
 #' Returns a list of `datasource` and `subdataset`. In the case of a normal data
 #' source, with no subdatasets the value of both entries is the `datasource`.
 #'
-#'  @param x a data source string, filename, database connection string, Thredds or other URL
+#' @param x a data source string, filename, database connection string, Thredds or other URL
 #'
 #' @return list of character vectors, see Details
 #' @export
@@ -140,9 +140,4 @@ raster_sds_info <- function(x) {
   list(datasource = rep(x, length(sources)), subdataset = sources)
 }
 
-#' @rdname vapour-deprecated
-#' @export
-sds_info <- function(x) {
-  .Deprecated("raster_sds_info")
-  raster_sds_info(x)
-}
+

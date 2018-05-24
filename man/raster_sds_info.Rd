@@ -6,6 +6,9 @@
 \usage{
 raster_sds_info(x)
 }
+\arguments{
+\item{x}{a data source string, filename, database connection string, Thredds or other URL}
+}
 \value{
 list of character vectors, see Details
 }
@@ -21,8 +24,6 @@ one.
 \details{
 Returns a list of \code{datasource} and \code{subdataset}. In the case of a normal data
 source, with no subdatasets the value of both entries is the \code{datasource}.
-
-@param x a data source string, filename, database connection string, Thredds or other URL
 }
 \examples{
 f <- system.file("extdata", "sst.tif", package = "vapour")

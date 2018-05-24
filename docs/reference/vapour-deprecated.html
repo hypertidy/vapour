@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • vapour</title>
+<title>Functions deprecated from vapour — vapour-deprecated • vapour</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -28,7 +28,10 @@
 
 
 
-<meta property="og:title" content="Changelog" />
+<meta property="og:title" content="Functions deprecated from vapour — vapour-deprecated" />
+
+<meta property="og:description" content="These will be removed in a future release." />
+<meta name="twitter:card" content="summary" />
 
 
 <!-- mathjax -->
@@ -43,7 +46,7 @@
   </head>
 
   <body>
-    <div class="container template-news">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -92,43 +95,70 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
-      
+    <h1>Functions deprecated from vapour</h1>
+    
+    <div class="hidden name"><code>vapour-deprecated.Rd</code></div>
     </div>
 
-    <div id="vapour-0-0-1" class="section level1">
-<h1 class="page-header">
-<a href="#vapour-0-0-1" class="anchor"></a>vapour 0.0.1</h1>
-<ul>
-<li><p>More C++ functions now have explicit R wrappers instead of Rcpp exports. New function <code>vapour_read_geometry_cpp</code> deprecates <code>vapour_read_geometry_what</code> - this is still exported to R but the more specialized forms still should be used in preference.</p></li>
-<li><p>New naming convention uses <code>vapour_</code> for vector sources, <code>raster_</code> for raster sources to make function names a little more consistent.</p></li>
-<li><p>New wrapper <code>raster_sds_info</code> to replace <code>sds_info</code> which is now deprecated.</p></li>
-<li><p>New wrapper <code>vapour_read_geometry_what</code> to replace <code>vapour_read_feature_what</code> which i is now deprecated.</p></li>
-<li><p>New function <code>vapour_read_names</code> to return the vector of FID values.</p></li>
-<li><p>The read for raster data now returns numeric or integer appropriately.</p></li>
-<li><p><code>raster_info</code> now includes <code>bands</code> as the count of available bands.</p></li>
-<li><p>The IO read now allows a 4-element <code>window</code> to return data at native resolution, by copying the third and fourth values (source dimension) to the fifth and sixth values (output dimension) respectively.</p></li>
-<li><p>Subdatasets are now supported.</p></li>
-<li><p>Added sanity check behaviour to <code>raster_io</code> to avoid out of bounds read attempts.</p></li>
-<li><p>Resampling options added to raster data read.</p></li>
-<li><p>Upgraded to rwinlib gdal 2.2.3.</p></li>
-<li><p>added function <code>vapour_layer_names</code> to return character layer names, and implicitly provide a layer count</p></li>
-<li><p>feature iteration now avoids “GetFeatureCount” and collects each element in a growing list, thanks to Jim Hester</p></li>
-<li><p>renamed <code>format</code> argument to <code>textformat</code>, this is ignored unless <code>what = "text"</code></p></li>
-<li><p>Created a single C++ feature read to remove repeated logic, <code>vapour_read_geometry</code>, <code>vapour_read_geometry_text</code>, and <code>vapour_read_extent</code> all call <code>vapour_read_geometry_what</code>.</p></li>
-</ul>
-</div>
-  </div>
+    <div class="ref-description">
+    
+    <p>These will be removed in a future release.</p>
+    
+    </div>
 
+    <pre class="usage"><span class='fu'>vapour_read_geometry_what</span>(<span class='no'>dsource</span>, <span class='kw'>layer</span> <span class='kw'>=</span> <span class='fl'>0L</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='kw'>what</span> <span class='kw'>=</span> <span class='st'>"geometry"</span>, <span class='kw'>textformat</span> <span class='kw'>=</span> <span class='st'>""</span>)
+
+<span class='fu'>vapour_read_feature_what</span>(<span class='no'>dsource</span>, <span class='kw'>layer</span> <span class='kw'>=</span> <span class='fl'>0L</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>what</span> <span class='kw'>=</span> <span class='st'>"geometry"</span>,
+  <span class='kw'>textformat</span> <span class='kw'>=</span> <span class='st'>"json"</span>)
+
+<span class='fu'>sds_info</span>(<span class='no'>x</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>dsource</th>
+      <td><p>data source name (path to file, connection string, URL)</p></td>
+    </tr>
+    <tr>
+      <th>layer</th>
+      <td><p>integer of layer to work with, defaults to the first (0)</p></td>
+    </tr>
+    <tr>
+      <th>sql</th>
+      <td><p>if not empty this is executed against the data source (layer will be ignored)</p></td>
+    </tr>
+    <tr>
+      <th>what</th>
+      <td><p>what to read, "geometry", "text", "extent"</p></td>
+    </tr>
+    <tr>
+      <th>textformat</th>
+      <td><p>indicate text output format, available are "json" (default), "gml", "kml", "wkt"</p></td>
+    </tr>
+    <tr>
+      <th>x</th>
+      <td><p>data source name</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>vapour_read_geometry_cpp</p>
+<p>raster_sds_info</p></div>
+    
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#vapour-0-0-1">0.0.1</a></li>
-      </ul>
-    </div>
-  </div>
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#see-also">See also</a></li>
+          </ul>
 
+  </div>
 </div>
 
       <footer>

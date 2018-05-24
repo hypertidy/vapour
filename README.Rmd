@@ -6,6 +6,8 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+# vapour
+
 
 [![Build Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_clang&label=trusty_clang)](https://travis-ci.org/hypertidy/vapour)
 [![Build Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=osx&label=osx)](https://travis-ci.org/hypertidy/vapour)
@@ -24,10 +26,30 @@ knitr::opts_chunk$set(
 library(dplyr)
 ```
 
-# vapour
 
+## Overview
 
-We aim to provide access to the basic *read* functions available in [GDAL](http://www.gdal.org/), which provides an abstraction for geospatial data including a  [raster](http://www.gdal.org/gdal_datamodel.html) and a [vector](http://www.gdal.org/ogr_arch.html) data model. 
+The vapour package provides access to the basic *read* functions available in [GDAL](http://www.gdal.org/), the Geospatial Data Abstraction Library for both [raster](http://www.gdal.org/gdal_datamodel.html) and a [vector](http://www.gdal.org/ogr_arch.html) data sources. 
+
+The functions are deliberately *lower-level* than the data models and provide access to the
+component entities indpendently. 
+
+For vector data vapour provides: 
+
+* read access to feature attributes.
+* read access to raw binary geometry.
+* read access to geometry in text forms (GeoJSON, WKT, GML, KML).
+* read access to the extent, or bounding box, of feature geometries. 
+
+All vector/feature read tasks can optionally apply
+[OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to data extraction. 
+
+For raster data vapour provides: 
+
+* read access to the list of available rasters within a collection source (subdatasets). 
+* read access to *structural metadata* for individual raster sources. 
+* read access for raw data using GDAL's  [RasterIO framework](http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1) which _automatically takes care of data type translation and image decimation / replication if the buffer size is different than the size of the region being accessed_ and provides control over the resampling algorithm used. 
+
 
 The workflows available are intended to support development of applications in R for these vector and [raster data](https://en.wikipedia.org/wiki/Raster_data) without being constrained to any particular data model. 
 
@@ -58,31 +80,12 @@ still only available through these lenses, but recentish improvements make thing
 Examples of packages that use vapour are in development,  [RGDALSQL](https://github.com/mdsumner/RGDALSQL) and [lazyraster](https://github.com/hypertidy/lazyraster). `RGDALSQL` aims to leverage the facilities of GDAL to provide data *on-demand* for many sources *as if* they were databases.  `lazyraster` uses the level-of-detail facility of GDAL to read just enough resolution from a raster source using traditional window techniques. 
 
 
-# GDAL for data
-
-There are tools for reading from both vector and raster data sources. 
-
-## Vector data
-
-* read attributes only
-* read geometry only
-* read geometry as raw binary, or various text forms
-* read geometry bounding box only
-* optionally, apply [OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to above read calls
-
-## Raster data
-
-* find structural metadata for a single raster source
-* find available single rasters within a complex source
-* read from a raster arbitrarily using GDAL very flexible [IO framework](http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1). 
-
-
 Limitations, work-in-progress and other discussion are active here: 
 https://github.com/hypertidy/vapour/issues/4
 
-# Warnings
+## Warnings
 
-It's possible to give problematic "SELECT" statements via the `sql` argument. Note that the geometry readers `vapour_read_geometry`, `vapour_read_geometry_text`, and `vapour_read_extent` will strip out the `SELECT ... FROM` clause and replace it with `SELECT * FROM` to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or `dplyr` to create any `SELECT` statement. The function `vapour_read_geometry_what` will return a list of NULLs, in  this case. 
+It's possible to give problematic "SELECT" statements via the `sql` argument. Note that the geometry readers `vapour_read_geometry`, `vapour_read_geometry_text`, and `vapour_read_extent` will strip out the `SELECT ... FROM` clause and replace it with `SELECT * FROM` to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or `dplyr` to create any `SELECT` statement. The function `vapour_read_geometry_cpp` will return a list of NULLs, in  this case. 
 
 I haven't tried this against a real database, I'm not sure if we need `AsBinary()` around EWKB geoms, for example - but at any rate these can be ingested by `sf`. 
 
@@ -95,6 +98,10 @@ The package documentation page gives an overview of available functions.
 help("vapour-package")
 ```
 See the vignettes and documentation for examples. 
+
+```R
+browseVignettes(package = "vapour")
+```
 
 
 

@@ -1,3 +1,9 @@
+## NOTE: this file is named "000.*.R" so that it sorts before RcppExports.R
+## so that vapour_read_geometry_cpp is at the end of the Usage list in
+## ?vapour_read_geometry
+## and we also use Collate in DESCRIPTION, in case this note gets missed and
+## no one understands why - there's an @include 000_vapour_input.R in the C++
+## for compileAttributes that puts this file ahead of RcppExports.R :)
 
 ## only select FID, no matter what user asks for
 fid_select <- function(x) {
@@ -24,7 +30,18 @@ asterisk_select <- function(x) {
 #' Layer names
 #'
 #' Obtain the names of available layers from a GDAL vector source.
-#' @inheritParams vapour_read_geometry_cpp
+#'
+#' Some vector sources have multiple layers while many have only one. Shapefiles
+#' for example have only one, and the single layer gets the file name with no path
+#' and no extension. GDAL provides a quirk for shapefiles in that a directory may
+#' act as a data source, and any shapefile in that directory acts like a layer of that
+#' data source. This is a little like the one-or-many sleight that exists for raster
+#' data sources with subdatasets (there's no way to virtualize single rasters into
+#' a data source with multiple subdatasets, oh except by using VRT....)
+#'
+#' See [raster_sds_info()] for more on the multiple topic.
+#'
+#' @inheritParams vapour_read_geometry
 #' @return character vector of layer names
 #'
 #' @examples
@@ -157,25 +174,5 @@ vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat 
   sql <- fid_select(sql)
   vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "text", textformat = textformat)
 }
-
-
-#' Functions deprecated from vapour
-#'
-#' These will be removed in a future release.
-#' @name vapour-deprecated
-#' @rdname vapour-deprecated
-#' @export
-vapour_read_geometry_what <- function(dsource, layer = 0L, sql = "", what = "geometry", textformat = "") {
-  .Deprecated("vapour_read_geometry_cpp")
-  vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = what, textformat  = textformat)
-}
-#' @rdname vapour-deprecated
-#' @export
-vapour_read_feature_what <- function(dsource, layer = 0L, sql = "", what = "geometry", textformat = "json") {
-  .Deprecated("vapour_read_geometry_cpp")
-  vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = what, textformat = textformat)
-}
-
-
 
 
