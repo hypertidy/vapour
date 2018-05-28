@@ -21,9 +21,10 @@ vapour_read_attributes_cpp <- function(dsource, layer = 0L, sql = "") {
     .Call('_vapour_vapour_read_attributes_cpp', PACKAGE = 'vapour', dsource, layer, sql)
 }
 
+#' vapour_read_geometry_cpp
 #' @include 000_vapour_input.R
 #' @export
-#' @name vapour_read_geometry
+#' @name vapour_read_geometry_cpp
 vapour_read_geometry_cpp <- function(dsource, layer = 0L, sql = "", what = "geometry", textformat = "json") {
     .Call('_vapour_vapour_read_geometry_cpp', PACKAGE = 'vapour', dsource, layer, sql, what, textformat)
 }

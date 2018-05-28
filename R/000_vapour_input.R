@@ -152,7 +152,7 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "") {
 #' ## points in raw text (WKT)
 #' txtpointwkt <- vapour_read_geometry_text(pfile, format = "wkt)
 #' @export
-#' @aliases vapour_read_geometry vapour_read_geometry_text vapour_read_geometry_cpp
+#' @aliases vapour_read_geometry_text vapour_read_geometry_cpp
 #' @name vapour_read_geometry
 vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
   sql <- fid_select(sql)
@@ -160,11 +160,10 @@ vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
 }
 
 
+#' vapour_read_geometry_text
 #' @export
-#' @name vapour_read_geometry
+#' @name vapour_read_geometry_text
 vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat = "json") {
   sql <- fid_select(sql)
   vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "text", textformat = textformat)
 }
-
-

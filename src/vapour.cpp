@@ -181,9 +181,10 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
 
 
 // ## re include see NOTE in 000_vapour_input.R
+//' vapour_read_geometry_cpp
 //' @include 000_vapour_input.R
 //' @export
-//' @name vapour_read_geometry
+//' @name vapour_read_geometry_cpp
 // [[Rcpp::export]]
 List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
                             Rcpp::IntegerVector layer = 0,
