@@ -2,7 +2,6 @@
 % Please edit documentation in R/000_vapour_input.R
 \name{vapour_read_geometry}
 \alias{vapour_read_geometry}
-\alias{vapour_read_geometry_text}
 \alias{vapour_read_geometry_cpp}
 \title{Read GDAL feature geometry}
 \usage{
