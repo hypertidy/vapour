@@ -166,6 +166,7 @@ vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
 #' @inheritParams vapour_read_geometry
 #' @name vapour_read_geometry_text
 vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat = "json") {
+  textformat = match.arg (tolower (textformat), c ("json", "gml", "kml", "wkt"))
   sql <- fid_select(sql)
   vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "text", textformat = textformat)
 }

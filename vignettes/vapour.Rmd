@@ -34,7 +34,7 @@ data frames, so we avoid putting that interpretation on the data
 and leave that up to the developer / user. 
 
 ```{r}
-mvfile <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package="vapour")
+mvfile <- system.file("extdata", "tab", "list_locality_postcode_meander_valley.tab", package="vapour")
 
 dat <- as.data.frame(vapour_read_attributes(mvfile),  stringsAsFactors = FALSE)
 
@@ -51,12 +51,12 @@ vapour_read_geometry(pfile)[5:6]  ## format = "WKB"
 
 vapour_read_geometry_text(pfile)[5:6]  ## format = "json"
 
-cfile <- system.file("extdata/sst_c.gpkg", package = "vapour")
 vapour_read_geometry_text(pfile, textformat = "gml")[2]
 
 ## don't do this with a non-longlat data set like cfile
 vapour_read_geometry_text(pfile, textformat = "kml")[1:2]
 
+cfile <- system.file("extdata/sst_c.gpkg", package = "vapour")
 str(vapour_read_geometry_text(cfile, textformat = "wkt")[1:2])
 
 ```
@@ -66,7 +66,8 @@ Combine these together to get a custom data set.
 
 ```{r}
 library(dplyr)
-dat <- as.data.frame(vapour_read_attributes(cfile),  stringsAsFactors = FALSE) %>% dplyr::mutate(wkt = vapour_read_geometry_text(cfile, textformat = "wkt"))
+dat <- as.data.frame(vapour_read_attributes(cfile),  stringsAsFactors = FALSE) %>%
+    dplyr::mutate(wkt = vapour_read_geometry_text(cfile, textformat = "wkt"))
 glimpse(dat)
 ```
 
@@ -75,8 +76,8 @@ There is a function `vapour_read_extent` to return a straightforward bounding bo
 we can flexibly build an index of a data set for later use. 
 
 ```{r}
-mvfile <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package="vapour")
-str(vapour_read_extent(mvfile))
+mvfile <- system.file("extdata", "tab", "list_locality_postcode_meander_valley.tab", package="vapour")
+str(head(vapour_read_extent(mvfile)))
 
 ```
 
