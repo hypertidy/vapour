@@ -64,7 +64,7 @@ The workflows available are intended to support development of applications in R
 The package can be installed from Github.
 
 ```R
-devtools::install_github("hypertidy/vapour")
+devtools::install_github("hypertidy/vapour", build_vignettes = TRUE)
 ```
 
 You will need development tools for building R packages. 
