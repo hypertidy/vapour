@@ -1,7 +1,6 @@
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-# vapour
+vapour
+======
 
 [![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_clang&label=trusty_clang)](https://travis-ci.org/hypertidy/vapour)
 [![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=osx&label=osx)](https://travis-ci.org/hypertidy/vapour)
@@ -9,7 +8,8 @@
 [![Coverage\_Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
 
-## Overview
+Overview
+--------
 
 The vapour package provides access to the basic *read* functions
 available in [GDAL](http://www.gdal.org/)for both
@@ -21,10 +21,10 @@ provide access to the component entities independently.
 
 For vector data vapour provides:
 
-  - read access to feature attributes.
-  - read access to raw binary geometry.
-  - read access to geometry in text forms (GeoJSON, WKT, GML, KML).
-  - read access to the extent, or bounding box, of feature geometries.
+-   read access to feature attributes.
+-   read access to raw binary geometry.
+-   read access to geometry in text forms (GeoJSON, WKT, GML, KML).
+-   read access to the extent, or bounding box, of feature geometries.
 
 All vector/feature read tasks can optionally apply
 [OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to data
@@ -32,10 +32,10 @@ extraction.
 
 For raster data vapour provides:
 
-  - read access to the list of available rasters within a collection
+-   read access to the list of available rasters within a collection
     source (subdatasets).
-  - read access to *structural metadata* for individual raster sources.
-  - read access for raw data using GDAL’s [RasterIO
+-   read access to *structural metadata* for individual raster sources.
+-   read access for raw data using GDAL’s [RasterIO
     framework](http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1)
     and its dynamic image decimation / replication resampling
     algorithms.
@@ -45,7 +45,8 @@ applications in R for these vector and [raster
 data](https://en.wikipedia.org/wiki/Raster_data) without being
 constrained to any particular data model.
 
-## Installation
+Installation
+------------
 
 The package can be installed from Github.
 
@@ -61,7 +62,8 @@ required GDAL will be downloaded and used when building the package.
 This installation is self-contained and only affects the use of R, it
 can be used alongside other applications using GDAL.
 
-## Purpose
+Purpose
+-------
 
 The goal of vapour is to provide a basic **GDAL API** package for R. The
 key functions provide vector geometry or attributes and raster data and
@@ -109,7 +111,8 @@ raster source using traditional window techniques.
 Limitations, work-in-progress and other discussion are active here:
 <https://github.com/hypertidy/vapour/issues/4>
 
-## Warnings
+Warnings
+--------
 
 It’s possible to give problematic “SELECT” statements via the `sql`
 argument. Note that the geometry readers `vapour_read_geometry`,
@@ -124,7 +127,8 @@ I haven’t tried this against a real database, I’m not sure if we need
 `AsBinary()` around EWKB geoms, for example - but at any rate these can
 be ingested by `sf`.
 
-## Examples
+Examples
+--------
 
 The package documentation page gives an overview of available functions.
 
@@ -138,7 +142,102 @@ See the vignettes and documentation for examples.
 browseVignettes(package = "vapour")
 ```
 
-## Context
+The following concrete example illustrates the motivation for `vapour`,
+through a timing benchmark for one standard operation: extracting
+feature geometries from a data set within a user-defined bounding box.
+The data set is the one used throughout the book [Geocomputation in
+R](https://geocompr.robinlovelace.net/) by Robin Lovelace, Jakub
+Nowosad, and Jannes Muenchow, and can be obtained with
+
+``` r
+url <- file.path ("http://www.naturalearthdata.com/http//www.naturalearthdata.com",
+                "download/10m/cultural/ne_10m_parks_and_protected_lands.zip")
+download.file (url = url, destfile = "USA_parks.zip")
+unzip (zipfile = "USA_parks.zip", exdir = "usa_parks")
+fname <- "usa_parks/ne_10m_parks_and_protected_lands_area.shp"
+```
+
+That last `fname` is the file we’re interested in, which contains
+polygons for all United States parks. We now construct a timing
+benchmark for three ways of extracting the data within a pre-defined
+bounding box of:
+
+``` r
+bb <- c (-120, 20, -100, 40)
+```
+
+First, we define a function to do the desired extraction using the [`sf`
+package](https://cran.r-project.org/package=sf):
+
+``` r
+f_sf <- function (fname)
+{
+    usa_parks <- sf::st_read (fname, quiet = TRUE)
+    suppressMessages (suppressWarnings (
+                    parks2 <- sf::st_crop (usa_parks,
+                                       xmin = bb [1], ymin = bb [2],
+                                       xmax = bb [3], ymax = bb [4])
+                    ))
+}
+```
+
+Then two approaches using `vapour`: Extracting all geometries and then
+sub-selecting, and directly extracting only the desired geometries via
+an SQL query:
+
+``` r
+library (vapour)
+```
+
+    #> Loading vapour
+
+``` r
+f_va1 <- function (fname) # read all then sub-select
+{
+    ext <- do.call (rbind, vapour_read_extent (fname)) # bboxes of each feature
+    indx <- which (ext [, 1] > bb [1] & ext [, 2] < bb [3] &
+                   ext [, 3] > bb [2] & ext [, 4] < bb [4])
+    g <- vapour_read_geometry_text (fname, textformat = "wkt") [indx]
+}
+f_va2 <- function (fname) # read selection only via SQL
+{
+    ext <- do.call (rbind, vapour_read_extent (fname))
+    indx <- which (ext [, 1] > bb [1] & ext [, 2] < bb [3] &
+                   ext [, 3] > bb [2] & ext [, 4] < bb [4])
+    n <- paste0 (vapour_read_names (fname) [indx], collapse = ",") # GDAL FIDs
+    stmt <- paste0 ("SELECT FID FROM ", vapour_layer_names (fname),
+                    " WHERE FID in (", n, ")")
+    g <- vapour_read_geometry_text (fname, textformat = "wkt", sql = stmt)
+}
+```
+
+The benchmark timings - in particular the “relative” values - then
+illustrate the advantages of `vapour`:
+
+``` r
+rbenchmark::benchmark (
+                       f_sf (fname),
+                       f_va1 (fname),
+                       f_va2 (fname),
+                       replications = 10)
+#>           test replications elapsed relative user.self sys.self user.child
+#> 1  f_sf(fname)           10   0.244    4.000     0.245        0          0
+#> 2 f_va1(fname)           10   0.178    2.918     0.178        0          0
+#> 3 f_va2(fname)           10   0.061    1.000     0.060        0          0
+#>   sys.child
+#> 1         0
+#> 2         0
+#> 3         0
+```
+
+Reading geometries only, as opposed to the `sf` reading of all
+geometries and attributes, affords a speed increase of about 25%, while
+utilizing the SQL capabilities of
+[`ogr_sql`](http://www.gdal.org/ogr_sql.html) offers an increase of
+around 75%.
+
+Context
+-------
 
 My first real attempt at DBI abstraction is here:
 
@@ -163,7 +262,8 @@ Padgham helped kick me over a huge obstacle in using C++ libraries with
 R. Simon Wotherspoon and Ben Raymond have endured my ravings about
 wanting this level of control for many years.
 
-# Code of conduct
+Code of conduct
+===============
 
 Please note that this project is released with a [Contributor Code of
 Conduct](CONDUCT.md). By participating in this project you agree to

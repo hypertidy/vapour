@@ -110,6 +110,82 @@ See the vignettes and documentation for examples.
 browseVignettes(package = "vapour")
 ```
 
+The following concrete example illustrates the motivation for `vapour`, through
+a timing benchmark for one standard operation: extracting feature geometries
+from a data set within a user-defined bounding box. The data set is the one used
+throughout the book [Geocomputation in R](https://geocompr.robinlovelace.net/)
+by Robin Lovelace, Jakub Nowosad, and Jannes Muenchow, and can be obtained with
+```{r dl-parks}
+url <- file.path ("http://www.naturalearthdata.com/http//www.naturalearthdata.com",
+                "download/10m/cultural/ne_10m_parks_and_protected_lands.zip")
+download.file (url = url, destfile = "USA_parks.zip")
+unzip (zipfile = "USA_parks.zip", exdir = "usa_parks")
+fname <- "usa_parks/ne_10m_parks_and_protected_lands_area.shp"
+```
+That last `fname` is the file we're interested in, which contains polygons for
+all United States parks. We now construct a timing benchmark for three ways of
+extracting the data within a pre-defined bounding box of:
+```{r bb}
+bb <- c (-120, 20, -100, 40)
+```
+First, we define a function to do the desired extraction using the [`sf`
+package](https://cran.r-project.org/package=sf):
+```{r f_sf}
+f_sf <- function (fname)
+{
+    usa_parks <- sf::st_read (fname, quiet = TRUE)
+    suppressMessages (suppressWarnings (
+                    parks2 <- sf::st_crop (usa_parks,
+                                       xmin = bb [1], ymin = bb [2],
+                                       xmax = bb [3], ymax = bb [4])
+                    ))
+}
+```
+Then two approaches using `vapour`: Extracting all geometries and then
+sub-selecting, and directly extracting only the desired geometries via an SQL
+query:
+```{r, eval = FALSE}
+library (vapour)
+```
+```{r, echo = FALSE}
+devtools::load_all (".")
+```
+```{r f_va}
+f_va1 <- function (fname) # read all then sub-select
+{
+    ext <- do.call (rbind, vapour_read_extent (fname)) # bboxes of each feature
+    indx <- which (ext [, 1] > bb [1] & ext [, 2] < bb [3] &
+                   ext [, 3] > bb [2] & ext [, 4] < bb [4])
+    g <- vapour_read_geometry_text (fname, textformat = "wkt") [indx]
+}
+f_va2 <- function (fname) # read selection only via SQL
+{
+    ext <- do.call (rbind, vapour_read_extent (fname))
+    indx <- which (ext [, 1] > bb [1] & ext [, 2] < bb [3] &
+                   ext [, 3] > bb [2] & ext [, 4] < bb [4])
+    n <- paste0 (vapour_read_names (fname) [indx], collapse = ",") # GDAL FIDs
+    stmt <- paste0 ("SELECT FID FROM ", vapour_layer_names (fname),
+                    " WHERE FID in (", n, ")")
+    g <- vapour_read_geometry_text (fname, textformat = "wkt", sql = stmt)
+}
+```
+The benchmark timings - in particular the "relative" values - then illustrate
+the advantages of `vapour`:
+```{r benchmark}
+rbenchmark::benchmark (
+                       f_sf (fname),
+                       f_va1 (fname),
+                       f_va2 (fname),
+                       replications = 10)
+```
+```{r, echo = FALSE}
+junk <- file.remove ("USA_parks.zip")
+unlink ("usa_parks", recursive = TRUE)
+```
+Reading geometries only, as opposed to the `sf` reading of all geometries and
+attributes, affords a speed increase of about 25%, while utilizing the SQL
+capabilities of [`ogr_sql`](http://www.gdal.org/ogr_sql.html) offers an increase
+of around 75%.
 
 
 ## Context
