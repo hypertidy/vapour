@@ -14,7 +14,7 @@ public:
 
   void push_back(SEXP x) {
     if (Rf_xlength(data_) == n_) {
-      data_ = Rf_lengthgets(data_, n_ * 2);
+      data_ = Rf_lengthgets(data_, static_cast<R_len_t> (n_ * 2));
     }
     SET_VECTOR_ELT(data_, n_++, x);
   }

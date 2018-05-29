@@ -55,7 +55,6 @@ List raster_info_cpp (const char* pszFilename)
   if( ! (bGotMin && bGotMax) )
     GDALComputeRasterMinMax((GDALRasterBandH)poBand, TRUE, adfMinMax);
 
-  float *pafScanline;
   int nXSize = poBand->GetXSize();
   int nYSize = poBand->GetYSize();
   int nn = 6;
@@ -155,9 +154,6 @@ List raster_io_cpp(CharacterVector filename,
   }
 
 
-  float *pafScanline;
-
-  //float  *float_scanline;
   double *double_scanline;
   int    *integer_scanline;
 
@@ -172,7 +168,9 @@ List raster_io_cpp(CharacterVector filename,
       (band_type == GDT_Int32) |
       (band_type == GDT_UInt16) |
       (band_type == GDT_UInt32)) {
-    integer_scanline = (int *) CPLMalloc(sizeof(int)*outXSize*outYSize);
+    integer_scanline = (int *) CPLMalloc(sizeof(int)*
+            static_cast<unsigned long>(outXSize)*
+            static_cast<unsigned long>(outYSize));
     err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
                             integer_scanline, outXSize, outYSize, GDT_Int32,
                             0, 0, &psExtraArg);
@@ -182,7 +180,9 @@ List raster_io_cpp(CharacterVector filename,
     band_type_not_supported = false;
   }
   if ((band_type == GDT_Float64) | (band_type == GDT_Float32)) {
-    double_scanline = (double *) CPLMalloc(sizeof(double)*outXSize*outYSize);
+    double_scanline = (double *) CPLMalloc(sizeof(double)*
+            static_cast<unsigned long>(outXSize)*
+            static_cast<unsigned long>(outYSize));
     err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
                             double_scanline, outXSize, outYSize, GDT_Float64,
                             0, 0, &psExtraArg);
