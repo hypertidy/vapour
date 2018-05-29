@@ -9,6 +9,7 @@ using namespace Rcpp;
 
 constexpr int MAX_INT =  std::numeric_limits<int>::max ();
 
+//' @noRd
 // [[Rcpp::export]]
 Rcpp::CharacterVector vapour_layer_names_cpp(Rcpp::CharacterVector dsource,
                             Rcpp::CharacterVector sql = "")
