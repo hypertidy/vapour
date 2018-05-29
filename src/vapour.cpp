@@ -1,10 +1,15 @@
+#include <limits>
+
 #include "ogrsf_frmts.h"
 #include "ogr_api.h"
 #include <Rcpp.h>
 #include "CollectorList.h"
+
 using namespace Rcpp;
 
+constexpr int MAX_INT =  std::numeric_limits<int>::max ();
 
+//' @noRd
 // [[Rcpp::export]]
 Rcpp::CharacterVector vapour_layer_names_cpp(Rcpp::CharacterVector dsource,
                             Rcpp::CharacterVector sql = "")
@@ -121,8 +126,11 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
   OGRFeature *poFeature;
   poLayer->ResetReading();
   //  poFeature = poLayer->GetNextFeature();
-  int iField;
-  int nFeature = poLayer->GetFeatureCount();
+  long long nFeature_long = poLayer->GetFeatureCount();
+  if (nFeature_long > static_cast<long long>(MAX_INT))
+      Rcpp::stop("Number of features exceeds maximal number able to be read");
+  //int nFeature = poLayer->GetFeatureCount();
+  int nFeature = static_cast<int>(nFeature_long);
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = true;
   // for now we do this for attributes, need to figure out the
@@ -174,9 +182,10 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
 
 
 // ## re include see NOTE in 000_vapour_input.R
+//' vapour_read_geometry_cpp
 //' @include 000_vapour_input.R
 //' @export
-//' @name vapour_read_geometry
+//' @name vapour_read_geometry_cpp
 // [[Rcpp::export]]
 List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
                             Rcpp::IntegerVector layer = 0,
@@ -211,7 +220,6 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
   }
   OGRFeature *poFeature;
   poLayer->ResetReading();
-  int iField;
 
   //OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   CollectorList feature_xx;
@@ -221,7 +229,6 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
   {
 
 
-    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
     OGRGeometry *poGeometry;
     poGeometry = poFeature->GetGeometryRef();
     if (poGeometry == NULL) {
