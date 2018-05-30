@@ -2,11 +2,19 @@
 % Please edit documentation in R/RcppExports.R
 \name{vapour_read_geometry_cpp}
 \alias{vapour_read_geometry_cpp}
-\title{vapour_read_geometry_cpp}
+\title{vapour_read_geometry_cpp
+#param what what to read, "geometry", "text", "extent"
+include 000_vapour_input.R
+export
+name vapour_read_geometry_cpp}
 \usage{
 vapour_read_geometry_cpp(dsource, layer = 0L, sql = "", what = "geometry",
   textformat = "json")
 }
 \description{
 vapour_read_geometry_cpp
+#param what what to read, "geometry", "text", "extent"
+include 000_vapour_input.R
+export
+name vapour_read_geometry_cpp
 }

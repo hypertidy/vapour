@@ -21,6 +21,10 @@ This may be virtual (created by GDAL for the SQL interface) and may be 0- or
 1- based. Some drivers have actual names, and they are persistent and
 arbitrary. Please use with caution, this function can return the current
 FIDs, but there's no guarantee of what it represents for subsequent access.
+
+The \code{sql} input is only used for the \code{WHERE} clause, and forcibly modifies
+all input query to \code{SELECT FID} - use the \link{vapour_read_attributes} with SQL to
+be more specific.
 }
 \examples{
 file <- "list_locality_postcode_meander_valley.tab"

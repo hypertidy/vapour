@@ -84,7 +84,7 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "") {
 
 #' Read feature attribute data
 #'
-#' Read features attributes, optionally after SQL select.
+#' Read features attributes, optionally after SQL execution.
 #' @inheritParams vapour_read_geometry
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
@@ -98,3 +98,7 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "") {
 vapour_read_attributes <- function(dsource, layer = 0L, sql = "") {
   vapour_read_attributes_cpp(dsource = dsource, layer = layer, sql = sql)
 }
+
+#' Read layer info
+#'
+#' Read metadata available for a layer, optionally after SQL execution.

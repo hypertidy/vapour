@@ -37,6 +37,7 @@ Collate:
     'raster-info.R'
     'raster-input.R'
     'vapour-package.R'
+    'vapour_input_geometry.R'
     'yyy-deprecate.R'
 URL: https://github.com/hypertidy/vapour
 BugReports: https://github.com/hypertidy/vapour/issues

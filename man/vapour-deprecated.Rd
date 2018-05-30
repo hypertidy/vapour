@@ -4,6 +4,7 @@
 \alias{vapour-deprecated}
 \alias{vapour_read_geometry_what}
 \alias{vapour_read_feature_what}
+\alias{vapour_read_geometry_cpp}
 \alias{sds_info}
 \title{Functions deprecated from vapour}
 \usage{
@@ -11,6 +12,9 @@ vapour_read_geometry_what(dsource, layer = 0L, sql = "",
   what = "geometry", textformat = "")
 
 vapour_read_feature_what(dsource, layer = 0L, sql = "", what = "geometry",
+  textformat = "json")
+
+vapour_read_geometry_cpp(dsource, layer = 0L, sql = "", what = "geometry",
   textformat = "json")
 
 sds_info(x)
@@ -22,8 +26,6 @@ sds_info(x)
 
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
 
-\item{what}{what to read, "geometry", "text", "extent"}
-
 \item{textformat}{indicate text output format, available are "json" (default), "gml", "kml", "wkt"}
 
 \item{x}{data source name}
@@ -32,6 +34,8 @@ sds_info(x)
 These will be removed in a future release.
 }
 \seealso{
+vapour_read_geometry_cpp
+
 vapour_read_geometry_cpp
 
 raster_sds_info

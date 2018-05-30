@@ -2,7 +2,7 @@
 % Please edit documentation in R/000_vapour_input.R
 \name{vapour_layer_names}
 \alias{vapour_layer_names}
-\title{Layer names}
+\title{Read GDAL layer names}
 \usage{
 vapour_layer_names(dsource, sql = "")
 }

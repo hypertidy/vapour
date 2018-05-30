@@ -1,7 +1,7 @@
 # vapour 0.0.1
 
 
-* More C++ functions now have explicit R wrappers instead of Rcpp exports. New function `vapour_read_geometry_cpp` deprecates `vapour_read_geometry_what` - this is still exported to R but the more specialized forms still should be used in preference. 
+* All C++ functions now have explicit R wrappers instead of Rcpp exports. 
 
 * New naming convention uses `vapour_` for vector sources, `raster_` for raster sources 
  to make function names a little more consistent. 

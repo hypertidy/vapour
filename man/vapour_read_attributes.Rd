@@ -2,7 +2,7 @@
 % Please edit documentation in R/000_vapour_input.R
 \name{vapour_read_attributes}
 \alias{vapour_read_attributes}
-\title{Vector attributes read}
+\title{Read feature attribute data}
 \usage{
 vapour_read_attributes(dsource, layer = 0L, sql = "")
 }
@@ -14,7 +14,7 @@ vapour_read_attributes(dsource, layer = 0L, sql = "")
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
 }
 \description{
-Read layer attributes, optionally after SQL select
+Read features attributes, optionally after SQL execution.
 }
 \examples{
 file <- "list_locality_postcode_meander_valley.tab"

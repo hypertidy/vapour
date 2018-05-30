@@ -104,13 +104,16 @@ The package documentation page gives an overview of available functions.
 ```R
 help("vapour-package")
 ```
-See the vignettes and documentation for examples. 
+See the vignettes and documentation for examples WIP. 
+
+
+## development
+
+Run this when source defs change. 
 
 ```R
-browseVignettes(package = "vapour")
+tools::package_native_routine_registration_skeleton("../vapour", "src/init.c",character_only = FALSE)
 ```
-
-
 
 ## Context
 
