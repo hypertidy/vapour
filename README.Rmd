@@ -126,24 +126,41 @@ That last `fname` is the file we're interested in, which contains polygons for
 all United States parks. We now construct a timing benchmark for three ways of
 extracting the data within a pre-defined bounding box of:
 ```{r bb}
+library (magrittr)
 bb <- c (-120, 20, -100, 40)
+names (bb) <- c ("xmin", "ymin", "xmax", "ymax")
+bb_sf <- sf::st_bbox (bb, crs = sf::st_crs (4326)) %>%
+    sf::st_as_sfc ()
 ```
 First, we define a function to do the desired extraction using the [`sf`
-package](https://cran.r-project.org/package=sf):
+package](https://cran.r-project.org/package=sf), comparing both `st_crop` and
+the `sf::[` sub-selection operator:
 ```{r f_sf}
-f_sf <- function (fname)
+f_sf1 <- function (fname)
 {
     usa_parks <- sf::st_read (fname, quiet = TRUE)
     suppressMessages (suppressWarnings (
-                    parks2 <- sf::st_crop (usa_parks,
-                                       xmin = bb [1], ymin = bb [2],
-                                       xmax = bb [3], ymax = bb [4])
+                    parks2 <- sf::st_crop (usa_parks, bb_sf)
+                    ))
+}
+f_sf2 <- function (fname)
+{
+    usa_parks <- sf::st_read (fname, quiet = TRUE)
+    suppressMessages (suppressWarnings (
+                    parks2 <- usa_parks [bb_sf, ]
                     ))
 }
 ```
-Then two approaches using `vapour`: Extracting all geometries and then
-sub-selecting, and directly extracting only the desired geometries via an SQL
-query:
+Then three approaches using `vapour`, in each case extracting equivalent data to
+`sf` - that is, both geometries and attributes - yet simply leaving them
+separate here. The three approaches are:
+
+1. Read geometry as `WKB`, sub-select after reading, and convert to `sfc` lists;
+2. Read geometry as `WKB` pre-selected via an SQL statement, and convert to
+   `sfc` lists; and
+3. Read geometry as `json` (text), pre-selected via SQL, and convert with
+   the `geojsonsf` package
+
 ```{r, eval = FALSE}
 library (vapour)
 ```
@@ -156,7 +173,9 @@ f_va1 <- function (fname) # read all then sub-select
     ext <- do.call (rbind, vapour_read_extent (fname)) # bboxes of each feature
     indx <- which (ext [, 1] > bb [1] & ext [, 2] < bb [3] &
                    ext [, 3] > bb [2] & ext [, 4] < bb [4])
-    g <- vapour_read_geometry_text (fname, textformat = "wkt") [indx]
+    g <- vapour_read_geometry (fname) [indx] %>%
+        sf::st_as_sfc ()
+    a <- lapply (vapour_read_attributes (fname), function (i) i [indx])
 }
 f_va2 <- function (fname) # read selection only via SQL
 {
@@ -166,16 +185,33 @@ f_va2 <- function (fname) # read selection only via SQL
     n <- paste0 (vapour_read_names (fname) [indx], collapse = ",") # GDAL FIDs
     stmt <- paste0 ("SELECT FID FROM ", vapour_layer_names (fname),
                     " WHERE FID in (", n, ")")
-    g <- vapour_read_geometry_text (fname, textformat = "wkt", sql = stmt)
+    g <- vapour_read_geometry (fname, sql = stmt) %>%
+        sf::st_as_sfc ()
+    a <- vapour_read_attributes (fname, sql = stmt)
+}
+f_va3 <- function (fname) # convert json text via geojsonsf
+{
+    ext <- do.call (rbind, vapour_read_extent (fname)) # bboxes of each feature
+    indx <- which (ext [, 1] > bb [1] & ext [, 2] < bb [3] &
+                   ext [, 3] > bb [2] & ext [, 4] < bb [4])
+    n <- paste0 (vapour_read_names (fname) [indx], collapse = ",") # GDAL FIDs
+    stmt <- paste0 ("SELECT FID FROM ", vapour_layer_names (fname),
+                    " WHERE FID in (", n, ")")
+    g <- vapour_read_geometry_text (fname, textformat = "json", sql = stmt) 
+    g <- lapply (g, function (i) geojsonsf::geojson_sfc (i) [[1]]) %>%
+        sf::st_sfc ()
+    a <- vapour_read_attributes (fname, sql = stmt)
 }
 ```
 The benchmark timings - in particular the "relative" values - then illustrate
 the advantages of `vapour`:
 ```{r benchmark}
 rbenchmark::benchmark (
-                       f_sf (fname),
+                       f_sf1 (fname),
+                       f_sf2 (fname),
                        f_va1 (fname),
                        f_va2 (fname),
+                       f_va3 (fname),
                        replications = 10)
 ```
 ```{r, echo = FALSE}
