@@ -293,3 +293,78 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
   return(feature_xx.vector());
 }
 
+
+
+// [[Rcpp::export]]
+List vapour_projection_info_cpp(Rcpp::CharacterVector dsource,
+                              Rcpp::IntegerVector layer = 0,
+                              Rcpp::CharacterVector sql = "")
+{
+  GDALAllRegister();
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer  *poLayer;
+
+  Rcpp::CharacterVector empty = " ";
+  if (sql[0] != "") {
+    poLayer =  poDS->ExecuteSQL(sql[0],
+                                NULL,
+                                empty[0] );
+
+    if (poLayer == NULL) {
+      Rcpp::stop("SQL execution failed.\n");
+    }
+
+  } else {
+    poLayer =  poDS->GetLayer(layer[0]);
+  }
+  if (poLayer == NULL) {
+    Rcpp::stop("Layer open failed.\n");
+  }
+  OGRSpatialReference *SRS =  poLayer->GetSpatialRef();
+
+  char *proj;
+
+  List info_out(6);
+  CharacterVector outproj(1);
+  CharacterVector outnames(6);
+
+  SRS->exportToProj4(&proj);
+  outproj[0] = proj;
+  info_out[0] = Rcpp::clone( outproj);
+  outnames[0] = "Proj4";
+
+  SRS->exportToMICoordSys(&proj);
+  outproj[0] = proj;
+  info_out[1] = Rcpp::clone( outproj);
+  outnames[1] = "MICoordSys";
+
+  SRS->exportToPrettyWkt(&proj, false); //bSimplify = false
+  outproj[0] = proj;
+  info_out[2] = Rcpp::clone( outproj);
+  outnames[2] = "PrettyWkt";
+
+  SRS->exportToWkt(&proj);
+  outproj[0] = proj;
+  info_out[3] = Rcpp::clone( outproj);
+  outnames[3] = "Wkt";
+
+  int epsg = SRS->GetEPSGGeogCS();
+  info_out[4] = epsg;
+  outnames[4] = "EPSG";
+
+//  SRS->exportToXML();
+
+  info_out[5] = "<not implemented>";
+  outnames[5] = "XML";
+
+  CPLFree(proj);
+  //info_out[0] = outproj;
+  info_out.attr("names") = outnames;
+
+  return info_out;
+}
