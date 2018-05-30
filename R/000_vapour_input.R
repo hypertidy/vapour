@@ -98,4 +98,3 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "") {
 vapour_read_attributes <- function(dsource, layer = 0L, sql = "") {
   vapour_read_attributes_cpp(dsource = dsource, layer = layer, sql = sql)
 }
-
