@@ -6,7 +6,7 @@
 * New naming convention uses `vapour_` for vector sources, `raster_` for raster sources 
  to make function names a little more consistent. 
 
-* New wrapper `raster_sds_info` to replace `sds_info` which is now deprecated. 
+* New wrapper `vapour_sds_names` to replace `sds_info` and `raster_sds_info` which are now deprecated. 
 
 * New wrapper `vapour_read_geometry_what` to replace `vapour_read_feature_what` which i  is now deprecated. 
 

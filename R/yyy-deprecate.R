@@ -27,11 +27,17 @@ vapour_read_geometry_cpp <- function(dsource, layer = 0L, sql = "", what = "geom
 
 #' @rdname vapour-deprecated
 #' @param x data source name
-#' @seealso raster_sds_info
+#' @seealso vapour_sds_names
+vapour_sds_names(x)
 #' @export
 sds_info <- function(x) {
-  .Deprecated("raster_sds_info")
-  raster_sds_info(x)
+  .Deprecated("vapour_sds_names")
+  vapour_sds_names(x)
 }
 
-
+#' @rdname vapour-deprecated
+#' @seealso vapour_sds_names
+raster_sds_info <- function(x) {
+  .Deprecated("vapour_sds_names")
+  vapour_sds_names(x)
+}

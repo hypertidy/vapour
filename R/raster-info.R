@@ -3,7 +3,7 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
   ## but also don't prevent access to non-files
   if (file.exists(x)) x <- base::normalizePath(x, mustWork = FALSE)
   ## use sds wrapper to target the first by default
-  datavars <- as.data.frame(raster_sds_info(x), stringsAsFactors = FALSE)
+  datavars <- as.data.frame(vapour_sds_names(x), stringsAsFactors = FALSE)
   wasnull <- is.null(sds)
   if (wasnull) sds <- 1
   if (wasnull && nrow(datavars) > 1L) {
@@ -22,7 +22,7 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #'
 #' Return the basic structural metadata of a raster source understood by GDAL.
 #' Subdatasets may be specified by number, starting at 1. See
-#' [raster_sds_info()] for more.
+#' [vapour_sds_names()] for more.
 #'
 #' The structural metadata are
 #'
@@ -126,8 +126,8 @@ raster_info <- function(x, ..., sds = NULL) {
 #'
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
-#' raster_sds_info(f)
-raster_sds_info <- function(x) {
+#' vapour_sds_names(f)
+vapour_sds_names <- function(x) {
   stopifnot(length(x) == 1L)
   sources <- sds_info_cpp(x)
   if (length(sources) > 1) {

@@ -39,7 +39,7 @@ asterisk_select <- function(x) {
 #' data sources with subdatasets (there's no way to virtualize single rasters into
 #' a data source with multiple subdatasets, oh except by using VRT....)
 #'
-#' See [raster_sds_info()] for more on the multiple topic.
+#' See [vapour_sds_names()] for more on the multiple topic.
 #'
 #' @inheritParams vapour_read_geometry
 #' @return character vector of layer names

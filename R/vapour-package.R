@@ -13,7 +13,7 @@
 #' \tabular{ll}{
 #'  \code{\link{raster_info}} \tab structural metadata of a source \cr
 #'  \code{\link{raster_io}}   \tab read data direct from a window of a raster band source \cr
-#'  \code{\link{raster_sds_info}}    \tab list individual raster sources in a source containing subdatasets  \cr
+#'  \code{\link{vapour_sds_names}}    \tab list individual raster sources in a source containing subdatasets  \cr
 #'  }
 #' \tabular{ll}{
 #'  \code{\link{vapour_layer_names}} \tab list names of vector layers in a data source \cr
