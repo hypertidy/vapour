@@ -11,8 +11,8 @@
 #' We include functions for raster and vector sources.
 #'
 #' \tabular{ll}{
-#'  \code{\link{raster_info}} \tab structural metadata of a source \cr
-#'  \code{\link{raster_io}}   \tab read data direct from a window of a raster band source \cr
+#'  \code{\link{vapour_raster_info}} \tab structural metadata of a source \cr
+#'  \code{\link{vapour_read_raster}}   \tab read data direct from a window of a raster band source \cr
 #'  \code{\link{vapour_sds_names}}    \tab list individual raster sources in a source containing subdatasets  \cr
 #'  }
 #' \tabular{ll}{
@@ -22,13 +22,11 @@
 #'  \code{\link{vapour_read_extent}} \tab read the extent, or bounding box, of geometries in a layer \cr
 #'  \code{\link{vapour_read_geometry}} \tab read geometry in binary (blob, WKB) form \cr
 #'  \code{\link{vapour_read_geometry_text}} \tab read geometry in text form, various formats \cr
-#'  \code{\link{vapour_read_geometry_cpp}} \tab read feature into specified form \cr
 #'  }
 #'
 #' `vapour_read_geometry_cpp` is a general function that will return different types of
 #' output for different inputs and is used by `vapour_read_extent`,
-#'  `vapour_read_geometry` and `vapour_read_geometry_text`. The more specific functions should
-#'  be used in preference to the `_cpp` version.
+#'  `vapour_read_geometry` and `vapour_read_geometry_text`.
 #'
 #'  As far as possible vapour aims to minimize the level of interpretation
 #'  provided for the functions, so that developers can choose how things are

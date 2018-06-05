@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • vapour</title>
+<title>GDAL raster subdatasets (variables) — vapour_sds_names • vapour</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,16 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="GDAL raster subdatasets (variables) — vapour_sds_names" />
+
+<meta property="og:description" content="A subdataset is a collection abstraction for a number of variables
+within a single GDAL source. If there's only one variable the datasource and
+the variable have the same data source string. If there is more than one the
+subdatasets have the form DRIVER:&quot;datasourcename&quot;:varname. Each
+subdataset name can stand in place of a data source name that has only one
+variable, so we always treat a source as a subdataset, even if there's only
+one." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -46,7 +55,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -98,90 +107,67 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>GDAL raster subdatasets (variables)</h1>
+    <small class="dont-index">Source: <a href='https://github.com/hypertidy/vapour/blob/master/R/raster-info.R'><code>R/raster-info.R</code></a></small>
+    <div class="hidden name"><code>vapour_sds_names.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>A <strong>subdataset</strong> is a collection abstraction for a number of <strong>variables</strong>
+within a single GDAL source. If there's only one variable the datasource and
+the variable have the same data source string. If there is more than one the
+subdatasets have the form <strong>DRIVER:"datasourcename":varname</strong>. Each
+subdataset name can stand in place of a data source name that has only one
+variable, so we always treat a source as a subdataset, even if there's only
+one.</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="sst_c.html">sst_c</a></code> </p>
-        </td>
-        <td><p>SST contours</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour.html">vapour</a></code> </p>
-        </td>
-        <td><p>vapour</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_layer_names.html">vapour_layer_names()</a></code> </p>
-        </td>
-        <td><p>Read GDAL layer names</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_raster_info.html">vapour_raster_info()</a></code> </p>
-        </td>
-        <td><p>Raster information</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_read_attributes.html">vapour_read_attributes()</a></code> </p>
-        </td>
-        <td><p>Read feature attribute data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_read_geometry.html">vapour_read_geometry()</a></code> <code><a href="vapour_read_geometry.html">vapour_read_geometry_text()</a></code> <code><a href="vapour_read_geometry.html">vapour_read_extent()</a></code> </p>
-        </td>
-        <td><p>Read GDAL feature geometry</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_read_names.html">vapour_read_names()</a></code> </p>
-        </td>
-        <td><p>Read feature names</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_read_raster.html">vapour_read_raster()</a></code> </p>
-        </td>
-        <td><p>Raster IO (read)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_sds_names.html">vapour_sds_names()</a></code> </p>
-        </td>
-        <td><p>GDAL raster subdatasets (variables)</p></td>
-      </tr>
-    </tbody>
+    <pre class="usage"><span class='fu'>vapour_sds_names</span>(<span class='no'>x</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>a data source string, filename, database connection string, Thredds or other URL</p></td>
+    </tr>
     </table>
-  </div>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>list of character vectors, see Details</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Returns a list of <code>datasource</code> and <code>subdataset</code>. In the case of a normal data
+source, with no subdatasets the value of both entries is the <code>datasource</code>.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='st'>"extdata"</span>, <span class='st'>"sst.tif"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"vapour"</span>)
+<span class='fu'>vapour_sds_names</span>(<span class='no'>f</span>)</div><div class='output co'>#&gt; $datasource
+#&gt; [1] "/home/mdsumner/Git/vapour/inst/extdata/sst.tif"
+#&gt; 
+#&gt; $subdataset
+#&gt; [1] "/home/mdsumner/Git/vapour/inst/extdata/sst.tif"
+#&gt; </div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
     </ul>
+
   </div>
 </div>
 

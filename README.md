@@ -1,51 +1,36 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+vapour
+======
 
-# vapour
+[![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_clang&label=trusty_clang)](https://travis-ci.org/hypertidy/vapour) [![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=osx&label=osx)](https://travis-ci.org/hypertidy/vapour) [![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=mingw_w64&label=mingw_w64)](https://travis-ci.org/hypertidy/vapour) [![Coverage\_Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
 
-[![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_clang&label=trusty_clang)](https://travis-ci.org/hypertidy/vapour)
-[![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=osx&label=osx)](https://travis-ci.org/hypertidy/vapour)
-[![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=mingw_w64&label=mingw_w64)](https://travis-ci.org/hypertidy/vapour)
-[![Coverage\_Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master)
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
+Overview
+--------
 
-## Overview
+The vapour package provides access to the basic *read* functions available in [GDAL](http://www.gdal.org/)for both [raster](http://www.gdal.org/gdal_datamodel.html) and a [vector](http://www.gdal.org/ogr_arch.html) data sources.
 
-The vapour package provides access to the basic *read* functions
-available in [GDAL](http://www.gdal.org/)for both
-[raster](http://www.gdal.org/gdal_datamodel.html) and a
-[vector](http://www.gdal.org/ogr_arch.html) data sources.
-
-The functions are deliberately *lower-level* than these data models and
-provide access to the component entities independently.
+The functions are deliberately *lower-level* than these data models and provide access to the component entities independently.
 
 For vector data vapour provides:
 
-  - read access to feature attributes.
-  - read access to raw binary geometry.
-  - read access to geometry in text forms (GeoJSON, WKT, GML, KML).
-  - read access to the extent, or bounding box, of feature geometries.
+-   read access to feature attributes.
+-   read access to raw binary geometry.
+-   read access to geometry in text forms (GeoJSON, WKT, GML, KML).
+-   read access to the extent, or bounding box, of feature geometries.
 
-All vector/feature read tasks can optionally apply
-[OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to data
-extraction.
+All vector/feature read tasks can optionally apply [OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to data extraction.
 
 For raster data vapour provides:
 
-  - read access to the list of available rasters within a collection
-    source (subdatasets).
-  - read access to *structural metadata* for individual raster sources.
-  - read access for raw data using GDAL’s [RasterIO
-    framework](http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1)
-    and its dynamic image decimation / replication resampling
-    algorithms.
+-   read access to the list of available rasters within a collection source (subdatasets).
+-   read access to *structural metadata* for individual raster sources.
+-   read access for raw data using GDAL's [RasterIO framework](http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1) and its dynamic image decimation / replication resampling algorithms.
 
-The workflows available are intended to support development of
-applications in R for these vector and [raster
-data](https://en.wikipedia.org/wiki/Raster_data) without being
-constrained to any particular data model.
+The workflows available are intended to support development of applications in R for these vector and [raster data](https://en.wikipedia.org/wiki/Raster_data) without being constrained to any particular data model.
 
-## Installation
+Installation
+------------
 
 The package can be installed from Github.
 
@@ -55,76 +40,34 @@ devtools::install_github("hypertidy/vapour")
 
 You will need development tools for building R packages.
 
-On Linux and MacOS building also requires an available GDAL
-installation, but on Windows the ROpenSci rwinlib tools are used and the
-required GDAL will be downloaded and used when building the package.
-This installation is self-contained and only affects the use of R, it
-can be used alongside other applications using GDAL.
+On Linux and MacOS building also requires an available GDAL installation, but on Windows the ROpenSci rwinlib tools are used and the required GDAL will be downloaded and used when building the package. This installation is self-contained and only affects the use of R, it can be used alongside other applications using GDAL.
 
-## Purpose
+Purpose
+-------
 
-The goal of vapour is to provide a basic **GDAL API** package for R. The
-key functions provide vector geometry or attributes and raster data and
-raster metadata.
+The goal of vapour is to provide a basic **GDAL API** package for R. The key functions provide vector geometry or attributes and raster data and raster metadata.
 
-The priority now is to give low-level access to key functionality rather
-than comprehensive coverage of the library. There access is purely
-read-only, and provides no conversion to specialist types in R. Ideally,
-this could become a common foundation for other packages to specialize,
-but at the very least provides minimal examples to use GDAL for
-specialist needs.
+The priority now is to give low-level access to key functionality rather than comprehensive coverage of the library. There access is purely read-only, and provides no conversion to specialist types in R. Ideally, this could become a common foundation for other packages to specialize, but at the very least provides minimal examples to use GDAL for specialist needs.
 
-A parallel goal is to be freed from the powerful but sometimes limiting
-high-level data models of GDAL itself, specifically these are *simple
-features* and *affine-based regular rasters composed of 2D slices*.
-(GDAL will possibly remove these limitations over time but still there
-will always be value in having modularity in an ecosystem of tools.)
+A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools.)
 
-These loftier general needs have come out of smaller more concrete
-goals, one was access to the “attributes-only” capacity of GDAL as a
-virtual database engine, and another access to the dense structures
-provided by transport vector data. GDAL’s dynamic resampling of
-arbitrary raster windows is also very useful for interactive tools on
-local data, and seems under-utilized in favour of less accessible online
-image services.
+These loftier general needs have come out of smaller more concrete goals, one was access to the "attributes-only" capacity of GDAL as a virtual database engine, and another access to the dense structures provided by transport vector data. GDAL's dynamic resampling of arbitrary raster windows is also very useful for interactive tools on local data, and seems under-utilized in favour of less accessible online image services.
 
-This partly draws on work done in [the sf
-package](https://github.com/r-spatial/sf) and in packages `rgdal` and
-`rgdal2`. I’m amazed that something as powerful and general as GDAL is
-still only available through these lenses, but recentish improvements
-make things much easier touse and share. Specifically `Rcpp` means that
-access to external libs is simplified, easier to learn and easier to get
-started and make progress. The other part is that cross-platform support
-is now much better, with more consistency on the libraries available on
-the CRAN machines and in other contexts.
+This partly draws on work done in [the sf package](https://github.com/r-spatial/sf) and in packages `rgdal` and `rgdal2`. I'm amazed that something as powerful and general as GDAL is still only available through these lenses, but recentish improvements make things much easier touse and share. Specifically `Rcpp` means that access to external libs is simplified, easier to learn and easier to get started and make progress. The other part is that cross-platform support is now much better, with more consistency on the libraries available on the CRAN machines and in other contexts.
 
-Examples of packages that use vapour are in development,
-[RGDALSQL](https://github.com/mdsumner/RGDALSQL) and
-[lazyraster](https://github.com/hypertidy/lazyraster). `RGDALSQL` aims
-to leverage the facilities of GDAL to provide data *on-demand* for many
-sources *as if* they were databases. `lazyraster` uses the
-level-of-detail facility of GDAL to read just enough resolution from a
-raster source using traditional window techniques.
+Examples of packages that use vapour are in development, [RGDALSQL](https://github.com/mdsumner/RGDALSQL) and [lazyraster](https://github.com/hypertidy/lazyraster). `RGDALSQL` aims to leverage the facilities of GDAL to provide data *on-demand* for many sources *as if* they were databases. `lazyraster` uses the level-of-detail facility of GDAL to read just enough resolution from a raster source using traditional window techniques.
 
-Limitations, work-in-progress and other discussion are active here:
-<https://github.com/hypertidy/vapour/issues/4>
+Limitations, work-in-progress and other discussion are active here: <https://github.com/hypertidy/vapour/issues/4>
 
-## Warnings
+Warnings
+--------
 
-It’s possible to give problematic “SELECT” statements via the `sql`
-argument. Note that the geometry readers `vapour_read_geometry`,
-`vapour_read_geometry_text`, and `vapour_read_extent` will strip out the
-`SELECT ... FROM` clause and replace it with `SELECT * FROM` to ensure
-that the geometry is accessible, though the attributes are ignored. This
-means we can allow the user or `dplyr` to create any `SELECT` statement.
-The function `vapour_read_geometry_cpp` will return a list of NULLs, in
-this case.
+It's possible to give problematic "SELECT" statements via the `sql` argument. Note that the geometry readers `vapour_read_geometry`, `vapour_read_geometry_text`, and `vapour_read_extent` will strip out the `SELECT ... FROM` clause and replace it with `SELECT * FROM` to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or `dplyr` to create any `SELECT` statement. The function `vapour_read_geometry` will return a list of NULLs, in this case.
 
-I haven’t tried this against a real database, I’m not sure if we need
-`AsBinary()` around EWKB geoms, for example - but at any rate these can
-be ingested by `sf`.
+I haven't tried this against a real database, I'm not sure if we need `AsBinary()` around EWKB geoms, for example - but at any rate these can be ingested by `sf`.
 
-## Examples
+Examples
+--------
 
 The package documentation page gives an overview of available functions.
 
@@ -132,39 +75,35 @@ The package documentation page gives an overview of available functions.
 help("vapour-package")
 ```
 
-See the vignettes and documentation for examples.
+See the vignettes and documentation for examples WIP.
+
+development
+-----------
+
+Run this when source defs change.
 
 ``` r
-browseVignettes(package = "vapour")
+tools::package_native_routine_registration_skeleton("../vapour", "src/init.c",character_only = FALSE)
 ```
 
-## Context
+Context
+-------
 
 My first real attempt at DBI abstraction is here:
 
 <https://github.com/mdsumner/RGDALSQL>
 
-I’ve kept a record of a minimal GDAL wrapper package here:
+I've kept a record of a minimal GDAL wrapper package here:
 
 <https://github.com/diminutive/gdalmin>
 
-Before those I had worked on getting sp and dplyr to at least work
-together <https://github.com/dis-organization/sp_dplyrexpt> and recently
-rgdal was updated to allow tibbles to be used, something that spbabel
-and spdplyr really needed to avoid friction.
+Before those I had worked on getting sp and dplyr to at least work together <https://github.com/dis-organization/sp_dplyrexpt> and recently rgdal was updated to allow tibbles to be used, something that spbabel and spdplyr really needed to avoid friction.
 
-Early exploration of allow non-geometry read with rgdal was tried here:
-<https://github.com/r-gris/gladr>
+Early exploration of allow non-geometry read with rgdal was tried here: <https://github.com/r-gris/gladr>
 
-Thankss to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art
-that I crib and copy from. Jeroen Ooms helped the R community hugely by
-providing an automatable build process for libraries on Windows. Mark
-Padgham helped kick me over a huge obstacle in using C++ libraries with
-R. Simon Wotherspoon and Ben Raymond have endured my ravings about
-wanting this level of control for many years.
+Thankss to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an automatable build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured my ravings about wanting this level of control for many years.
 
-# Code of conduct
+Code of conduct
+===============
 
-Please note that this project is released with a [Contributor Code of
-Conduct](CONDUCT.md). By participating in this project you agree to
-abide by its terms.
+Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.

@@ -25,6 +25,7 @@ List raster_info_cpp (const char* pszFilename)
 
   // bail out NOW (we have no SDS and/or no rasters)
   // #f <- system.file("h5ex_t_enum.h5", package = "h5")
+
   // #raster_sds_info(f)
   // #raster_info(f)
   if (poDataset->GetRasterCount() < 1) {

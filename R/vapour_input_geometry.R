@@ -35,9 +35,9 @@
 #' ## points in raw text (GeoJSON)
 #' txtpointjson <- vapour_read_geometry_text(pfile)
 #' ## points in raw text (WKT)
-#' txtpointwkt <- vapour_read_geometry_text(pfile, format = "wkt)
+#' txtpointwkt <- vapour_read_geometry_text(pfile, textformat = "wkt")
 #' @export
-#' @aliases vapour_read_geometry_text vapour_read_extent vapour_read_geometry_cpp
+#' @aliases vapour_read_geometry_text vapour_read_extent
 #' @name vapour_read_geometry
 vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
   sql <- fid_select(sql)

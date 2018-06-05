@@ -8,8 +8,8 @@
 <title>Lightweight Access to the 'Geospatial Data Abstraction Library' ('GDAL') • vapour</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><meta property="og:title" content="Lightweight Access to the 'Geospatial Data Abstraction Library' ('GDAL')">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<script src="pkgdown.js"></script><meta property="og:title" content="Lightweight Access to the 'Geospatial Data Abstraction Library' ('GDAL')">
 <meta property="og:description" content="Provides low-level access to 'GDAL' functionality for R packages. The aim is to minimize
   the level of interpretation put on the 'GDAL' facilities, to enable direct use of it for a variety of purposes. 
   'GDAL' is the 'Geospatial Data Abstraction Library' a translator for raster and vector geospatial data formats 
@@ -108,7 +108,7 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>The package can be installed from Github.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"hypertidy/vapour"</span>)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"hypertidy/vapour"</span>)</code></pre></div>
 <p>You will need development tools for building R packages.</p>
 <p>On Linux and MacOS building also requires an available GDAL installation, but on Windows the ROpenSci rwinlib tools are used and the required GDAL will be downloaded and used when building the package. This installation is self-contained and only affects the use of R, it can be used alongside other applications using GDAL.</p>
 </div>
@@ -126,16 +126,21 @@
 <div id="warnings" class="section level2">
 <h2 class="hasAnchor">
 <a href="#warnings" class="anchor"></a>Warnings</h2>
-<p>It’s possible to give problematic “SELECT” statements via the <code>sql</code> argument. Note that the geometry readers <code>vapour_read_geometry</code>, <code>vapour_read_geometry_text</code>, and <code>vapour_read_extent</code> will strip out the <code>SELECT ... FROM</code> clause and replace it with <code>SELECT * FROM</code> to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or <code>dplyr</code> to create any <code>SELECT</code> statement. The function <code>vapour_read_geometry_cpp</code> will return a list of NULLs, in this case.</p>
+<p>It’s possible to give problematic “SELECT” statements via the <code>sql</code> argument. Note that the geometry readers <code>vapour_read_geometry</code>, <code>vapour_read_geometry_text</code>, and <code>vapour_read_extent</code> will strip out the <code>SELECT ... FROM</code> clause and replace it with <code>SELECT * FROM</code> to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or <code>dplyr</code> to create any <code>SELECT</code> statement. The function <code>vapour_read_geometry</code> will return a list of NULLs, in this case.</p>
 <p>I haven’t tried this against a real database, I’m not sure if we need <code>AsBinary()</code> around EWKB geoms, for example - but at any rate these can be ingested by <code>sf</code>.</p>
 </div>
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
 <p>The package documentation page gives an overview of available functions.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">help</span>(<span class="st">"vapour-package"</span>)</a></code></pre></div>
-<p>See the vignettes and documentation for examples.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">browseVignettes</span>(<span class="dt">package =</span> <span class="st">"vapour"</span>)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">help</span>(<span class="st">"vapour-package"</span>)</code></pre></div>
+<p>See the vignettes and documentation for examples WIP.</p>
+</div>
+<div id="development" class="section level2">
+<h2 class="hasAnchor">
+<a href="#development" class="anchor"></a>development</h2>
+<p>Run this when source defs change.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/tools/topics/package_native_routine_registration_skeleton">package_native_routine_registration_skeleton</a></span>(<span class="st">"../vapour"</span>, <span class="st">"src/init.c"</span>,<span class="dt">character_only =</span> <span class="ot">FALSE</span>)</code></pre></div>
 </div>
 <div id="context" class="section level2">
 <h2 class="hasAnchor">
@@ -183,10 +188,10 @@
       <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/hypertidy/vapour"><img src="http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&amp;env=BUILD_NAME=trusty_clang&amp;label=trusty_clang" alt="Build Status"></a></li>
-<li><a href="https://travis-ci.org/hypertidy/vapour"><img src="http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&amp;env=BUILD_NAME=osx&amp;label=osx" alt="Build Status"></a></li>
-<li><a href="https://travis-ci.org/hypertidy/vapour"><img src="http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&amp;env=BUILD_NAME=mingw_w64&amp;label=mingw_w64" alt="Build Status"></a></li>
-<li><a href="https://codecov.io/github/hypertidy/vapour?branch=master"><img src="https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg" alt="Coverage Status"></a></li>
+<li><a href="https://travis-ci.org/hypertidy/vapour"><img src="http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&amp;env=BUILD_NAME=trusty_clang&amp;label=trusty_clang" alt="Build_Status"></a></li>
+<li><a href="https://travis-ci.org/hypertidy/vapour"><img src="http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&amp;env=BUILD_NAME=osx&amp;label=osx" alt="Build_Status"></a></li>
+<li><a href="https://travis-ci.org/hypertidy/vapour"><img src="http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&amp;env=BUILD_NAME=mingw_w64&amp;label=mingw_w64" alt="Build_Status"></a></li>
+<li><a href="https://codecov.io/github/hypertidy/vapour?branch=master"><img src="https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg" alt="Coverage_Status"></a></li>
 <li><a href="https://cran.r-project.org/package=vapour"><img src="http://www.r-pkg.org/badges/version/vapour" alt="CRAN_Status_Badge"></a></li>
 </ul>
 </div>

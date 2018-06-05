@@ -93,15 +93,8 @@ Find raster info.
 
 ```{r raster}
 f <- system.file("extdata", "sst.tif", package = "vapour")
-raster_info(f)
+vapour_raster_info(f)
 
-## will reveal local file system path
-#sds_info(f)
-
-#u <- "http://rs-data1-mel.csiro.au/thredds/dodsC/imos-srs/sst/ghrsst/L3S-3d/ngt/2018/20180404152000-ABOM-L3S_GHRSST-SSTskin-AVHRR_D-3d_night-v02.0-fv01.0.nc"
-#u <- 'NetCDF:"http://rs-data1-mel.csiro.au/thredds/dodsC/imos-srs/sst/ghrsst/L3S-3d/ngt/2018/20180404152000-ABOM-L3S_GHRSST-SSTskin-AVHRR_D-3d_night-v02.0-fv01.0.nc":sea_surface_temperature'
-#raster_info(u)
-#sds_info(u)
 ```
 
 
@@ -114,7 +107,7 @@ SQL is available for general GDAL vector data.
 
 Note that each lower-level function accepts a `sql` argument, 
 which sends a query to the GDAL library to be executed against
-the data source, this can create custom layers and so is independent of and ignores the `layer` argument. Note that the same sql statement can be passed to the geometry readers, so we get the matching sets of information. `vapour_read_feature_what` will return NULL for each missing geometry if the statement doesn't include geometry explicitly or implicitly, but `vapour_read_geometry`, `vapour_read_geometry_text` and `vapour_read_extent` all explicitly modify the statement "SELECT *". (We are also assuming the data source hasn't changed between accesses ... let me know if this causes you problems!). 
+the data source, this can create custom layers and so is independent of and ignores the `layer` argument. Note that the same sql statement can be passed to the geometry readers, so we get the matching sets of information. `vapour_read_geometry` will return NULL for each missing geometry if the statement doesn't include geometry explicitly or implicitly, but `vapour_read_geometry`, `vapour_read_geometry_text` and `vapour_read_extent` all explicitly modify the statement "SELECT *". (We are also assuming the data source hasn't changed between accesses ... let me know if this causes you problems!). 
 
 ```{r}
 vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7310")

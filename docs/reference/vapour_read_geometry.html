@@ -21,9 +21,11 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
@@ -32,6 +34,7 @@
 
 <meta property="og:description" content="Read GDAL geometry as binary blob, text, or numeric extent." />
 <meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -101,7 +104,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Read GDAL feature geometry</h1>
-    <small class="dont-index">Source: <a href='https://github.com/hypertidy/vapour/blob/master/R/000_vapour_input.R'><code>R/000_vapour_input.R</code></a>, <a href='https://github.com/hypertidy/vapour/blob/master/R/RcppExports.R'><code>R/RcppExports.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/hypertidy/vapour/blob/master/R/vapour_input_geometry.R'><code>R/vapour_input_geometry.R</code></a></small>
     <div class="hidden name"><code>vapour_read_geometry.Rd</code></div>
     </div>
 
@@ -116,8 +119,7 @@
 <span class='fu'>vapour_read_geometry_text</span>(<span class='no'>dsource</span>, <span class='kw'>layer</span> <span class='kw'>=</span> <span class='fl'>0L</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='st'>""</span>,
   <span class='kw'>textformat</span> <span class='kw'>=</span> <span class='st'>"json"</span>)
 
-<span class='fu'>vapour_read_geometry_cpp</span>(<span class='no'>dsource</span>, <span class='kw'>layer</span> <span class='kw'>=</span> <span class='fl'>0L</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>what</span> <span class='kw'>=</span> <span class='st'>"geometry"</span>,
-  <span class='kw'>textformat</span> <span class='kw'>=</span> <span class='st'>"json"</span>)</pre>
+<span class='fu'>vapour_read_extent</span>(<span class='no'>dsource</span>, <span class='kw'>layer</span> <span class='kw'>=</span> <span class='fl'>0L</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -138,10 +140,6 @@
       <th>textformat</th>
       <td><p>indicate text output format, available are "json" (default), "gml", "kml", "wkt"</p></td>
     </tr>
-    <tr>
-      <th>what</th>
-      <td><p>what to read, "geometry", "text", "extent"</p></td>
-    </tr>
     </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -153,6 +151,29 @@ For each function an optional SQL string will be evaluated against the data sour
 to use the more specialist functions rather than this more general one.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>file</span> <span class='kw'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span>
+<span class='co'>## A MapInfo TAB file with polygons</span>
+<span class='no'>mvfile</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='fu'>file.path</span>(<span class='st'>"extdata/tab"</span>, <span class='no'>file</span>), <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"vapour"</span>)
+<span class='co'>## A shapefile with points</span>
+<span class='no'>pfile</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='st'>"extdata/point.shp"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"vapour"</span>)
+
+<span class='co'>## raw binary WKB points in a list</span>
+<span class='no'>ptgeom</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_geometry</span>(<span class='no'>pfile</span>)
+<span class='co'>## create a filter query to ensure data read is small</span>
+<span class='no'>SQL</span> <span class='kw'>&lt;-</span> <span class='st'>"SELECT FID FROM list_locality_postcode_meander_valley WHERE FID &lt; 3"</span>
+<span class='co'>## polygons in raw binary (WKB)</span>
+<span class='no'>plgeom</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_geometry_text</span>(<span class='no'>mvfile</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='no'>SQL</span>)
+<span class='co'>## polygons in raw text (GeoJSON)</span>
+<span class='no'>txtjson</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_geometry_text</span>(<span class='no'>mvfile</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='no'>SQL</span>)
+
+<span class='co'>## polygon extents in a list xmin, xmax, ymin, ymax</span>
+<span class='no'>exgeom</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_extent</span>(<span class='no'>mvfile</span>)
+
+<span class='co'>## points in raw text (GeoJSON)</span>
+<span class='no'>txtpointjson</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_geometry_text</span>(<span class='no'>pfile</span>)
+<span class='co'>## points in raw text (WKT)</span>
+<span class='no'>txtpointwkt</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_geometry_text</span>(<span class='no'>pfile</span>, <span class='kw'>textformat</span> <span class='kw'>=</span> <span class='st'>"wkt"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -160,7 +181,9 @@ to use the more specialist functions rather than this more general one.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#details">Details</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

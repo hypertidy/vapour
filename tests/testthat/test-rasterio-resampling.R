@@ -1,7 +1,7 @@
 context("rasterio-resampling")
 
 f <- system.file("extdata", "sst.tif", package = "vapour")
-## writeLines(paste(as.character(raster_io(f, window = c(0, 0, 10, 10, 5, 5))), collapse = "\", \""))
+## writeLines(paste(as.character(vapour_read_raster(f, window = c(0, 0, 10, 10, 5, 5))), collapse = "\", \""))
 
 l <- list(
   average = c("285.728515625", "285.713256835938", "285.903015136719", "286.009765625", "285.931243896484", "285.712249755859", "285.695007324219", "285.798492431641", "286.095001220703", "286.252014160156", "286.017761230469", "285.896484375", "285.907257080078", "286.305755615234", "286.400024414062", "286.205261230469", "286.117980957031", "286.002990722656", "286.320251464844", "286.643005371094", "286.016754150391", "285.974731445312", "286.084014892578", "286.392242431641", "286.851257324219"),
@@ -19,7 +19,7 @@ l <- list(
 test_that("resampling works", {
   for (i in seq_along(l)) {
     expect_equal(as.numeric(l[[i]]),
-         raster_io(f, window = c(0, 0, 10, 10, 5, 5), resample = names(l)[i]))
+                 vapour_read_raster(f, window = c(0, 0, 10, 10, 5, 5), resample = names(l)[i]))
   }
 
 })

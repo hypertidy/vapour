@@ -27,22 +27,22 @@
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' ## a 5*5 window from a 10*10 region
-#' raster_io(f, window = c(0, 0, 10, 10, 5, 5))
-#' raster_io(f, window = c(0, 0, 10, 10, 5, 5), resample = "Lanczos")
+#' vapour_read_raster(f, window = c(0, 0, 10, 10, 5, 5))
+#' vapour_read_raster(f, window = c(0, 0, 10, 10, 5, 5), resample = "Lanczos")
 #' ## find the information first
-#' ri <- raster_info(f)
-#' str(matrix(raster_io(f, window = c(0, 0, ri$dimXY, ri$dimXY)), ri$dimXY[1]))
+#' ri <- vapour_raster_info(f)
+#' str(matrix(vapour_read_raster(f, window = c(0, 0, ri$dimXY, ri$dimXY)), ri$dimXY[1]))
 #' ## the method can be used to up-sample as well
-#' str(matrix(raster_io(f, window = c(0, 0, 10, 10, 15, 25)), 15))
+#' str(matrix(vapour_read_raster(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 #'
-raster_io <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL) {
+vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL) {
   datasourcename <- sds_boilerplate_checks(x, sds = sds)
   resample <- tolower(resample)  ## ensure check internally is lower case
   if (!resample %in% c("nearestneighbour", "average", "bilinear", "cubic", "cubicspline",
                        "gauss", "lanczos", "mode")) {
     warning(sprintf("resample mode %s unknown?", resample))
   }
-  ri <- raster_info(x, sds = sds)
+  ri <- vapour_raster_info(x, sds = sds)
   ## turn these warning cases into errors here, + tests
   ## rationale is that dev can still call the internal R wrapper function to
   ## get these errors, but not the R user

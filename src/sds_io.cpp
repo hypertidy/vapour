@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 
 // [[Rcpp::export]]
-CharacterVector sds_info_cpp (const char* pszFilename)
+CharacterVector sds_info_cpp(const char* pszFilename)
 {
   GDALDataset  *poDataset;
   GDALAllRegister();

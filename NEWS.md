@@ -14,7 +14,7 @@
 
 * The read for raster data now returns numeric or integer appropriately. 
 
-* `raster_info` now includes `bands` as the count of available bands. 
+* `vapour_raster_info` now includes `bands` as the count of available bands. 
 
 * The IO read now allows a 4-element `window` to return data at native resolution, by
  copying the third and fourth values (source dimension) to the fifth and sixth values
@@ -22,7 +22,7 @@
  
 * Subdatasets are now supported. 
 
-* Added sanity check behaviour to `raster_io` to avoid out of bounds read attempts. 
+* Added sanity check behaviour to `vapour_raster_read` to avoid out of bounds read attempts. 
 
 * Resampling options added to raster data read. 
 
@@ -36,5 +36,4 @@
 
 * renamed `format` argument to `textformat`, this is ignored unless `what = "text"`
 
-* Created a single C++ feature read to remove repeated logic, `vapour_read_geometry`, `vapour_read_geometry_text`, 
- and `vapour_read_extent` all call `vapour_read_geometry_what`. 
+* Created a single C++ feature read to remove repeated logic, `vapour_read_geometry`, `vapour_read_geometry_text`,  and `vapour_read_extent` all call the same function. 

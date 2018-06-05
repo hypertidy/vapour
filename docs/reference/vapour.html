@@ -21,9 +21,11 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
@@ -32,6 +34,7 @@
 
 <meta property="og:description" content="A lightweight GDAL API package for R." />
 <meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -120,23 +123,23 @@ library, but provide a very nice abstraction over format details for a very larg
 number of different formats.</p>
 <p>We include functions for raster and vector sources.</p>
 <table class='table'>
-<tr><td><code><a href='raster_info.html'>raster_info</a></code></td><td>structural metadata of a source</td></tr>
-<tr><td><code><a href='raster_io.html'>raster_io</a></code></td><td>read data direct from a window of a raster band source</td></tr>
-<tr><td><code><a href='raster_sds_info.html'>raster_sds_info</a></code></td><td>list individual raster sources in a source containing subdatasets</td></tr>
+<tr><td><code><a href='vapour_raster_info.html'>vapour_raster_info</a></code></td><td>structural metadata of a source</td></tr>
+<tr><td><code><a href='vapour_read_raster.html'>vapour_read_raster</a></code></td><td>read data direct from a window of a raster band source</td></tr>
+<tr><td><code><a href='vapour_sds_names.html'>vapour_sds_names</a></code></td><td>list individual raster sources in a source containing subdatasets</td></tr>
+<tr><td></td><td><code><a href='vapour_raster_info.html'>vapour_raster_info</a></code></td></tr>
 </table>
     <table class='table'>
 <tr><td><code><a href='vapour_layer_names.html'>vapour_layer_names</a></code></td><td>list names of vector layers in a data source</td></tr>
 <tr><td><code><a href='vapour_read_names.html'>vapour_read_names</a></code></td><td>read the 'names' of features in a layer, the 'FID'</td></tr>
 <tr><td><code><a href='vapour_read_attributes.html'>vapour_read_attributes</a></code></td><td>read attributes of features in a layer, the columnar data associated with each geometry</td></tr>
-<tr><td><code><a href='vapour_read_extent.html'>vapour_read_extent</a></code></td><td>read the extent, or bounding box, of geometries in a layer</td></tr>
-<tr><td><code>vapour_read_geometry</code></td><td>read geometry in binary (blob, WKB) form</td></tr>
+<tr><td><code>vapour_read_extent</code></td><td>read the extent, or bounding box, of geometries in a layer</td></tr>
+<tr><td><code><a href='vapour_read_geometry.html'>vapour_read_geometry</a></code></td><td>read geometry in binary (blob, WKB) form</td></tr>
 <tr><td><code>vapour_read_geometry_text</code></td><td>read geometry in text form, various formats</td></tr>
-<tr><td><code>vapour_read_geometry_cpp</code></td><td>read feature into specified form</td></tr>
+<tr><td></td><td><code><a href='vapour_layer_names.html'>vapour_layer_names</a></code></td></tr>
 </table>
     <p><code>vapour_read_geometry_cpp</code> is a general function that will return different types of
 output for different inputs and is used by <code>vapour_read_extent</code>,
-<code>vapour_read_geometry</code> and <code>vapour_read_geometry_text</code>. The more specific functions should
-be used in preference to the <code>_cpp</code> version.</p>
+<code>vapour_read_geometry</code> and <code>vapour_read_geometry_text</code>.</p>
 <p>As far as possible vapour aims to minimize the level of interpretation
 provided for the functions, so that developers can choose how things are
 implemented. This means we return raw lists or vectors rather than data

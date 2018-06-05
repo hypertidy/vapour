@@ -22,7 +22,7 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #'
 #' Return the basic structural metadata of a raster source understood by GDAL.
 #' Subdatasets may be specified by number, starting at 1. See
-#' [vapour_sds_names()] for more.
+#' [vapour_sds_names] for more.
 #'
 #' The structural metadata are
 #'
@@ -93,15 +93,15 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' affine raster will be use with this _rotation_ specified within the transform
 #' coefficients.
 #'
-#' @seealso sds_info
+#' @seealso vapour_sds_info
 #' @param x data source string (i.e. file name or URL or database connection string)
 #' @param sds a subdataset number, if necessary
 #' @param ... currently unused
 #' @export
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
-#' raster_info(f)
-raster_info <- function(x, ..., sds = NULL) {
+#' vapour_raster_info(f)
+vapour_raster_info <- function(x, ..., sds = NULL) {
   datasourcename <- sds_boilerplate_checks(x, sds = sds)
   raster_info_cpp(pszFilename = datasourcename)
 }

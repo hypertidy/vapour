@@ -13,7 +13,6 @@ sds_info_cpp <- function(pszFilename) {
     .Call('_vapour_sds_info_cpp', PACKAGE = 'vapour', pszFilename)
 }
 
-#' @noRd
 vapour_layer_names_cpp <- function(dsource, sql = "") {
     .Call('_vapour_vapour_layer_names_cpp', PACKAGE = 'vapour', dsource, sql)
 }
@@ -22,11 +21,6 @@ vapour_read_attributes_cpp <- function(dsource, layer = 0L, sql = "") {
     .Call('_vapour_vapour_read_attributes_cpp', PACKAGE = 'vapour', dsource, layer, sql)
 }
 
-#' vapour_read_geometry_cpp
-#' #param what what to read, "geometry", "text", "extent"
-#' include 000_vapour_input.R
-#' export
-#' name vapour_read_geometry_cpp
 vapour_read_geometry_cpp <- function(dsource, layer = 0L, sql = "", what = "geometry", textformat = "json") {
     .Call('_vapour_vapour_read_geometry_cpp', PACKAGE = 'vapour', dsource, layer, sql, what, textformat)
 }

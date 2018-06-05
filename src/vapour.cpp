@@ -9,7 +9,7 @@ using namespace Rcpp;
 
 constexpr int MAX_INT =  std::numeric_limits<int>::max ();
 
-//' @noRd
+
 // [[Rcpp::export]]
 Rcpp::CharacterVector vapour_layer_names_cpp(Rcpp::CharacterVector dsource,
                             Rcpp::CharacterVector sql = "")
@@ -181,12 +181,7 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
 }
 
 
-// ## re include see NOTE in 000_vapour_input.R
-//' vapour_read_geometry_cpp
-//' #param what what to read, "geometry", "text", "extent"
-//' include 000_vapour_input.R
-//' export
-//' name vapour_read_geometry_cpp
+
 // [[Rcpp::export]]
 List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
                             Rcpp::IntegerVector layer = 0,

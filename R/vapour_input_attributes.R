@@ -1,9 +1,3 @@
-## NOTE: this file is named "000.*.R" so that it sorts before RcppExports.R
-## so that vapour_read_geometry_cpp is at the end of the Usage list in
-## ?vapour_read_geometry
-## and we also use Collate in DESCRIPTION, in case this note gets missed and
-## no one understands why - there's an @include 000_vapour_input.R in the C++
-## for compileAttributes that puts this file ahead of RcppExports.R :)
 
 ## only select FID, no matter what user asks for
 fid_select <- function(x) {
@@ -39,7 +33,7 @@ asterisk_select <- function(x) {
 #' data sources with subdatasets (there's no way to virtualize single rasters into
 #' a data source with multiple subdatasets, oh except by using VRT....)
 #'
-#' See [vapour_sds_names()] for more on the multiple topic.
+#' See [vapour_sds_names] for more on the multiple topic.
 #'
 #' @inheritParams vapour_read_geometry
 #' @return character vector of layer names
