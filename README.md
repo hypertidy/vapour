@@ -47,17 +47,13 @@ Purpose
 
 The goal of vapour is to provide a basic **GDAL API** package for R. The key functions provide vector geometry or attributes and raster data and raster metadata.
 
-The priority now is to give low-level access to key functionality rather than comprehensive coverage of the library. There access is purely read-only, and provides no conversion to specialist types in R. Ideally, this could become a common foundation for other packages to specialize, but at the very least provides minimal examples to use GDAL for specialist needs.
+The priority is to give low-level access to key functionality rather than comprehensive coverage of the library. The real advantage of `vapour` is the flexibility of a modular workflow, not the outright efficiency.
 
 A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are *simple features* and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools.)
 
 These loftier general needs have come out of smaller more concrete goals, one was access to the "attributes-only" capacity of GDAL as a virtual database engine, and another access to the dense structures provided by transport vector data. GDAL's dynamic resampling of arbitrary raster windows is also very useful for interactive tools on local data, and seems under-utilized in favour of less accessible online image services.
 
 This partly draws on work done in [the sf package](https://github.com/r-spatial/sf) and in packages `rgdal` and `rgdal2`. I'm amazed that something as powerful and general as GDAL is still only available through these lenses, but recentish improvements make things much easier touse and share. Specifically `Rcpp` means that access to external libs is simplified, easier to learn and easier to get started and make progress. The other part is that cross-platform support is now much better, with more consistency on the libraries available on the CRAN machines and in other contexts.
-
-Examples of packages that use vapour are in development, [RGDALSQL](https://github.com/mdsumner/RGDALSQL) and [lazyraster](https://github.com/hypertidy/lazyraster). `RGDALSQL` aims to leverage the facilities of GDAL to provide data *on-demand* for many sources *as if* they were databases. `lazyraster` uses the level-of-detail facility of GDAL to read just enough resolution from a raster source using traditional window techniques.
-
-Limitations, work-in-progress and other discussion are active here: <https://github.com/hypertidy/vapour/issues/4>
 
 Warnings
 --------
@@ -77,7 +73,7 @@ help("vapour-package")
 
 See the vignettes and documentation for examples WIP.
 
-The following concrete example illustrates the motivation for `vapour`, through a timing benchmark for one standard operation: extracting feature geometries from a data set within a user-defined bounding box. The data set is the one used throughout the book [Geocomputation in R](https://geocompr.robinlovelace.net/) by Robin Lovelace, Jakub Nowosad, and Jannes Muenchow, and can be obtained with
+The following concrete example illustrates the motivation for `vapour`, through a timing benchmark for one standard operation: extracting feature geometries from a data set within a user-defined bounding box. The data set is the one used throughout the book [Geocomputation in R](https://geocompr.robinlovelace.net/) by Robin Lovelace, Jakub Nowosad, and Jannes Muenchow, and can be obtained with the following code.
 
 ``` r
 url <- file.path ("http://www.naturalearthdata.com/http//www.naturalearthdata.com",
@@ -176,11 +172,11 @@ rbenchmark::benchmark (
                        f_va3 (fname),
                        replications = 10)
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.316    4.580     0.316    0.000          0
-#> 2 f_sf2(fname)           10   0.207    3.000     0.200    0.008          0
-#> 3 f_va1(fname)           10   0.069    1.000     0.068    0.000          0
-#> 4 f_va2(fname)           10   0.092    1.333     0.092    0.000          0
-#> 5 f_va3(fname)           10   0.232    3.362     0.228    0.004          0
+#> 1 f_sf1(fname)           10   0.328    4.493     0.328    0.000          0
+#> 2 f_sf2(fname)           10   0.221    3.027     0.216    0.004          0
+#> 3 f_va1(fname)           10   0.073    1.000     0.068    0.004          0
+#> 4 f_va2(fname)           10   0.095    1.301     0.092    0.000          0
+#> 5 f_va3(fname)           10   0.234    3.205     0.228    0.004          0
 #>   sys.child
 #> 1         0
 #> 2         0
@@ -194,11 +190,11 @@ Reading geometries only, as opposed to the `sf` reading of all geometries and at
 Context
 -------
 
-My first real attempt at DBI abstraction is here:
+Examples of packages that use vapour are in development, [RGDALSQL](https://github.com/mdsumner/RGDALSQL) and [lazyraster](https://github.com/hypertidy/lazyraster). `RGDALSQL` aims to leverage the facilities of GDAL to provide data *on-demand* for many sources *as if* they were databases. `lazyraster` uses the level-of-detail facility of GDAL to read just enough resolution from a raster source using traditional window techniques.
 
-<https://github.com/mdsumner/RGDALSQL>
+Limitations, work-in-progress and other discussion are active here: <https://github.com/hypertidy/vapour/issues/4>
 
-I've kept a record of a minimal GDAL wrapper package here:
+We've kept a record of a minimal GDAL wrapper package here:
 
 <https://github.com/diminutive/gdalmin>
 
@@ -206,7 +202,7 @@ Before those I had worked on getting sp and dplyr to at least work together <htt
 
 Early exploration of allow non-geometry read with rgdal was tried here: <https://github.com/r-gris/gladr>
 
-Thankss to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an automatable build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured my ravings about wanting this level of control for many years.
+Thanks to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an automatable build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured ravings about wanting this level of control for many years.
 
 Code of conduct
 ===============
