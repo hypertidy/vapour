@@ -1,5 +1,7 @@
 # dev
 
+* Functions that include a `layer` index now accept a layer name which is used to find the (0-based) layer index. 
+
 * This is a breaking release, all old functions have been made defunct or removed entirely. 
 
 # vapour 0.0.1

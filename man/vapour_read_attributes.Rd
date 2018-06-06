@@ -9,7 +9,7 @@ vapour_read_attributes(dsource, layer = 0L, sql = "")
 \arguments{
 \item{dsource}{data source name (path to file, connection string, URL)}
 
-\item{layer}{integer of layer to work with, defaults to the first (0)}
+\item{layer}{integer of layer to work with, defaults to the first (0) or the name of the layer}
 
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
 }
@@ -23,6 +23,8 @@ att <- vapour_read_attributes(mvfile)
 str(att)
 sq <- "SELECT * FROM list_locality_postcode_meander_valley WHERE FID < 5"
 (att <- vapour_read_attributes(mvfile, sql = sq))
-dsource <- "inst/extdata/tab/list_locality_postcode_meander_valley.tab"
-vapour_read_attributes(dsource, sql = "SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7300" )
+pfile <- "list_locality_postcode_meander_valley.tab"
+dsource <- system.file(file.path("extdata/tab", pfile), package="vapour")
+SQL <- "SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7300"
+vapour_read_attributes(dsource, sql = SQL)
 }

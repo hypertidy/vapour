@@ -167,14 +167,7 @@ f_sf2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname)
 <li>Read geometry as <code>json</code> (text), pre-selected via SQL, and convert with the <code>geojsonsf</code> package</li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span> (vapour)</code></pre></div>
-<pre><code>#&gt; Loading vapour
-#&gt; Re-compiling vapour
-#&gt; '/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore  \
-#&gt;   --quiet CMD INSTALL '/home/mdsumner/Git/vapour'  \
-#&gt;   --library='/tmp/Rtmp1wqQ0S/devtools_install_753c2d849960' --no-R  \
-#&gt;   --no-data --no-help --no-demo --no-inst --no-docs --no-exec  \
-#&gt;   --no-multiarch --no-test-load --preclean
-#&gt; </code></pre>
+<pre><code>#&gt; Loading vapour</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f_va1 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># read all then sub-select</span>
 {
     ext &lt;-<span class="st"> </span><span class="kw">do.call</span> (rbind, <span class="kw"><a href="http://www.rdocumentation.org/packages/vapour/topics/vapour_read_geometry">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span>
@@ -218,11 +211,11 @@ f_va3 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <sp
                        <span class="kw">f_va3</span> (fname),
                        <span class="dt">replications =</span> <span class="dv">10</span>)
 <span class="co">#&gt;           test replications elapsed relative user.self sys.self user.child</span>
-<span class="co">#&gt; 1 f_sf1(fname)           10   0.327    4.606     0.308    0.016          0</span>
-<span class="co">#&gt; 2 f_sf2(fname)           10   0.207    2.915     0.208    0.000          0</span>
-<span class="co">#&gt; 3 f_va1(fname)           10   0.071    1.000     0.060    0.008          0</span>
-<span class="co">#&gt; 4 f_va2(fname)           10   0.092    1.296     0.084    0.008          0</span>
-<span class="co">#&gt; 5 f_va3(fname)           10   0.231    3.254     0.228    0.004          0</span>
+<span class="co">#&gt; 1 f_sf1(fname)           10   0.341    4.372     0.336    0.004          0</span>
+<span class="co">#&gt; 2 f_sf2(fname)           10   0.236    3.026     0.232    0.004          0</span>
+<span class="co">#&gt; 3 f_va1(fname)           10   0.078    1.000     0.072    0.008          0</span>
+<span class="co">#&gt; 4 f_va2(fname)           10   0.097    1.244     0.100    0.000          0</span>
+<span class="co">#&gt; 5 f_va3(fname)           10   0.225    2.885     0.216    0.008          0</span>
 <span class="co">#&gt;   sys.child</span>
 <span class="co">#&gt; 1         0</span>
 <span class="co">#&gt; 2         0</span>

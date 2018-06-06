@@ -20,6 +20,19 @@ asterisk_select <- function(x) {
 
 }
 
+## find index of a layer name, or error
+index_layer <- function(x, layername) {
+  if (is.factor(layername)) {
+    warning("layer is a factor, converting to character")
+    layername <- levels(layername)[layername]
+  }
+  available_layers <- try(vapour_layer_names(x), silent = TRUE)
+  if (inherits(available_layers, "try-error")) stop(sprintf("cannot open data source: %s", x))
+ idx <- match(layername, available_layers)
+ if (length(idx) != 1 || !is.numeric(idx)) stop(sprintf("cannot find layer: %s", layername))
+ if (is.na(idx) || idx < 1 || idx > length(available_layers)) stop(sprintf("layer index not found for: %s \n\nto determine, compare 'vapour_layer_names(dsource)'", layername))
+ idx - 1L  ## layer is 0-based
+}
 
 #' Read GDAL layer names
 #'
@@ -67,6 +80,7 @@ vapour_layer_names <- function(dsource, sql = "") {
 #' range(fids <- vapour_read_names(mvfile))
 #' length(fids)
 vapour_read_names <- function(dsource, layer = 0L, sql = "") {
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   layers <- vapour_layer_names(dsource)
   if (nchar(sql) > 1) {
     sql <- fid_select(sql)
@@ -87,13 +101,13 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "") {
 #' str(att)
 #' sq <- "SELECT * FROM list_locality_postcode_meander_valley WHERE FID < 5"
 #' (att <- vapour_read_attributes(mvfile, sql = sq))
-#' dsource <- "inst/extdata/tab/list_locality_postcode_meander_valley.tab"
-#' vapour_read_attributes(dsource, sql = "SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7300" )
+#' pfile <- "list_locality_postcode_meander_valley.tab"
+#' dsource <- system.file(file.path("extdata/tab", pfile), package="vapour")
+#' SQL <- "SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7300"
+#' vapour_read_attributes(dsource, sql = SQL)
 #' @export
 vapour_read_attributes <- function(dsource, layer = 0L, sql = "") {
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   vapour_read_attributes_cpp(dsource = dsource, layer = layer, sql = sql)
 }
 
-#' Read layer info
-#'
-#' Read metadata available for a layer, optionally after SQL execution.

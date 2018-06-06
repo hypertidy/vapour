@@ -125,7 +125,7 @@
     </tr>
     <tr>
       <th>layer</th>
-      <td><p>integer of layer to work with, defaults to the first (0)</p></td>
+      <td><p>integer of layer to work with, defaults to the first (0) or the name of the layer</p></td>
     </tr>
     <tr>
       <th>sql</th>
@@ -189,8 +189,17 @@
 #&gt; 
 #&gt; $SHAPE_LEN
 #&gt; [1] 39785.88 31587.54 35693.32 67614.51
-#&gt; </div><div class='input'><span class='no'>dsource</span> <span class='kw'>&lt;-</span> <span class='st'>"inst/extdata/tab/list_locality_postcode_meander_valley.tab"</span>
-<span class='fu'>vapour_read_attributes</span>(<span class='no'>dsource</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='st'>"SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE &lt; 7300"</span> )</div><div class='output co'>#&gt; <span class='error'>Error in vapour_read_attributes_cpp(dsource = dsource, layer = layer,     sql = sql): Open failed.</span></div></pre>
+#&gt; </div><div class='input'><span class='no'>pfile</span> <span class='kw'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span>
+<span class='no'>dsource</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='fu'>file.path</span>(<span class='st'>"extdata/tab"</span>, <span class='no'>pfile</span>), <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"vapour"</span>)
+<span class='no'>SQL</span> <span class='kw'>&lt;-</span> <span class='st'>"SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE &lt; 7300"</span>
+<span class='fu'>vapour_read_attributes</span>(<span class='no'>dsource</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='no'>SQL</span>)</div><div class='output co'>#&gt; $NAME
+#&gt;  [1] "Frankford"          "Bridgenorth"        "Summerhill"        
+#&gt;  [4] "Carrick"            "Rosevale"           "Selbourne"         
+#&gt;  [7] "Blackstone Heights" "Lake St Clair"      "Hagley"            
+#&gt; [10] "Quamby Bend"        "Trevallyn"          "Westwood"          
+#&gt; [13] "Riverside"          "Hadspen"            "Travellers Rest"   
+#&gt; [16] "Prospect Vale"     
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -3,7 +3,8 @@ context("test-features.R")
 
 f <- system.file("extdata", "sst_c.gpkg", package = "vapour")
 
-
+pfile <- "list_locality_postcode_meander_valley.tab"
+dsource <- system.file(file.path("extdata/tab", pfile), package="vapour")
 test_that("geometry read works", {
 
   gbin <- vapour_read_geometry_cpp(f, what = "geometry")
@@ -33,4 +34,6 @@ test_that("geometry read works", {
   expect_identical(gwkt, vapour_read_geometry_text(f, textformat = "wkt"))
   expect_identical(gext, vapour_read_extent(f))
 
+  expect_error(vapour_read_extent(dsource, layer = "list_locality_postcode_meander_val"), "layer index not found for")
+  expect_silent(vapour_read_attributes(dsource, layer = "list_locality_postcode_meander_valley"))
 })

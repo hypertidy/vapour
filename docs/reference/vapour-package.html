@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • vapour</title>
+<title>vapour — vapour-package • vapour</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="vapour — vapour-package" />
+
+<meta property="og:description" content="A lightweight GDAL API package for R." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -46,7 +49,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -98,90 +101,61 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>vapour</h1>
+    <small class="dont-index">Source: <a href='https://github.com/hypertidy/vapour/blob/master/R/vapour-package.R'><code>R/vapour-package.R</code></a></small>
+    <div class="hidden name"><code>vapour-package.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>A lightweight GDAL API package for R.</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+        
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="sst_c.html">sst_c</a></code> </p>
-        </td>
-        <td><p>SST contours</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour-package.html">vapour-package</a></code> </p>
-        </td>
-        <td><p>vapour</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_layer_names.html">vapour_layer_names()</a></code> </p>
-        </td>
-        <td><p>Read GDAL layer names</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_raster_info.html">vapour_raster_info()</a></code> </p>
-        </td>
-        <td><p>Raster information</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_read_attributes.html">vapour_read_attributes()</a></code> </p>
-        </td>
-        <td><p>Read feature attribute data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_read_geometry.html">vapour_read_geometry()</a></code> <code><a href="vapour_read_geometry.html">vapour_read_geometry_text()</a></code> <code><a href="vapour_read_geometry.html">vapour_read_extent()</a></code> </p>
-        </td>
-        <td><p>Read GDAL feature geometry</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_read_names.html">vapour_read_names()</a></code> </p>
-        </td>
-        <td><p>Read feature names</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_read_raster.html">vapour_read_raster()</a></code> </p>
-        </td>
-        <td><p>Raster IO (read)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_sds_names.html">vapour_sds_names()</a></code> </p>
-        </td>
-        <td><p>GDAL raster subdatasets (variables)</p></td>
-      </tr>
-    </tbody>
-    </table>
+    <p>Provides low-level access to 'GDAL' functionality for R packages. The aim is
+to minimize the level of interpretation put on the 'GDAL' facilities, to
+enable direct use of it for a variety of purposes. 'GDAL' is the 'Geospatial
+Data Abstraction Library' a translator for raster and vector geospatial data
+formats that presents a single raster abstract data model and single vector
+abstract data model to the calling application for all supported formats
+<a href='http://gdal.org/'>http://gdal.org/</a>.</p>
+<p>Lightweight means we access parts of the GDAL API as near as possible to
+their native usage. GDAL is not a lightweight library, but provide a very
+nice abstraction over format details for a very large number of different
+formats.</p>
+<p>Functions for raster and vector sources are included.</p>
+<table class='table'>
+<tr><td><code><a href='vapour_raster_info.html'>vapour_raster_info</a></code></td><td>structural metadata of a source</td></tr>
+<tr><td><code><a href='vapour_read_raster.html'>vapour_read_raster</a></code></td><td>read data direct from a window of a raster band source</td></tr>
+<tr><td><code><a href='vapour_sds_names.html'>vapour_sds_names</a></code></td><td>list individual raster sources in a source containing subdatasets</td></tr>
+</table>
+    <table class='table'>
+<tr><td><code><a href='vapour_layer_names.html'>vapour_layer_names</a></code></td><td>list names of vector layers in a data source</td></tr>
+<tr><td><code><a href='vapour_read_names.html'>vapour_read_names</a></code></td><td>read the 'names' of features in a layer, the 'FID'</td></tr>
+<tr><td><code><a href='vapour_read_attributes.html'>vapour_read_attributes</a></code></td><td>read attributes of features in a layer, the columnar data associated with each geometry</td></tr>
+<tr><td><code>vapour_read_extent</code></td><td>read the extent, or bounding box, of geometries in a layer</td></tr>
+<tr><td><code><a href='vapour_read_geometry.html'>vapour_read_geometry</a></code></td><td>read geometry in binary (blob, WKB) form</td></tr>
+<tr><td><code>vapour_read_geometry_text</code></td><td>read geometry in text form, various formats</td></tr>
+</table>
+    <p>As far as possible vapour aims to minimize the level of interpretation
+provided for the functions, so that developers can choose how things are
+implemented. Functions return raw lists or vectors rather than data frames
+or classed types.</p>
+    
+
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
-    </ul>
+      
+      <li><a href="#details">Details</a></li>
+          </ul>
+
   </div>
 </div>
 

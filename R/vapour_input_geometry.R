@@ -10,7 +10,7 @@
 #' `vapour_read_geometry_cpp` will read a feature for each of the ways listed above and is used by those functions. It's recommended
 #' to use the more specialist functions rather than this more general one.
 #' @param dsource data source name (path to file, connection string, URL)
-#' @param layer integer of layer to work with, defaults to the first (0)
+#' @param layer integer of layer to work with, defaults to the first (0) or the name of the layer
 #' @param sql if not empty this is executed against the data source (layer will be ignored)
 #' @param textformat indicate text output format, available are "json" (default), "gml", "kml", "wkt"
 #' @examples
@@ -40,6 +40,7 @@
 #' @aliases vapour_read_geometry_text vapour_read_extent
 #' @name vapour_read_geometry
 vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   sql <- fid_select(sql)
   vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "geometry", textformat = "")
 }
@@ -47,6 +48,7 @@ vapour_read_geometry <- function(dsource, layer = 0L, sql = "") {
 #' @export
 #' @rdname vapour_read_geometry
 vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat = "json") {
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   textformat = match.arg (tolower (textformat), c ("json", "gml", "kml", "wkt"))
   sql <- fid_select(sql)
   vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "text", textformat = textformat)
@@ -56,6 +58,7 @@ vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat 
 #' @rdname vapour_read_geometry
 #' @export
 vapour_read_extent <- function(dsource, layer = 0L, sql = "") {
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   sql <- fid_select(sql)
   vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "extent", textformat = "")
 }

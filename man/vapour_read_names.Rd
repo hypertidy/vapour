@@ -9,7 +9,7 @@ vapour_read_names(dsource, layer = 0L, sql = "")
 \arguments{
 \item{dsource}{data source name (path to file, connection string, URL)}
 
-\item{layer}{integer of layer to work with, defaults to the first (0)}
+\item{layer}{integer of layer to work with, defaults to the first (0) or the name of the layer}
 
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
 }
