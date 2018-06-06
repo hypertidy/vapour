@@ -5,7 +5,7 @@
 \alias{sst_c}
 \title{SST contours}
 \description{
-Southern Ocean GHRSST contours from 2017-07-28, read from
+Southern Ocean GHRSST contours in sf data frame from 2017-07-28, read from
 }
 \details{
 podaac-ftp.jpl.nasa.gov/allData/ghrsst/data/GDS2/L4
@@ -21,5 +21,11 @@ Also stored in GeoPackage format in
 ## library(sf)
 ## plot(sst_c)
 f <- system.file("extdata/sst_c.gpkg", package = "vapour")
-#d <- read_gdal_table(f) \%>\% mutate(json =  to_format(f, format = "json"))
+
+## create an equivalent but class-less form of sst_c  with GeoJSON rather than sf sfc format
+atts <- vapour_read_attributes(f)
+dat <- as.data.frame(atts, stringsAsFactors = FALSE)
+dat[["json"]] <- vapour_read_geometry_text(f)
+names(dat)
+names(sst_c)
 }

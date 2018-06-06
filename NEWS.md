@@ -1,5 +1,8 @@
-# vapour 0.0.1
+# dev
 
+* This is a breaking release, all old functions have been made defunct or removed entirely. 
+
+# vapour 0.0.1
 
 * All C++ functions now have explicit R wrappers instead of Rcpp exports. 
 

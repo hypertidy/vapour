@@ -83,11 +83,12 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "") {
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' vapour_read_attributes(mvfile)
+#' att <- vapour_read_attributes(mvfile)
+#' str(att)
 #' sq <- "SELECT * FROM list_locality_postcode_meander_valley WHERE FID < 5"
-#' att <- vapour_read_attributes(mvfile, sql = sq)
+#' (att <- vapour_read_attributes(mvfile, sql = sq))
 #' dsource <- "inst/extdata/tab/list_locality_postcode_meander_valley.tab"
-#'
+#' vapour_read_attributes(dsource, sql = "SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7300" )
 #' @export
 vapour_read_attributes <- function(dsource, layer = 0L, sql = "") {
   vapour_read_attributes_cpp(dsource = dsource, layer = layer, sql = sql)

@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.1.9000</span>
       </span>
     </div>
 
@@ -137,242 +137,60 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>file</span> <span class='kw'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span>
 <span class='no'>mvfile</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='fu'>file.path</span>(<span class='st'>"extdata/tab"</span>, <span class='no'>file</span>), <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"vapour"</span>)
-<span class='fu'>vapour_read_attributes</span>(<span class='no'>mvfile</span>)</div><div class='output co'>#&gt; $LOCAL_ID
-#&gt;  [1] 100422 100366 100337 100308 100263 100311 100377 100407 100429 100423
-#&gt; [11] 100387 100397 100328 100269 100416 100437 100357 100331 100370 100421
-#&gt; [21] 100460 100401 100398 100425 100325 100412 100383 100324 100378 100355
-#&gt; [31] 100373 100351 100326 100419 100360 100364 100400 100420 100415 100363
-#&gt; [41] 100428 100335 100418 100396 100346 100403 100388 100411 100424 100446
-#&gt; [51] 100430 100440 100385 100417 100393 100394 100389 100381
+<span class='no'>att</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_attributes</span>(<span class='no'>mvfile</span>)
+<span class='fu'>str</span>(<span class='no'>att</span>)</div><div class='output co'>#&gt; List of 11
+#&gt;  $ LOCAL_ID  : num [1:58] 1e+05 1e+05 1e+05 1e+05 1e+05 ...
+#&gt;  $ NAME      : chr [1:58] "Caveside" "Weegena" "Kimberley" "Parkham" ...
+#&gt;  $ POSTCODE  : int [1:58] 7304 7304 7304 7304 7275 7277 7250 7304 7304 7304 ...
+#&gt;  $ PLAN_REF  : chr [1:58] "CPR5322" "CPR5327" "CPR5361" "CPR5327" ...
+#&gt;  $ GAZ_DATE  : Date[1:58], format: "1970-01-01" "1970-01-01" ...
+#&gt;  $ NOM_REG_NO: chr [1:58] "947L" "1300M" "1063T" "1179Y" ...
+#&gt;  $ UFI       : chr [1:58] "{4a5db4da-ca19-41a0-8dd4-c28a14bbee18}" "{253b676e-2791-469c-ac5e-9cb3a95cc158}" "{75f60a99-4c58-4d3e-911d-bbaa9a04164c}" "{b008d456-4e80-4237-80f6-a26c03817e3c}" ...
+#&gt;  $ CREATED_ON: chr [1:58] "2016-03-04 10:42:37" "2015-06-19 13:46:50" "2016-09-16 10:54:56" "2014-06-06 16:50:22" ...
+#&gt;  $ LIST_GUID : chr [1:58] "{839edd46-01a7-4a45-9d97-499962fa952b}" "{de35ebd4-0ac0-4299-947d-87d07c69426a}" "{73ced9ad-ee9a-41d5-a5bc-c95c4ab948d9}" "{37f17d1f-d2a0-4b78-ba0d-e5f62f216658}" ...
+#&gt;  $ SHAPE_AREA: num [1:58] -9999 -9999 -9999 -9999 -9999 ...
+#&gt;  $ SHAPE_LEN : num [1:58] 39786 31588 35693 67615 70141 ...</div><div class='input'><span class='no'>sq</span> <span class='kw'>&lt;-</span> <span class='st'>"SELECT * FROM list_locality_postcode_meander_valley WHERE FID &lt; 5"</span>
+(<span class='no'>att</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_attributes</span>(<span class='no'>mvfile</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='no'>sq</span>))</div><div class='output co'>#&gt; $LOCAL_ID
+#&gt; [1] 100422 100366 100337 100308
 #&gt; 
 #&gt; $NAME
-#&gt;  [1] "Caveside"           "Weegena"            "Kimberley"         
-#&gt;  [4] "Parkham"            "Frankford"          "Bridgenorth"       
-#&gt;  [7] "Summerhill"         "Mayberry"           "Western Creek"     
-#&gt; [10] "Meander"            "Deloraine"          "Carrick"           
-#&gt; [13] "Rosevale"           "Sassafras"          "Dairy Plains"      
-#&gt; [16] "Liffey"             "Westbury"           "Selbourne"         
-#&gt; [19] "Blackstone Heights" "Cradle Mountain"    "Lake St Clair"     
-#&gt; [22] "Chudleigh"          "Red Hills"          "Golden Valley"     
-#&gt; [25] "Elizabeth Town"     "Whitemore"          "Hagley"            
-#&gt; [28] "Birralee"           "Quamby Bend"        "Trevallyn"         
-#&gt; [31] "Mount Roland"       "Moltema"            "Reedy Marsh"       
-#&gt; [34] "Cluan"              "Westwood"           "Middlesex"         
-#&gt; [37] "Liena"              "Montana"            "Quamby Brook"      
-#&gt; [40] "Weetah"             "Bracknell"          "Riverside"         
-#&gt; [43] "Mersey Forest"      "Mole Creek"         "Lower Beulah"      
-#&gt; [46] "Needles"            "Exton"              "Osmaston"          
-#&gt; [49] "Bishopsbourne"      "Walls of Jerusalem" "Central Plateau"   
-#&gt; [52] "Jackeys Marsh"      "Dunorlan"           "Oaks"              
-#&gt; [55] "Longford"           "Hadspen"            "Travellers Rest"   
-#&gt; [58] "Prospect Vale"     
+#&gt; [1] "Caveside"  "Weegena"   "Kimberley" "Parkham"  
 #&gt; 
 #&gt; $POSTCODE
-#&gt;  [1] 7304 7304 7304 7304 7275 7277 7250 7304 7304 7304 7304 7291 7292 7307 7304
-#&gt; [16] 7301 7303 7292 7250 7306 7140 7304 7304 7304 7304 7303 7292 7303 7292 7250
-#&gt; [31] 7306 7304 7304 7303 7292 7306 7304 7304 7304 7304 7302 7250 7304 7304 7306
-#&gt; [46] 7304 7303 7303 7301 7304 7304 7304 7304 7303 7301 7290 7250 7250
+#&gt; [1] 7304 7304 7304 7304
 #&gt; 
 #&gt; $PLAN_REF
-#&gt;  [1] "CPR5322" "CPR5327" "CPR5361" "CPR5327" "CPR5142" "CPR5140" "CPR5150"
-#&gt;  [8] "CPR5321" "CPR5322" "CPR5322" "CPR5327" "CPR5329" "CPR5329" "CPR5238"
-#&gt; [15] "CPR5322" "CPR5323" "CPR5328" "CPR5329" "CPR5326" "CPR5363" "CPR5570"
-#&gt; [22] "CPR5322" "CPR5322" "CPR5323" "CPR5327" "CPR5323" "CPR5329" "CPR5328"
-#&gt; [29] "CPR5329" "CPR5155" "CPR5359" "CPR5327" "CPR5328" "CPR5323" "CPR5329"
-#&gt; [36] "CPR5362" "CPR5321" "CPR5322" "CPR5323" "CPR5327" "CPR5323" "CPR5140"
-#&gt; [43] "CPR5321" "CPR5321" "CPR5361" "CPR5322" "CPR5328" "CPR5323" "CPR5044"
-#&gt; [50] "CPR5571" "CPR5569" "CPR5322" "CPR5327" "CPR5323" "CPR5044" "CPR5329"
-#&gt; [57] "CPR5326" "CPR5325"
+#&gt; [1] "CPR5322" "CPR5327" "CPR5361" "CPR5327"
 #&gt; 
 #&gt; $GAZ_DATE
-#&gt;  [1] "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01"
-#&gt;  [6] "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01"
-#&gt; [11] "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01"
-#&gt; [16] "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01"
-#&gt; [21] "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01"
-#&gt; [26] "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01"
-#&gt; [31] "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01"
-#&gt; [36] "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01"
-#&gt; [41] "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01"
-#&gt; [46] "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01"
-#&gt; [51] "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01"
-#&gt; [56] "1970-01-01" "1970-01-01" "1970-01-01"
+#&gt; [1] "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01"
 #&gt; 
 #&gt; $NOM_REG_NO
-#&gt;  [1] "947L"   "1300M"  "1063T"  "1179Y"  "1003Q"  "925X"   "4806G"  "1116M" 
-#&gt;  [9] "1304X"  "1117P"  "268G"   "943C"   "1219E"  "1231T"  "38109M" "1090C" 
-#&gt; [17] "1303T"  "1630F"  "38108A" "38113D" "39197M" "951C"   "2399W"  "1018H" 
-#&gt; [25] "280X"   "1311T"  "1030Y"  "909X"   "7650E"  "4807J"  "38115E" "1124M" 
-#&gt; [33] "1628T"  "2828H"  "1265S"  "38114Q" "1088Q"  "1126R"  "1196B"  "599C"  
-#&gt; [41] "919C"   "25L"    "38110N" "1123K"  "907R"   "1150R"  "281A"   "2839P" 
-#&gt; [49] "910F"   "39206M" "38974G" "1053P"  "983W"   "1162C"  "348G"   "1029P" 
-#&gt; [57] "38111C" "58H"   
+#&gt; [1] "947L"  "1300M" "1063T" "1179Y"
 #&gt; 
 #&gt; $UFI
-#&gt;  [1] "{4a5db4da-ca19-41a0-8dd4-c28a14bbee18}"
-#&gt;  [2] "{253b676e-2791-469c-ac5e-9cb3a95cc158}"
-#&gt;  [3] "{75f60a99-4c58-4d3e-911d-bbaa9a04164c}"
-#&gt;  [4] "{b008d456-4e80-4237-80f6-a26c03817e3c}"
-#&gt;  [5] "{953f4006-6397-4d03-af97-507eab170862}"
-#&gt;  [6] "{5cf8e2a3-631c-4d52-a79c-0ce475f76848}"
-#&gt;  [7] "{03a9def3-2f58-43da-b4ec-bc8f2e9a2eab}"
-#&gt;  [8] "{d71e82ff-7416-4a0b-b803-8764b5bcb451}"
-#&gt;  [9] "{a3f54d77-bcb7-4809-940d-040f14d8640f}"
-#&gt; [10] "{128ae910-e6d0-4420-a3d6-daf031f44e67}"
-#&gt; [11] "{b1b54795-ded8-49ee-8567-cf286545dc8f}"
-#&gt; [12] "{566f5fdb-7f84-4ff6-8dd6-63e4454e1fd3}"
-#&gt; [13] "{2eeb3ff9-a32b-4715-87c9-8da102fe60b3}"
-#&gt; [14] "{4872b9bc-bc96-49a4-a765-88774bdfe098}"
-#&gt; [15] "{88725292-d307-405d-8de3-12d3c0a77ab6}"
-#&gt; [16] "{73c660ab-fdc7-4b31-b22d-78cc71770cbc}"
-#&gt; [17] "{86c19cc3-cd18-44e3-a5b5-ecaf79780571}"
-#&gt; [18] "{2a0859b4-4656-4f6a-aa2b-cb933bd108de}"
-#&gt; [19] "{922d7c01-85d5-4a4f-ab3c-da7b0382861b}"
-#&gt; [20] "{e17d940e-0240-4a12-acef-d2377386439d}"
-#&gt; [21] "{a87b5dc0-98c5-44fa-9fe5-50701096785e}"
-#&gt; [22] "{184bddd2-e6c2-4e2a-99be-2c690d31c97b}"
-#&gt; [23] "{b392f80d-2922-4d91-8a77-a5278ca7c787}"
-#&gt; [24] "{c33654f5-41be-43a8-b506-80416a2bda25}"
-#&gt; [25] "{f421c569-e274-488b-a195-6c487648053c}"
-#&gt; [26] "{2349bffa-a979-49ae-8a43-b69aa0f24370}"
-#&gt; [27] "{69c3c915-fc8d-4001-8b15-40042f3e7117}"
-#&gt; [28] "{fda6b877-69b3-42c8-abc5-d92cf1a98b1e}"
-#&gt; [29] "{69eb3d26-614d-464b-b59b-aa9bc36d8a54}"
-#&gt; [30] "{887d42bf-4f02-42f1-9135-2f5b8d78e8cc}"
-#&gt; [31] "{a00cfee1-a76c-47c6-bdb0-61408c34037b}"
-#&gt; [32] "{9e283e9b-eebb-430b-b4b5-0f129ded465d}"
-#&gt; [33] "{7f74079d-0b95-40f1-a53d-94902d5e3e09}"
-#&gt; [34] "{9353c745-9bd5-4182-8cf2-01791a6b2d64}"
-#&gt; [35] "{86abde4b-6458-4d12-8d3c-1af5f1f123a7}"
-#&gt; [36] "{4347282e-7616-451b-b421-e53c36c7e064}"
-#&gt; [37] "{60767eb6-79ad-490a-bcf4-7f6f532c13c5}"
-#&gt; [38] "{cee33f2c-c615-4b4a-bf07-9e4578e6a5b9}"
-#&gt; [39] "{e74609a2-b8af-47b6-b5c1-480668f3192f}"
-#&gt; [40] "{7b954d94-6f77-45e8-8693-dfdca8d47d52}"
-#&gt; [41] "{1effaa60-8abe-4cba-8c26-249aad2046d6}"
-#&gt; [42] "{79cec965-7882-406a-83d0-13787ce055c7}"
-#&gt; [43] "{0f06fa94-73cf-42ae-a2d2-144ee7c07a68}"
-#&gt; [44] "{a5cf8425-3496-492f-9878-22ccb4af7267}"
-#&gt; [45] "{50845792-6f5d-4d0d-b85c-ec95993e7097}"
-#&gt; [46] "{6f6b41b7-555f-4f31-a37f-4e424167d9f1}"
-#&gt; [47] "{a3aa7385-0fbb-4dc2-b13b-9910b2507e64}"
-#&gt; [48] "{ef412a61-9aae-48ca-8257-df0af892956d}"
-#&gt; [49] "{39413160-812c-463d-820d-d8f4c1aa82c8}"
-#&gt; [50] "{5a0bd757-9a8b-45c2-b497-6edaaec7052d}"
-#&gt; [51] "{24b22df7-c905-406c-a19e-cc77fd294507}"
-#&gt; [52] "{5c4c3d24-ca65-40cd-a11e-e501248f9f65}"
-#&gt; [53] "{a1990658-8a33-4175-aace-9a5b6a5e5962}"
-#&gt; [54] "{f671bc53-71cb-4d47-9b86-2a5afa7bbf99}"
-#&gt; [55] "{84d3f931-7ef9-4d7e-9bd9-f47e095511a0}"
-#&gt; [56] "{4820bc13-ab68-4dd9-a1c5-2856e7af44b3}"
-#&gt; [57] "{a3960c6a-0b2b-43a7-9a6d-dbfc1a189966}"
-#&gt; [58] "{6af4252a-c213-4052-9baf-f4315240075f}"
+#&gt; [1] "{4a5db4da-ca19-41a0-8dd4-c28a14bbee18}"
+#&gt; [2] "{253b676e-2791-469c-ac5e-9cb3a95cc158}"
+#&gt; [3] "{75f60a99-4c58-4d3e-911d-bbaa9a04164c}"
+#&gt; [4] "{b008d456-4e80-4237-80f6-a26c03817e3c}"
 #&gt; 
 #&gt; $CREATED_ON
-#&gt;  [1] "2016-03-04 10:42:37" "2015-06-19 13:46:50" "2016-09-16 10:54:56"
-#&gt;  [4] "2014-06-06 16:50:22" "2014-12-08 09:07:12" "2015-05-11 10:49:09"
-#&gt;  [7] "2017-01-12 13:04:10" "2014-02-26 14:44:53" "2014-06-06 16:50:24"
-#&gt; [10] "2016-03-03 16:18:06" "2017-05-10 14:26:15" "2017-01-12 13:04:10"
-#&gt; [13] "2016-11-15 12:54:45" "2017-05-10 14:26:15" "2014-06-06 16:50:26"
-#&gt; [16] "2016-03-03 16:18:06" "2017-04-03 12:24:18" "2016-11-15 12:54:45"
-#&gt; [19] "2017-05-10 14:26:15" "2014-02-26 14:44:53" "2014-02-26 14:45:03"
-#&gt; [22] "2017-04-03 12:24:18" "2014-06-06 16:50:25" "2015-12-14 08:46:42"
-#&gt; [25] "2016-11-15 12:54:45" "2017-04-03 12:24:18" "2016-11-15 12:54:45"
-#&gt; [28] "2014-12-08 09:07:14" "2015-10-28 11:28:12" "2015-07-31 12:13:03"
-#&gt; [31] "2014-12-08 09:07:15" "2015-06-19 13:46:51" "2014-06-06 16:50:23"
-#&gt; [34] "2017-04-03 12:24:18" "2017-01-12 13:04:10" "2016-03-04 10:42:37"
-#&gt; [37] "2014-12-08 09:07:18" "2014-06-06 16:50:24" "2017-05-10 14:26:15"
-#&gt; [40] "2014-06-06 16:50:22" "2016-03-03 16:18:05" "2015-12-14 08:46:42"
-#&gt; [43] "2016-03-02 12:05:14" "2017-04-03 12:58:01" "2017-04-03 12:58:01"
-#&gt; [46] "2017-04-03 12:24:18" "2012-03-08 14:02:08" "2012-02-03 11:37:53"
-#&gt; [49] "2017-05-22 15:05:14" "2015-10-28 11:28:09" "2017-05-10 14:26:15"
-#&gt; [52] "2016-03-03 16:18:05" "2017-01-12 13:04:10" "2014-06-17 14:08:36"
-#&gt; [55] "2017-05-22 15:05:14" "2017-01-12 13:04:10" "2015-04-08 11:29:27"
-#&gt; [58] "2017-05-10 14:26:15"
+#&gt; [1] "2016-03-04 10:42:37" "2015-06-19 13:46:50" "2016-09-16 10:54:56"
+#&gt; [4] "2014-06-06 16:50:22"
 #&gt; 
 #&gt; $LIST_GUID
-#&gt;  [1] "{839edd46-01a7-4a45-9d97-499962fa952b}"
-#&gt;  [2] "{de35ebd4-0ac0-4299-947d-87d07c69426a}"
-#&gt;  [3] "{73ced9ad-ee9a-41d5-a5bc-c95c4ab948d9}"
-#&gt;  [4] "{37f17d1f-d2a0-4b78-ba0d-e5f62f216658}"
-#&gt;  [5] "{47f3a313-913f-4f83-8dc1-021907f9ee80}"
-#&gt;  [6] "{425d01cc-223b-4348-b965-384a98fd7999}"
-#&gt;  [7] "{b67a3c2b-08cb-42d4-825b-e40fcab2fb5e}"
-#&gt;  [8] "{60ba6d69-2021-462e-936f-544ee7c2595b}"
-#&gt;  [9] "{fe452b60-7ef7-44f2-8741-71126b4fb0a3}"
-#&gt; [10] "{876e5283-2a5d-46aa-92da-4aad5e02cb8e}"
-#&gt; [11] "{f29cc705-df86-4627-9725-f022c7a7665a}"
-#&gt; [12] "{b4dfcc34-6125-419a-9219-eb2563696623}"
-#&gt; [13] "{0371b2e7-c72f-447a-991e-451ec78dfb62}"
-#&gt; [14] "{6495b253-047d-40be-a842-694907a4700e}"
-#&gt; [15] "{3d221f2f-2af7-4150-8e11-89e612c9620a}"
-#&gt; [16] "{90808a7b-5134-4352-a0a0-9eb941c1c6fc}"
-#&gt; [17] "{28538e58-ea0a-4876-ba28-77fb91fb4c56}"
-#&gt; [18] "{9f9bf307-bb1d-4a44-9997-f4ef0ccb771a}"
-#&gt; [19] "{53d25ef5-ee06-4040-93e4-f40adc31452d}"
-#&gt; [20] "{d53dd2a5-ff7a-4c6f-98b4-a8bc463a83ea}"
-#&gt; [21] "{d508dd6c-c05a-4085-9043-52342bec9b42}"
-#&gt; [22] "{1fe385b9-753d-4abb-a485-5dc8811c47a0}"
-#&gt; [23] "{ec7a8d40-af0f-431e-8f42-313f68b59546}"
-#&gt; [24] "{24f934f6-c9e2-4856-82dc-6794e4c3e2a8}"
-#&gt; [25] "{fca48545-c9e9-4971-8146-52a5e625e38e}"
-#&gt; [26] "{3c7aea1e-2c10-4e0d-a437-2af95b984aac}"
-#&gt; [27] "{69d4b471-8414-4ee0-b8ee-37a54df00d26}"
-#&gt; [28] "{51b7f399-0e8f-4d16-91d9-b64e89e06e5c}"
-#&gt; [29] "{e61f737f-2531-4beb-b13e-e929c56c0302}"
-#&gt; [30] "{6b478510-78fa-4fba-afa2-3ef85190cee4}"
-#&gt; [31] "{c72f1ca0-11f8-4481-94c4-4ec11cb7fa88}"
-#&gt; [32] "{14b518dd-04b4-4edc-a566-a0712e4f81ab}"
-#&gt; [33] "{a91a9168-5623-4c27-9bf5-921d3b2fad55}"
-#&gt; [34] "{91390c0f-8706-41b7-b85c-d776be118f8c}"
-#&gt; [35] "{f5402dd6-8236-4165-aad2-df6510f5b45b}"
-#&gt; [36] "{e6e6878b-d4bd-470d-85d3-3a0266644bb0}"
-#&gt; [37] "{172a69bd-6ab6-4125-8db7-b28cf447e58a}"
-#&gt; [38] "{c517afd0-d363-4ee6-9daf-b0b92859754e}"
-#&gt; [39] "{5222cf87-76e7-42d5-885d-05adfd833113}"
-#&gt; [40] "{632db980-62f5-4676-bb10-ca6c8636b2ca}"
-#&gt; [41] "{036a25e8-5ae6-4758-b047-8e2a48f7078a}"
-#&gt; [42] "{7aab64fc-9092-430d-adf5-a6187ccac639}"
-#&gt; [43] "{d8b29014-d1f0-4537-90b0-2fc69409fa8f}"
-#&gt; [44] "{28abf88d-446c-4396-a0d1-5a8f487d626d}"
-#&gt; [45] "{630d7192-57a9-4655-8ff2-732c5d617bdf}"
-#&gt; [46] "{48a6c36b-7cd7-44b3-a051-8331a10469bd}"
-#&gt; [47] "{d6a63e2d-6c78-45f1-8f78-c97a7a0f9798}"
-#&gt; [48] "{c256e5de-6bb6-49c2-a9b7-eb1cc4a4358a}"
-#&gt; [49] "{36d9a9de-c587-4d06-8cc5-a40d735ea929}"
-#&gt; [50] "{028ad03f-fd0f-41e7-88ff-288a65388203}"
-#&gt; [51] "{725932a9-aec5-4aad-b083-589b5650cc31}"
-#&gt; [52] "{f8ee3df0-d971-424e-8620-d7dc1b664dbd}"
-#&gt; [53] "{4281ae3b-465d-4a74-9ffe-f3255e3d0c25}"
-#&gt; [54] "{428423a1-6297-44f6-824c-938c1a7d7877}"
-#&gt; [55] "{7c0633e1-2e04-4d20-8b8c-1c5dc688ec12}"
-#&gt; [56] "{f65f7d94-39aa-46a4-8a39-019f0b6cd468}"
-#&gt; [57] "{e8392030-0ef6-4617-8506-74ee4e19b36b}"
-#&gt; [58] "{0e788275-bc03-4b2d-b9b0-2b9d13793154}"
+#&gt; [1] "{839edd46-01a7-4a45-9d97-499962fa952b}"
+#&gt; [2] "{de35ebd4-0ac0-4299-947d-87d07c69426a}"
+#&gt; [3] "{73ced9ad-ee9a-41d5-a5bc-c95c4ab948d9}"
+#&gt; [4] "{37f17d1f-d2a0-4b78-ba0d-e5f62f216658}"
 #&gt; 
 #&gt; $SHAPE_AREA
-#&gt;  [1]   -9999   -9999   -9999   -9999   -9999   -9999 2302643   -9999   -9999
-#&gt; [10]   -9999   -9999   -9999   -9999   -9999   -9999   -9999   -9999   -9999
-#&gt; [19] 7832529   -9999   -9999   -9999   -9999   -9999   -9999   -9999   -9999
-#&gt; [28]   -9999 8486736 9852836   -9999   -9999   -9999   -9999   -9999   -9999
-#&gt; [37]   -9999   -9999   -9999   -9999   -9999   -9999   -9999   -9999   -9999
-#&gt; [46]   -9999   -9999   -9999   -9999   -9999   -9999   -9999   -9999   -9999
-#&gt; [55]   -9999   -9999 6136801   -9999
+#&gt; [1] -9999 -9999 -9999 -9999
 #&gt; 
 #&gt; $SHAPE_LEN
-#&gt;  [1]  39785.880  31587.543  35693.318  67614.515  70140.783  38156.704
-#&gt;  [7]   9517.766  38379.277  42948.737  94270.024  68696.703  49516.829
-#&gt; [13]  37643.704  83539.932  28668.151  69478.598  65351.499  48579.511
-#&gt; [19]  12135.978 200297.904 209224.675  38611.683  34268.901  56009.364
-#&gt; [25]  55266.161  43353.208  48065.647  40268.776  19106.809  16050.466
-#&gt; [31]  49329.223  28920.182  71731.265  36651.119  54107.685 114901.874
-#&gt; [37]  40650.548  26196.383  27696.797  26183.768  53843.912  44108.040
-#&gt; [43] 152351.454  75018.037  41961.578  24157.077  28578.244  22549.288
-#&gt; [49]  31002.635 166213.126 474887.643  43304.587  29551.180  20044.890
-#&gt; [55]  94995.922  14480.093  12276.269  16297.430
-#&gt; </div><div class='input'><span class='no'>sq</span> <span class='kw'>&lt;-</span> <span class='st'>"SELECT * FROM list_locality_postcode_meander_valley WHERE FID &lt; 5"</span>
-<span class='no'>att</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_attributes</span>(<span class='no'>mvfile</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='no'>sq</span>)
-<span class='no'>dsource</span> <span class='kw'>&lt;-</span> <span class='st'>"inst/extdata/tab/list_locality_postcode_meander_valley.tab"</span></div></pre>
+#&gt; [1] 39785.88 31587.54 35693.32 67614.51
+#&gt; </div><div class='input'><span class='no'>dsource</span> <span class='kw'>&lt;-</span> <span class='st'>"inst/extdata/tab/list_locality_postcode_meander_valley.tab"</span>
+<span class='fu'>vapour_read_attributes</span>(<span class='no'>dsource</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='st'>"SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE &lt; 7300"</span> )</div><div class='output co'>#&gt; <span class='error'>Error in vapour_read_attributes_cpp(dsource = dsource, layer = layer,     sql = sql): Open failed.</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -14,13 +14,14 @@ possible to their native usage. GDAL is not a particularly lightweight
 library, but provide a very nice abstraction over format details for a very large
 number of different formats.
 
-We include functions for raster and vector sources.
+Functions for raster and vector sources are included.
 
 \tabular{ll}{
 \code{\link{vapour_raster_info}} \tab structural metadata of a source \cr
-\code{\link{vapour_read_raster}}   \tab read data direct from a window of a raster band source \cr
-\code{\link{vapour_sds_names}}    \tab list individual raster sources in a source containing subdatasets  \cr
+\code{\link{vapour_read_raster}} \tab read data direct from a window of a raster band source \cr
+\code{\link{vapour_sds_names}} \tab list individual raster sources in a source containing subdatasets \cr
 }
+
 \tabular{ll}{
 \code{\link{vapour_layer_names}} \tab list names of vector layers in a data source \cr
 \code{\link{vapour_read_names}} \tab read the 'names' of features in a layer, the 'FID' \cr
@@ -30,12 +31,12 @@ We include functions for raster and vector sources.
 \code{\link{vapour_read_geometry_text}} \tab read geometry in text form, various formats \cr
 }
 
-\code{vapour_read_geometry_cpp} is a general function that will return different types of
-output for different inputs and is used by \code{vapour_read_extent},
+\code{vapour_read_geometry_cpp} is a general function that will return different
+types of output for different inputs and is used by \code{vapour_read_extent},
 \code{vapour_read_geometry} and \code{vapour_read_geometry_text}.
 
 As far as possible vapour aims to minimize the level of interpretation
 provided for the functions, so that developers can choose how things are
-implemented. This means we return raw lists or vectors rather than data
-frames or classed types.
+implemented. Functions return raw lists or vectors rather than data frames
+or classed types.
 }

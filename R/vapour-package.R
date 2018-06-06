@@ -8,13 +8,14 @@
 #' library, but provide a very nice abstraction over format details for a very large
 #' number of different formats.
 #'
-#' We include functions for raster and vector sources.
+#' Functions for raster and vector sources are included.
 #'
 #' \tabular{ll}{
 #'  \code{\link{vapour_raster_info}} \tab structural metadata of a source \cr
-#'  \code{\link{vapour_read_raster}}   \tab read data direct from a window of a raster band source \cr
-#'  \code{\link{vapour_sds_names}}    \tab list individual raster sources in a source containing subdatasets  \cr
-#'  }
+#'  \code{\link{vapour_read_raster}} \tab read data direct from a window of a raster band source \cr
+#'  \code{\link{vapour_sds_names}} \tab list individual raster sources in a source containing subdatasets \cr
+#' }
+#'
 #' \tabular{ll}{
 #'  \code{\link{vapour_layer_names}} \tab list names of vector layers in a data source \cr
 #'  \code{\link{vapour_read_names}} \tab read the 'names' of features in a layer, the 'FID' \cr
@@ -22,16 +23,16 @@
 #'  \code{\link{vapour_read_extent}} \tab read the extent, or bounding box, of geometries in a layer \cr
 #'  \code{\link{vapour_read_geometry}} \tab read geometry in binary (blob, WKB) form \cr
 #'  \code{\link{vapour_read_geometry_text}} \tab read geometry in text form, various formats \cr
-#'  }
+#' }
 #'
-#' `vapour_read_geometry_cpp` is a general function that will return different types of
-#' output for different inputs and is used by `vapour_read_extent`,
-#'  `vapour_read_geometry` and `vapour_read_geometry_text`.
+#' `vapour_read_geometry_cpp` is a general function that will return different
+#' types of output for different inputs and is used by `vapour_read_extent`,
+#' `vapour_read_geometry` and `vapour_read_geometry_text`.
 #'
 #'  As far as possible vapour aims to minimize the level of interpretation
 #'  provided for the functions, so that developers can choose how things are
-#'  implemented. This means we return raw lists or vectors rather than data
-#'  frames or classed types.
+#'  implemented. Functions return raw lists or vectors rather than data frames
+#'  or classed types.
 #'
 #' @name vapour
 #' @docType package
@@ -41,7 +42,7 @@ NULL
 
 #' SST contours
 #'
-#' Southern Ocean GHRSST contours from 2017-07-28, read from
+#' Southern Ocean GHRSST contours in sf data frame from 2017-07-28, read from
 #'
 #' podaac-ftp.jpl.nasa.gov/allData/ghrsst/data/GDS2/L4
 #' GLOB/JPL/MUR/v4.1/2017/209/
@@ -57,7 +58,13 @@ NULL
 #' ## library(sf)
 #' ## plot(sst_c)
 #' f <- system.file("extdata/sst_c.gpkg", package = "vapour")
-#' #d <- read_gdal_table(f) %>% mutate(json =  to_format(f, format = "json"))
+#'
+#' ## create an equivalent but class-less form of sst_c  with GeoJSON rather than sf sfc format
+#' atts <- vapour_read_attributes(f)
+#' dat <- as.data.frame(atts, stringsAsFactors = FALSE)
+#' dat[["json"]] <- vapour_read_geometry_text(f)
+#' names(dat)
+#' names(sst_c)
 NULL
 
 

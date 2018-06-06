@@ -19,9 +19,10 @@ Read features attributes, optionally after SQL execution.
 \examples{
 file <- "list_locality_postcode_meander_valley.tab"
 mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-vapour_read_attributes(mvfile)
+att <- vapour_read_attributes(mvfile)
+str(att)
 sq <- "SELECT * FROM list_locality_postcode_meander_valley WHERE FID < 5"
-att <- vapour_read_attributes(mvfile, sql = sq)
+(att <- vapour_read_attributes(mvfile, sql = sq))
 dsource <- "inst/extdata/tab/list_locality_postcode_meander_valley.tab"
-
+vapour_read_attributes(dsource, sql = "SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7300" )
 }

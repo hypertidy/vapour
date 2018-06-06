@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.1.9000</span>
       </span>
     </div>
 
@@ -121,7 +121,7 @@
 possible to their native usage. GDAL is not a particularly lightweight
 library, but provide a very nice abstraction over format details for a very large
 number of different formats.</p>
-<p>We include functions for raster and vector sources.</p>
+<p>Functions for raster and vector sources are included.</p>
 <table class='table'>
 <tr><td><code><a href='vapour_raster_info.html'>vapour_raster_info</a></code></td><td>structural metadata of a source</td></tr>
 <tr><td><code><a href='vapour_read_raster.html'>vapour_read_raster</a></code></td><td>read data direct from a window of a raster band source</td></tr>
@@ -137,13 +137,13 @@ number of different formats.</p>
 <tr><td><code>vapour_read_geometry_text</code></td><td>read geometry in text form, various formats</td></tr>
 <tr><td></td><td><code><a href='vapour_layer_names.html'>vapour_layer_names</a></code></td></tr>
 </table>
-    <p><code>vapour_read_geometry_cpp</code> is a general function that will return different types of
-output for different inputs and is used by <code>vapour_read_extent</code>,
+    <p><code>vapour_read_geometry_cpp</code> is a general function that will return different
+types of output for different inputs and is used by <code>vapour_read_extent</code>,
 <code>vapour_read_geometry</code> and <code>vapour_read_geometry_text</code>.</p>
 <p>As far as possible vapour aims to minimize the level of interpretation
 provided for the functions, so that developers can choose how things are
-implemented. This means we return raw lists or vectors rather than data
-frames or classed types.</p>
+implemented. Functions return raw lists or vectors rather than data frames
+or classed types.</p>
     
 
   </div>
