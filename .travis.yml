@@ -63,8 +63,9 @@ before_install:
 install:
   - ./gdal/ci/travis/${BUILD_NAME}/install.sh
 
-script:
-  - ./gdal/ci/travis/${BUILD_NAME}/script.sh
+# don't run autotest
+#script:
+#  - ./gdal/ci/travis/${BUILD_NAME}/script.sh
 
 after_success:
     - Rscript -e 'covr::codecov()'
