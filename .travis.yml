@@ -23,6 +23,7 @@ matrix:
       env:
         - BUILD_NAME=trusty_clang
         - DETAILS="optimized build, no libtool"
+        - R_CODECOV=true
     - osx_image: xcode8
       language: objective-c
       compiler: clang
@@ -68,4 +69,4 @@ install:
 #  - ./gdal/ci/travis/${BUILD_NAME}/script.sh
 
 after_success:
-    - Rscript -e 'covr::codecov()'
+    - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov(type = "all")'; fi
