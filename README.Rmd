@@ -64,7 +64,8 @@ The workflows available are intended to support development of applications in R
 The package can be installed from Github.
 
 ```R
-devtools::install_github("hypertidy/vapour")
+devtools::install_github("hypertidy/vapour", build_vignettes = TRUE)
+
 ```
 
 You will need development tools for building R packages. 
@@ -100,7 +101,7 @@ This partly draws on work done in [the sf
 package](https://github.com/r-spatial/sf) and in packages `rgdal` and `rgdal2`.
 I'm amazed that something as powerful and general as GDAL is still only
 available through these lenses, but recentish improvements make things much
-easier touse and share. Specifically `Rcpp` means that access to external libs
+easier to use and share. Specifically `Rcpp` means that access to external libs
 is simplified, easier to learn and easier to get started and make progress. The
 other part is that cross-platform support is now much better, with more
 consistency on the libraries available on the CRAN machines and in other
@@ -280,7 +281,7 @@ Early exploration of allow non-geometry read with rgdal was tried here: https://
 
 Thanks to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib
 and copy from. Jeroen Ooms helped the R community hugely by providing an
-automatable build process for libraries on Windows. Mark Padgham helped kick me
+accessible build process for libraries on Windows. Mark Padgham helped kick me
 over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben
 Raymond have endured ravings about wanting this level of control for many years.
 

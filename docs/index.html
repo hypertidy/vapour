@@ -108,7 +108,7 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>The package can be installed from Github.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"hypertidy/vapour"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"hypertidy/vapour"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p>You will need development tools for building R packages.</p>
 <p>On Linux and MacOS building also requires an available GDAL installation, but on Windows the ROpenSci rwinlib tools are used and the required GDAL will be downloaded and used when building the package. This installation is self-contained and only affects the use of R, it can be used alongside other applications using GDAL.</p>
 </div>
@@ -116,12 +116,10 @@
 <h2 class="hasAnchor">
 <a href="#purpose" class="anchor"></a>Purpose</h2>
 <p>The goal of vapour is to provide a basic <strong>GDAL API</strong> package for R. The key functions provide vector geometry or attributes and raster data and raster metadata.</p>
-<p>The priority now is to give low-level access to key functionality rather than comprehensive coverage of the library. There access is purely read-only, and provides no conversion to specialist types in R. Ideally, this could become a common foundation for other packages to specialize, but at the very least provides minimal examples to use GDAL for specialist needs.</p>
+<p>The priority is to give low-level access to key functionality rather than comprehensive coverage of the library. The real advantage of <code>vapour</code> is the flexibility of a modular workflow, not the outright efficiency.</p>
 <p>A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are <em>simple features</em> and <em>affine-based regular rasters composed of 2D slices</em>. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools.)</p>
 <p>These loftier general needs have come out of smaller more concrete goals, one was access to the “attributes-only” capacity of GDAL as a virtual database engine, and another access to the dense structures provided by transport vector data. GDAL’s dynamic resampling of arbitrary raster windows is also very useful for interactive tools on local data, and seems under-utilized in favour of less accessible online image services.</p>
-<p>This partly draws on work done in <a href="https://github.com/r-spatial/sf">the sf package</a> and in packages <code>rgdal</code> and <code>rgdal2</code>. I’m amazed that something as powerful and general as GDAL is still only available through these lenses, but recentish improvements make things much easier touse and share. Specifically <code>Rcpp</code> means that access to external libs is simplified, easier to learn and easier to get started and make progress. The other part is that cross-platform support is now much better, with more consistency on the libraries available on the CRAN machines and in other contexts.</p>
-<p>Examples of packages that use vapour are in development, <a href="https://github.com/mdsumner/RGDALSQL">RGDALSQL</a> and <a href="https://github.com/hypertidy/lazyraster">lazyraster</a>. <code>RGDALSQL</code> aims to leverage the facilities of GDAL to provide data <em>on-demand</em> for many sources <em>as if</em> they were databases. <code>lazyraster</code> uses the level-of-detail facility of GDAL to read just enough resolution from a raster source using traditional window techniques.</p>
-<p>Limitations, work-in-progress and other discussion are active here: <a href="https://github.com/hypertidy/vapour/issues/4" class="uri">https://github.com/hypertidy/vapour/issues/4</a></p>
+<p>This partly draws on work done in <a href="https://github.com/r-spatial/sf">the sf package</a> and in packages <code>rgdal</code> and <code>rgdal2</code>. I’m amazed that something as powerful and general as GDAL is still only available through these lenses, but recentish improvements make things much easier to use and share. Specifically <code>Rcpp</code> means that access to external libs is simplified, easier to learn and easier to get started and make progress. The other part is that cross-platform support is now much better, with more consistency on the libraries available on the CRAN machines and in other contexts.</p>
 </div>
 <div id="warnings" class="section level2">
 <h2 class="hasAnchor">
@@ -135,23 +133,107 @@
 <p>The package documentation page gives an overview of available functions.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">help</span>(<span class="st">"vapour-package"</span>)</code></pre></div>
 <p>See the vignettes and documentation for examples WIP.</p>
-</div>
-<div id="development" class="section level2">
-<h2 class="hasAnchor">
-<a href="#development" class="anchor"></a>development</h2>
-<p>Run this when source defs change.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/tools/topics/package_native_routine_registration_skeleton">package_native_routine_registration_skeleton</a></span>(<span class="st">"../vapour"</span>, <span class="st">"src/init.c"</span>,<span class="dt">character_only =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p>The following concrete example illustrates the motivation for <code>vapour</code>, through a timing benchmark for one standard operation: extracting feature geometries from a data set within a user-defined bounding box. The data set is the one used throughout the book <a href="https://geocompr.robinlovelace.net/">Geocomputation in R</a> by Robin Lovelace, Jakub Nowosad, and Jannes Muenchow, and can be obtained with the following code.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">url &lt;-<span class="st"> </span><span class="kw">file.path</span> (<span class="st">"http://www.naturalearthdata.com/http//www.naturalearthdata.com"</span>,
+                <span class="st">"download/10m/cultural/ne_10m_parks_and_protected_lands.zip"</span>)
+<span class="kw">download.file</span> (<span class="dt">url =</span> url, <span class="dt">destfile =</span> <span class="st">"USA_parks.zip"</span>)
+<span class="kw">unzip</span> (<span class="dt">zipfile =</span> <span class="st">"USA_parks.zip"</span>, <span class="dt">exdir =</span> <span class="st">"usa_parks"</span>)
+fname &lt;-<span class="st"> "usa_parks/ne_10m_parks_and_protected_lands_area.shp"</span></code></pre></div>
+<p>That last <code>fname</code> is the file we’re interested in, which contains polygons for all United States parks. We now construct a timing benchmark for three ways of extracting the data within a pre-defined bounding box of:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span> (magrittr)
+bb &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="op">-</span><span class="dv">120</span>, <span class="dv">20</span>, <span class="op">-</span><span class="dv">100</span>, <span class="dv">40</span>)
+<span class="kw">names</span> (bb) &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">"xmin"</span>, <span class="st">"ymin"</span>, <span class="st">"xmax"</span>, <span class="st">"ymax"</span>)
+bb_sf &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_bbox">st_bbox</a></span> (bb, <span class="dt">crs =</span> sf<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_crs">st_crs</a></span> (<span class="dv">4326</span>)) <span class="op">%&gt;%</span>
+<span class="st">    </span>sf<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_as_sfc">st_as_sfc</a></span> ()</code></pre></div>
+<p>First, we define a function to do the desired extraction using the <a href="https://cran.r-project.org/package=sf"><code>sf</code> package</a>, comparing both <code>st_crop</code> and the <code>sf::[</code> sub-selection operator:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f_sf1 &lt;-<span class="st"> </span><span class="cf">function</span> (fname)
+{
+    usa_parks &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_read">st_read</a></span> (fname, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)
+    <span class="kw">suppressMessages</span> (<span class="kw">suppressWarnings</span> (
+                    parks2 &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_crop">st_crop</a></span> (usa_parks, bb_sf)
+                    ))
+}
+f_sf2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname)
+{
+    usa_parks &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_read">st_read</a></span> (fname, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)
+    <span class="kw">suppressMessages</span> (<span class="kw">suppressWarnings</span> (
+                    parks2 &lt;-<span class="st"> </span>usa_parks [bb_sf, ]
+                    ))
+}</code></pre></div>
+<p>Then three approaches using <code>vapour</code>, in each case extracting equivalent data to <code>sf</code> - that is, both geometries and attributes - yet simply leaving them separate here. The three approaches are:</p>
+<ol style="list-style-type: decimal">
+<li>Read geometry as <code>WKB</code>, sub-select after reading, and convert to <code>sfc</code> lists;</li>
+<li>Read geometry as <code>WKB</code> pre-selected via an SQL statement, and convert to <code>sfc</code> lists; and</li>
+<li>Read geometry as <code>json</code> (text), pre-selected via SQL, and convert with the <code>geojsonsf</code> package</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span> (vapour)</code></pre></div>
+<pre><code>#&gt; Loading vapour</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f_va1 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># read all then sub-select</span>
+{
+    ext &lt;-<span class="st"> </span><span class="kw">do.call</span> (rbind, <span class="kw"><a href="http://www.rdocumentation.org/packages/vapour/topics/vapour_read_geometry">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span>
+    indx &lt;-<span class="st"> </span><span class="kw">which</span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span>
+<span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])
+    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry</a></span> (fname) [indx] <span class="op">%&gt;%</span>
+<span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_as_sfc">st_as_sfc</a></span> ()
+    a &lt;-<span class="st"> </span><span class="kw">lapply</span> (<span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname), <span class="cf">function</span> (i) i [indx])
+}
+f_va2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># read selection only via SQL</span>
+{
+    ext &lt;-<span class="st"> </span><span class="kw">do.call</span> (rbind, <span class="kw"><a href="http://www.rdocumentation.org/packages/vapour/topics/vapour_read_geometry">vapour_read_extent</a></span> (fname))
+    indx &lt;-<span class="st"> </span><span class="kw">which</span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span>
+<span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])
+    n &lt;-<span class="st"> </span><span class="kw">paste0</span> (<span class="kw"><a href="reference/vapour_read_names.html">vapour_read_names</a></span> (fname) [indx], <span class="dt">collapse =</span> <span class="st">","</span>) <span class="co"># GDAL FIDs</span>
+    stmt &lt;-<span class="st"> </span><span class="kw">paste0</span> (<span class="st">"SELECT FID FROM "</span>, <span class="kw"><a href="reference/vapour_layer_names.html">vapour_layer_names</a></span> (fname),
+                    <span class="st">" WHERE FID in ("</span>, n, <span class="st">")"</span>)
+    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry</a></span> (fname, <span class="dt">sql =</span> stmt) <span class="op">%&gt;%</span>
+<span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_as_sfc">st_as_sfc</a></span> ()
+    a &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname, <span class="dt">sql =</span> stmt)
+}
+f_va3 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># convert json text via geojsonsf</span>
+{
+    ext &lt;-<span class="st"> </span><span class="kw">do.call</span> (rbind, <span class="kw"><a href="http://www.rdocumentation.org/packages/vapour/topics/vapour_read_geometry">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span>
+    indx &lt;-<span class="st"> </span><span class="kw">which</span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span>
+<span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])
+    n &lt;-<span class="st"> </span><span class="kw">paste0</span> (<span class="kw"><a href="reference/vapour_read_names.html">vapour_read_names</a></span> (fname) [indx], <span class="dt">collapse =</span> <span class="st">","</span>) <span class="co"># GDAL FIDs</span>
+    stmt &lt;-<span class="st"> </span><span class="kw">paste0</span> (<span class="st">"SELECT FID FROM "</span>, <span class="kw"><a href="reference/vapour_layer_names.html">vapour_layer_names</a></span> (fname),
+                    <span class="st">" WHERE FID in ("</span>, n, <span class="st">")"</span>)
+    g &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/vapour/topics/vapour_read_geometry">vapour_read_geometry_text</a></span> (fname, <span class="dt">textformat =</span> <span class="st">"json"</span>, <span class="dt">sql =</span> stmt) 
+    g &lt;-<span class="st"> </span><span class="kw">lapply</span> (g, <span class="cf">function</span> (i) geojsonsf<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/geojsonsf/topics/geojson_sfc">geojson_sfc</a></span> (i) [[<span class="dv">1</span>]]) <span class="op">%&gt;%</span>
+<span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/sfc">st_sfc</a></span> ()
+    a &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname, <span class="dt">sql =</span> stmt)
+}</code></pre></div>
+<p>The benchmark timings - in particular the “relative” values - then illustrate the advantages of <code>vapour</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rbenchmark<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/rbenchmark/topics/benchmark">benchmark</a></span> (
+                       <span class="kw">f_sf1</span> (fname),
+                       <span class="kw">f_sf2</span> (fname),
+                       <span class="kw">f_va1</span> (fname),
+                       <span class="kw">f_va2</span> (fname),
+                       <span class="kw">f_va3</span> (fname),
+                       <span class="dt">replications =</span> <span class="dv">10</span>)
+<span class="co">#&gt;           test replications elapsed relative user.self sys.self user.child</span>
+<span class="co">#&gt; 1 f_sf1(fname)           10   0.312    4.333     0.308    0.004          0</span>
+<span class="co">#&gt; 2 f_sf2(fname)           10   0.207    2.875     0.208    0.000          0</span>
+<span class="co">#&gt; 3 f_va1(fname)           10   0.072    1.000     0.064    0.008          0</span>
+<span class="co">#&gt; 4 f_va2(fname)           10   0.091    1.264     0.092    0.000          0</span>
+<span class="co">#&gt; 5 f_va3(fname)           10   0.225    3.125     0.220    0.004          0</span>
+<span class="co">#&gt;   sys.child</span>
+<span class="co">#&gt; 1         0</span>
+<span class="co">#&gt; 2         0</span>
+<span class="co">#&gt; 3         0</span>
+<span class="co">#&gt; 4         0</span>
+<span class="co">#&gt; 5         0</span></code></pre></div>
+<p>Reading geometries only, as opposed to the <code>sf</code> reading of all geometries and attributes, affords a speed increase of about 25%, while utilizing the SQL capabilities of <a href="http://www.gdal.org/ogr_sql.html"><code>ogr_sql</code></a> offers an increase of around 75%.</p>
 </div>
 <div id="context" class="section level2">
 <h2 class="hasAnchor">
 <a href="#context" class="anchor"></a>Context</h2>
-<p>My first real attempt at DBI abstraction is here:</p>
-<p><a href="https://github.com/mdsumner/RGDALSQL" class="uri">https://github.com/mdsumner/RGDALSQL</a></p>
-<p>I’ve kept a record of a minimal GDAL wrapper package here:</p>
+<p>Examples of packages that use vapour are in development, <a href="https://github.com/mdsumner/RGDALSQL">RGDALSQL</a> and <a href="https://github.com/hypertidy/lazyraster">lazyraster</a>. <code>RGDALSQL</code> aims to leverage the facilities of GDAL to provide data <em>on-demand</em> for many sources <em>as if</em> they were databases. <code>lazyraster</code> uses the level-of-detail facility of GDAL to read just enough resolution from a raster source using traditional window techniques.</p>
+<p>Limitations, work-in-progress and other discussion are active here: <a href="https://github.com/hypertidy/vapour/issues/4" class="uri">https://github.com/hypertidy/vapour/issues/4</a></p>
+<p>We’ve kept a record of a minimal GDAL wrapper package here:</p>
 <p><a href="https://github.com/diminutive/gdalmin" class="uri">https://github.com/diminutive/gdalmin</a></p>
 <p>Before those I had worked on getting sp and dplyr to at least work together <a href="https://github.com/dis-organization/sp_dplyrexpt" class="uri">https://github.com/dis-organization/sp_dplyrexpt</a> and recently rgdal was updated to allow tibbles to be used, something that spbabel and spdplyr really needed to avoid friction.</p>
 <p>Early exploration of allow non-geometry read with rgdal was tried here: <a href="https://github.com/r-gris/gladr" class="uri">https://github.com/r-gris/gladr</a></p>
-<p>Thankss to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an automatable build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured my ravings about wanting this level of control for many years.</p>
+<p>Thanks to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an accessible build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured ravings about wanting this level of control for many years.</p>
 </div>
 </div>
 <div id="code-of-conduct" class="section level1">

@@ -35,7 +35,7 @@ Installation
 The package can be installed from Github.
 
 ``` r
-devtools::install_github("hypertidy/vapour")
+devtools::install_github("hypertidy/vapour", build_vignettes = TRUE)
 ```
 
 You will need development tools for building R packages.
@@ -53,7 +53,7 @@ A parallel goal is to be freed from the powerful but sometimes limiting high-lev
 
 These loftier general needs have come out of smaller more concrete goals, one was access to the "attributes-only" capacity of GDAL as a virtual database engine, and another access to the dense structures provided by transport vector data. GDAL's dynamic resampling of arbitrary raster windows is also very useful for interactive tools on local data, and seems under-utilized in favour of less accessible online image services.
 
-This partly draws on work done in [the sf package](https://github.com/r-spatial/sf) and in packages `rgdal` and `rgdal2`. I'm amazed that something as powerful and general as GDAL is still only available through these lenses, but recentish improvements make things much easier touse and share. Specifically `Rcpp` means that access to external libs is simplified, easier to learn and easier to get started and make progress. The other part is that cross-platform support is now much better, with more consistency on the libraries available on the CRAN machines and in other contexts.
+This partly draws on work done in [the sf package](https://github.com/r-spatial/sf) and in packages `rgdal` and `rgdal2`. I'm amazed that something as powerful and general as GDAL is still only available through these lenses, but recentish improvements make things much easier to use and share. Specifically `Rcpp` means that access to external libs is simplified, easier to learn and easier to get started and make progress. The other part is that cross-platform support is now much better, with more consistency on the libraries available on the CRAN machines and in other contexts.
 
 Warnings
 --------
@@ -172,11 +172,11 @@ rbenchmark::benchmark (
                        f_va3 (fname),
                        replications = 10)
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.328    4.493     0.328    0.000          0
-#> 2 f_sf2(fname)           10   0.221    3.027     0.216    0.004          0
-#> 3 f_va1(fname)           10   0.073    1.000     0.068    0.004          0
-#> 4 f_va2(fname)           10   0.095    1.301     0.092    0.000          0
-#> 5 f_va3(fname)           10   0.234    3.205     0.228    0.004          0
+#> 1 f_sf1(fname)           10   0.315    4.375     0.312    0.004          0
+#> 2 f_sf2(fname)           10   0.209    2.903     0.204    0.004          0
+#> 3 f_va1(fname)           10   0.072    1.000     0.064    0.008          0
+#> 4 f_va2(fname)           10   0.091    1.264     0.092    0.000          0
+#> 5 f_va3(fname)           10   0.230    3.194     0.220    0.012          0
 #>   sys.child
 #> 1         0
 #> 2         0
@@ -202,7 +202,7 @@ Before those I had worked on getting sp and dplyr to at least work together <htt
 
 Early exploration of allow non-geometry read with rgdal was tried here: <https://github.com/r-gris/gladr>
 
-Thanks to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an automatable build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured ravings about wanting this level of control for many years.
+Thanks to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an accessible build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured ravings about wanting this level of control for many years.
 
 Code of conduct
 ===============
