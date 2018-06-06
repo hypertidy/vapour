@@ -5,12 +5,13 @@ cache: packages
 
 
 # This is the config file for building GDAL and running its autotest suite
-# with Travis-ci.org    
+# with Travis-ci.org
 
 matrix:
-  fast_finish: true
+  fast_finish: false
   include:
     - os: linux
+      r: release
       compiler: clang
       language: cpp
       sudo: required
