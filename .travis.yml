@@ -12,7 +12,6 @@ matrix:
   include:
     - os: linux
       compiler: clang
-      language: cpp
       sudo: required
       dist: trusty
       cache:
@@ -22,28 +21,6 @@ matrix:
       env:
         - BUILD_NAME=trusty_clang
         - DETAILS="optimized build, no libtool"
-    - osx_image: xcode8
-      language: objective-c
-      compiler: clang
-      cache:
-        apt: true
-        directories:
-          - $HOME/.ccache
-      env:
-        - BUILD_NAME=osx
-        - DETAILS="debug build, libtool"
-    - os: linux
-      compiler: clang
-      language: cpp
-      sudo: required
-      dist: trusty
-      cache:
-        apt: true
-        directories:
-          - $HOME/.ccache
-      env:
-        - BUILD_NAME=mingw_w64
-        - DETAILS="optimized build, libtool"
 
 ## afaict you really need all three scripts to run for this to work
 ## before_install.sh, install.sh, and script.sh
@@ -63,7 +40,6 @@ install:
   - R -e 'devtools::install_deps(dep = T)'
 
 script:
-  - ./gdal/ci/travis/${BUILD_NAME}/script.sh
   - R CMD build .
   - R CMD check *tar.gz
 
