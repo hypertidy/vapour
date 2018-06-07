@@ -5,14 +5,6 @@ language: r
 compiler: clang
 sudo: enabled
 dist: trusty
-cache:
- packages
- apt: true
- directories:
-  - $HOME/.ccache
-  env:
-   - BUILD_NAME=trusty_clang
-   - DETAILS="optimized build, no libtool"
 
 before_install:
   - cd
@@ -28,10 +20,6 @@ before_install:
 install:
   - ./gdal/ci/travis/${BUILD_NAME}/install.sh
   - R -e 'devtools::install_deps(dep = T)'
-
-script:
-  - R CMD build .
-  - R CMD check *tar.gz
 
 after_success:
   - Rscript -e 'covr::codecov()'
