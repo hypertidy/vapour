@@ -1,11 +1,12 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: r
-sudo: required
-cache: packages
-
-# https://github.com/ropensci/rgbif/blob/master/.travis.yml#L9
+sudo: enabled
 dist: trusty
+cache:
+  - packages
+  - ccache
+latex: false
 
 addons:
   apt:
