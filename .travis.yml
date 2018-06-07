@@ -15,16 +15,37 @@ addons:
       - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
 
     packages:
-      - libprotobuf-dev
-      - protobuf-compiler
-      - libv8-3.14-dev
-      - libjq-dev
-      - libudunits2-dev
+#      - libprotobuf-dev
+#      - protobuf-compiler
+#      - libv8-3.14-dev
+#      - libjq-dev
+#      - libjson-c-dev
+#      - libudunits2-dev
       - libproj-dev
       - libgeos-dev
       - libspatialite-dev
       - libgdal-dev
-      - libjson-c-dev
+
+matrix:
+    include:
+        - os: linux
+          r: release
+          dist: trusty # 14.04
+          env: R_CODECOV=true
+        - os: linux
+          r: devel
+          dist: trusty
+        - os: linux
+          r: oldrel
+          dist: trusty
+        - os: osx
+          r: release
+          before_install: ''
+          disable_homebrew: true
+          #- os: osx
+          #r: devel
+          #before_install: ''
+          #disable_homebrew: true
 
 after_success:
   - Rscript -e 'covr::codecov()'
