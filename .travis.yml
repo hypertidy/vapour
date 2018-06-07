@@ -9,15 +9,14 @@ env:
  - BUILD_NAME=trusty_clang
 
 before_install:
-  - cd
   - git clone https://github.com/OSGeo/gdal.git
    ## put the /gdal and /autotest at this location
-  - mv gdal gdal_go
-  - mv gdal_go/gdal .
-  - mv gdal_go/autotest .
-  - ./gdal/ci/travis/${BUILD_NAME}/before_install.sh
-  - ./gdal/ci/travis/${BUILD_NAME}/install.sh
-
+  - cd gdal
+  - ./configure
+  - make -j3
+  - sudo make install
+  - cd ..
+  - rm -rf gdal
 install:
   - R -e 'devtools::install_deps(dep = T)'
 
