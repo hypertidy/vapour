@@ -1,24 +1,29 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: r
+sudo: required
+cache: packages
 
-compiler: clang
-sudo: enabled
+# https://github.com/ropensci/rgbif/blob/master/.travis.yml#L9
 dist: trusty
-env:
- - BUILD_NAME=trusty_clang
 
-before_install:
-  - git clone https://github.com/OSGeo/gdal.git
-  - cd gdal/gdal
-  - ./configure
-  - make -j3
-  - sudo make install
-  - cd ../..
-  - rm -rf gdal
-install:
-  - R -e 'devtools::install_deps(dep = T)'
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:opencpu/jq'
+      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+
+    packages:
+      - libprotobuf-dev
+      - protobuf-compiler
+      - libv8-3.14-dev
+      - libjq-dev
+      - libudunits2-dev
+      - libproj-dev
+      - libgeos-dev
+      - libspatialite-dev
+      - libgdal-dev
+      - libjson-c-dev
 
 after_success:
   - Rscript -e 'covr::codecov()'
-
