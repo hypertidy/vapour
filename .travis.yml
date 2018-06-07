@@ -6,8 +6,7 @@ compiler: clang
 sudo: enabled
 dist: trusty
 env:
- - BUILD_NAME=precise
- - DETAILS="debug build, no libtool"
+ - BUILD_NAME=trusty_clang
 
 before_install:
   - cd
