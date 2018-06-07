@@ -10,12 +10,11 @@ env:
 
 before_install:
   - git clone https://github.com/OSGeo/gdal.git
-   ## put the /gdal and /autotest at this location
-  - cd gdal
+  - cd gdal/gdal
   - ./configure
   - make -j3
   - sudo make install
-  - cd ..
+  - cd ../..
   - rm -rf gdal
 install:
   - R -e 'devtools::install_deps(dep = T)'
