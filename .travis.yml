@@ -1,72 +1,41 @@
-# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
-
-language: r
+language: R
+warnings_are_errors: true
+sudo: true
 cache: packages
 
-
-# This is the config file for building GDAL and running its autotest suite
-# with Travis-ci.org
+addons:
+  apt:
+    packages:
+      - libproj-dev
+      - libgeos-dev
+      - libgdal-dev
 
 matrix:
-  fast_finish: false
-  include:
-    - os: linux
-      r: release
-      compiler: clang
-      language: cpp
-      sudo: required
-      dist: trusty
-      cache:
-        apt: true
-        directories:
-          - $HOME/.ccache
-      env:
-        - BUILD_NAME=trusty_clang
-        - DETAILS="optimized build, no libtool"
-        - R_CODECOV=true
-    - osx_image: xcode8
-      language: objective-c
-      compiler: clang
-      cache:
-        apt: true
-        directories:
-          - $HOME/.ccache
-      env:
-        - BUILD_NAME=osx
-        - DETAILS="debug build, libtool"
-    - os: linux
-      compiler: clang
-      language: cpp
-      sudo: required
-      dist: trusty
-      cache:
-        apt: true
-        directories:
-          - $HOME/.ccache
-      env:
-        - BUILD_NAME=mingw_w64
-        - DETAILS="optimized build, libtool"
+    include:
+        - os: linux
+          r: release
+          dist: trusty # 14.04
+          env: R_CODECOV=true
+        - os: linux
+          r: devel
+          dist: trusty
+        - os: linux
+          r: oldrel
+          dist: trusty
+        - os: osx
+          r: release
+          before_install: ''
+          disable_homebrew: true
+          #- os: osx
+          #r: devel
+          #before_install: ''
+          #disable_homebrew: true
 
-## afaict you really need all three scripts to run for this to work
-## before_install.sh, install.sh, and script.sh
-before_install:
-  - cd
-  - git clone https://github.com/OSGeo/gdal.git
-  - cd gdal
-  #- git checkout tags/2.2.3
-  - cd
-  ## put the /gdal and /autotest at this location
-  - mv gdal gdal_go
-  - mv gdal_go/gdal .
-  - mv gdal_go/autotest .
-  - ./gdal/ci/travis/${BUILD_NAME}/before_install.sh
+notifications:
+  email:
+    on_success: change
+    on_failure: change
 
-install:
-  - ./gdal/ci/travis/${BUILD_NAME}/install.sh
-
-# don't run autotest
-#script:
-#  - ./gdal/ci/travis/${BUILD_NAME}/script.sh
 
 after_success:
-    - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov(type = "all")'; fi
+    - Rscript -e "covr::codecov()"
