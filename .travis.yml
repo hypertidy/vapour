@@ -5,20 +5,21 @@ language: r
 compiler: clang
 sudo: enabled
 dist: trusty
+env:
+ - BUILD_NAME=precise
+ - DETAILS="debug build, no libtool"
 
 before_install:
   - cd
   - git clone https://github.com/OSGeo/gdal.git
-  - cd gdal
-  - cd
-  ## put the /gdal and /autotest at this location
+   ## put the /gdal and /autotest at this location
   - mv gdal gdal_go
   - mv gdal_go/gdal .
   - mv gdal_go/autotest .
   - ./gdal/ci/travis/${BUILD_NAME}/before_install.sh
+  - ./gdal/ci/travis/${BUILD_NAME}/install.sh
 
 install:
-  - ./gdal/ci/travis/${BUILD_NAME}/install.sh
   - R -e 'devtools::install_deps(dep = T)'
 
 after_success:
