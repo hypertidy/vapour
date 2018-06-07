@@ -3,7 +3,7 @@
 vapour
 ======
 
-[![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_clang&label=trusty_clang)](https://travis-ci.org/hypertidy/vapour) [![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=osx&label=osx)](https://travis-ci.org/hypertidy/vapour) [![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=mingw_w64&label=mingw_w64)](https://travis-ci.org/hypertidy/vapour) [![Coverage\_Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
+[![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master)](https://travis-ci.org/hypertidy/vapour) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/hypertidy/vapour?branch=master&svg=true)](https://ci.appveyor.com/project/hypertidy/vapour)[![Coverage\_Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
 
 Overview
 --------
@@ -172,11 +172,11 @@ rbenchmark::benchmark (
                        f_va3 (fname),
                        replications = 10)
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.315    4.375     0.312    0.004          0
-#> 2 f_sf2(fname)           10   0.209    2.903     0.204    0.004          0
-#> 3 f_va1(fname)           10   0.072    1.000     0.064    0.008          0
-#> 4 f_va2(fname)           10   0.091    1.264     0.092    0.000          0
-#> 5 f_va3(fname)           10   0.230    3.194     0.220    0.012          0
+#> 1 f_sf1(fname)           10   0.312    4.457     0.312    0.000          0
+#> 2 f_sf2(fname)           10   0.204    2.914     0.200    0.004          0
+#> 3 f_va1(fname)           10   0.070    1.000     0.060    0.008          0
+#> 4 f_va2(fname)           10   0.090    1.286     0.080    0.008          0
+#> 5 f_va3(fname)           10   0.227    3.243     0.220    0.004          0
 #>   sys.child
 #> 1         0
 #> 2         0
