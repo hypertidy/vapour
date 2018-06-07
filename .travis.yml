@@ -1,29 +1,19 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: r
-cache: packages
 
+compiler: clang
+sudo: enabled
+dist: trusty
+cache:
+ packages
+ apt: true
+ directories:
+  - $HOME/.ccache
+  env:
+   - BUILD_NAME=trusty_clang
+   - DETAILS="optimized build, no libtool"
 
-# This is the config file for building GDAL and running its autotest suite
-# with Travis-ci.org
-
-matrix:
-  fast_finish: true
-  include:
-    - os: linux
-      compiler: clang
-      sudo: required
-      dist: trusty
-      cache:
-        apt: true
-        directories:
-          - $HOME/.ccache
-      env:
-        - BUILD_NAME=trusty_clang
-        - DETAILS="optimized build, no libtool"
-
-## afaict you really need all three scripts to run for this to work
-## before_install.sh, install.sh, and script.sh
 before_install:
   - cd
   - git clone https://github.com/OSGeo/gdal.git
@@ -44,5 +34,5 @@ script:
   - R CMD check *tar.gz
 
 after_success:
-    - Rscript -e 'covr::codecov()'
+  - Rscript -e 'covr::codecov()'
 
