@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 ```
 # vapour
 
-[![Build_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master)](https://travis-ci.org/hypertidy/vapour) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/hypertidy/vapour?branch=master&svg=true)](https://ci.appveyor.com/project/hypertidy/vapour)[![Coverage_Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master)
+[![Build_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master)](https://travis-ci.org/hypertidy/vapour) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/mdsumner/vapour?branch=master&svg=true)](https://ci.appveyor.com/project/mdsumner/vapour)[![Coverage_Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
 
 
