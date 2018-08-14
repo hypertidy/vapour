@@ -94,3 +94,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vapour_geometry_count_cpp
+List vapour_geometry_count_cpp(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer);
+RcppExport SEXP _vapour_vapour_geometry_count_cpp(SEXP dsourceSEXP, SEXP layerSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_geometry_count_cpp(dsource, layer));
+    return rcpp_result_gen;
+END_RCPP
+}
