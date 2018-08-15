@@ -3,7 +3,7 @@
 vapour
 ======
 
-[![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master)](https://travis-ci.org/hypertidy/vapour) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/mdsumner/vapour?branch=master&svg=true)](https://ci.appveyor.com/project/mdsumner/vapour)[![Coverage\_Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour) [![CRAN\_Download\_Badge](http://cranlogs.r-pkg.org/badges/vapour)](https://cran.r-project.org/package=vapour)
+[![Build\_Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master)](https://travis-ci.org/hypertidy/vapour) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/hypertidy/vapour?branch=master&svg=true)](https://ci.appveyor.com/project/mdsumner/vapour)[![Coverage\_Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour) [![CRAN\_Download\_Badge](http://cranlogs.r-pkg.org/badges/vapour)](https://cran.r-project.org/package=vapour)
 
 Overview
 --------
@@ -123,13 +123,6 @@ library (vapour)
 ```
 
     #> Loading vapour
-    #> Re-compiling vapour
-    #> '/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore  \
-    #>   --quiet CMD INSTALL '/home/mdsumner/Git/vapour'  \
-    #>   --library='/tmp/RtmpGq9lIH/devtools_install_a0e5de7d779' --no-R  \
-    #>   --no-data --no-help --no-demo --no-inst --no-docs --no-exec  \
-    #>   --no-multiarch --no-test-load
-    #> 
 
 ``` r
 f_va1 <- function (fname) # read all then sub-select
@@ -179,11 +172,11 @@ rbenchmark::benchmark (
                        f_va3 (fname),
                        replications = 10)
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.298    4.585     0.280    0.020          0
-#> 2 f_sf2(fname)           10   0.190    2.923     0.192    0.000          0
-#> 3 f_va1(fname)           10   0.065    1.000     0.064    0.004          0
-#> 4 f_va2(fname)           10   0.083    1.277     0.084    0.000          0
-#> 5 f_va3(fname)           10   0.205    3.154     0.200    0.004          0
+#> 1 f_sf1(fname)           10   0.321    5.095     0.296    0.024          0
+#> 2 f_sf2(fname)           10   0.192    3.048     0.188    0.004          0
+#> 3 f_va1(fname)           10   0.063    1.000     0.064    0.000          0
+#> 4 f_va2(fname)           10   0.081    1.286     0.080    0.000          0
+#> 5 f_va3(fname)           10   0.204    3.238     0.196    0.008          0
 #>   sys.child
 #> 1         0
 #> 2         0
