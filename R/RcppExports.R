@@ -29,7 +29,3 @@ vapour_projection_info_cpp <- function(dsource, layer = 0L, sql = "") {
     .Call('_vapour_vapour_projection_info_cpp', PACKAGE = 'vapour', dsource, layer, sql)
 }
 
-vapour_geometry_count_cpp <- function(dsource, layer = 0L) {
-    .Call('_vapour_vapour_geometry_count_cpp', PACKAGE = 'vapour', dsource, layer)
-}
-

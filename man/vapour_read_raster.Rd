@@ -4,8 +4,8 @@
 \alias{vapour_read_raster}
 \title{Raster IO (read)}
 \usage{
-vapour_read_raster(x, band = 1, window, resample = "nearestneighbour",
-  ..., sds = NULL)
+vapour_read_raster(x, band = 1, window, resample = "nearestneighbour", ...,
+  sds = NULL)
 }
 \arguments{
 \item{x}{data source}

@@ -1,5 +1,8 @@
 # vapour dev
 
+* Values for the extent (bounding box) of a feature are now set to NA values for an  
+ empty or missing geometry. 
+
 * Fix drastic memory leak in `vapour_read_attributes`, thanks to Grant Williamson. 
 
 # vapour 0.1.0
