@@ -276,7 +276,23 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
     if (what[0] == "extent") {
       OGREnvelope env;
       OGR_G_GetEnvelope(poGeometry, &env);
-      Rcpp::NumericVector extent = NumericVector::create(env.MinX, env.MaxX, env.MinY, env.MaxY);
+      // if geometry is empty, set the envelope to undefined (otherwise all 0s)
+      double minx, maxx, miny, maxy;
+      if (poGeometry->IsEmpty()) {
+
+        minx = NA_REAL;
+        maxx = NA_REAL;
+        miny = NA_REAL;
+        maxy = NA_REAL;
+
+      } else {
+        minx = env.MinX;
+        maxx = env.MaxX;
+        miny = env.MinY;
+        maxy = env.MaxY;
+      }
+
+      Rcpp::NumericVector extent = NumericVector::create(minx, maxx, miny, maxy);
       feature_xx.push_back(extent);
       iFeature = iFeature + 1;
 
