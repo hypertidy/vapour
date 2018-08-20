@@ -1,3 +1,7 @@
+# vapour dev
+
+* Fix drastic memory leak in `vapour_read_attributes`, thanks to Grant Williamson. 
+
 # vapour 0.1.0
 
 * Functions that include a `layer` index now accept a layer name which is used to find the (0-based) layer index. 

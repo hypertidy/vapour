@@ -175,6 +175,8 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
       }
     }
     iFeature = iFeature + 1;
+    OGRFeature::DestroyFeature( poFeature );
+
   }
   GDALClose( poDS );
   return(out);

@@ -4,8 +4,6 @@
 \alias{vapour_read_geometry}
 \alias{vapour_read_geometry_text}
 \alias{vapour_read_extent}
-\alias{vapour_read_geometry_text}
-\alias{vapour_read_extent}
 \title{Read GDAL feature geometry}
 \usage{
 vapour_read_geometry(dsource, layer = 0L, sql = "")
