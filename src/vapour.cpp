@@ -274,7 +274,23 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
     if (what[0] == "extent") {
       OGREnvelope env;
       OGR_G_GetEnvelope(poGeometry, &env);
-      Rcpp::NumericVector extent = NumericVector::create(env.MinX, env.MaxX, env.MinY, env.MaxY);
+      // if geometry is empty, set the envelope to undefined (otherwise all 0s)
+      double minx, maxx, miny, maxy;
+      if (poGeometry->IsEmpty()) {
+
+        minx = NA_REAL;
+        maxx = NA_REAL;
+        miny = NA_REAL;
+        maxy = NA_REAL;
+
+      } else {
+        minx = env.MinX;
+        maxx = env.MaxX;
+        miny = env.MinY;
+        maxy = env.MaxY;
+      }
+
+      Rcpp::NumericVector extent = NumericVector::create(minx, maxx, miny, maxy);
       feature_xx.push_back(extent);
       iFeature = iFeature + 1;
 
@@ -363,50 +379,3 @@ List vapour_projection_info_cpp(Rcpp::CharacterVector dsource,
 
   return info_out;
 }
-
-// [[Rcpp::export]]
-List vapour_geometry_count_cpp(Rcpp::CharacterVector dsource,
-                              Rcpp::IntegerVector layer = 0)
-{
-  GDALAllRegister();
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  OGRLayer  *poLayer;
-
-  poLayer =  poDS->GetLayer(layer[0]);
-  if (poLayer == NULL) {
-    Rcpp::stop("Layer open failed.\n");
-  }
-  OGRFeature *poFeature;
-  poLayer->ResetReading();
-
-  int iFeature;
-  iFeature = 0;
-  int nullcount;
-  nullcount = 0;
-  while( (poFeature = poLayer->GetNextFeature()) != NULL )
-  {
-    //increment feature
-    iFeature++;
-    OGRGeometry *poGeometry;
-    poGeometry = poFeature->GetGeometryRef();
-    if (poGeometry == NULL) {
-      nullcount++;
-    }
-  }
-    List count_out(2);
-    CharacterVector outnames(2);
-    count_out[0] = iFeature;
-    count_out[1] = nullcount;
-    outnames[0] = "n_features";
-    outnames[1] = "n_null_geometry";
-
-    count_out.attr("names") = outnames;
-
-    return count_out;
-
-  }
