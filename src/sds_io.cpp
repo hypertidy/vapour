@@ -45,7 +45,7 @@ CharacterVector sds_info_cpp(const char* pszFilename)
   if (has_sds) {
     // we have subdatasets, so list them all
     char **SDS2 = GDALGetMetadata(poDataset, "SUBDATASETS");
-    for (size_t ii = 0; ii < dscount; ii++) {
+    for (int ii = 0; ii < dscount; ii++) {
       ret(ii) = SDS2[ii];
     }
     //this seems to be the wrong context in which to do this?
