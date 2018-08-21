@@ -93,7 +93,8 @@ Rcpp::List allocate_attribute(OGRFeatureDefn *poFDefn, int n_features, bool int6
 // [[Rcpp::export]]
 List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
                             Rcpp::IntegerVector layer = 0,
-                            Rcpp::CharacterVector sql = "")
+                            Rcpp::CharacterVector sql = "",
+                            Rcpp::IntegerVector limit_n = 0)
 {
   GDALAllRegister();
   GDALDataset       *poDS;
@@ -131,24 +132,25 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
       Rcpp::stop("Number of features exceeds maximal number able to be read");
   //int nFeature = poLayer->GetFeatureCount();
   int nFeature = static_cast<int>(nFeature_long);
-  OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-  bool int64_as_string = true;
-  // for now we do this for attributes, need to figure out the
-  // ListCollector logic here ...
-  if (nFeature < 0) {
-    nFeature = 0;
-    while( (poFeature = poLayer->GetNextFeature()) != NULL )
-    {
-     nFeature++;
+  if (limit_n[0] > 0) {
+    if (limit_n[0] < nFeature) {
+      nFeature = limit_n[0];
     }
   }
-  poLayer->ResetReading();
+  OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+  bool int64_as_string = true;
+  // do not think this code ever runs, or needs to MDS 2018-08-21
+  // if (nFeature < 0) {
+  //   nFeature = 0;
+  //   while( (poFeature = poLayer->GetNextFeature()) != NULL )
+  //   {
+  //    nFeature++;
+  //   }
+  // }
+  // poLayer->ResetReading();
   Rcpp::List out = allocate_attribute(poFDefn, nFeature, int64_as_string);
-
-
   int iFeature = 0;
-
-  while( (poFeature = poLayer->GetNextFeature()) != NULL )
+  while( (poFeature = poLayer->GetNextFeature()) != NULL && iFeature < nFeature)
   {
     OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
 

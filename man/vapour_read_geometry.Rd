@@ -8,12 +8,12 @@
 \alias{vapour_read_extent}
 \title{Read GDAL feature geometry}
 \usage{
-vapour_read_geometry(dsource, layer = 0L, sql = "")
+vapour_read_geometry(dsource, layer = 0L, sql = "", limit_n = NULL)
 
 vapour_read_geometry_text(dsource, layer = 0L, sql = "",
-  textformat = "json")
+  textformat = "json", limit_n = NULL)
 
-vapour_read_extent(dsource, layer = 0L, sql = "")
+vapour_read_extent(dsource, layer = 0L, sql = "", limit_n = NULL)
 }
 \arguments{
 \item{dsource}{data source name (path to file, connection string, URL)}
@@ -21,6 +21,8 @@ vapour_read_extent(dsource, layer = 0L, sql = "")
 \item{layer}{integer of layer to work with, defaults to the first (0) or the name of the layer}
 
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
+
+\item{limit_n}{an arbitrary limit to the number of features scanned}
 
 \item{textformat}{indicate text output format, available are "json" (default), "gml", "kml", "wkt"}
 }

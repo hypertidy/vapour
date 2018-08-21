@@ -106,8 +106,14 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "") {
 #' SQL <- "SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7300"
 #' vapour_read_attributes(dsource, sql = SQL)
 #' @export
-vapour_read_attributes <- function(dsource, layer = 0L, sql = "") {
+vapour_read_attributes <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
-  vapour_read_attributes_cpp(dsource = dsource, layer = layer, sql = sql)
+  if (is.null(limit_n)) {
+    limit_n <- 0L
+  } else {
+    if (limit_n < 1) stop("limit_n must be 1 or greater")
+  }
+  stopifnot(is.numeric(limit_n))
+  vapour_read_attributes_cpp(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n)
 }
 

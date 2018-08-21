@@ -17,8 +17,8 @@ vapour_layer_names_cpp <- function(dsource, sql = "") {
     .Call('_vapour_vapour_layer_names_cpp', PACKAGE = 'vapour', dsource, sql)
 }
 
-vapour_read_attributes_cpp <- function(dsource, layer = 0L, sql = "") {
-    .Call('_vapour_vapour_read_attributes_cpp', PACKAGE = 'vapour', dsource, layer, sql)
+vapour_read_attributes_cpp <- function(dsource, layer = 0L, sql = "", limit_n = 0L) {
+    .Call('_vapour_vapour_read_attributes_cpp', PACKAGE = 'vapour', dsource, layer, sql, limit_n)
 }
 
 vapour_read_geometry_cpp <- function(dsource, layer = 0L, sql = "", what = "geometry", textformat = "json") {
