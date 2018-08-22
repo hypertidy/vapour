@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">vapour</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.1.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
       </span>
     </div>
 
@@ -94,8 +94,9 @@
 <li>read access to raw binary geometry.</li>
 <li>read access to geometry in text forms (GeoJSON, WKT, GML, KML).</li>
 <li>read access to the extent, or bounding box, of feature geometries.</li>
+<li>helper functions to summarize feature identity and geometry status</li>
 </ul>
-<p>All vector/feature read tasks can optionally apply <a href="http://www.gdal.org/ogr_sql.html">OGRSQL</a> to a layer prior to data extraction.</p>
+<p>All vector/feature read tasks can optionally apply an arbitrary limit to the maximum number of features read or queried, and all allow execution of <a href="http://www.gdal.org/ogr_sql.html">OGRSQL</a> to a layer prior to data extraction.</p>
 <p>For raster data vapour provides:</p>
 <ul>
 <li>read access to the list of available rasters within a collection source (subdatasets).</li>
@@ -167,10 +168,17 @@ f_sf2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname)
 <li>Read geometry as <code>json</code> (text), pre-selected via SQL, and convert with the <code>geojsonsf</code> package</li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span> (vapour)</code></pre></div>
-<pre><code>#&gt; Loading vapour</code></pre>
+<pre><code>#&gt; Loading vapour
+#&gt; Re-compiling vapour
+#&gt; '/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore  \
+#&gt;   --quiet CMD INSTALL '/home/mdsumner/Git/vapour'  \
+#&gt;   --library='/tmp/RtmpVu6qLS/devtools_install_46ca3a49a6a2' --no-R  \
+#&gt;   --no-data --no-help --no-demo --no-inst --no-docs --no-exec  \
+#&gt;   --no-multiarch --no-test-load --preclean
+#&gt; </code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f_va1 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># read all then sub-select</span>
 {
-    ext &lt;-<span class="st"> </span><span class="kw">do.call</span> (rbind, <span class="kw"><a href="http://www.rdocumentation.org/packages/vapour/topics/vapour_read_geometry">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span>
+    ext &lt;-<span class="st"> </span><span class="kw">do.call</span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span>
     indx &lt;-<span class="st"> </span><span class="kw">which</span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span>
 <span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])
     g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry</a></span> (fname) [indx] <span class="op">%&gt;%</span>
@@ -179,7 +187,7 @@ f_sf2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname)
 }
 f_va2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># read selection only via SQL</span>
 {
-    ext &lt;-<span class="st"> </span><span class="kw">do.call</span> (rbind, <span class="kw"><a href="http://www.rdocumentation.org/packages/vapour/topics/vapour_read_geometry">vapour_read_extent</a></span> (fname))
+    ext &lt;-<span class="st"> </span><span class="kw">do.call</span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname))
     indx &lt;-<span class="st"> </span><span class="kw">which</span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span>
 <span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])
     n &lt;-<span class="st"> </span><span class="kw">paste0</span> (<span class="kw"><a href="reference/vapour_read_names.html">vapour_read_names</a></span> (fname) [indx], <span class="dt">collapse =</span> <span class="st">","</span>) <span class="co"># GDAL FIDs</span>
@@ -191,13 +199,13 @@ f_va2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <sp
 }
 f_va3 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># convert json text via geojsonsf</span>
 {
-    ext &lt;-<span class="st"> </span><span class="kw">do.call</span> (rbind, <span class="kw"><a href="http://www.rdocumentation.org/packages/vapour/topics/vapour_read_geometry">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span>
+    ext &lt;-<span class="st"> </span><span class="kw">do.call</span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span>
     indx &lt;-<span class="st"> </span><span class="kw">which</span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span>
 <span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])
     n &lt;-<span class="st"> </span><span class="kw">paste0</span> (<span class="kw"><a href="reference/vapour_read_names.html">vapour_read_names</a></span> (fname) [indx], <span class="dt">collapse =</span> <span class="st">","</span>) <span class="co"># GDAL FIDs</span>
     stmt &lt;-<span class="st"> </span><span class="kw">paste0</span> (<span class="st">"SELECT FID FROM "</span>, <span class="kw"><a href="reference/vapour_layer_names.html">vapour_layer_names</a></span> (fname),
                     <span class="st">" WHERE FID in ("</span>, n, <span class="st">")"</span>)
-    g &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/vapour/topics/vapour_read_geometry">vapour_read_geometry_text</a></span> (fname, <span class="dt">textformat =</span> <span class="st">"json"</span>, <span class="dt">sql =</span> stmt) 
+    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry_text</a></span> (fname, <span class="dt">textformat =</span> <span class="st">"json"</span>, <span class="dt">sql =</span> stmt) 
     g &lt;-<span class="st"> </span><span class="kw">lapply</span> (g, <span class="cf">function</span> (i) geojsonsf<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/geojsonsf/topics/geojson_sfc">geojson_sfc</a></span> (i) [[<span class="dv">1</span>]]) <span class="op">%&gt;%</span>
 <span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/sfc">st_sfc</a></span> ()
     a &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname, <span class="dt">sql =</span> stmt)
@@ -211,11 +219,11 @@ f_va3 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <sp
                        <span class="kw">f_va3</span> (fname),
                        <span class="dt">replications =</span> <span class="dv">10</span>)
 <span class="co">#&gt;           test replications elapsed relative user.self sys.self user.child</span>
-<span class="co">#&gt; 1 f_sf1(fname)           10   0.315    4.773     0.300    0.012          0</span>
-<span class="co">#&gt; 2 f_sf2(fname)           10   0.179    2.712     0.176    0.000          0</span>
-<span class="co">#&gt; 3 f_va1(fname)           10   0.066    1.000     0.060    0.008          0</span>
-<span class="co">#&gt; 4 f_va2(fname)           10   0.084    1.273     0.084    0.000          0</span>
-<span class="co">#&gt; 5 f_va3(fname)           10   0.200    3.030     0.200    0.000          0</span>
+<span class="co">#&gt; 1 f_sf1(fname)           10   0.291    3.932     0.280    0.012          0</span>
+<span class="co">#&gt; 2 f_sf2(fname)           10   0.199    2.689     0.200    0.000          0</span>
+<span class="co">#&gt; 3 f_va1(fname)           10   0.074    1.000     0.064    0.008          0</span>
+<span class="co">#&gt; 4 f_va2(fname)           10   0.095    1.284     0.080    0.016          0</span>
+<span class="co">#&gt; 5 f_va3(fname)           10   0.232    3.135     0.220    0.012          0</span>
 <span class="co">#&gt;   sys.child</span>
 <span class="co">#&gt; 1         0</span>
 <span class="co">#&gt; 2         0</span>
@@ -247,6 +255,8 @@ f_va3 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <sp
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=vapour">https://​cloud.r-project.org/​package=vapour</a>
+</li>
 <li>Browse source code at <br><a href="https://github.com/hypertidy/vapour">https://​github.com/​hypertidy/​vapour</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/hypertidy/vapour/issues">https://​github.com/​hypertidy/​vapour/​issues</a>
@@ -270,10 +280,12 @@ f_va3 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <sp
       <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/hypertidy/vapour"><img src="http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master" alt="Build_Status"></a></li>
-<li><a href="https://ci.appveyor.com/project/mdsumner/vapour"><img src="https://ci.appveyor.com/api/projects/status/github/mdsumner/vapour?branch=master&amp;svg=true" alt="AppVeyor build status"></a></li>
+<li><a href="https://travis-ci.org/hypertidy/vapour"><img src="http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&amp;env=BUILD_NAME=trusty_release&amp;label=linux" alt="Travis-CI Build Status"></a></li>
+<li><a href="https://travis-ci.org/hypertidy/vapour"><img src="http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&amp;env=BUILD_NAME=osx_release&amp;label=osx" alt="OSX Build Status"></a></li>
+<li><a href="https://ci.appveyor.com/project/mdsumner/vapour"><img src="https://ci.appveyor.com/api/projects/status/github/hypertidy/vapour?branch=master&amp;svg=true" alt="AppVeyor build status"></a></li>
 <li><a href="https://codecov.io/github/hypertidy/vapour?branch=master"><img src="https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg" alt="Coverage_Status"></a></li>
 <li><a href="https://cran.r-project.org/package=vapour"><img src="http://www.r-pkg.org/badges/version/vapour" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://cran.r-project.org/package=vapour"><img src="http://cranlogs.r-pkg.org/badges/vapour" alt="CRAN_Download_Badge"></a></li>
 </ul>
 </div>
 </div>

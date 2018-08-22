@@ -36,6 +36,7 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
     ## we can't pass limit_n to vapour_read_names ()
     fids <- fids[seq(1L, limit_n)]
   }
+
   na_geoms <- unlist(lapply(extents, anyNA))
   list(FID = fids,
        valid_geometry = !na_geoms,

@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.1.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
       </span>
     </div>
 
@@ -73,7 +73,7 @@
       <h1>Vapour - lightweight GDAL</h1>
                         <h4 class="author">Michael D. Sumner</h4>
             
-            <h4 class="date">2018-08-09</h4>
+            <h4 class="date">2018-08-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/hypertidy/vapour/blob/master/vignettes/vapour.Rmd"><code>vignettes/vapour.Rmd</code></a></small>
       <div class="hidden name"><code>vapour.Rmd</code></div>
@@ -126,19 +126,19 @@ dat &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span cl
 <span class="co">#&gt; [[2]]</span>
 <span class="co">#&gt;  [1] 01 01 00 00 00 00 00 c0 40 3c bb d0 3f 00 00 80 0e 30 25 d5 3f</span>
 
-<span class="kw">vapour_read_geometry_text</span>(pfile)[<span class="dv">5</span><span class="op">:</span><span class="dv">6</span>]  ## format = "json"
+<span class="kw"><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_text</a></span>(pfile)[<span class="dv">5</span><span class="op">:</span><span class="dv">6</span>]  ## format = "json"
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt; [1] "{ \"type\": \"Point\", \"coordinates\": [ 0.89612962375395, 0.577139189234003 ] }"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[2]]</span>
 <span class="co">#&gt; [1] "{ \"type\": \"Point\", \"coordinates\": [ 0.261427939636633, 0.330394758377224 ] }"</span>
 
-<span class="kw">vapour_read_geometry_text</span>(pfile, <span class="dt">textformat =</span> <span class="st">"gml"</span>)[<span class="dv">2</span>]
+<span class="kw"><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_text</a></span>(pfile, <span class="dt">textformat =</span> <span class="st">"gml"</span>)[<span class="dv">2</span>]
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt; [1] "&lt;gml:Point&gt;&lt;gml:coordinates&gt;0.145755324047059,0.395469118840992&lt;/gml:coordinates&gt;&lt;/gml:Point&gt;"</span>
 
 ## don't do this with a non-longlat data set like cfile
-<span class="kw">vapour_read_geometry_text</span>(pfile, <span class="dt">textformat =</span> <span class="st">"kml"</span>)[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]
+<span class="kw"><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_text</a></span>(pfile, <span class="dt">textformat =</span> <span class="st">"kml"</span>)[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt; [1] "&lt;Point&gt;&lt;coordinates&gt;0.623376188334078,0.380098037654534&lt;/coordinates&gt;&lt;/Point&gt;"</span>
 <span class="co">#&gt; </span>
@@ -146,7 +146,7 @@ dat &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span cl
 <span class="co">#&gt; [1] "&lt;Point&gt;&lt;coordinates&gt;0.145755324047059,0.395469118840992&lt;/coordinates&gt;&lt;/Point&gt;"</span>
 
 cfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata/sst_c.gpkg"</span>, <span class="dt">package =</span> <span class="st">"vapour"</span>)
-<span class="kw">str</span>(<span class="kw">vapour_read_geometry_text</span>(cfile, <span class="dt">textformat =</span> <span class="st">"wkt"</span>)[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])
+<span class="kw">str</span>(<span class="kw"><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_text</a></span>(cfile, <span class="dt">textformat =</span> <span class="st">"wkt"</span>)[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])
 <span class="co">#&gt; List of 2</span>
 <span class="co">#&gt;  $ : chr "MULTILINESTRING ((-16254.4210476553 -3269904.98849485,-48956.5880244328 -3282652.40200143,-82133.8545994558 -33"| __truncated__</span>
 <span class="co">#&gt;  $ : chr "MULTILINESTRING ((-18812.5003359828 -3784514.28779524,-40153.6937313319 -3789439.97415405,-37747.2881609 -38569"| __truncated__</span></code></pre></div>
@@ -161,7 +161,7 @@ cfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span cl
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     intersect, setdiff, setequal, union</span>
 dat &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw"><a href="../reference/vapour_read_attributes.html">vapour_read_attributes</a></span>(cfile),  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span>
-<span class="st">    </span>dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">wkt =</span> <span class="kw">vapour_read_geometry_text</span>(cfile, <span class="dt">textformat =</span> <span class="st">"wkt"</span>))
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">wkt =</span> <span class="kw"><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_text</a></span>(cfile, <span class="dt">textformat =</span> <span class="st">"wkt"</span>))
 <span class="kw"><a href="http://dplyr.tidyverse.org/reference/reexports.html">glimpse</a></span>(dat)
 <span class="co">#&gt; Observations: 7</span>
 <span class="co">#&gt; Variables: 3</span>
@@ -170,7 +170,7 @@ dat &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span cl
 <span class="co">#&gt; $ wkt   &lt;list&gt; ["MULTILINESTRING ((-16254.4210476553 -3269904.98849485...</span></code></pre></div>
 <p>There is a function <code>vapour_read_extent</code> to return a straightforward bounding box vector for every feature, so that we can flexibly build an index of a data set for later use.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mvfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"tab"</span>, <span class="st">"list_locality_postcode_meander_valley.tab"</span>, <span class="dt">package=</span><span class="st">"vapour"</span>)
-<span class="kw">str</span>(<span class="kw">head</span>(<span class="kw">vapour_read_extent</span>(mvfile)))
+<span class="kw">str</span>(<span class="kw">head</span>(<span class="kw"><a href="../reference/vapour_read_geometry.html">vapour_read_extent</a></span>(mvfile)))
 <span class="co">#&gt; List of 6</span>
 <span class="co">#&gt;  $ : num [1:4] 448353 457706 5386606 5397352</span>
 <span class="co">#&gt;  $ : num [1:4] 453544 459318 5403972 5412505</span>

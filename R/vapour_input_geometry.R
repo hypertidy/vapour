@@ -64,5 +64,8 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   sql <- fid_select(sql)
-  vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "extent", textformat = "", limit_n = limit_n)
+  out <- vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "extent", textformat = "", limit_n = limit_n)
+  nulls <- unlist(lapply(out, is.null))
+  if (any(nulls)) out[nulls] <- replicate(sum(nulls), rep(NA_real_, 4L), simplify = FALSE)
+  out
 }

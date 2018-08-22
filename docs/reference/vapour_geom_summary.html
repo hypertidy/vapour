@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read feature names — vapour_read_names • vapour</title>
+<title>Summary of available geometry — vapour_geom_summary • vapour</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Read feature names — vapour_read_names" />
+<meta property="og:title" content="Summary of available geometry — vapour_geom_summary" />
 
-<meta property="og:description" content="Obtains the internal 'Feature ID (FID)' for a data source." />
+<meta property="og:description" content="Read properties of geometry from a source, optionally after SQL execution." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -103,18 +103,18 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read feature names</h1>
-    <small class="dont-index">Source: <a href='https://github.com/hypertidy/vapour/blob/master/R/vapour_input_attributes.R'><code>R/vapour_input_attributes.R</code></a></small>
-    <div class="hidden name"><code>vapour_read_names.Rd</code></div>
+    <h1>Summary of available geometry</h1>
+    <small class="dont-index">Source: <a href='https://github.com/hypertidy/vapour/blob/master/R/vapour-helpers.R'><code>R/vapour-helpers.R</code></a></small>
+    <div class="hidden name"><code>vapour_geom_summary.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Obtains the internal 'Feature ID (FID)' for a data source.</p>
+    <p>Read properties of geometry from a source, optionally after SQL execution.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>vapour_read_names</span>(<span class='no'>dsource</span>, <span class='kw'>layer</span> <span class='kw'>=</span> <span class='fl'>0L</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>limit_n</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>vapour_geom_summary</span>(<span class='no'>dsource</span>, <span class='kw'>layer</span> <span class='kw'>=</span> <span class='fl'>0L</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>limit_n</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -137,27 +137,52 @@
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>list containing the following</p><ul>
+<li><p><code>FID</code> the feature id value (an integer, usually sequential)</p></li>
+<li><p><code>valid_geometry</code> logical value if a non-empty geometry is available</p></li>
+<li><p><code>xmin, xmax, ymin, ymax</code> numeric values of the extent (bounding box) of each geometry</p></li>
+</ul>
+
+    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This may be virtual (created by GDAL for the SQL interface) and may be 0- or
-1- based. Some drivers have actual names, and they are persistent and
-arbitrary. Please use with caution, this function can return the current
-FIDs, but there's no guarantee of what it represents for subsequent access.</p>
-<p>The <code>sql</code> input is only used for the <code>WHERE</code> clause, and forcibly modifies
-all input query to <code>SELECT FID</code> - use the <a href='vapour_read_attributes.html'>vapour_read_attributes</a> with SQL to
-be more specific.</p>
+    <p>Use <code>limit_n</code> to arbitrarily limit the number of features queried.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>file</span> <span class='kw'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span>
 <span class='no'>mvfile</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='fu'>file.path</span>(<span class='st'>"extdata/tab"</span>, <span class='no'>file</span>), <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"vapour"</span>)
-<span class='fu'>range</span>(<span class='no'>fids</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_names</span>(<span class='no'>mvfile</span>))</div><div class='output co'>#&gt; [1]  1 58</div><div class='input'><span class='fu'>length</span>(<span class='no'>fids</span>)</div><div class='output co'>#&gt; [1] 58</div></pre>
+<span class='fu'>vapour_geom_summary</span>(<span class='no'>mvfile</span>, <span class='kw'>limit_n</span> <span class='kw'>=</span> <span class='fl'>3L</span>)</div><div class='output co'>#&gt; $FID
+#&gt; [1] 1 2 3
+#&gt; 
+#&gt; $valid_geometry
+#&gt; [1] TRUE TRUE TRUE
+#&gt; 
+#&gt; $xmin
+#&gt; [1] 448353.3 453543.6 454839.8
+#&gt; 
+#&gt; $xmax
+#&gt; [1] 457705.8 459318.0 461042.0
+#&gt; 
+#&gt; $ymin
+#&gt; [1] 5386606 5403972 5411562
+#&gt; 
+#&gt; $ymax
+#&gt; [1] 5397352 5412505 5417892
+#&gt; </div><div class='input'>
+<span class='no'>gsum</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_geom_summary</span>(<span class='no'>mvfile</span>)
+<span class='fu'>plot</span>(<span class='fl'>NA</span>, <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='fu'>range</span>(<span class='fu'>c</span>(<span class='no'>gsum</span>$<span class='no'>xmin</span>, <span class='no'>gsum</span>$<span class='no'>xmax</span>), <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),
+         <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='fu'>range</span>(<span class='fu'>c</span>(<span class='no'>gsum</span>$<span class='no'>ymin</span>, <span class='no'>gsum</span>$<span class='no'>ymax</span>), <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))</div><div class='input'><span class='fu'>rect</span>(<span class='no'>gsum</span>$<span class='no'>xmin</span>, <span class='no'>gsum</span>$<span class='no'>ymin</span>, <span class='no'>gsum</span>$<span class='no'>xmax</span>, <span class='no'>gsum</span>$<span class='no'>ymax</span>)</div><div class='input'><span class='fu'>text</span>(<span class='no'>gsum</span>$<span class='no'>xmin</span>, <span class='no'>gsum</span>$<span class='no'>ymin</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='no'>gsum</span>$<span class='no'>FID</span>)</div><div class='img'><img src='vapour_geom_summary-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Contributor Code of Conduct • vapour</title>
+<title>GDAL version and drivers. — vapour_gdal_version • vapour</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -25,12 +25,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script>
 
 
 
-<meta property="og:title" content="Contributor Code of Conduct" />
+<meta property="og:title" content="GDAL version and drivers. — vapour_gdal_version" />
+
+<meta property="og:description" content="Return information about the GDAL library in use." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -46,7 +49,7 @@
   </head>
 
   <body>
-    <div class="container template-title-body">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -57,7 +60,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">vapour</a>
+        <a class="navbar-link" href="../index.html">vapour</a>
         <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
       </span>
     </div>
@@ -65,19 +68,19 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="articles/vapour.html">Get started</a>
+  <a href="../articles/vapour.html">Get started</a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="news/index.html">Changelog</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -98,25 +101,52 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Contributor Code of Conduct</h1>
+    <h1>GDAL version and drivers.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/hypertidy/vapour/blob/master/R/vapour-helpers.R'><code>R/vapour-helpers.R</code></a></small>
+    <div class="hidden name"><code>GDAL-library.Rd</code></div>
     </div>
 
-<div id="contributor-code-of-conduct" class="section level1">
+    <div class="ref-description">
+    
+    <p>Return information about the GDAL library in use.</p>
+    
+    </div>
 
-<p>As contributors and maintainers of this project, we pledge to respect all people who contribute through reporting issues, posting feature requests, updating documentation, submitting pull requests or patches, and other activities.</p>
-<p>We are committed to making participation in this project a harassment-free experience for everyone, regardless of level of experience, gender, gender identity and expression, sexual orientation, disability, personal appearance, body size, race, ethnicity, age, or religion.</p>
-<p>Examples of unacceptable behavior by participants include the use of sexual language or imagery, derogatory comments or personal attacks, trolling, public or private harassment, insults, or other unprofessional conduct.</p>
-<p>Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct. Project maintainers who do not follow the Code of Conduct may be removed from the project team.</p>
-<p>Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by opening an issue or contacting one or more of the project maintainers.</p>
-<p>This Code of Conduct is adapted from the Contributor Covenant (<a href="http:contributor-covenant.org" class="uri">http:contributor-covenant.org</a>), version 1.0.0, available at <a href="http://contributor-covenant.org/version/1/0/0/" class="uri">http://contributor-covenant.org/version/1/0/0/</a></p>
-</div>
+    <pre class="usage"><span class='fu'>vapour_gdal_version</span>()
+
+<span class='fu'>vapour_all_drivers</span>()</pre>
+        
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><code>vapour_gdal_version</code> returns the version of GDAL as a string. This corresponds to the "--version"
+as described for "GDALVersionInfo". <a href='https://www.gdal.org/gdal_8h.html'>GDAL documentation</a>.</p>
+<p><code>vapour_all_drivers</code> returns the names and capabilities of all available drivers, in a list. This contains:</p><ul>
+<li><p><code>driver</code> the driver (short) name</p></li>
+<li><p><code>name</code> the (long) description name</p></li>
+<li><p><code>vector</code> logical vector indicating a vector driver</p></li>
+<li><p><code>raster</code> logical vector indicating a raster driver</p></li>
+<li><p><code>create</code> driver can create (note vapour provides no write capacity)</p></li>
+<li><p><code>copy</code>   driver can copy (note vapour provides no write capacity)</p></li>
+<li><p><code>virtual</code> driver has virtual capabilities ('vsi')</p></li>
+</ul>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>vapour_gdal_version</span>()</div><div class='output co'>#&gt; [1] "GDAL 2.2.2, released 2017/09/15"</div></pre>
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
-
 </div>
-
 
       <footer>
       <div class="copyright">

@@ -44,9 +44,9 @@ For vector data vapour provides:
 * read access to raw binary geometry.
 * read access to geometry in text forms (GeoJSON, WKT, GML, KML).
 * read access to the extent, or bounding box, of feature geometries. 
+* helper functions to summarize feature identity and geometry status
 
-All vector/feature read tasks can optionally apply
-[OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to data extraction. 
+All vector/feature read tasks can optionally apply an arbitrary limit to the maximum number of features read or queried, and all allow execution of [OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to data extraction. 
 
 For raster data vapour provides: 
 

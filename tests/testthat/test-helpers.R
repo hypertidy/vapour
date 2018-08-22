@@ -23,7 +23,10 @@ test_that("helpers work", {
   expect_error(validate_limit_n(-2))
   expect_equal(vapour_read_names(gfile, sql = "SELECT FID FROM sst_c LIMIT 2"), c(1, 2))
   expect_equal(vapour_read_names(mvfile), 1:58)
+})
 
+test_that("osm aribtrary FIDs as expected", {
+  skip_on_os("windows")
   vapour_read_names(osmfile, limit_n = 1) %>% expect_equal(11)
 
   vapour_read_names(osmfile,  sql = "SELECT FID FROM lines", limit_n = 4) %>% expect_equal(100:103)

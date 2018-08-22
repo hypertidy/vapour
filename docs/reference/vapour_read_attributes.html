@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.1.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
       </span>
     </div>
 
@@ -114,7 +114,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>vapour_read_attributes</span>(<span class='no'>dsource</span>, <span class='kw'>layer</span> <span class='kw'>=</span> <span class='fl'>0L</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+    <pre class="usage"><span class='fu'>vapour_read_attributes</span>(<span class='no'>dsource</span>, <span class='kw'>layer</span> <span class='kw'>=</span> <span class='fl'>0L</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>limit_n</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -130,6 +130,10 @@
     <tr>
       <th>sql</th>
       <td><p>if not empty this is executed against the data source (layer will be ignored)</p></td>
+    </tr>
+    <tr>
+      <th>limit_n</th>
+      <td><p>an arbitrary limit to the number of features scanned</p></td>
     </tr>
     </table>
     

@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.1.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
       </span>
     </div>
 
@@ -133,7 +133,7 @@ GLOB/JPL/MUR/v4.1/2017/209/
 <span class='co'>## create an equivalent but class-less form of sst_c  with GeoJSON rather than sf sfc format</span>
 <span class='no'>atts</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='vapour_read_attributes.html'>vapour_read_attributes</a></span>(<span class='no'>f</span>)
 <span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>as.data.frame</span>(<span class='no'>atts</span>, <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='no'>dat</span><span class='kw'>[[</span><span class='st'>"json"</span>]] <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_geometry_text</span>(<span class='no'>f</span>)
+<span class='no'>dat</span><span class='kw'>[[</span><span class='st'>"json"</span>]] <span class='kw'>&lt;-</span> <span class='fu'><a href='vapour_read_geometry.html'>vapour_read_geometry_text</a></span>(<span class='no'>f</span>)
 <span class='fu'>names</span>(<span class='no'>dat</span>)</div><div class='output co'>#&gt; [1] "level" "sst"   "json" </div><div class='input'><span class='fu'>names</span>(<span class='no'>sst_c</span>)</div><div class='output co'>#&gt; [1] "level"    "geometry" "sst"     </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
