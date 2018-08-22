@@ -31,11 +31,7 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
   #limit_n <- validate_limit_n(limit_n)
   if (!is.numeric(layer)) layer <- index_layer(x = dsource, layername = layer)
   extents <- vapour_read_extent(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n)
-  fids <- vapour_read_names(dsource = dsource, layer = layer, sql = sql)
-  if (!is.null(limit_n) && limit_n > 0) {
-    ## we can't pass limit_n to vapour_read_names ()
-    fids <- fids[seq(1L, limit_n)]
-  }
+  fids <- vapour_read_names(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n)
 
   na_geoms <- unlist(lapply(extents, anyNA))
   list(FID = fids,
