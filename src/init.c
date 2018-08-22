@@ -15,6 +15,7 @@ extern SEXP _vapour_vapour_layer_names_cpp(SEXP, SEXP);
 extern SEXP _vapour_vapour_projection_info_cpp(SEXP, SEXP, SEXP);
 extern SEXP _vapour_vapour_read_attributes_cpp(SEXP, SEXP, SEXP, SEXP);
 extern SEXP _vapour_vapour_read_geometry_cpp(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP _vapour_vapour_read_names_cpp(SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"_vapour_raster_info_cpp",            (DL_FUNC) &_vapour_raster_info_cpp,            1},
@@ -24,6 +25,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_vapour_projection_info_cpp", (DL_FUNC) &_vapour_vapour_projection_info_cpp, 3},
     {"_vapour_vapour_read_attributes_cpp", (DL_FUNC) &_vapour_vapour_read_attributes_cpp, 4},
     {"_vapour_vapour_read_geometry_cpp",   (DL_FUNC) &_vapour_vapour_read_geometry_cpp,   6},
+    {"_vapour_vapour_read_names_cpp",      (DL_FUNC) &_vapour_vapour_read_names_cpp,      4},
     {NULL, NULL, 0}
 };
 

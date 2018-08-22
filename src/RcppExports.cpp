@@ -96,3 +96,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vapour_read_names_cpp
+List vapour_read_names_cpp(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector sql, Rcpp::IntegerVector limit_n);
+RcppExport SEXP _vapour_vapour_read_names_cpp(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP limit_nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type sql(sqlSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type limit_n(limit_nSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_read_names_cpp(dsource, layer, sql, limit_n));
+    return rcpp_result_gen;
+END_RCPP
+}

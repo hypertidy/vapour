@@ -387,3 +387,60 @@ List vapour_projection_info_cpp(Rcpp::CharacterVector dsource,
 
   return info_out;
 }
+
+
+// [[Rcpp::export]]
+List vapour_read_names_cpp(Rcpp::CharacterVector dsource,
+                              Rcpp::IntegerVector layer = 0,
+                              Rcpp::CharacterVector sql = "",
+                              Rcpp::IntegerVector limit_n = 0)
+{
+  GDALAllRegister();
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer  *poLayer;
+
+  Rcpp::CharacterVector empty = " ";
+  if (sql[0] != "") {
+    poLayer =  poDS->ExecuteSQL(sql[0],
+                                NULL,
+                                empty[0] );
+    if (poLayer == NULL) {
+      Rcpp::stop("SQL execution failed.\n");
+    }
+
+  } else {
+    poLayer =  poDS->GetLayer(layer[0]);
+  }
+  if (poLayer == NULL) {
+    Rcpp::stop("Layer open failed.\n");
+  }
+  OGRFeature *poFeature;
+  poLayer->ResetReading();
+
+  //OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+  CollectorList feature_xx;
+  int iFeature = 0;
+  int warncount = 0;
+  long long aFID;
+  Rcpp::NumericVector rFID(1);
+  while( (poFeature = poLayer->GetNextFeature()) != NULL )
+  {
+
+    iFeature++;
+    aFID = poFeature->GetFID();
+    rFID[0] = aFID;
+    feature_xx.push_back(Rcpp::clone(rFID));
+    if (limit_n[0] > 0 && iFeature >= limit_n[0]) {
+      break;  // short-circuit for limit_n
+    }
+  }
+  OGRFeature::DestroyFeature( poFeature );
+  GDALClose( poDS );
+  return(feature_xx.vector());
+}
+
