@@ -31,7 +31,9 @@ matrix:
         - os: linux
           r: release
           dist: trusty # 14.04
-          env: R_CODECOV=true
+          env:
+           - BUILD_NAME=trusty_release
+           - R_CODECOV=true
         - os: linux
           r: devel
           dist: trusty
@@ -42,6 +44,9 @@ matrix:
           r: release
           before_install: ''
           disable_homebrew: true
+          env:
+           - BUILD_NAME=osx_release
+           - R_CODECOV=true
           #- os: osx
           #r: devel
           #before_install: ''
