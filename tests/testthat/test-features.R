@@ -37,3 +37,23 @@ test_that("geometry read works", {
   expect_error(vapour_read_extent(dsource, layer = "list_locality_postcode_meander_val"), "layer index not found for")
   expect_silent(vapour_read_attributes(dsource, layer = "list_locality_postcode_meander_valley"))
 })
+
+
+
+test_that("limit_n works",
+          {
+            ## currently (2018-08-22) select FID is returning NULL for Geopackage f <- system.file("extdata", "sst_c.gpkg", package = "vapour")
+            vapour_geom_summary(f, limit_n = 1L) %>% unlist() %>% expect_length(5L)
+
+            vapour_geom_summary(dsource, limit_n = 1L) %>% unlist() %>% expect_length(6L)
+            av_atts <- vapour_read_attributes(f, limit_n = 1) %>% expect_length(2L) %>% expect_named(c("level", "sst"))
+            vapour_read_geometry(f, limit_n = 1L) %>% expect_length(1L)
+
+            vapour_read_geometry_text(f, limit_n = 3L) %>% expect_length(3L)
+
+            vapour_read_extent(f, limit_n = 3L) %>% unlist() %>% expect_length(12L)
+
+          }
+
+
+          )

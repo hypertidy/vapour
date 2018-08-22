@@ -34,6 +34,15 @@ index_layer <- function(x, layername) {
  idx - 1L  ## layer is 0-based
 }
 
+validate_limit_n <- function(x) {
+  if (is.null(x)) {
+    x <- 0L
+  } else {
+    if (x < 1) stop("limit_n must be 1 or greater")
+  }
+  stopifnot(is.numeric(x))
+  x
+}
 #' Read GDAL layer names
 #'
 #' Obtain the names of available layers from a GDAL vector source.
@@ -108,12 +117,7 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "") {
 #' @export
 vapour_read_attributes <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
-  if (is.null(limit_n)) {
-    limit_n <- 0L
-  } else {
-    if (limit_n < 1) stop("limit_n must be 1 or greater")
-  }
-  stopifnot(is.numeric(limit_n))
+  limit_n <- validate_limit_n(limit_n)
   vapour_read_attributes_cpp(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n)
 }
 

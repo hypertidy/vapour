@@ -191,7 +191,8 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
                             Rcpp::IntegerVector layer = 0,
                             Rcpp::CharacterVector sql = "",
                             Rcpp::CharacterVector what = "geometry",
-                            Rcpp::CharacterVector textformat = "json")
+                            Rcpp::CharacterVector textformat = "json",
+                            Rcpp::IntegerVector limit_n = 0)
 {
   GDALAllRegister();
   GDALDataset       *poDS;
@@ -302,6 +303,9 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
     }
     OGRFeature::DestroyFeature( poFeature );
 
+    if (limit_n[0] > 0 && iFeature >= limit_n[0]) {
+      break;  // short-circuit for limit_n
+    }
   }
 
   GDALClose( poDS );
