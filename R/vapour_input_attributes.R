@@ -9,16 +9,7 @@ fid_select <- function(x) {
   sqlout
 
 }
-## only select *, no matter what user asks for
-## pretty sure this is not used, fid_select is preferred
-asterisk_select <- function(x) {
-  if (nchar(x) < 1) return(x)
-  sqlout <- sprintf("SELECT * FROM %s",
-                    substr(x, gregexpr("FROM ", x)[[1]][1] + 5, nchar(x)))
-  if (x != sqlout) warning("select statement assumed, modified to 'SELECT * FROM' boilerplate")
-  sqlout
 
-}
 
 ## find index of a layer name, or error
 index_layer <- function(x, layername) {
