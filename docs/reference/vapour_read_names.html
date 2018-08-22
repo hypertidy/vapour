@@ -143,9 +143,8 @@
 1- based. Some drivers have actual names, and they are persistent and
 arbitrary. Please use with caution, this function can return the current
 FIDs, but there's no guarantee of what it represents for subsequent access.</p>
-<p>The <code>sql</code> input is only used for the <code>WHERE</code> clause, and forcibly modifies
-all input query to <code>SELECT FID</code> - use the <a href='vapour_read_attributes.html'>vapour_read_attributes</a> with SQL to
-be more specific.</p>
+<p>An earlier version use 'OGRSQL' to obtain these names, which was slow for some
+drivers and also clashed with independent use of the <code>sql</code> argument.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>

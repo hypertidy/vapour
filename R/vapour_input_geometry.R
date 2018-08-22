@@ -43,7 +43,6 @@
 vapour_read_geometry <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
-  ##sql <- fid_select(sql)  ## not needed (ever?)
   vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "geometry", textformat = "", limit_n = limit_n)
 }
 
@@ -53,7 +52,6 @@ vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat 
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   textformat = match.arg (tolower (textformat), c ("json", "gml", "kml", "wkt"))
   limit_n <- validate_limit_n(limit_n)
-  ##sql <- fid_select(sql)  ## not needed (ever?)
   vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "text", textformat = textformat, limit_n = limit_n)
 }
 
@@ -63,7 +61,6 @@ vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat 
 vapour_read_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
-  ##sql <- fid_select(sql)  ## not needed (ever?)
   out <- vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "extent", textformat = "", limit_n = limit_n)
   nulls <- unlist(lapply(out, is.null))
   if (any(nulls)) out[nulls] <- replicate(sum(nulls), rep(NA_real_, 4L), simplify = FALSE)

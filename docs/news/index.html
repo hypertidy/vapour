@@ -110,7 +110,7 @@
 </h1>
 <ul>
 <li><p>New functions <code>vapour_gdal_version</code> and <code>vapour_all_drivers</code> to return information about the GDAL library in use.</p></li>
-<li><p>Function <code>vapour_read_names</code> is now implemented using the library API, rather than via OGRSQL.</p></li>
+<li><p>Function <code>vapour_read_names</code> is now implemented using the library API, rather than via OGRSQL. All trace of the OGRSQL FID workaround and warning has been removed.</p></li>
 <li><p>New function <code>vapour_geom_summary</code> to return basic identity, validity, and extent of feature geometries.</p></li>
 <li><p>Values for the extent (bounding box) of a feature are now set to NA values for an<br>
 empty or missing geometry.</p></li>

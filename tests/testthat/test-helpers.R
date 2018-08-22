@@ -14,11 +14,6 @@ test_that("helpers work", {
   vapour_geom_summary(mvfile, sql = sprintf("SELECT FID FROM %s WHERE FID = 15", vapour_layer_names(mvfile)[1L])) %>%
     expect_equal(sql_bench)
 
-  expect_warning(
-    fid_select("SELECT donkey FROM donkykong")  %>% expect_equal("SELECT FID FROM donkykong"),
-    "boilerplate"
-)
-  fid_select("") %>% expect_equal("")
 
   expect_error(validate_limit_n(-2))
   expect_equal(vapour_read_names(gfile, sql = "SELECT FID FROM sst_c LIMIT 2"), c(1, 2))
