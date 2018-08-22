@@ -346,44 +346,51 @@ List vapour_projection_info_cpp(Rcpp::CharacterVector dsource,
   }
   OGRSpatialReference *SRS =  poLayer->GetSpatialRef();
 
-  char *proj;
-
+  char *proj;  // this gets cleaned up lower in the SRS==NULL else
   List info_out(6);
   CharacterVector outproj(1);
   CharacterVector outnames(6);
-
-  SRS->exportToProj4(&proj);
-  outproj[0] = proj;
-  info_out[0] = Rcpp::clone( outproj);
   outnames[0] = "Proj4";
-
-  SRS->exportToMICoordSys(&proj);
-  outproj[0] = proj;
-  info_out[1] = Rcpp::clone( outproj);
   outnames[1] = "MICoordSys";
-
-  SRS->exportToPrettyWkt(&proj, false); //bSimplify = false
-  outproj[0] = proj;
-  info_out[2] = Rcpp::clone( outproj);
   outnames[2] = "PrettyWkt";
-
-  SRS->exportToWkt(&proj);
-  outproj[0] = proj;
-  info_out[3] = Rcpp::clone( outproj);
   outnames[3] = "Wkt";
-
-  int epsg = SRS->GetEPSGGeogCS();
-  info_out[4] = epsg;
   outnames[4] = "EPSG";
-
-//  SRS->exportToXML();
-
-  info_out[5] = "<not implemented>";
   outnames[5] = "XML";
-
-  CPLFree(proj);
-  //info_out[0] = outproj;
   info_out.attr("names") = outnames;
+
+  if (SRS == NULL) {
+    //Rcpp::warning("null");
+    // do nothing, or warn
+    // e.g. .shp with no .prj
+  } else {
+    Rcpp::warning("not null");
+    // SRS is not NULL, so explore validation
+    OGRErr err = SRS->Validate();
+    SRS->exportToProj4(&proj);
+    outproj[0] = proj;
+    info_out[0] = Rcpp::clone(outproj);
+
+    SRS->exportToMICoordSys(&proj);
+    outproj[0] = proj;
+    info_out[1] = Rcpp::clone(outproj);
+
+    SRS->exportToPrettyWkt(&proj, false);
+    outproj[0] = proj;
+    info_out[2] = Rcpp::clone(outproj);
+
+    SRS->exportToWkt(&proj);
+    outproj[0] = proj;
+    info_out[3] = Rcpp::clone(outproj);
+
+    int epsg = SRS->GetEPSGGeogCS();
+    info_out[4] = epsg;
+
+    SRS->exportToXML(&proj);
+    outproj[0] = proj;
+    info_out[5] = Rcpp::clone(outproj);
+
+    CPLFree(proj);
+  }
 
   return info_out;
 }
