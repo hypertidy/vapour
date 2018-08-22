@@ -1,4 +1,8 @@
-# vapour dev
+# vapour 0.2.0
+
+* Function `vapour_read_names` is now implemented using the library API, rather than via OGRSQL. 
+
+* New function `vapour_geom_summary` to return basic identity, validity, and extent of feature geometries. 
 
 * Values for the extent (bounding box) of a feature are now set to NA values for an  
  empty or missing geometry. 

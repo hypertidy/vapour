@@ -79,15 +79,18 @@ vapour_layer_names <- function(dsource, sql = "") {
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' range(fids <- vapour_read_names(mvfile))
 #' length(fids)
-vapour_read_names <- function(dsource, layer = 0L, sql = "") {
+vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   layers <- vapour_layer_names(dsource)
+  limit_n <- validate_limit_n(limit_n)
   if (nchar(sql) > 1) {
     sql <- fid_select(sql)
   } else {
     sql <- sprintf("SELECT FID FROM %s", layers[layer + 1])
   }
-  vapour_read_attributes(dsource, layer = layer, sql = sql)[["FID"]]
+  #vapour_read_attributes(dsource, layer = layer, sql = sql)[["FID"]]
+  fids <- vapour_read_names_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n)
+  unlist(lapply(fids, function(x) if (is.null(x)) NA_real_ else x))
 }
 
 #' Read feature attribute data
