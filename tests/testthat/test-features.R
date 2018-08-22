@@ -42,8 +42,7 @@ test_that("geometry read works", {
 
 test_that("limit_n works",
           {
-            ## currently (2018-08-22) select FID is returning NULL for Geopackage f <- system.file("extdata", "sst_c.gpkg", package = "vapour")
-            vapour_geom_summary(f, limit_n = 1L) %>% unlist() %>% expect_length(5L)
+            vapour_geom_summary(f, limit_n = 1L) %>% unlist() %>% expect_length(6L)
 
             vapour_geom_summary(dsource, limit_n = 1L) %>% unlist() %>% expect_length(6L)
             av_atts <- vapour_read_attributes(f, limit_n = 1) %>% expect_length(2L) %>% expect_named(c("level", "sst"))
