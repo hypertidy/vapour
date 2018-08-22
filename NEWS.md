@@ -3,6 +3,7 @@
 * New functions `vapour_gdal_version` and `vapour_all_drivers` to return information about the GDAL library in use. 
 
 * Function `vapour_read_names` is now implemented using the library API, rather than via OGRSQL. 
+ All trace of the OGRSQL FID workaround and warning has been removed. 
 
 * New function `vapour_geom_summary` to return basic identity, validity, and extent of feature geometries. 
 

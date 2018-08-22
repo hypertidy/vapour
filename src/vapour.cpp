@@ -391,7 +391,7 @@ List vapour_projection_info_cpp(Rcpp::CharacterVector dsource,
 
     CPLFree(proj);
   }
-
+  GDALClose( poDS );
   return info_out;
 }
 

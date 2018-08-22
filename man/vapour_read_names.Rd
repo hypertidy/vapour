@@ -24,9 +24,8 @@ This may be virtual (created by GDAL for the SQL interface) and may be 0- or
 arbitrary. Please use with caution, this function can return the current
 FIDs, but there's no guarantee of what it represents for subsequent access.
 
-The \code{sql} input is only used for the \code{WHERE} clause, and forcibly modifies
-all input query to \code{SELECT FID} - use the \link{vapour_read_attributes} with SQL to
-be more specific.
+An earlier version use 'OGRSQL' to obtain these names, which was slow for some
+drivers and also clashed with independent use of the \code{sql} argument.
 }
 \examples{
 file <- "list_locality_postcode_meander_valley.tab"

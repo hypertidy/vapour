@@ -1,16 +1,4 @@
 
-## only select FID, no matter what user asks for
-fid_select <- function(x) {
-  if (nchar(x) < 1) return(x)
-
-  sqlout <- sprintf("SELECT FID FROM %s",
-                    substr(x, gregexpr("FROM ", x)[[1]][1] + 5, nchar(x)))
-  if (x != sqlout) warning("select statement assumed, modified to 'SELECT FID FROM' boilerplate")
-  sqlout
-
-}
-
-
 ## find index of a layer name, or error
 index_layer <- function(x, layername) {
   if (is.factor(layername)) {
@@ -69,9 +57,8 @@ vapour_layer_names <- function(dsource, sql = "") {
 #' arbitrary. Please use with caution, this function can return the current
 #' FIDs, but there's no guarantee of what it represents for subsequent access.
 #'
-#' The `sql` input is only used for the `WHERE` clause, and forcibly modifies
-#' all input query to `SELECT FID` - use the [vapour_read_attributes] with SQL to
-#' be more specific.
+#' An earlier version use 'OGRSQL' to obtain these names, which was slow for some
+#' drivers and also clashed with independent use of the `sql` argument.
 #' @inheritParams vapour_read_geometry
 #' @export
 #' @examples
@@ -83,12 +70,7 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   layers <- vapour_layer_names(dsource)
   limit_n <- validate_limit_n(limit_n)
-  if (nchar(sql) > 1) {
-    sql <- fid_select(sql)
-  } else {
-    sql <- sprintf("SELECT FID FROM %s", layers[layer + 1])
-  }
-  #vapour_read_attributes(dsource, layer = layer, sql = sql)[["FID"]]
+    #vapour_read_attributes(dsource, layer = layer, sql = sql)[["FID"]]
   fids <- vapour_read_names_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n)
   unlist(lapply(fids, function(x) if (is.null(x)) NA_real_ else x))
 }
