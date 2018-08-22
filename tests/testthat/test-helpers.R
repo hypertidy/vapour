@@ -18,4 +18,6 @@ test_that("helpers work", {
     "boilerplate"
 )
   fid_select("") %>% expect_equal("")
+
+  expect_error(validate_limit_n(-2))
 })
