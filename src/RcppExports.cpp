@@ -5,6 +5,26 @@
 
 using namespace Rcpp;
 
+// vapour_gdal_version_cpp
+Rcpp::CharacterVector vapour_gdal_version_cpp();
+RcppExport SEXP _vapour_vapour_gdal_version_cpp() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(vapour_gdal_version_cpp());
+    return rcpp_result_gen;
+END_RCPP
+}
+// vapour_all_drivers_cpp
+Rcpp::List vapour_all_drivers_cpp();
+RcppExport SEXP _vapour_vapour_all_drivers_cpp() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(vapour_all_drivers_cpp());
+    return rcpp_result_gen;
+END_RCPP
+}
 // raster_info_cpp
 List raster_info_cpp(const char* pszFilename);
 RcppExport SEXP _vapour_raster_info_cpp(SEXP pszFilenameSEXP) {

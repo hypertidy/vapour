@@ -44,3 +44,34 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
        ymin = unlist(lapply(extents, "[", 3L)),
        ymax = unlist(lapply(extents, "[", 4L)))
 }
+
+#' GDAL version and drivers.
+#'
+#' Return information about the GDAL library in use.
+#'
+#' `vapour_gdal_version` returns the version of GDAL as a string. This corresponds to the "--version"
+#' as described for "GDALVersionInfo". [GDAL documentation](https://www.gdal.org/gdal_8h.html).
+#'
+#' `vapour_all_drivers` returns the names and capabilities of all available drivers, in a list. This contains:
+#' * `driver` the driver (short) name
+#' * `name` the (long) description name
+#' * `vector` logical vector indicating a vector driver
+#' * `raster` logical vector indicating a raster driver
+#' * `create` driver can create (note vapour provides no write capacity)
+#' * `copy`   driver can copy (note vapour provides no write capacity)
+#' * `virtual` driver has virtual capabilities ('vsi')
+#' @export
+#' @aliases vapour_all_drivers
+#' @rdname GDAL-library
+#' @examples
+#' vapour_gdal_version()
+vapour_gdal_version <- function() {
+  vapour_gdal_version_cpp()
+}
+#' @rdname GDAL-library
+#' @export
+vapour_all_drivers <- function() {
+  vapour_all_drivers_cpp()
+}
+
+
