@@ -1,5 +1,10 @@
 # vapour 0.2.0
 
+* New function `vapour_report_attributes` to return a string description of the internal
+ GDAL type for data attributes. 
+ 
+* Attribute types 'OFTInteger64' are now returned as doubles, 'Date' and 'DateTime' are  returned as strings. 
+
 * New functions `vapour_gdal_version` and `vapour_all_drivers` to return information about the GDAL library in use. 
 
 * Function `vapour_read_names` is now implemented using the library API, rather than via OGRSQL. 

@@ -94,6 +94,11 @@ vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
 #' Read feature attribute data
 #'
 #' Read features attributes, optionally after SQL execution.
+#'
+#' Internal types are not fully supported, there are straightforward conversions
+#' for numeric, integer (32-bit) and string types. Date, Time, DateTime are
+#' returned as character, and Integer64 is returned as numeric.
+#'
 #' @inheritParams vapour_read_geometry
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"

@@ -138,16 +138,7 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
     }
   }
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-  bool int64_as_string = true;
-  // do not think this code ever runs, or needs to MDS 2018-08-21
-  // if (nFeature < 0) {
-  //   nFeature = 0;
-  //   while( (poFeature = poLayer->GetNextFeature()) != NULL )
-  //   {
-  //    nFeature++;
-  //   }
-  // }
-  // poLayer->ResetReading();
+  bool int64_as_string = false;
   Rcpp::List out = allocate_attribute(poFDefn, nFeature, int64_as_string);
   int iFeature = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL && iFeature < nFeature)
@@ -158,18 +149,19 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
     for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
     {
       OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
-      if( poFieldDefn->GetType() == OFTInteger ) {
+      if( poFieldDefn->GetType() == OFTInteger   ) {
         Rcpp::IntegerVector nv;
         nv = out[iField];
         nv[iFeature] = poFeature->GetFieldAsInteger( iField );
       }
-      if( poFieldDefn->GetType() == OFTReal ) {
+
+      if( poFieldDefn->GetType() == OFTReal || poFieldDefn->GetType() == OFTInteger64) {
         Rcpp::NumericVector nv;
         nv = out[iField];
         nv[iFeature] = poFeature->GetFieldAsDouble( iField );
       }
 
-      if( poFieldDefn->GetType() == OFTString ) {
+      if( poFieldDefn->GetType() == OFTString || poFieldDefn->GetType() == OFTDate || poFieldDefn->GetType() == OFTTime || poFieldDefn->GetType() == OFTDateTime) {
         Rcpp::CharacterVector nv;
         nv = out[iField];
         nv[iFeature] = poFeature->GetFieldAsString( iField );
