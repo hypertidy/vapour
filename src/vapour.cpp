@@ -451,3 +451,122 @@ List vapour_read_names_cpp(Rcpp::CharacterVector dsource,
   return(feature_xx.vector());
 }
 
+
+
+// [[Rcpp::export]]
+CharacterVector vapour_report_attributes_cpp(Rcpp::CharacterVector dsource,
+                                Rcpp::IntegerVector layer = 0,
+                                Rcpp::CharacterVector sql = "")
+{
+  GDALAllRegister();
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+
+
+  OGRLayer  *poLayer;
+  Rcpp::CharacterVector empty = " ";
+  if (sql[0] != "") {
+    poLayer =  poDS->ExecuteSQL(sql[0],
+                                NULL,
+                                empty[0] );
+
+    if (poLayer == NULL) {
+      Rcpp::stop("SQL execution failed.\n");
+    }
+
+  } else {
+    poLayer =  poDS->GetLayer(layer[0]);
+  }
+  if (poLayer == NULL) {
+    Rcpp::stop("Layer open failed.\n");
+  }
+
+  OGRFeature *poFeature;
+  poLayer->ResetReading();
+
+  OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+  int iFeature = 0;
+  poFeature = poLayer->GetNextFeature();
+
+  int fieldcount = poFDefn->GetFieldCount();
+  Rcpp::CharacterVector out(fieldcount);
+  Rcpp::CharacterVector fieldnames(fieldcount);
+  // as at 2019-08-23 https://gdal.org/ogr__core_8h.html#a787194bea637faf12d61643124a7c9fc
+  //   OFTInteger Simple32bitinteger
+  //   OFTIntegerList Listof32bitintegers
+  //   OFTReal DoublePrecisionfloatingpoint
+  //   OFTRealList Listofdoubles
+  //   OFTString StringofASCIIchars
+  //   OFTStringList Arrayofstrings
+  //   OFTWideString deprecated
+  //   OFTWideStringList deprecated
+  //   OFTBinary RawBinarydata
+  //   OFTDate Date
+  //   OFTTime Time
+  //   OFTDateTime DateandTime
+  //   OFTInteger64 Single64bitinteger
+  //   OFTInteger64List Listof64bitintegers
+  //
+  if (poFeature != NULL)
+  {
+
+    int iField;
+    for( iField = 0; iField < fieldcount; iField++ )
+    {
+      OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
+      fieldnames[iField] = poFieldDefn->GetNameRef();
+      if( poFieldDefn->GetType() == OFTBinary ) {
+        out[iField] = "OFTBinary";
+      }
+      if( poFieldDefn->GetType() == OFTDate ) {
+        out[iField] = "OFTDate";
+      }
+      if( poFieldDefn->GetType() == OFTDateTime ) {
+        out[iField] = "OFTDateTime";
+      }
+      if( poFieldDefn->GetType() == OFTInteger ) {
+        out[iField] = "OFTInteger";
+      }
+      if( poFieldDefn->GetType() == OFTInteger64 ) {
+        out[iField] = "OFTInteger64";
+      }
+      if( poFieldDefn->GetType() == OFTInteger64List ) {
+        out[iField] = "OFTInteger64List";
+      }
+      if( poFieldDefn->GetType() == OFTIntegerList ) {
+        out[iField] = "OFTIntegerList";
+      }
+      if( poFieldDefn->GetType() == OFTReal ) {
+        out[iField] = "OFTReal";
+      }
+      if( poFieldDefn->GetType() == OFTRealList ) {
+        out[iField] = "OFTRealList";
+      }
+      if( poFieldDefn->GetType() == OFTString ) {
+        out[iField] = "OFTString";
+      }
+      if( poFieldDefn->GetType() == OFTStringList ) {
+        out[iField] = "OFTStringList";
+      }
+      if( poFieldDefn->GetType() == OFTTime ) {
+        out[iField] = "OFTTime";
+      }
+      if( poFieldDefn->GetType() == OFTWideString ) {
+        out[iField] = "OFTWideString";
+      }
+      if( poFieldDefn->GetType() == OFTWideStringList ) {
+        out[iField] = "OFTWideStringList";
+      }
+    }
+
+    OGRFeature::DestroyFeature( poFeature );
+
+  }
+  out.attr("names") = fieldnames;
+  GDALClose( poDS );
+  return(out);
+}

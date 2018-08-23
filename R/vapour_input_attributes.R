@@ -68,12 +68,28 @@ vapour_layer_names <- function(dsource, sql = "") {
 #' length(fids)
 vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
-  layers <- vapour_layer_names(dsource)
   limit_n <- validate_limit_n(limit_n)
     #vapour_read_attributes(dsource, layer = layer, sql = sql)[["FID"]]
   fids <- vapour_read_names_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n)
   unlist(lapply(fids, function(x) if (is.null(x)) NA_real_ else x))
 }
+
+#' Read feature field attributes types.
+#'
+#' Obtains the internal type-constant name for the data attributes in a source.
+#' Use this to compare the interpreted versions converted into R types by
+#' `vapour_read_attributes`.
+#'
+#' These are defined for the enum OGRFieldType in GDAL itself.
+#' \url{https://gdal.org/ogr__core_8h.html#a787194bea637faf12d61643124a7c9fc}
+#'
+#' @inheritParams vapour_read_geometry
+#' @export
+vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
+  vapour_report_attributes_cpp(dsource, layer, sql = sql)
+}
+
 
 #' Read feature attribute data
 #'

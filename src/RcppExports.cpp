@@ -130,3 +130,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vapour_report_attributes_cpp
+CharacterVector vapour_report_attributes_cpp(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector sql);
+RcppExport SEXP _vapour_vapour_report_attributes_cpp(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type sql(sqlSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_report_attributes_cpp(dsource, layer, sql));
+    return rcpp_result_gen;
+END_RCPP
+}
