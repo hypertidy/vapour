@@ -424,15 +424,15 @@ List vapour_read_names_cpp(Rcpp::CharacterVector dsource,
   //OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   CollectorList feature_xx;
   int iFeature = 0;
-  int warncount = 0;
   long long aFID;
+
   Rcpp::NumericVector rFID(1);
   while( (poFeature = poLayer->GetNextFeature()) != NULL )
   {
-
     iFeature++;
     aFID = poFeature->GetFID();
-    rFID[0] = aFID;
+    double dd = static_cast<double>(aFID);
+    rFID[0] =  dd;
     feature_xx.push_back(Rcpp::clone(rFID));
     if (limit_n[0] > 0 && iFeature >= limit_n[0]) {
       break;  // short-circuit for limit_n
@@ -547,12 +547,12 @@ CharacterVector vapour_report_attributes_cpp(Rcpp::CharacterVector dsource,
       if( poFieldDefn->GetType() == OFTTime ) {
         out[iField] = "OFTTime";
       }
-      if( poFieldDefn->GetType() == OFTWideString ) {
-        out[iField] = "OFTWideString";
-      }
-      if( poFieldDefn->GetType() == OFTWideStringList ) {
-        out[iField] = "OFTWideStringList";
-      }
+      // if( poFieldDefn->GetType() == OFTWideString ) {
+      //   out[iField] = "OFTWideString";
+      // }
+      // if( poFieldDefn->GetType() == OFTWideStringList ) {
+      //   out[iField] = "OFTWideStringList";
+      // }
     }
 
     OGRFeature::DestroyFeature( poFeature );
