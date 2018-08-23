@@ -46,7 +46,7 @@ test_that("empty geometry set as expected", {
   efile <- system.file("extdata/point.dbf", package = "vapour")
   emptygeomfile <- sprintf("%s.dbf", tempfile())
   file.copy(efile, emptygeomfile)
-  expect_warning(empty <- vapour_geom_summary(emptygeomfile))
+  empty <- vapour_geom_summary(emptygeomfile)
   expect_true(!any(empty$valid_geometry))
   unlink(emptygeomfile)
 })

@@ -235,7 +235,7 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
     if (poGeometry == NULL) {
       warncount++;
       feature_xx.push_back(R_NilValue);
-      if (warncount == 1) Rcpp::warning("at least one geometry is NULL, perhaps the 'sql' argument excludes the native geometry?\n(use 'SELECT * FROM ..') ");
+      //if (warncount == 1) Rcpp::warning("at least one geometry is NULL, perhaps the 'sql' argument excludes the native geometry?\n(use 'SELECT * FROM ..') ");
     } else {
     // GEOMETRY
     // geometry native binary
