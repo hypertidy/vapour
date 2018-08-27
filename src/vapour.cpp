@@ -392,7 +392,7 @@ List vapour_projection_info_cpp(Rcpp::CharacterVector dsource,
 List vapour_read_names_cpp(Rcpp::CharacterVector dsource,
                               Rcpp::IntegerVector layer = 0,
                               Rcpp::CharacterVector sql = "",
-                              Rcpp::IntegerVector limit_n = 0)
+                              Rcpp::NumericVector limit_n = 0)
 {
   GDALAllRegister();
   GDALDataset       *poDS;
@@ -423,22 +423,22 @@ List vapour_read_names_cpp(Rcpp::CharacterVector dsource,
 
   //OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   CollectorList feature_xx;
-  int iFeature = 0;
-  long long aFID;
+  double iFeature = 0;
 
+  double aFID;
   Rcpp::NumericVector rFID(1);
   while( (poFeature = poLayer->GetNextFeature()) != NULL )
   {
     iFeature++;
-    aFID = poFeature->GetFID();
-    double dd = static_cast<double>(aFID);
-    rFID[0] =  dd;
+    aFID = (double) poFeature->GetFID();
+    OGRFeature::DestroyFeature( poFeature );
+    rFID[0] = aFID;
     feature_xx.push_back(Rcpp::clone(rFID));
-    if (limit_n[0] > 0 && iFeature >= limit_n[0]) {
+     if (limit_n[0] > 0 && iFeature >= limit_n[0]) {
       break;  // short-circuit for limit_n
     }
   }
-  OGRFeature::DestroyFeature( poFeature );
+
   GDALClose( poDS );
   return(feature_xx.vector());
 }
