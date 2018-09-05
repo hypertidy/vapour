@@ -4,6 +4,9 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
   if (file.exists(x)) x <- base::normalizePath(x, mustWork = FALSE)
   ## use sds wrapper to target the first by default
   datavars <- as.data.frame(vapour_sds_names(x), stringsAsFactors = FALSE)
+
+  ## catch for l1b where we end up with the GCP conflated with the data set #48
+  if (nrow(datavars) < 2) return(x)  ## shortcut to avoid #48
   wasnull <- is.null(sds)
   if (wasnull) sds <- 1
   if (wasnull && nrow(datavars) > 1L) {
@@ -104,8 +107,7 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 vapour_raster_info <- function(x, ..., sds = NULL) {
   datasourcename <- sds_boilerplate_checks(x, sds = sds)
   sdsnames <- vapour_sds_names(x)
-  ## catch for l1b where we end up with the GCP conflated with the data set #48
-  if (length(sdsnames$subdataset) < 2) datasourcename <- x
+
   raster_info_cpp(filename = datasourcename)
 }
 
