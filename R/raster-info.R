@@ -124,11 +124,11 @@ vapour_raster_info <- function(x, ..., sds = NULL) {
 #'
 #' @return list with
 #' \itemize{
-#'  \item[Pixel] the pixel coordinate
-#'  \item[Line] the line coordinate
-#'  \item[X] the X coordinate of the GCP
-#'  \item[Y] the Y coordinate of the GCP
-#'  \item[Z] the Z coordinate of the GCP (usually zero)
+#'  \item \code{Pixel} the pixel coordinate
+#'  \item \code{Line} the line coordinate
+#'  \item \code{X} the X coordinate of the GCP
+#'  \item \code{Y} the Y coordinate of the GCP
+#'  \item \code{Z} the Z coordinate of the GCP (usually zero)
 #' }
 #' @export
 vapour_raster_gcp <- function(x, ...) {

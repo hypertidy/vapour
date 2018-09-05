@@ -1,5 +1,7 @@
 # vapour 0.2.0
 
+* New function `vapour_raster_gcp` to return GCP (ground control points) if present. 
+
 * New function `vapour_report_attributes` to return a string description of the internal
  GDAL type for data attributes. 
  
