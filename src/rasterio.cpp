@@ -5,6 +5,8 @@ using namespace Rcpp;
 #include "gdalwarper.h"
 #include "cpl_conv.h" // for CPLMalloc()
 
+#include "gdal.h"  // for GCPs
+
 // [[Rcpp::export]]
 List raster_info_cpp (const char* pszFilename)
 {
@@ -23,6 +25,7 @@ List raster_info_cpp (const char* pszFilename)
 
   poDataset->GetGeoTransform( adfGeoTransform );
 
+
   // bail out NOW (we have no SDS and/or no rasters)
   // #f <- system.file("h5ex_t_enum.h5", package = "h5")
 
@@ -34,6 +37,8 @@ List raster_info_cpp (const char* pszFilename)
   // Rprintf( "Size is %dx%dx%d\n",
   //         poDataset->GetRasterXSize(), poDataset->GetRasterYSize(),
   //         poDataset->GetRasterCount() );
+
+
 
 
   Rcpp::DoubleVector trans(6);
@@ -58,7 +63,7 @@ List raster_info_cpp (const char* pszFilename)
 
   int nXSize = poBand->GetXSize();
   int nYSize = poBand->GetYSize();
-  int nn = 6;
+  int nn = 7;
   Rcpp::List out(nn);
   Rcpp::CharacterVector names(nn);
   out[0] = trans;
@@ -83,6 +88,8 @@ List raster_info_cpp (const char* pszFilename)
   int nBands = poDataset->GetRasterCount();
   out[5] = nBands;
   names[5] = "bands";
+
+
   // close up
   GDALClose( (GDALDatasetH) poDataset );
 
@@ -90,7 +97,55 @@ List raster_info_cpp (const char* pszFilename)
 
 }
 
-
+// [[Rcpp::export]]
+List raster_gcp_cpp(CharacterVector filename) {
+  // get GCPs if any
+  GDALDatasetH hDataset;
+  //GDALDataset  *poDataset;
+  GDALAllRegister();
+  //poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
+  hDataset = GDALOpenEx( filename[0], GA_ReadOnly, nullptr, NULL, nullptr);
+  if( hDataset == NULL )
+  {
+    Rcpp::stop("cannot open dataset");
+  }
+  int gcp_count;
+  gcp_count = GDALGetGCPCount(hDataset);
+  Rprintf("here we don't go! %i", gcp_count);
+  Rcpp::List gcpout(5);
+  Rcpp::CharacterVector gcpnames(5);
+  gcpnames[0] = "Pixel";
+  gcpnames[1] = "Line";
+  gcpnames[2] = "X";
+  gcpnames[3] = "Y";
+  gcpnames[4] = "Z";
+  gcpout.attr("names") = gcpnames;
+  if (gcp_count > 0) {
+    Rprintf("here we go! %i", gcp_count);
+    Rcpp::NumericVector GCPPixel(gcp_count);
+    Rcpp::NumericVector GCPLine(gcp_count);
+    Rcpp::NumericVector GCPX(gcp_count);
+    Rcpp::NumericVector GCPY(gcp_count);
+    Rcpp::NumericVector GCPZ(gcp_count);
+    for (int igcp = 0; igcp < gcp_count; ++igcp) {
+      const GDAL_GCP *gcp = GDALGetGCPs( hDataset ) + igcp;
+      //const GDAL_GCP *gcp = poDataset->GetGCPs() + igcp;
+      GCPPixel[igcp] = gcp->dfGCPPixel;
+      GCPLine[igcp] = gcp->dfGCPLine;
+      GCPX[igcp] = gcp->dfGCPX;
+      GCPY[igcp] = gcp->dfGCPY;
+      GCPZ[igcp] = gcp->dfGCPZ;
+    }
+    gcpout[0] = GCPPixel;
+    gcpout[1] = GCPLine;
+    gcpout[2] = GCPX;
+    gcpout[3] = GCPY;
+    gcpout[4] = GCPZ;
+    //gcp_proj = poDataset->GetGCPProjection();
+  }
+  GDALClose( hDataset );
+  return gcpout;
+}
 // [[Rcpp::export]]
 List raster_io_cpp(CharacterVector filename,
                             IntegerVector window,

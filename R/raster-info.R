@@ -106,6 +106,32 @@ vapour_raster_info <- function(x, ..., sds = NULL) {
   raster_info_cpp(pszFilename = datasourcename)
 }
 
+#' Raster ground control points
+#'
+#' Return any ground control points for a raster data set, if they exist.
+#'
+#' Pixel and Line coordinates do not correspond to cells in the underlying raster grid, they
+#' refer to the index space of that array in 0, ncols and 0, nrows. They are usually a subsample of
+#' the grid and may not align with the grid spacing itself (though they often do in satellite remote sensing products).
+#'
+#' The coordinate system of the GCPs is currently not read.
+#'
+#' @param x data source string (i.e. file name or URL or database connection string)
+#' @param ... ignored currently
+#'
+#' @return list with
+#' \itemize{
+#'  \item[Pixel] the pixel coordinate
+#'  \item[Line] the line coordinate
+#'  \item[X] the X coordinate of the GCP
+#'  \item[Y] the Y coordinate of the GCP
+#'  \item[Z] the Z coordinate of the GCP (usually zero)
+#' }
+#' @export
+vapour_raster_gcp <- function(x, ...) {
+  if (file.exists(x)) x <- normalizePath(x)
+  raster_gcp_cpp(x)
+}
 #' GDAL raster subdatasets (variables)
 #'
 #' A **subdataset** is a collection abstraction for a number of **variables**
@@ -128,6 +154,7 @@ vapour_raster_info <- function(x, ..., sds = NULL) {
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' vapour_sds_names(f)
 vapour_sds_names <- function(x) {
+  if (file.exists(x)) x <- normalizePath(x)
   stopifnot(length(x) == 1L)
   sources <- sds_info_cpp(x)
   if (length(sources) > 1) {

@@ -18,6 +18,11 @@ vapour_read_attributes(dsource, layer = 0L, sql = "", limit_n = NULL)
 \description{
 Read features attributes, optionally after SQL execution.
 }
+\details{
+Internal types are not fully supported, there are straightforward conversions
+for numeric, integer (32-bit) and string types. Date, Time, DateTime are
+returned as character, and Integer64 is returned as numeric.
+}
 \examples{
 file <- "list_locality_postcode_meander_valley.tab"
 mvfile <- system.file(file.path("extdata/tab", file), package="vapour")

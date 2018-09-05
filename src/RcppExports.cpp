@@ -36,6 +36,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// raster_gcp_cpp
+List raster_gcp_cpp(CharacterVector filename);
+RcppExport SEXP _vapour_raster_gcp_cpp(SEXP filenameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type filename(filenameSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_gcp_cpp(filename));
+    return rcpp_result_gen;
+END_RCPP
+}
 // raster_io_cpp
 List raster_io_cpp(CharacterVector filename, IntegerVector window, IntegerVector band, CharacterVector resample);
 RcppExport SEXP _vapour_raster_io_cpp(SEXP filenameSEXP, SEXP windowSEXP, SEXP bandSEXP, SEXP resampleSEXP) {
