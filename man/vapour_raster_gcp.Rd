@@ -11,6 +11,16 @@ vapour_raster_gcp(x, ...)
 
 \item{...}{ignored currently}
 }
+\value{
+list with
+\itemize{
+\item \code{Pixel} the pixel coordinate
+\item \code{Line} the line coordinate
+\item \code{X} the X coordinate of the GCP
+\item \code{Y} the Y coordinate of the GCP
+\item \code{Z} the Z coordinate of the GCP (usually zero)
+}
+}
 \description{
 Return any ground control points for a raster data set, if they exist.
 }
