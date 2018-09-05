@@ -8,62 +8,47 @@ using namespace Rcpp;
 #include "gdal.h"  // for GCPs
 
 // [[Rcpp::export]]
-List raster_info_cpp (const char* pszFilename)
+List raster_info_cpp (CharacterVector filename)
 {
-  GDALDataset  *poDataset;
+  GDALDatasetH hDataset;
   GDALAllRegister();
-  poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
-  if( poDataset == NULL )
+  hDataset = GDALOpenEx(filename[0], GA_ReadOnly, nullptr, NULL, nullptr);
+
+  if( hDataset == nullptr )
   {
     Rcpp::stop("cannot open dataset");
   }
+  int nXSize = GDALGetRasterXSize(hDataset);
+  int nYSize = GDALGetRasterYSize(hDataset);
 
-
-  //poDataset->GetMetadata();
 
   double        adfGeoTransform[6];
 
-  poDataset->GetGeoTransform( adfGeoTransform );
-
+  //poDataset->GetGeoTransform( adfGeoTransform );
+  GDALGetGeoTransform(hDataset, adfGeoTransform );
 
   // bail out NOW (we have no SDS and/or no rasters)
   // #f <- system.file("h5ex_t_enum.h5", package = "h5")
-
-  // #raster_sds_info(f)
-  // #raster_info(f)
-  if (poDataset->GetRasterCount() < 1) {
+  if (GDALGetRasterCount(hDataset) < 1) {
     Rcpp::stop("no rasters found in dataset");
   }
-  // Rprintf( "Size is %dx%dx%d\n",
-  //         poDataset->GetRasterXSize(), poDataset->GetRasterYSize(),
-  //         poDataset->GetRasterCount() );
-
-
-
-
   Rcpp::DoubleVector trans(6);
   for (int ii = 0; ii < 6; ii++) trans[ii] = adfGeoTransform[ii];
 
 
 
-  GDALRasterBand  *poBand;
+  GDALRasterBandH  hBand;
   int             nBlockXSize, nBlockYSize;
   int             bGotMin, bGotMax;
   double          adfMinMax[2];
 
-  poBand = poDataset->GetRasterBand( 1 );
-
+  hBand = GDALGetRasterBand(hDataset, 1);
   // if we don't bail out above with no rasters things go bad here
-  poBand->GetBlockSize( &nBlockXSize, &nBlockYSize );
+  GDALGetBlockSize(hBand, &nBlockXSize, &nBlockYSize);
+  GDALComputeRasterMinMax(hBand, TRUE, adfMinMax);
 
-  adfMinMax[0] = poBand->GetMinimum( &bGotMin );
-  adfMinMax[1] = poBand->GetMaximum( &bGotMax );
-  if( ! (bGotMin && bGotMax) )
-    GDALComputeRasterMinMax((GDALRasterBandH)poBand, TRUE, adfMinMax);
 
-  int nXSize = poBand->GetXSize();
-  int nYSize = poBand->GetYSize();
-  int nn = 7;
+  int nn = 6;
   Rcpp::List out(nn);
   Rcpp::CharacterVector names(nn);
   out[0] = trans;
@@ -78,21 +63,21 @@ List raster_info_cpp (const char* pszFilename)
   names[3] = "tilesXY";
 
   const char *proj;
-  proj = poDataset->GetProjectionRef();
+  proj = GDALGetProjectionRef(hDataset);
 
   out[4] = Rcpp::CharacterVector::create(proj);
   names[4] = "projection";
-  out.attr("names") = names;
 
   // get band number
-  int nBands = poDataset->GetRasterCount();
+  int nBands = GDALGetRasterCount(hDataset);
   out[5] = nBands;
   names[5] = "bands";
 
+  out.attr("names") = names;
+
 
   // close up
-  GDALClose( (GDALDatasetH) poDataset );
-
+  GDALClose( hDataset );
   return out;
 
 }
@@ -103,15 +88,15 @@ List raster_gcp_cpp(CharacterVector filename) {
   GDALDatasetH hDataset;
   //GDALDataset  *poDataset;
   GDALAllRegister();
-  //poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
-  hDataset = GDALOpenEx( filename[0], GA_ReadOnly, nullptr, NULL, nullptr);
-  if( hDataset == NULL )
+ hDataset = GDALOpenEx( filename[0], GA_ReadOnly, nullptr, NULL, nullptr);
+  if( hDataset == nullptr )
   {
     Rcpp::stop("cannot open dataset");
   }
-  int gcp_count;
+
+ int gcp_count;
   gcp_count = GDALGetGCPCount(hDataset);
-  Rprintf("here we don't go! %i", gcp_count);
+
   Rcpp::List gcpout(5);
   Rcpp::CharacterVector gcpnames(5);
   gcpnames[0] = "Pixel";
@@ -121,7 +106,6 @@ List raster_gcp_cpp(CharacterVector filename) {
   gcpnames[4] = "Z";
   gcpout.attr("names") = gcpnames;
   if (gcp_count > 0) {
-    Rprintf("here we go! %i", gcp_count);
     Rcpp::NumericVector GCPPixel(gcp_count);
     Rcpp::NumericVector GCPLine(gcp_count);
     Rcpp::NumericVector GCPX(gcp_count);
@@ -142,6 +126,8 @@ List raster_gcp_cpp(CharacterVector filename) {
     gcpout[3] = GCPY;
     gcpout[4] = GCPZ;
     //gcp_proj = poDataset->GetGCPProjection();
+  } else {
+    Rprintf("No GCP (ground control points) found.\n");
   }
   GDALClose( hDataset );
   return gcpout;

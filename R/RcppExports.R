@@ -9,8 +9,8 @@ vapour_all_drivers_cpp <- function() {
     .Call('_vapour_vapour_all_drivers_cpp', PACKAGE = 'vapour')
 }
 
-raster_info_cpp <- function(pszFilename) {
-    .Call('_vapour_raster_info_cpp', PACKAGE = 'vapour', pszFilename)
+raster_info_cpp <- function(filename) {
+    .Call('_vapour_raster_info_cpp', PACKAGE = 'vapour', filename)
 }
 
 raster_gcp_cpp <- function(filename) {

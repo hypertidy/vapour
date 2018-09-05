@@ -103,7 +103,10 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' vapour_raster_info(f)
 vapour_raster_info <- function(x, ..., sds = NULL) {
   datasourcename <- sds_boilerplate_checks(x, sds = sds)
-  raster_info_cpp(pszFilename = datasourcename)
+  sdsnames <- vapour_sds_names(x)
+  ## catch for l1b where we end up with the GCP conflated with the data set #48
+  if (length(sdsnames$subdataset) < 2) datasourcename <- x
+  raster_info_cpp(filename = datasourcename)
 }
 
 #' Raster ground control points
