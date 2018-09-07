@@ -96,14 +96,17 @@ List raster_gcp_cpp(CharacterVector filename) {
 
  int gcp_count;
   gcp_count = GDALGetGCPCount(hDataset);
-
-  Rcpp::List gcpout(5);
-  Rcpp::CharacterVector gcpnames(5);
+  const char *srcWKT = GDALGetGCPProjection(hDataset);
+  Rcpp::List gcpout(6);
+  Rcpp::CharacterVector gcpnames(6);
+  Rcpp::CharacterVector gcpCRS(1);
+  gcpCRS[0] = srcWKT;
   gcpnames[0] = "Pixel";
   gcpnames[1] = "Line";
   gcpnames[2] = "X";
   gcpnames[3] = "Y";
   gcpnames[4] = "Z";
+  gcpnames[5] = "CRS";
   gcpout.attr("names") = gcpnames;
   if (gcp_count > 0) {
     Rcpp::NumericVector GCPPixel(gcp_count);
@@ -125,6 +128,7 @@ List raster_gcp_cpp(CharacterVector filename) {
     gcpout[2] = GCPX;
     gcpout[3] = GCPY;
     gcpout[4] = GCPZ;
+    gcpout[5] = gcpCRS;
     //gcp_proj = poDataset->GetGCPProjection();
   } else {
     Rprintf("No GCP (ground control points) found.\n");
