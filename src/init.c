@@ -12,6 +12,7 @@ extern SEXP _vapour_raster_gcp_cpp(SEXP);
 extern SEXP _vapour_raster_info_cpp(SEXP);
 extern SEXP _vapour_raster_io_cpp(SEXP, SEXP, SEXP, SEXP);
 extern SEXP _vapour_raster_warp(SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP _vapour_raster_warp_gcp(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP _vapour_sds_info_cpp(SEXP);
 extern SEXP _vapour_vapour_all_drivers_cpp();
 extern SEXP _vapour_vapour_gdal_version_cpp();
@@ -27,6 +28,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_raster_info_cpp",              (DL_FUNC) &_vapour_raster_info_cpp,              1},
     {"_vapour_raster_io_cpp",                (DL_FUNC) &_vapour_raster_io_cpp,                4},
     {"_vapour_raster_warp",                  (DL_FUNC) &_vapour_raster_warp,                  5},
+    {"_vapour_raster_warp_gcp",              (DL_FUNC) &_vapour_raster_warp_gcp,              5},
     {"_vapour_sds_info_cpp",                 (DL_FUNC) &_vapour_sds_info_cpp,                 1},
     {"_vapour_vapour_all_drivers_cpp",       (DL_FUNC) &_vapour_vapour_all_drivers_cpp,       0},
     {"_vapour_vapour_gdal_version_cpp",      (DL_FUNC) &_vapour_vapour_gdal_version_cpp,      0},

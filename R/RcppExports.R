@@ -9,6 +9,10 @@ vapour_all_drivers_cpp <- function() {
     .Call('_vapour_vapour_all_drivers_cpp', PACKAGE = 'vapour')
 }
 
+raster_warp_gcp <- function(src_filename, dst_filename, dst_SRSproj, dst_dimXY, dst_resolution) {
+    .Call('_vapour_raster_warp_gcp', PACKAGE = 'vapour', src_filename, dst_filename, dst_SRSproj, dst_dimXY, dst_resolution)
+}
+
 raster_warp <- function(src_filename, dst_filename, dst_SRSproj, dst_dimXY, dst_resolution) {
     .Call('_vapour_raster_warp', PACKAGE = 'vapour', src_filename, dst_filename, dst_SRSproj, dst_dimXY, dst_resolution)
 }
