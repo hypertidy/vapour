@@ -184,7 +184,8 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
                             Rcpp::CharacterVector sql = "",
                             Rcpp::CharacterVector what = "geometry",
                             Rcpp::CharacterVector textformat = "json",
-                            Rcpp::IntegerVector limit_n = 0)
+                            Rcpp::IntegerVector limit_n = 0,
+                            Rcpp::NumericVector ex = 0)
 {
   GDALAllRegister();
   GDALDataset       *poDS;
@@ -196,10 +197,31 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
   OGRLayer  *poLayer;
 
   Rcpp::CharacterVector empty = " ";
+
+  OGRPolygon poly;
+  if (ex.length() == 4) {
+  OGRLinearRing ring;
+
+  ring.addPoint(ex[0], ex[2]); //xmin, ymin
+  ring.addPoint(ex[0], ex[3]); //xmin, ymax
+  ring.addPoint(ex[1], ex[3]); //xmax, ymax
+  ring.addPoint(ex[1], ex[2]); //xmax, ymin
+
+  ring.closeRings();
+  poly.addRing(&ring);
+  }
+
   if (sql[0] != "") {
+    if (ex.length() == 4) {
+      poLayer =  poDS->ExecuteSQL(sql[0],
+                                  &poly,
+                                  empty[0] );
+    } else {
     poLayer =  poDS->ExecuteSQL(sql[0],
                                 NULL,
                                 empty[0] );
+    }
+
 
     if (poLayer == NULL) {
       Rcpp::stop("SQL execution failed.\n");

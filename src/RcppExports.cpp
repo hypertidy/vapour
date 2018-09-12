@@ -129,8 +129,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // vapour_read_geometry_cpp
-List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector sql, Rcpp::CharacterVector what, Rcpp::CharacterVector textformat, Rcpp::IntegerVector limit_n);
-RcppExport SEXP _vapour_vapour_read_geometry_cpp(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP whatSEXP, SEXP textformatSEXP, SEXP limit_nSEXP) {
+List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector sql, Rcpp::CharacterVector what, Rcpp::CharacterVector textformat, Rcpp::IntegerVector limit_n, Rcpp::NumericVector ex);
+RcppExport SEXP _vapour_vapour_read_geometry_cpp(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP whatSEXP, SEXP textformatSEXP, SEXP limit_nSEXP, SEXP exSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -140,7 +140,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type what(whatSEXP);
     Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type textformat(textformatSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type limit_n(limit_nSEXP);
-    rcpp_result_gen = Rcpp::wrap(vapour_read_geometry_cpp(dsource, layer, sql, what, textformat, limit_n));
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type ex(exSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_read_geometry_cpp(dsource, layer, sql, what, textformat, limit_n, ex));
     return rcpp_result_gen;
 END_RCPP
 }
