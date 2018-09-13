@@ -11,6 +11,24 @@ constexpr int MAX_INT =  std::numeric_limits<int>::max ();
 
 
 // [[Rcpp::export]]
+Rcpp::CharacterVector vapour_driver_cpp(Rcpp::CharacterVector dsource)
+{
+
+  GDALAllRegister();
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  Rcpp::CharacterVector dname(1);
+  dname[0] = poDS->GetDriverName();
+  GDALClose(poDS);
+  return(dname);
+}
+
+
+// [[Rcpp::export]]
 Rcpp::CharacterVector vapour_layer_names_cpp(Rcpp::CharacterVector dsource,
                             Rcpp::CharacterVector sql = "")
 {

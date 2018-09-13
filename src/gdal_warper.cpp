@@ -143,7 +143,7 @@ CharacterVector raster_warp (CharacterVector src_filename, CharacterVector dst_f
   char *pszDstWKT = NULL; //different to GDAL warp API (no const)
 
   pszSrcWKT = GDALGetProjectionRef( hSrcDS );
-
+Rprintf("%s\n", pszSrcWKT);
   CPLAssert( pszSrcWKT != NULL && strlen(pszSrcWKT) > 0 );
 
   OGRSpatialReference oSRS;

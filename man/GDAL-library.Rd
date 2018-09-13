@@ -3,11 +3,14 @@
 \name{vapour_gdal_version}
 \alias{vapour_gdal_version}
 \alias{vapour_all_drivers}
+\alias{vapour_driver}
 \title{GDAL version and drivers.}
 \usage{
 vapour_gdal_version()
 
 vapour_all_drivers()
+
+vapour_driver(dsource)
 }
 \description{
 Return information about the GDAL library in use.

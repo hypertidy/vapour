@@ -103,6 +103,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vapour_driver_cpp
+Rcpp::CharacterVector vapour_driver_cpp(Rcpp::CharacterVector dsource);
+RcppExport SEXP _vapour_vapour_driver_cpp(SEXP dsourceSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_driver_cpp(dsource));
+    return rcpp_result_gen;
+END_RCPP
+}
 // vapour_layer_names_cpp
 Rcpp::CharacterVector vapour_layer_names_cpp(Rcpp::CharacterVector dsource, Rcpp::CharacterVector sql);
 RcppExport SEXP _vapour_vapour_layer_names_cpp(SEXP dsourceSEXP, SEXP sqlSEXP) {

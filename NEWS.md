@@ -1,5 +1,7 @@
 # vapour 0.2.0
 
+* New function `vapour_driver` to determine chose (vector, short name) driver of the data source. 
+
 * New argument `min_max` to allow fast default use of `vapour_raster_info`, as per #50. 
 
 * New function `vapour_raster_gcp` to return GCP (ground control points) if present. 

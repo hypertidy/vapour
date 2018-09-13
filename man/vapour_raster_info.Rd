@@ -4,7 +4,7 @@
 \alias{vapour_raster_info}
 \title{Raster information}
 \usage{
-vapour_raster_info(x, ..., sds = NULL)
+vapour_raster_info(x, ..., sds = NULL, min_max = FALSE)
 }
 \arguments{
 \item{x}{data source string (i.e. file name or URL or database connection string)}
@@ -12,6 +12,8 @@ vapour_raster_info(x, ..., sds = NULL)
 \item{...}{currently unused}
 
 \item{sds}{a subdataset number, if necessary}
+
+\item{min_max}{logical, control computing min and max values in source ('FALSE' by default)}
 }
 \description{
 Return the basic structural metadata of a raster source understood by GDAL.
@@ -24,9 +26,10 @@ The structural metadata are
 \describe{
 \item{geotransform}{the affine transform}
 \item{dimXY}{dimensions x-y, columns*rows}
-\item{minmax}{range of data values}
+\item{minmax}{numeric values of the computed min and max from the first band (optional)}
 \item{tilesXY}{dimensions x-y of internal tiling scheme}
 \item{projection}{text version of map projection parameter string}
+\item{bands}{number of bands in the dataset}
 }
 
 On access vapour functions will report on the existence of subdatasets while
@@ -89,6 +92,9 @@ in combination with the number of rows and columns of data they provide the
 spatial extent and the pixel size in each direction.  Very rarely a an actual
 affine raster will be use with this \emph{rotation} specified within the transform
 coefficients.
+
+Calculation of 'minmax' can take a significant amount of time, so it's not done by default. Use
+'minmax = TRUE' to do it. (It does perform well, but may be prohibitive for very large or remote sources.)
 }
 
 \examples{

@@ -58,7 +58,7 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
 #' * `copy`   driver can copy (note vapour provides no write capacity)
 #' * `virtual` driver has virtual capabilities ('vsi')
 #' @export
-#' @aliases vapour_all_drivers
+#' @aliases vapour_all_drivers vapour_driver
 #' @rdname GDAL-library
 #' @examples
 #' vapour_gdal_version()
@@ -71,4 +71,12 @@ vapour_all_drivers <- function() {
   vapour_all_drivers_cpp()
 }
 
+
+#' @rdname GDAL-library
+#' @export
+vapour_driver <- function(dsource) {
+  stopifnot(is.character(dsource))
+  stopifnot(nchar(dsource) > 0)
+  vapour_driver_cpp(dsource)
+}
 
