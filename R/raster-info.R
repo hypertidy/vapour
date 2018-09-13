@@ -32,9 +32,10 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' \describe{
 #' \item{geotransform}{the affine transform}
 #' \item{dimXY}{dimensions x-y, columns*rows}
-#' \item{minmax}{range of data values}
+#' \item{minmax}{numeric values of the computed min and max from the first band (optional)}
 #' \item{tilesXY}{dimensions x-y of internal tiling scheme}
 #' \item{projection}{text version of map projection parameter string}
+#' \item{bands}{number of bands in the dataset}
 #' }
 #'
 #' On access vapour functions will report on the existence of subdatasets while
@@ -96,19 +97,24 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' affine raster will be use with this _rotation_ specified within the transform
 #' coefficients.
 #'
+#' Calculation of 'minmax' can take a significant amount of time, so it's not done by default. Use
+#' 'minmax = TRUE' to do it. (It does perform well, but may be prohibitive for very large or remote sources.)
 #' @seealso vapour_sds_info
+#'
 #' @param x data source string (i.e. file name or URL or database connection string)
 #' @param sds a subdataset number, if necessary
+#' @param min_max logical, control computing min and max values in source ('FALSE' by default)
 #' @param ... currently unused
+#'
 #' @export
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' vapour_raster_info(f)
-vapour_raster_info <- function(x, ..., sds = NULL) {
+vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
   datasourcename <- sds_boilerplate_checks(x, sds = sds)
   sdsnames <- vapour_sds_names(x)
 
-  raster_info_cpp(filename = datasourcename)
+  raster_info_cpp(filename = datasourcename, min_max = min_max)
 }
 
 #' Raster ground control points

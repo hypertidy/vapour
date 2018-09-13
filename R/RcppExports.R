@@ -17,8 +17,8 @@ raster_warp <- function(src_filename, dst_filename, dst_SRSproj, dst_dimXY, dst_
     .Call('_vapour_raster_warp', PACKAGE = 'vapour', src_filename, dst_filename, dst_SRSproj, dst_dimXY, dst_resolution)
 }
 
-raster_info_cpp <- function(filename) {
-    .Call('_vapour_raster_info_cpp', PACKAGE = 'vapour', filename)
+raster_info_cpp <- function(filename, min_max) {
+    .Call('_vapour_raster_info_cpp', PACKAGE = 'vapour', filename, min_max)
 }
 
 raster_gcp_cpp <- function(filename) {

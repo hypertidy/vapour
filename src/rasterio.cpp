@@ -8,7 +8,7 @@ using namespace Rcpp;
 #include "gdal.h"  // for GCPs
 
 // [[Rcpp::export]]
-List raster_info_cpp (CharacterVector filename)
+List raster_info_cpp (CharacterVector filename, LogicalVector min_max)
 {
   GDALDatasetH hDataset;
   GDALAllRegister();
@@ -45,8 +45,9 @@ List raster_info_cpp (CharacterVector filename)
   hBand = GDALGetRasterBand(hDataset, 1);
   // if we don't bail out above with no rasters things go bad here
   GDALGetBlockSize(hBand, &nBlockXSize, &nBlockYSize);
-  GDALComputeRasterMinMax(hBand, TRUE, adfMinMax);
-
+  if (min_max[0]) {
+    GDALComputeRasterMinMax(hBand, TRUE, adfMinMax);
+  }
 
   int nn = 6;
   Rcpp::List out(nn);
@@ -56,7 +57,15 @@ List raster_info_cpp (CharacterVector filename)
   out[1] = Rcpp::IntegerVector::create(nXSize, nYSize);
   names[1] = "dimXY";
 
-  out[2] = Rcpp::DoubleVector::create(adfMinMax[0], adfMinMax[1]);
+  DoubleVector vmmx(2);
+  if (min_max[0]) {
+    vmmx[0] = adfMinMax[0];
+    vmmx[1] = adfMinMax[1];
+  } else {
+    vmmx[0] = NA_REAL;
+    vmmx[1] = NA_REAL;
+  }
+  out[2] = vmmx;
   names[2] = "minmax";
 
   out[3] = Rcpp::IntegerVector::create(nBlockXSize, nBlockYSize);

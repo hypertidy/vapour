@@ -199,8 +199,9 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
   Rcpp::CharacterVector empty = " ";
 
   OGRPolygon poly;
-  if (ex.length() == 4) {
   OGRLinearRing ring;
+
+  if (ex.length() == 4) {
 
   ring.addPoint(ex[0], ex[2]); //xmin, ymin
   ring.addPoint(ex[0], ex[3]); //xmin, ymax
@@ -221,7 +222,6 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
                                 NULL,
                                 empty[0] );
     }
-
 
     if (poLayer == NULL) {
       Rcpp::stop("SQL execution failed.\n");

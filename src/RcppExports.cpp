@@ -56,13 +56,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // raster_info_cpp
-List raster_info_cpp(CharacterVector filename);
-RcppExport SEXP _vapour_raster_info_cpp(SEXP filenameSEXP) {
+List raster_info_cpp(CharacterVector filename, LogicalVector min_max);
+RcppExport SEXP _vapour_raster_info_cpp(SEXP filenameSEXP, SEXP min_maxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterVector >::type filename(filenameSEXP);
-    rcpp_result_gen = Rcpp::wrap(raster_info_cpp(filename));
+    Rcpp::traits::input_parameter< LogicalVector >::type min_max(min_maxSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_info_cpp(filename, min_max));
     return rcpp_result_gen;
 END_RCPP
 }
