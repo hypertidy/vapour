@@ -166,7 +166,7 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
 
     Rcpp::stop("no features to be read (is 'skip_n' set too high?)");
   }
-  Rprintf("%i\n", nFeature);
+
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = false;
   Rcpp::List out = allocate_attribute(poFDefn, nFeature, int64_as_string);
