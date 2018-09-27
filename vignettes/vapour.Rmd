@@ -26,12 +26,6 @@ library(vapour)
 vapour_read_attributes(pfile)
 ```
 
-A higher level function *somewhere else* could wrap that function to return a data frame, but we don't want that in `vapour` because
-it's not aligned with the goals of being lightweight and 
-reducing the level of interpretation applied. The `data.frame` 
-function in R is actually a very primitive implememtation for
-data frames, so we avoid putting that interpretation on the data
-and leave that up to the developer / user. 
 
 ```{r}
 mvfile <- system.file("extdata", "tab", "list_locality_postcode_meander_valley.tab", package="vapour")
@@ -110,7 +104,7 @@ which sends a query to the GDAL library to be executed against
 the data source, this can create custom layers and so is independent of and ignores the `layer` argument. Note that the same sql statement can be passed to the geometry readers, so we get the matching sets of information. `vapour_read_geometry` will return NULL for each missing geometry if the statement doesn't include geometry explicitly or implicitly, but `vapour_read_geometry`, `vapour_read_geometry_text` and `vapour_read_extent` all explicitly modify the statement "SELECT *". (We are also assuming the data source hasn't changed between accesses ... let me know if this causes you problems!). 
 
 ```{r}
-vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7310")
+vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7291")
 
 
 vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF, FID FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7306")
