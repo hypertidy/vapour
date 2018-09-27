@@ -27,11 +27,11 @@
 #'          ylim = range(c(gsum$ymin, gsum$ymax), na.rm = TRUE))
 #' rect(gsum$xmin, gsum$ymin, gsum$xmax, gsum$ymax)
 #' text(gsum$xmin, gsum$ymin, labels = gsum$FID)
-vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
+vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0) {
   #limit_n <- validate_limit_n(limit_n)
   if (!is.numeric(layer)) layer <- index_layer(x = dsource, layername = layer)
-  extents <- vapour_read_extent(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n)
-  fids <- vapour_read_names(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n)
+  extents <- vapour_read_extent(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n)
+  fids <- vapour_read_names(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n)
 
   na_geoms <- unlist(lapply(extents, anyNA))
   list(FID = fids,

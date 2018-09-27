@@ -1,6 +1,10 @@
 # vapour 0.2.0
 
-* New function `vapour_driver` to determine chose (vector, short name) driver of the data source. 
+* Vector read functions gain new `limit_n` and `skip_n` arguments to specify a sequential set of features to be read, added to
+ `vapour_geom_summary`, `vapour_read_names`, `vapour_read_geometry`, `vapour_read_geometry_text`, `vapour_read_extent`, 
+  and `vapour_read_attributes`. Their effect occurs after that of the `sql` argument. 
+ 
+* New function `vapour_driver` to determine chosen driver (vector, short name) of the data source. 
 
 * New argument `min_max` to allow fast default use of `vapour_raster_info`, as per #50. 
 

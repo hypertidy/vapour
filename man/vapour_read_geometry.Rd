@@ -6,12 +6,14 @@
 \alias{vapour_read_extent}
 \title{Read GDAL feature geometry}
 \usage{
-vapour_read_geometry(dsource, layer = 0L, sql = "", limit_n = NULL)
+vapour_read_geometry(dsource, layer = 0L, sql = "", limit_n = NULL,
+  skip_n = 0)
 
 vapour_read_geometry_text(dsource, layer = 0L, sql = "",
-  textformat = "json", limit_n = NULL)
+  textformat = "json", limit_n = NULL, skip_n = 0)
 
-vapour_read_extent(dsource, layer = 0L, sql = "", limit_n = NULL)
+vapour_read_extent(dsource, layer = 0L, sql = "", limit_n = NULL,
+  skip_n = 0)
 }
 \arguments{
 \item{dsource}{data source name (path to file, connection string, URL)}
@@ -21,6 +23,8 @@ vapour_read_extent(dsource, layer = 0L, sql = "", limit_n = NULL)
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
 
 \item{limit_n}{an arbitrary limit to the number of features scanned}
+
+\item{skip_n}{an arbitrary number of features to skip}
 
 \item{textformat}{indicate text output format, available are "json" (default), "gml", "kml", "wkt"}
 }
@@ -34,6 +38,10 @@ For each function an optional SQL string will be evaluated against the data sour
 
 \code{vapour_read_geometry_cpp} will read a feature for each of the ways listed above and is used by those functions. It's recommended
 to use the more specialist functions rather than this more general one.
+
+Note that \code{limit_n} and \code{skip_n} interact with the affect of \code{sql}, first the query is executed on the data source, then
+while looping through available features \code{skip_n} features are ignored, and then a feature-count begins and the loop
+is stopped if \code{limit_n} is reached.
 }
 \examples{
 file <- "list_locality_postcode_meander_valley.tab"

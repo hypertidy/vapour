@@ -4,7 +4,8 @@
 \alias{vapour_geom_summary}
 \title{Summary of available geometry}
 \usage{
-vapour_geom_summary(dsource, layer = 0L, sql = "", limit_n = NULL)
+vapour_geom_summary(dsource, layer = 0L, sql = "", limit_n = NULL,
+  skip_n = 0)
 }
 \arguments{
 \item{dsource}{data source name (path to file, connection string, URL)}
@@ -14,6 +15,8 @@ vapour_geom_summary(dsource, layer = 0L, sql = "", limit_n = NULL)
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
 
 \item{limit_n}{an arbitrary limit to the number of features scanned}
+
+\item{skip_n}{an arbitrary number of features to skip}
 }
 \value{
 list containing the following

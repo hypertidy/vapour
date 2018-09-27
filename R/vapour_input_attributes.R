@@ -66,11 +66,11 @@ vapour_layer_names <- function(dsource, sql = "") {
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' range(fids <- vapour_read_names(mvfile))
 #' length(fids)
-vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
+vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
     #vapour_read_attributes(dsource, layer = layer, sql = sql)[["FID"]]
-  fids <- vapour_read_names_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n)
+  fids <- vapour_read_names_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n)
   unlist(lapply(fids, function(x) if (is.null(x)) NA_real_ else x))
 }
 
@@ -112,9 +112,9 @@ vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
 #' SQL <- "SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7300"
 #' vapour_read_attributes(dsource, sql = SQL)
 #' @export
-vapour_read_attributes <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
+vapour_read_attributes <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
-  vapour_read_attributes_cpp(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n)
+  vapour_read_attributes_cpp(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n)
 }
 

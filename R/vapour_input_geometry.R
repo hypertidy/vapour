@@ -9,11 +9,16 @@
 #'
 #' `vapour_read_geometry_cpp` will read a feature for each of the ways listed above and is used by those functions. It's recommended
 #' to use the more specialist functions rather than this more general one.
+#'
+#' Note that `limit_n` and `skip_n` interact with the affect of `sql`, first the query is executed on the data source, then
+#' while looping through available features `skip_n` features are ignored, and then a feature-count begins and the loop
+#' is stopped if `limit_n` is reached.
 #' @param dsource data source name (path to file, connection string, URL)
 #' @param layer integer of layer to work with, defaults to the first (0) or the name of the layer
 #' @param sql if not empty this is executed against the data source (layer will be ignored)
 #' @param textformat indicate text output format, available are "json" (default), "gml", "kml", "wkt"
 #' @param limit_n an arbitrary limit to the number of features scanned
+#' @param skip_n an arbitrary number of features to skip
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' ## A MapInfo TAB file with polygons
@@ -40,28 +45,28 @@
 #' @export
 #' @aliases vapour_read_geometry_text vapour_read_extent
 #' @name vapour_read_geometry
-vapour_read_geometry <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
+vapour_read_geometry <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
-  vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "geometry", textformat = "", limit_n = limit_n)
+  vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "geometry", textformat = "", limit_n = limit_n, skip_n = skip_n)
 }
 
 #' @export
 #' @rdname vapour_read_geometry
-vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat = "json", limit_n = NULL) {
+vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat = "json", limit_n = NULL, skip_n = 0) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   textformat = match.arg (tolower (textformat), c ("json", "gml", "kml", "wkt"))
   limit_n <- validate_limit_n(limit_n)
-  vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "text", textformat = textformat, limit_n = limit_n)
+  vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "text", textformat = textformat, limit_n = limit_n, skip_n = skip_n)
 }
 
 
 #' @rdname vapour_read_geometry
 #' @export
-vapour_read_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL) {
+vapour_read_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
-  out <- vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "extent", textformat = "", limit_n = limit_n)
+  out <- vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "extent", textformat = "", limit_n = limit_n, , skip_n = skip_n)
   nulls <- unlist(lapply(out, is.null))
   if (any(nulls)) out[nulls] <- replicate(sum(nulls), rep(NA_real_, 4L), simplify = FALSE)
   out
