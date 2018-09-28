@@ -152,20 +152,36 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
   //int nFeature = poLayer->GetFeatureCount();
   int nFeature = static_cast<int>(nFeature_long);
 
+  if (nFeature == -1) {
+    nFeature = 0;
+    // we have to find out first because this driver doesn't support GetFeatureCount
+    // https://trac.osgeo.org/gdal/wiki/rfc66_randomlayerreadwrite
+    while( (poFeature = poLayer->GetNextFeature()) != NULL )
+    {
+      nFeature++;
+      OGRFeature::DestroyFeature( poFeature );
+    }
+    poLayer->ResetReading();
+
+  }
+
+
+
 
   if (limit_n[0] > 0) {
     if (limit_n[0] < nFeature) {
       nFeature = limit_n[0];
     }
   }
-  if (skip_n[0] > 0) {
-    nFeature = nFeature - skip_n[0];
-  }
 
   if (nFeature < 1) {
 
-    Rcpp::stop("no features to be read (is 'skip_n' set too high?)");
+    if (skip_n[0] > 0) {
+      Rcpp::stop("no features to be read (is 'skip_n' set too high?");
+    }
+    Rcpp::stop("no features to be read");
   }
+
 
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = false;
@@ -210,6 +226,15 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
 
   }
   GDALClose( poDS );
+
+  if (lFeature < 1) {
+
+    if (skip_n[0] > 0) {
+      Rcpp::stop("no features to be read (is 'skip_n' set too high?");
+    }
+    Rcpp::stop("no features to be read");
+  }
+
   return(out);
 }
 
@@ -283,16 +308,27 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
     Rcpp::stop("Number of features exceeds maximal number able to be read");
   //int nFeature = poLayer->GetFeatureCount();
   int nFeature = static_cast<int>(nFeature_long);
+  if (nFeature == -1) {
+    nFeature = 0;
+    // we have to find out first because this driver doesn't support GetFeatureCount
+    // https://trac.osgeo.org/gdal/wiki/rfc66_randomlayerreadwrite
+    while( (poFeature = poLayer->GetNextFeature()) != NULL )
+    {
+      nFeature++;
+      OGRFeature::DestroyFeature( poFeature );
+    }
+    poLayer->ResetReading();
+
+  }
+
+
   if (limit_n[0] > 0) {
     if (limit_n[0] < nFeature) {
       nFeature = limit_n[0];
     }
   }
-  if (skip_n[0] > 0) {
-    nFeature = nFeature - skip_n[0];
-  }
   if (nFeature < 1) {
-    Rcpp::stop("no features to be read (is 'skip_n' set too high?)");
+    Rcpp::stop("no features to be read");
   }
 
   int warncount = 0;
@@ -377,13 +413,22 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
     }  //    if (iFeature >= skip_n[0]) {  // we are at skip_n
 
     iFeature = iFeature + 1;
-    if (limit_n[0] > 0 && iFeature >= limit_n[0]) {
+    if (limit_n[0] > 0 && lFeature >= limit_n[0]) {
       break;  // short-circuit for limit_n
     }
 
   }
 
   GDALClose( poDS );
+
+  if (lFeature < 1) {
+    if (skip_n[0] > 0) {
+      Rcpp::stop("no features to be read (is 'skip_n' set too high?");
+    }
+
+    Rcpp::stop("no features to be read");
+  }
+
   return(feature_xx.vector());
 }
 
@@ -475,7 +520,7 @@ List vapour_projection_info_cpp(Rcpp::CharacterVector dsource,
 List vapour_read_names_cpp(Rcpp::CharacterVector dsource,
                            Rcpp::IntegerVector layer = 0,
                            Rcpp::CharacterVector sql = "",
-                           Rcpp::NumericVector limit_n = 0,
+                           Rcpp::IntegerVector limit_n = 0,
                            Rcpp::IntegerVector skip_n = 0)
 {
   GDALAllRegister();
@@ -514,16 +559,31 @@ List vapour_read_names_cpp(Rcpp::CharacterVector dsource,
     Rcpp::stop("Number of features exceeds maximal number able to be read");
   //int nFeature = poLayer->GetFeatureCount();
   int nFeature = static_cast<int>(nFeature_long);
+
+  if (nFeature == -1) {
+    nFeature = 0;
+    // we have to find out first because this driver doesn't support GetFeatureCount
+    // https://trac.osgeo.org/gdal/wiki/rfc66_randomlayerreadwrite
+    while( (poFeature = poLayer->GetNextFeature()) != NULL )
+    {
+      nFeature++;
+      OGRFeature::DestroyFeature( poFeature );
+    }
+    poLayer->ResetReading();
+
+  }
+
   if (limit_n[0] > 0) {
     if (limit_n[0] < nFeature) {
       nFeature = limit_n[0];
     }
   }
-  if (skip_n[0] > 0) {
-    nFeature = nFeature - skip_n[0];
-  }
   if (nFeature < 1) {
-    Rcpp::stop("no features to be read (is 'skip_n' set too high?)");
+    if (skip_n[0] > 0) {
+      Rcpp::stop("no features to be read (is 'skip_n' set too high?");
+    }
+
+    Rcpp::stop("no features to be read");
   }
 
   double aFID;
@@ -545,6 +605,14 @@ List vapour_read_names_cpp(Rcpp::CharacterVector dsource,
   }
 
   GDALClose( poDS );
+
+  if (lFeature < 1) {
+    if (skip_n[0] > 0) {
+      Rcpp::stop("no features to be read (is 'skip_n' set too high?");
+    }
+
+    Rcpp::stop("no features to be read");
+  }
   return(feature_xx.vector());
 }
 

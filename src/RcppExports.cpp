@@ -173,7 +173,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // vapour_read_names_cpp
-List vapour_read_names_cpp(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector sql, Rcpp::NumericVector limit_n, Rcpp::IntegerVector skip_n);
+List vapour_read_names_cpp(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector sql, Rcpp::IntegerVector limit_n, Rcpp::IntegerVector skip_n);
 RcppExport SEXP _vapour_vapour_read_names_cpp(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP limit_nSEXP, SEXP skip_nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -181,7 +181,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
     Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type sql(sqlSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type limit_n(limit_nSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type limit_n(limit_nSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type skip_n(skip_nSEXP);
     rcpp_result_gen = Rcpp::wrap(vapour_read_names_cpp(dsource, layer, sql, limit_n, skip_n));
     return rcpp_result_gen;
