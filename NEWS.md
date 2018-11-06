@@ -1,5 +1,8 @@
 # vapour 0.2.0
 
+* Vector read functions gain new `extent` argument to apply a spatial filter in conjunction with 
+ the `sql` argument, per discussion #34. 
+
 * Vector read functions gain new `limit_n` and `skip_n` arguments to specify a sequential set of features to be read, added to
  `vapour_geom_summary`, `vapour_read_names`, `vapour_read_geometry`, `vapour_read_geometry_text`, `vapour_read_extent`, 
   and `vapour_read_attributes`. Their effect occurs after that of the `sql` argument. 
