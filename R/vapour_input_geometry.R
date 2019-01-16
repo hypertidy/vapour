@@ -67,11 +67,18 @@ vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat 
   textformat = match.arg (tolower (textformat), c ("json", "gml", "kml", "wkt"))
   limit_n <- validate_limit_n(limit_n)
   if (length(extent) > 1) {
+    if (is.matrix(extent) && all(colnames(extent) == c("min", "max")) && all(rownames(extent) == c("x", "y"))) {
+      extent <- as.vector(t(extent))
+    }
+    if (inherits(extent, "bbox")) extent <- extent[c("xmin", "xmax", "ymin", "ymax")]
+    if (inherits(extent, "Extent")) extent <- c(xmin = extent@xmin, xmax = extent@xmax,
+                                                ymin = extent@ymin, ymax = extent@ymax)
     if (!length(extent) == 4) stop("'extent' must be length 4 'c(xmin, xmax, ymin, ymax)'")
   }
   if (is.na(extent[1])) extent = 0.0
 
-  vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "text", textformat = textformat, limit_n = limit_n, skip_n = skip_n, ex = extent)
+  vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "text",
+                           textformat = textformat, limit_n = limit_n, skip_n = skip_n, ex = extent)
 }
 
 
@@ -85,7 +92,10 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL, sk
   }
   if (is.na(extent[1])) extent = 0.0
 
-  out <- vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "extent", textformat = "", limit_n = limit_n, , skip_n = skip_n, ex = extent)
+  out <- vapour_read_geometry_cpp(dsource = dsource,
+                                  layer = layer, sql = sql,
+                                  what = "extent", textformat = "",
+                                  limit_n = limit_n, skip_n = skip_n, ex = extent)
   nulls <- unlist(lapply(out, is.null))
   if (any(nulls)) out[nulls] <- replicate(sum(nulls), rep(NA_real_, 4L), simplify = FALSE)
   out
