@@ -74,6 +74,7 @@ vapour_all_drivers <- function() {
 
 #' @rdname GDAL-library
 #' @export
+#' @param dsource data source string (i.e. file name or URL or database connection string)
 vapour_driver <- function(dsource) {
   stopifnot(is.character(dsource))
   stopifnot(nchar(dsource) > 0)

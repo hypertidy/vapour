@@ -12,6 +12,9 @@ vapour_all_drivers()
 
 vapour_driver(dsource)
 }
+\arguments{
+\item{dsource}{data source string (i.e. file name or URL or database connection string)}
+}
 \description{
 Return information about the GDAL library in use.
 }
