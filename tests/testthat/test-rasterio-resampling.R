@@ -25,4 +25,21 @@ test_that("resampling works", {
 })
 
 
+## test gcps
+test_that("gcps work", {
+  expect_output(gcp_null <- vapour_raster_gcp(f), "No GCP \\(ground control points\\) found.")
+  expect_that(length(gcp_null), equals(6L))
+  expect_that(length(unlist(gcp_null)), equals(0L))
+  expect_named(gcp_null, c("Pixel", "Line", "X", "Y", "Z", "CRS"))
+  gcpfile <- system.file("extdata/gcps/volcano_gcp.tif", package = "vapour",mustWork = TRUE )
+  gcp_real <- vapour_raster_gcp(gcpfile)
+
+  expect_that(length(gcp_real), equals(6L))
+  expect_that(length(unlist(gcp_real)), equals(16L))
+  expect_named(gcp_real, c("Pixel", "Line", "X", "Y", "Z", "CRS"))
+
+  expect_equal(unlist(gcp_real[-6L]), c(Pixel1 = 0, Pixel2 = 5, Pixel3 = 20, Line1 = 0, Line2 = 5,
+                                   Line3 = 15, X1 = 100, X2 = 200, X3 = 300, Y1 = 100, Y2 = 200,
+                                   Y3 = 300, Z1 = 0, Z2 = 0, Z3 = 0))
+})
 

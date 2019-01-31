@@ -20,9 +20,15 @@ test_that("helpers work", {
   expect_equal(vapour_read_names(mvfile), 1:58)
 })
 
-test_that("osm aribtrary FIDs as expected", {
+test_that("osm arbitrary FIDs as expected", {
   skip_on_os("windows")
   vapour_read_names(osmfile, limit_n = 1) %>% expect_equal(11)
 
   vapour_read_names(osmfile,  sql = "SELECT FID FROM lines", limit_n = 4) %>% expect_equal(100:103)
 })
+
+test_that("sds checks work", {
+  sds <- system.file("extdata/gdal/complex.h5", package = "vapour")
+  expect_message(sds_boilerplate_checks(sds), "subdataset \\(variable\\) used is '//f16'")
+  }
+)

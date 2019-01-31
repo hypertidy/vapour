@@ -39,6 +39,12 @@ test_that("geometry read works", {
   expect_silent(vapour_read_attributes(dsource, layer = "list_locality_postcode_meander_valley"))
 
 
+  expect_silent(vapour_geom_summary(f, layer = "sst_c"))
+  expect_error(vapour_geom_summary(f, layer = "nolayer"))
+
+  expect_silent(vapour_geom_summary(dsource, layer = 0))
+  expect_silent(vapour_geom_summary(dsource, layer = "list_locality_postcode_meander_valley"))
+
 })
 
 test_that("empty geometry set as expected", {

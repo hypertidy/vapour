@@ -11,8 +11,8 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
   if (wasnull) sds <- 1
   if (wasnull && nrow(datavars) > 1L) {
     varnames <- unlist(lapply(strsplit(datavars$subdataset, ":"), utils::tail, 1L))
-    message("subdataset (variable) used is %s (1)", varnames[1])
-    message("If that is not correct, set it to one of ", paste(sprintf("%i (%s)", seq_len(nrow(datavars))[-1], varnames[-1]), collapse = ", "))
+    message(sprintf("subdataset (variable) used is '%s'\n", varnames[1]))
+    message("If that is not correct (or to suppress this message) choose 'sds' by number from ", paste(sprintf("\n%i or '%s'", seq_len(nrow(datavars)), varnames), collapse = ", "))
   }
   stopifnot(length(sds) == 1L)
 
