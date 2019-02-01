@@ -64,16 +64,17 @@ test_that("empty geometry set as expected", {
 
 test_that("limit_n works",
           {
-            vapour_geom_summary(f, limit_n = 1L) %>% unlist() %>% expect_length(6L)
+            expect_silent(vapour_geom_summary(f, limit_n = 1L)) %>% unlist() %>% expect_length(6L)
 
-            vapour_geom_summary(dsource, limit_n = 1L) %>% unlist() %>% expect_length(6L)
-            av_atts <- vapour_read_attributes(f, limit_n = 1) %>% expect_length(2L) %>% expect_named(c("level", "sst"))
-            vapour_read_geometry(f, limit_n = 1L) %>% expect_length(1L)
+            expect_silent(vapour_geom_summary(dsource, limit_n = 1L)) %>% unlist() %>% expect_length(6L)
+            expect_silent(av_atts <- vapour_read_attributes(f, limit_n = 1)) %>% expect_length(2L) %>% expect_named(c("level", "sst"))
+            expect_silent(vapour_read_geometry(f, limit_n = 1L)) %>% expect_length(1L)
 
-            vapour_read_geometry_text(f, limit_n = 3L) %>% expect_length(3L)
+            expect_silent(vapour_read_geometry_text(f, limit_n = 3L)) %>% expect_length(3L)
 
-            vapour_read_extent(f, limit_n = 3L) %>% unlist() %>% expect_length(12L)
+            expect_silent(vapour_read_extent(f, limit_n = 3L)) %>% unlist() %>% expect_length(12L)
 
+            expect_error(vapour_read_attributes(f, limit_n = 5, skip_n = 7), "is 'skip_n' set too high?")
           }
 
 
