@@ -61,3 +61,20 @@ test_that("gcps work", {
                                    Y3 = 300, Z1 = 0, Z2 = 0, Z3 = 0))
 })
 
+
+test_that("band sanity prevails", {
+  f1 <- system.file("extdata/gdal/geos_rad.nc", package = "vapour", mustWork = TRUE)
+  expect_equivalent(unique(vapour_read_raster(f1, native = TRUE, band = 1)), 129.0)
+
+  expect_error(vapour_read_raster(f1))
+  expect_silent(vapour_read_raster(f1, native = TRUE, band = 1))
+
+  expect_error(vapour_read_raster(f1, native = TRUE, band = NA))
+  expect_error(vapour_read_raster(f1, native = TRUE, band = 0))
+  expect_error(vapour_read_raster(f1, native = TRUE, band = 2))
+  expect_error(vapour_read_raster(f1, native = TRUE, band = ""))
+
+})
+
+
+

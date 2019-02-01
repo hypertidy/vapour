@@ -5,7 +5,7 @@
 \title{Raster IO (read)}
 \usage{
 vapour_read_raster(x, band = 1, window, resample = "nearestneighbour",
-  ..., sds = NULL)
+  ..., sds = NULL, native = FALSE)
 }
 \arguments{
 \item{x}{data source}
@@ -19,6 +19,8 @@ vapour_read_raster(x, band = 1, window, resample = "nearestneighbour",
 \item{...}{reserved}
 
 \item{sds}{index of subdataset to read (usually 1)}
+
+\item{native}{apply the full native window for read, \code{FALSE} by default}
 }
 \description{
 Read a window of data from a GDAL raster source. The first argument is the source
@@ -38,6 +40,9 @@ available. These are compared internally by converting to lower-case. Detailed u
 a standard facility used in GDAL. Easiest way to compare results is with gdal_translate.
 
 There is no write support in vapour.
+
+Currently the \code{window} argument is required. If this argument unspecified and \code{native = TRUE} then
+the default window specification will be used, the entire extent at native resolution.
 }
 \examples{
 f <- system.file("extdata", "sst.tif", package = "vapour")

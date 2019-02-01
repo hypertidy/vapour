@@ -18,7 +18,7 @@ vapour_geom_summary(dsource, layer = 0L, sql = "", limit_n = NULL,
 
 \item{skip_n}{an arbitrary number of features to skip}
 
-\item{extent}{apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin, xmax, ymin, ymax)')}
+\item{extent}{apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin, xmax, ymin, ymax)' but sp bbox, sf bbox, and raster extent also accepted)}
 }
 \value{
 list containing the following
