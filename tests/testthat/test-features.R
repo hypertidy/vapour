@@ -132,10 +132,28 @@ expect_equal(e3, list(c(-6005059.83508923, 6080358.63750109, -5670292.85588759,
                                                                   11869446.3939912), c(-9403103.938376, 10886059.5102222, -11285790.2140821,
                                                                                        10798224.9521274))
              )
-          }
 
 
-)
+
+
+sf_extent <- structure(setNames(ex[c(1, 3, 2, 4)], c("xmin", "ymin", "xmax", "ymax")), class = "bbox",
+                       crs = structure(list(epsg = NA_integer_, proj4string = NA_character_), class = "crs"))
+#r_extent <- raster::extent(ex)
+sp_extent <- matrix(ex, 2, byrow = TRUE, dimnames = list(c("s1", "s2"), c("min", "max")))
+
+expect_silent(s1 <- vapour_read_geometry_text(f))
+expect_warning(s2 <- vapour_read_geometry_text(f, extent = sf_extent))
+expect_silent(s3 <- vapour_read_geometry_text(f, extent = sf_extent, sql = "SELECT *, sst, level FROM sst_c"))
+expect_identical(s1, s2)
+## how to create this bogus raster extent without methods or raster? (save as data?)
+# expect_warning(s2 <- vapour_read_geometry_text(f, extent = r_extent))
+# expect_silent(s3 <- vapour_read_geometry_text(f, extent = r_extent, sql = "SELECT *, sst, level FROM sst_c"))
+# expect_identical(s1, s2)
+expect_warning(s2 <- vapour_read_geometry_text(f, extent = sp_extent))
+expect_silent(s3 <- vapour_read_geometry_text(f, extent = sp_extent, sql = "SELECT *, sst, level FROM sst_c"))
+expect_identical(s1, s2)
+
+})
 test_that("sanity prevails", {
   expect_error(vapour_layer_names(""), "Open failed.")
 })

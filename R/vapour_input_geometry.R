@@ -21,7 +21,7 @@
 #' @param textformat indicate text output format, available are "json" (default), "gml", "kml", "wkt"
 #' @param limit_n an arbitrary limit to the number of features scanned
 #' @param skip_n an arbitrary number of features to skip
-#' @param extent apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin, xmax, ymin, ymax)')
+#' @param extent apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin, xmax, ymin, ymax)' but sp bbox, sf bbox, and raster extent also accepted)
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' ## A MapInfo TAB file with polygons
@@ -51,12 +51,7 @@
 vapour_read_geometry <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
-  if (length(extent) > 1) {
-    if (!length(extent) == 4) stop("'extent' must be length 4 'c(xmin, xmax, ymin, ymax)'")
-  }
-
-  if (is.na(extent[1])) extent = 0.0
-  if (length(extent) == 4L && nchar(sql) < 1) warning("'extent' given but 'sql' query is empty, extent clipping will be ignored")
+  extent <- validate_extent(extent, sql)
   vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "geometry", textformat = "", limit_n = limit_n, skip_n = skip_n, ex = extent)
 }
 
@@ -66,18 +61,7 @@ vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat 
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   textformat = match.arg (tolower (textformat), c ("json", "gml", "kml", "wkt"))
   limit_n <- validate_limit_n(limit_n)
-  if (length(extent) > 1) {
-    if (is.matrix(extent) && all(colnames(extent) == c("min", "max")) && all(rownames(extent) == c("x", "y"))) {
-      extent <- as.vector(t(extent))
-    }
-    if (inherits(extent, "bbox")) extent <- extent[c("xmin", "xmax", "ymin", "ymax")]
-    if (inherits(extent, "Extent")) extent <- c(xmin = extent@xmin, xmax = extent@xmax,
-                                                ymin = extent@ymin, ymax = extent@ymax)
-    if (!length(extent) == 4) stop("'extent' must be length 4 'c(xmin, xmax, ymin, ymax)'")
-  }
-  if (is.na(extent[1])) extent = 0.0
-  if (length(extent) == 4L && nchar(sql) < 1) warning("'extent' given but 'sql' query is empty, extent clipping will be ignored")
-
+  extent <- validate_extent(extent, sql)
   vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "text",
                            textformat = textformat, limit_n = limit_n, skip_n = skip_n, ex = extent)
 }
@@ -88,12 +72,7 @@ vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat 
 vapour_read_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
-  if (length(extent) > 1) {
-    if (!length(extent) == 4) stop("'extent' must be length 4 'c(xmin, xmax, ymin, ymax)'")
-  }
-  if (is.na(extent[1])) extent = 0.0
-  if (length(extent) == 4L && nchar(sql) < 1) warning("'extent' given but 'sql' query is empty, extent clipping will be ignored")
-
+  extent <- validate_extent(extent, sql)
   out <- vapour_read_geometry_cpp(dsource = dsource,
                                   layer = layer, sql = sql,
                                   what = "extent", textformat = "",

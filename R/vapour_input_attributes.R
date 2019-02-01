@@ -22,6 +22,24 @@ validate_limit_n <- function(x) {
   stopifnot(is.numeric(x))
   x
 }
+
+validate_extent <- function(extent, sql, warn = TRUE) {
+  if (length(extent) > 1) {
+    if (is.matrix(extent) && all(colnames(extent) == c("min", "max")) && all(rownames(extent) == c("x", "y"))) {
+      extent <- as.vector(t(extent))
+    }
+    if (inherits(extent, "bbox")) extent <- extent[c("xmin", "xmax", "ymin", "ymax")]
+
+    if (!length(extent) == 4) stop("'extent' must be length 4 'c(xmin, xmax, ymin, ymax)'")
+  } else {
+    if (inherits(extent, "Extent")) extent <- c(xmin = extent@xmin, xmax = extent@xmax,
+                                                ymin = extent@ymin, ymax = extent@ymax)
+  }
+  if (is.na(extent[1])) extent = 0.0
+  if (warn && length(extent) == 4L && nchar(sql) < 1) warning("'extent' given but 'sql' query is empty, extent clipping will be ignored")
+  if (!is.numeric(extent)) stop("extent must be interpretable as xmin, xmax, ymin, ymax")
+  extent
+}
 #' Read GDAL layer names
 #'
 #' Obtain the names of available layers from a GDAL vector source.
@@ -70,13 +88,7 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, ski
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
 
-  if (length(extent) > 1) {
-    if (!length(extent) == 4) stop("'extent' must be length 4 'c(xmin, xmax, ymin, ymax)'")
-  }
-  if (is.na(extent[1])) extent = 0.0
-
-  if (length(extent) == 4L && nchar(sql) < 1) warning("'extent' given but 'sql' query is empty, extent clipping will be ignored")
-
+  extent <- validate_extent(extent, sql)
   fids <- vapour_read_names_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent)
   unlist(lapply(fids, function(x) if (is.null(x)) NA_real_ else x))
 }
@@ -122,18 +134,7 @@ vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
 vapour_read_attributes <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
-  if (length(extent) > 1) {
-    if (is.matrix(extent) && all(colnames(extent) == c("min", "max")) && all(rownames(extent) == c("x", "y"))) {
-      extent <- as.vector(t(extent))
-    }
-    if (inherits(extent, "bbox")) extent <- extent[c("xmin", "xmax", "ymin", "ymax")]
-    if (inherits(extent, "Extent")) extent <- c(xmin = extent@xmin, xmax = extent@xmax,
-                                                ymin = extent@ymin, ymax = extent@ymax)
-    if (!length(extent) == 4) stop("'extent' must be length 4 'c(xmin, xmax, ymin, ymax)'")
-  }
-  if (is.na(extent[1])) extent = 0.0
-  if (length(extent) == 4L && nchar(sql) < 1) warning("'extent' given but 'sql' query is empty, extent clipping will be ignored")
-
+  extent <- validate_extent(extent, sql)
   vapour_read_attributes_cpp(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent)
 }
 

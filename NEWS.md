@@ -1,11 +1,15 @@
 # vapour 0.2.0
 
 * Vector read functions gain new `extent` argument to apply a spatial filter in conjunction with 
- the `sql` argument, per discussion #34. The extent can be of type sp, sf, raster, or generic vector `c(xmin, xmax, ymin, ymax)`. 
+ the `sql` argument, per discussion #34. The extent can be of type sp, sf, raster, or generic 
+ vector `c(xmin, xmax, ymin, ymax)`.  The extent is ignored if the `sql` argument is not specified, 
+ with a warning.  Applies to `vapour_geom_summary`,  `vapour_read_attributes`, `vapour_read_extent`, 
+ `vapour_read_geometry`, `vapour_read_geometry_text`, and `vapour_read_names`. 
 
-* Vector read functions gain new `limit_n` and `skip_n` arguments to specify a sequential set of features to be read, added to
- `vapour_geom_summary`, `vapour_read_names`, `vapour_read_geometry`, `vapour_read_geometry_text`, `vapour_read_extent`, 
-  and `vapour_read_attributes`. Their effect occurs after that of the `sql` argument. 
+* Vector read functions gain new `limit_n` and `skip_n` arguments to specify a sequential set of 
+ features to be read, added to `vapour_geom_summary`,  `vapour_read_attributes`, `vapour_read_extent`, 
+ `vapour_read_geometry`, `vapour_read_geometry_text`, and `vapour_read_names`. Their effect occurs 
+ after that of the `sql` argument. 
  
 * New function `vapour_driver` to determine chosen driver (vector, short name) of the data source. 
 
