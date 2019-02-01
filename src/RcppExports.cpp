@@ -25,36 +25,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// raster_warp_gcp
-CharacterVector raster_warp_gcp(CharacterVector src_filename, CharacterVector dst_filename, CharacterVector dst_SRSproj, NumericVector dst_dimXY, NumericVector dst_resolution);
-RcppExport SEXP _vapour_raster_warp_gcp(SEXP src_filenameSEXP, SEXP dst_filenameSEXP, SEXP dst_SRSprojSEXP, SEXP dst_dimXYSEXP, SEXP dst_resolutionSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type src_filename(src_filenameSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type dst_filename(dst_filenameSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type dst_SRSproj(dst_SRSprojSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type dst_dimXY(dst_dimXYSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type dst_resolution(dst_resolutionSEXP);
-    rcpp_result_gen = Rcpp::wrap(raster_warp_gcp(src_filename, dst_filename, dst_SRSproj, dst_dimXY, dst_resolution));
-    return rcpp_result_gen;
-END_RCPP
-}
-// raster_warp
-CharacterVector raster_warp(CharacterVector src_filename, CharacterVector dst_filename, CharacterVector dst_SRSproj, NumericVector dst_dimXY, NumericVector dst_resolution);
-RcppExport SEXP _vapour_raster_warp(SEXP src_filenameSEXP, SEXP dst_filenameSEXP, SEXP dst_SRSprojSEXP, SEXP dst_dimXYSEXP, SEXP dst_resolutionSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type src_filename(src_filenameSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type dst_filename(dst_filenameSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type dst_SRSproj(dst_SRSprojSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type dst_dimXY(dst_dimXYSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type dst_resolution(dst_resolutionSEXP);
-    rcpp_result_gen = Rcpp::wrap(raster_warp(src_filename, dst_filename, dst_SRSproj, dst_dimXY, dst_resolution));
-    return rcpp_result_gen;
-END_RCPP
-}
 // raster_info_cpp
 List raster_info_cpp(CharacterVector filename, LogicalVector min_max);
 RcppExport SEXP _vapour_raster_info_cpp(SEXP filenameSEXP, SEXP min_maxSEXP) {
