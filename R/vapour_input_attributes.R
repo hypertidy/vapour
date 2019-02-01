@@ -66,11 +66,18 @@ vapour_layer_names <- function(dsource, sql = "") {
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' range(fids <- vapour_read_names(mvfile))
 #' length(fids)
-vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0) {
+vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
-    #vapour_read_attributes(dsource, layer = layer, sql = sql)[["FID"]]
-  fids <- vapour_read_names_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n)
+
+  if (length(extent) > 1) {
+    if (!length(extent) == 4) stop("'extent' must be length 4 'c(xmin, xmax, ymin, ymax)'")
+  }
+  if (is.na(extent[1])) extent = 0.0
+
+  if (length(extent) == 4L && nchar(sql) < 1) warning("'extent' given but 'sql' query is empty, extent clipping will be ignored")
+
+  fids <- vapour_read_names_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent)
   unlist(lapply(fids, function(x) if (is.null(x)) NA_real_ else x))
 }
 
@@ -112,9 +119,21 @@ vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
 #' SQL <- "SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7300"
 #' vapour_read_attributes(dsource, sql = SQL)
 #' @export
-vapour_read_attributes <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0) {
+vapour_read_attributes <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
-  vapour_read_attributes_cpp(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n)
+  if (length(extent) > 1) {
+    if (is.matrix(extent) && all(colnames(extent) == c("min", "max")) && all(rownames(extent) == c("x", "y"))) {
+      extent <- as.vector(t(extent))
+    }
+    if (inherits(extent, "bbox")) extent <- extent[c("xmin", "xmax", "ymin", "ymax")]
+    if (inherits(extent, "Extent")) extent <- c(xmin = extent@xmin, xmax = extent@xmax,
+                                                ymin = extent@ymin, ymax = extent@ymax)
+    if (!length(extent) == 4) stop("'extent' must be length 4 'c(xmin, xmax, ymin, ymax)'")
+  }
+  if (is.na(extent[1])) extent = 0.0
+  if (length(extent) == 4L && nchar(sql) < 1) warning("'extent' given but 'sql' query is empty, extent clipping will be ignored")
+
+  vapour_read_attributes_cpp(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent)
 }
 

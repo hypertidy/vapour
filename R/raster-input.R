@@ -40,7 +40,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
   resample <- tolower(resample)  ## ensure check internally is lower case
   if (!resample %in% c("nearestneighbour", "average", "bilinear", "cubic", "cubicspline",
                        "gauss", "lanczos", "mode")) {
-    warning(sprintf("resample mode %s unknown?", resample))
+    warning(sprintf("resample mode '%s' is unknown", resample))
   }
   ri <- vapour_raster_info(x, sds = sds)
   ## turn these warning cases into errors here, + tests

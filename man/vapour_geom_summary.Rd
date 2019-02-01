@@ -5,7 +5,7 @@
 \title{Summary of available geometry}
 \usage{
 vapour_geom_summary(dsource, layer = 0L, sql = "", limit_n = NULL,
-  skip_n = 0)
+  skip_n = 0, extent = NA)
 }
 \arguments{
 \item{dsource}{data source name (path to file, connection string, URL)}
@@ -17,6 +17,8 @@ vapour_geom_summary(dsource, layer = 0L, sql = "", limit_n = NULL,
 \item{limit_n}{an arbitrary limit to the number of features scanned}
 
 \item{skip_n}{an arbitrary number of features to skip}
+
+\item{extent}{apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin, xmax, ymin, ymax)')}
 }
 \value{
 list containing the following

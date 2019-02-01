@@ -56,7 +56,7 @@ vapour_read_geometry <- function(dsource, layer = 0L, sql = "", limit_n = NULL, 
   }
 
   if (is.na(extent[1])) extent = 0.0
-
+  if (length(extent) == 4L && nchar(sql) < 1) warning("'extent' given but 'sql' query is empty, extent clipping will be ignored")
   vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "geometry", textformat = "", limit_n = limit_n, skip_n = skip_n, ex = extent)
 }
 
@@ -76,6 +76,7 @@ vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat 
     if (!length(extent) == 4) stop("'extent' must be length 4 'c(xmin, xmax, ymin, ymax)'")
   }
   if (is.na(extent[1])) extent = 0.0
+  if (length(extent) == 4L && nchar(sql) < 1) warning("'extent' given but 'sql' query is empty, extent clipping will be ignored")
 
   vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "text",
                            textformat = textformat, limit_n = limit_n, skip_n = skip_n, ex = extent)
@@ -91,6 +92,7 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL, sk
     if (!length(extent) == 4) stop("'extent' must be length 4 'c(xmin, xmax, ymin, ymax)'")
   }
   if (is.na(extent[1])) extent = 0.0
+  if (length(extent) == 4L && nchar(sql) < 1) warning("'extent' given but 'sql' query is empty, extent clipping will be ignored")
 
   out <- vapour_read_geometry_cpp(dsource = dsource,
                                   layer = layer, sql = sql,

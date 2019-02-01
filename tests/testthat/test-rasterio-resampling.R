@@ -21,8 +21,26 @@ test_that("resampling works", {
     expect_equal(as.numeric(l[[i]]),
                  vapour_read_raster(f, window = c(0, 0, 10, 10, 5, 5), resample = names(l)[i]))
   }
-
+  expect_warning(vapour_read_raster(f, window = c(0, 0, 10, 10, 10, 10), resample = "idontexist"), "resample mode 'idontexist' is unknown")
 })
+test_that("window handling is sane", {
+
+  expect_silent(vapour_read_raster(f, window = c(0, 0, 10, 10)))
+  expect_error(vapour_read_raster(f, window = c(-1, 0, 10, 10)), "window cannot index lower than 0")
+  expect_error(vapour_read_raster(f, window = c(0, -1, 10, 10)), "window cannot index lower than 0")
+  expect_error(vapour_read_raster(f, window = c(0, 0, -1, 10)), "window size cannot be less than 1")
+  expect_error(vapour_read_raster(f, window = c(0, 0, 10, -1)), "window size cannot be less than 1")
+
+  expect_error(vapour_read_raster(f, window = c(142, 0, 10, 10)), "window size cannot exceed grid dimension")
+
+
+  expect_error(vapour_read_raster(f, window = c(140, 0, 10, 10)), "window size cannot exceed grid dimension")
+  expect_error(vapour_read_raster(f, window = c(0, 10, 10, 1000)), "window size cannot exceed grid dimension")
+
+  expect_error(vapour_read_raster(f, window = c(0, 0, 10, 10, -2, 5)), "requested output dimension cannot be less than 1")
+  expect_error(vapour_read_raster(f, window = c(0, 0, 10, 10, 5, -2)), "requested output dimension cannot be less than 1")
+
+  })
 
 
 ## test gcps

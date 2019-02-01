@@ -27,11 +27,20 @@
 #'          ylim = range(c(gsum$ymin, gsum$ymax), na.rm = TRUE))
 #' rect(gsum$xmin, gsum$ymin, gsum$xmax, gsum$ymax)
 #' text(gsum$xmin, gsum$ymin, labels = gsum$FID)
-vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0) {
+vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
   #limit_n <- validate_limit_n(limit_n)
   if (!is.numeric(layer)) layer <- index_layer(x = dsource, layername = layer)
-  extents <- vapour_read_extent(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n)
-  fids <- vapour_read_names(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n)
+  #limit_n <- validate_limit_n(limit_n)
+
+  if (length(extent) > 1) {
+    if (!length(extent) == 4) stop("'extent' must be length 4 'c(xmin, xmax, ymin, ymax)'")
+  }
+  if (is.na(extent[1])) extent = 0.0
+
+  ## these will also warn, so don't warn here
+  ##if (length(extent) == 4L && nchar(sql) < 1) warning("'extent' given but 'sql' query is empty, extent clipping will be ignored")
+  extents <- vapour_read_extent(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
+  fids <- vapour_read_names(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
 
   na_geoms <- unlist(lapply(extents, anyNA))
   list(FID = fids,
