@@ -25,6 +25,7 @@ addons:
       - libgeos-dev
       - libspatialite-dev
       - libgdal-dev
+      - gdal-bin
 
 matrix:
     include:
