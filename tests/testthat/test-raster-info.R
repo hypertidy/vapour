@@ -1,5 +1,6 @@
 context("test-raster-info")
-
+skip_on_appveyor()
+skip_on_travis()
 test_that("raster info works", {
   f <- system.file("extdata/gdal/complex.h5", package = "vapour", mustWork = TRUE)
   expect_error(vapour_sds_names(), 'argument "x" is missing, with no default')
