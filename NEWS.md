@@ -1,5 +1,8 @@
 # vapour 0.2.0
 
+* Raster read gains a new argument `native = FALSE` to enable use of the native window without
+ specifiying it. If `native = TRUE` then the native dimensions are used and read in full. 
+
 * Vector read functions gain new `extent` argument to apply a spatial filter in conjunction with 
  the `sql` argument, per discussion #34. The extent can be of type sp, sf, raster, or generic 
  vector `c(xmin, xmax, ymin, ymax)`.  The extent is ignored if the `sql` argument is not specified, 

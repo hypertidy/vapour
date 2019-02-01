@@ -18,7 +18,8 @@
 #' There is no write support in vapour.
 #'
 #' Currently the `window` argument is required. If this argument unspecified and `native = TRUE` then
-#' the default window specification will be used, the entire extent at native resolution.
+#' the default window specification will be used, the entire extent at native resolution. If 'window'
+#' is specified and `native = TRUE` then the window is used as-is, with a warning (native is ignored).
 #' @param x data source
 #' @param band index of which band to read
 #' @param window src_offset, src_dim, out_dim
@@ -47,6 +48,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
     warning(sprintf("resample mode '%s' is unknown", resample))
   }
   ri <- vapour_raster_info(x, sds = sds)
+  if (native && !missing(window)) warning("'window' is specified, so 'native = TRUE' is ignored")
   if (native && missing(window)) window <- c(0, 0, ri$dimXY, ri$dimXY)
 
   if (!is.numeric(band) || band < 1 || length(band) < 1 || length(band) > 1 || is.na(band)) {

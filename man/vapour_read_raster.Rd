@@ -42,7 +42,8 @@ a standard facility used in GDAL. Easiest way to compare results is with gdal_tr
 There is no write support in vapour.
 
 Currently the \code{window} argument is required. If this argument unspecified and \code{native = TRUE} then
-the default window specification will be used, the entire extent at native resolution.
+the default window specification will be used, the entire extent at native resolution. If 'window'
+is specified and \code{native = TRUE} then the window is used as-is, with a warning (native is ignored).
 }
 \examples{
 f <- system.file("extdata", "sst.tif", package = "vapour")

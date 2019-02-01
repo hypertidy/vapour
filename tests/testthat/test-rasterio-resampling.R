@@ -73,7 +73,7 @@ test_that("band sanity prevails", {
   expect_error(vapour_read_raster(f1, native = TRUE, band = 0))
   expect_error(vapour_read_raster(f1, native = TRUE, band = 2))
   expect_error(vapour_read_raster(f1, native = TRUE, band = ""))
-
+  expect_warning(vapour_read_raster(f1, window = c(0, 0, 5, 5, 8, 8), native = TRUE))
 })
 
 
