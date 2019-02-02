@@ -368,6 +368,7 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
     Rcpp::stop("no features to be read");
   }
 
+
   int warncount = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL )
   {
@@ -397,13 +398,26 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
         if (what[0] == "text") {
           Rcpp::CharacterVector txt(1);
           if (textformat[0] == "json") {
-            txt[0] = poGeometry->exportToJson();
+            char *export_txt = NULL;
+            export_txt = poGeometry->exportToJson();
+            txt[0] = export_txt;
+            CPLFree(export_txt);
           }
           if (textformat[0] == "gml") {
-            txt[0] = poGeometry->exportToGML();
+            char *export_txt = NULL;
+
+            export_txt = poGeometry->exportToGML();
+            txt[0] = export_txt;
+            CPLFree(export_txt);
+
           }
           if (textformat[0] == "kml") {
-            txt[0] = poGeometry->exportToKML();
+            char *export_txt = NULL;
+
+            export_txt = poGeometry->exportToKML();
+            txt[0] = export_txt;
+            CPLFree(export_txt);
+
           }
           if (textformat[0] == "wkt") {
             //     // see buffer handling for SRS here which is where
@@ -455,6 +469,7 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
     }
 
   }
+
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
     poDS->ReleaseResultSet(poLayer);
