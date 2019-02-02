@@ -138,7 +138,6 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
 
 
   OGRLayer  *poLayer;
-
   OGRPolygon poly;
   OGRLinearRing ring;
 
@@ -175,18 +174,12 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
     Rcpp::stop("Layer open failed.\n");
   }
 
-  // poLayer =  poDS->GetLayer(layer[0]);
   OGRFeature *poFeature;
   poLayer->ResetReading();
-  //  poFeature = poLayer->GetNextFeature();
-  long long nFeature_long = poLayer->GetFeatureCount();
-  if (nFeature_long > static_cast<long long>(MAX_INT))
-    Rcpp::stop("Number of features exceeds maximal number able to be read");
-  //int nFeature = poLayer->GetFeatureCount();
-  int nFeature = static_cast<int>(nFeature_long);
+  double nFeature = 0.0; //(double)poLayer->GetFeatureCount();
 
-  if (nFeature == -1) {
-    nFeature = 0;
+//  if (nFeature == -1) {
+//    nFeature = 0;
     // we have to find out first because this driver doesn't support GetFeatureCount
     // https://trac.osgeo.org/gdal/wiki/rfc66_randomlayerreadwrite
     while( (poFeature = poLayer->GetNextFeature()) != NULL )
@@ -194,10 +187,13 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
       nFeature++;
       OGRFeature::DestroyFeature( poFeature );
     }
+
     poLayer->ResetReading();
 
-  }
+  //}
 
+  if (nFeature > MAX_INT)
+    Rcpp::stop("Number of features exceeds maximal number able to be read");
 
 
 
@@ -221,8 +217,13 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
   Rcpp::List out = allocate_attribute(poFDefn, nFeature, int64_as_string);
   int iFeature = 0;  // always increment iFeature, it is position through the loop
   int lFeature = 0; // keep a count of the features we actually send out
-  while( (poFeature = poLayer->GetNextFeature()) != NULL && lFeature < nFeature)
+  while((poFeature = poLayer->GetNextFeature()) != NULL)
   {
+
+
+    if (lFeature > nFeature) {
+      break;
+    }
     OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
     // only increment lFeature if we actually keep this one
     if (iFeature >= skip_n[0]) {  // we are at skip_n
@@ -340,11 +341,9 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
   CollectorList feature_xx;
   int iFeature = 0;
   int lFeature = 0;
-  long long nFeature_long = poLayer->GetFeatureCount();
-  if (nFeature_long > static_cast<long long>(MAX_INT))
+  int nFeature = (int)poLayer->GetFeatureCount();
+  if (nFeature > MAX_INT)
     Rcpp::stop("Number of features exceeds maximal number able to be read");
-  //int nFeature = poLayer->GetFeatureCount();
-  int nFeature = static_cast<int>(nFeature_long);
   if (nFeature == -1) {
     nFeature = 0;
     // we have to find out first because this driver doesn't support GetFeatureCount
@@ -634,11 +633,9 @@ List vapour_read_names_cpp(Rcpp::CharacterVector dsource,
   CollectorList feature_xx;
   int iFeature = 0;
   int lFeature = 0;
-  long long nFeature_long = poLayer->GetFeatureCount();
-  if (nFeature_long > static_cast<long long>(MAX_INT))
+  int nFeature = (int)poLayer->GetFeatureCount();
+  if (nFeature > MAX_INT)
     Rcpp::stop("Number of features exceeds maximal number able to be read");
-  //int nFeature = poLayer->GetFeatureCount();
-  int nFeature = static_cast<int>(nFeature_long);
 
   if (nFeature == -1) {
     nFeature = 0;
