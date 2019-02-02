@@ -7,7 +7,7 @@
  with the 'sql' argument was not being executed in `vapour_layer_names` but now is - only has utility for
  insert and drop queries, so will be rarely used and probably never had any impact before. 
 
-* Raster read gains a new argument `native = FALSE` to enable use of the native window without
+* Raster read gains a new argument `native = FALSE` to control use of the native window without
  specifiying it. If `native = TRUE` then the native dimensions are used and read in full. 
 
 * Vector read functions gain new `extent` argument to apply a spatial filter in conjunction with 

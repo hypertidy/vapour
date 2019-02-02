@@ -221,7 +221,7 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
   {
 
 
-    if (lFeature > nFeature) {
+    if (lFeature >= nFeature) {
       break;
     }
     OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();

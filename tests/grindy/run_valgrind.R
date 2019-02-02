@@ -12,8 +12,17 @@ tx[idx]
 ## no more ExecuteSQL leaks:
 ## no more exportTo[Text] leaks:
 
-##Only one problem
-## [1] "  while( (poFeature = poLayer->GetNextFeature()) != NULL && lFeature < nFeature)"
+##Only one problem at line 220 in vapour_read_attributes_cpp (see block below)
+##  while((poFeature = poLayer->GetNextFeature()) != NULL)
 
 
+
+# OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+# bool int64_as_string = false;
+# Rcpp::List out = allocate_attribute(poFDefn, nFeature, int64_as_string);
+# int iFeature = 0;  // always increment iFeature, it is position through the loop
+# int lFeature = 0; // keep a count of the features we actually send out
+# LINE 220: while((poFeature = poLayer->GetNextFeature()) != NULL)
+# {
+#
 
