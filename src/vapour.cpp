@@ -126,7 +126,7 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
 
 
   OGRLayer  *poLayer;
-  Rcpp::CharacterVector empty = " ";
+
   OGRPolygon poly;
   OGRLinearRing ring;
 
@@ -145,11 +145,11 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
     if (ex.length() == 4) {
       poLayer =  poDS->ExecuteSQL(sql[0],
                                   &poly,
-                                  empty[0] );
+                                  NULL );
     } else {
       poLayer =  poDS->ExecuteSQL(sql[0],
                                   NULL,
-                                  empty[0] );
+                                  NULL );
     }
 
     if (poLayer == NULL) {
@@ -280,7 +280,6 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
   }
   OGRLayer  *poLayer;
 
-  Rcpp::CharacterVector empty = " ";
 
   OGRPolygon poly;
   OGRLinearRing ring;
@@ -300,11 +299,11 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
     if (ex.length() == 4) {
       poLayer =  poDS->ExecuteSQL(sql[0],
                                   &poly,
-                                  empty[0] );
+                                  NULL );
     } else {
       poLayer =  poDS->ExecuteSQL(sql[0],
                                   NULL,
-                                  empty[0] );
+                                  NULL );
     }
 
     if (poLayer == NULL) {
@@ -468,12 +467,10 @@ List vapour_projection_info_cpp(Rcpp::CharacterVector dsource,
     Rcpp::stop("Open failed.\n");
   }
   OGRLayer  *poLayer;
-
-  Rcpp::CharacterVector empty = " ";
   if (sql[0] != "") {
     poLayer =  poDS->ExecuteSQL(sql[0],
                                 NULL,
-                                empty[0] );
+                                NULL );
 
     if (poLayer == NULL) {
       Rcpp::stop("SQL execution failed.\n");
@@ -554,7 +551,7 @@ List vapour_read_names_cpp(Rcpp::CharacterVector dsource,
   }
   OGRLayer  *poLayer;
 
-  Rcpp::CharacterVector empty = " ";
+
   OGRPolygon poly;
   OGRLinearRing ring;
 
@@ -573,11 +570,11 @@ List vapour_read_names_cpp(Rcpp::CharacterVector dsource,
     if (ex.length() == 4) {
       poLayer =  poDS->ExecuteSQL(sql[0],
                                   &poly,
-                                  empty[0] );
+                                  NULL );
     } else {
       poLayer =  poDS->ExecuteSQL(sql[0],
                                   NULL,
-                                  empty[0] );
+                                  NULL );
     }
 
     if (poLayer == NULL) {
@@ -676,11 +673,11 @@ CharacterVector vapour_report_attributes_cpp(Rcpp::CharacterVector dsource,
 
 
   OGRLayer  *poLayer;
-  Rcpp::CharacterVector empty = " ";
+
   if (sql[0] != "") {
     poLayer =  poDS->ExecuteSQL(sql[0],
                                 NULL,
-                                empty[0] );
+                                NULL );
 
     if (poLayer == NULL) {
       Rcpp::stop("SQL execution failed.\n");
