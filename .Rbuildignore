@@ -12,3 +12,4 @@
 ^libs
 ^cran-comments\.md$
 ^inst/benchmarks/test-mem.R$
+^tests/grindy$

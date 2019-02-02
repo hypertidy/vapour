@@ -40,11 +40,23 @@ Rcpp::CharacterVector vapour_layer_names_cpp(Rcpp::CharacterVector dsource,
   {
     Rcpp::stop("Open failed.\n");
   }
+  OGRLayer  *poLayer;
+  if (sql[0] != "") {
 
+    poLayer =  poDS->ExecuteSQL(sql[0],
+                                NULL,
+                                NULL);
 
+    if (poLayer == NULL) {
+      Rcpp::stop("SQL execution failed.\n");
+    }
+    // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+    poDS->ReleaseResultSet(poLayer);
+
+  }
   int nlayer = poDS->GetLayerCount();
   Rcpp::CharacterVector lnames = Rcpp::CharacterVector(nlayer);
-  OGRLayer  *poLayer;
+
   for (int ilayer = 0; ilayer < nlayer; ilayer++) {
     poLayer = poDS->GetLayer(ilayer);
     lnames[ilayer] = poLayer->GetName();
@@ -246,6 +258,11 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
     OGRFeature::DestroyFeature( poFeature );
 
   }
+
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
+  }
   GDALClose( poDS );
 
   if (lFeature < 1) {
@@ -438,7 +455,10 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
     }
 
   }
-
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
+  }
   GDALClose( poDS );
 
   if (lFeature < 1) {
@@ -528,6 +548,11 @@ List vapour_projection_info_cpp(Rcpp::CharacterVector dsource,
     info_out[5] = Rcpp::clone(outproj);
 
     CPLFree(proj);
+  }
+
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
   }
   GDALClose( poDS );
   return info_out;
@@ -643,7 +668,10 @@ List vapour_read_names_cpp(Rcpp::CharacterVector dsource,
       break;  // short-circuit for limit_n
     }
   }
-
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
+  }
   GDALClose( poDS );
 
   if (lFeature < 1) {
@@ -772,6 +800,10 @@ CharacterVector vapour_report_attributes_cpp(Rcpp::CharacterVector dsource,
 
   }
   out.attr("names") = fieldnames;
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
+  }
   GDALClose( poDS );
   return(out);
 }

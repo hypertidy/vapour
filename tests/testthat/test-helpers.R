@@ -30,6 +30,7 @@ test_that("osm arbitrary FIDs as expected", {
 test_that("sds checks work", {
   skip_on_travis()  # doesn't get the message for some reason
   skip_on_appveyor()
+  skip_on_cran()
   sds <- system.file("extdata/gdal/complex.h5", package = "vapour")
   expect_message(sds_boilerplate_checks(sds), "subdataset \\(variable\\) used is '//f16'")
   }
