@@ -176,10 +176,12 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
 
   OGRFeature *poFeature;
   poLayer->ResetReading();
-  double nFeature = 0.0; //(double)poLayer->GetFeatureCount();
+  double nFeature = (double)poLayer->GetFeatureCount();
 
-//  if (nFeature == -1) {
-//    nFeature = 0;
+  if (nFeature == -1) {
+
+  printf("manually finding feature count");
+   nFeature = 0;
     // we have to find out first because this driver doesn't support GetFeatureCount
     // https://trac.osgeo.org/gdal/wiki/rfc66_randomlayerreadwrite
     while( (poFeature = poLayer->GetNextFeature()) != NULL )
@@ -190,7 +192,7 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
 
     poLayer->ResetReading();
 
-  //}
+  }
 
   if (nFeature > MAX_INT)
     Rcpp::stop("Number of features exceeds maximal number able to be read");
@@ -392,7 +394,7 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
           //todo we probably need better err handling see sf handle_error
           poGeometry->exportToWkb(wkbNDR, &(raw[0]), wkbVariantIso);
           feature_xx.push_back(raw);
-
+poGeometry->
         }
         if (what[0] == "text") {
           Rcpp::CharacterVector txt(1);

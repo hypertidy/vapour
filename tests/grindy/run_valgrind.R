@@ -1,8 +1,8 @@
 system('R -d  "valgrind --track-origins=yes --leak-check=full" -f tests/grindy/test.R 2>&1 | tee tests/grindy/valgrind')
 
 vg <- readLines("tests/grindy/valgrind")
-as.integer(gsub("\\)", "", unlist(lapply(strsplit(grep("vapour\\.cpp:", vg, value = TRUE), "\\.cpp:"), "[", 2)))) -> idx
-tx <- readLines("src/vapour.cpp")
+as.integer(gsub("\\)", "", unlist(lapply(strsplit(grep("rasterio\\.cpp:", vg, value = TRUE), "\\.cpp:"), "[", 2)))) -> idx
+tx <- readLines("src/rasterio.cpp")
 tx[idx]
 
 ## from exportToJson:
