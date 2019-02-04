@@ -6,7 +6,8 @@ Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c(
              person("Mark", "Padgham", role = "ctb", comment = "helped get started :)"), 
              person("Edzer", "Pebesma", role = "ctb", comment = "wrote allocate_attribute, copied here from sf"),
              person("Roger", "Bivand", role = "ctb", comment = "wrote configure.ac, copied here from rgdal"),
-             person("Jim", "Hester", role = "ctb", comment = "wrote CollectorList.h, copied here from fs package"))
+             person("Jim", "Hester", role = "ctb", comment = "wrote CollectorList.h, copied here from fs package"), 
+             person("Timothy", "Keitt", role = c("ctb"), comment = "wrote GetPointsInternal copied here from rgdal2 package"))
 Description: Provides low-level access to 'GDAL' functionality for R packages. The aim is to minimize
   the level of interpretation put on the 'GDAL' facilities, to enable direct use of it for a variety of purposes. 
   'GDAL' is the 'Geospatial Data Abstraction Library' a translator for raster and vector geospatial data formats 

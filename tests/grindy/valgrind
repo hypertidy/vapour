@@ -2,7 +2,7 @@
 ==21497== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
 ==21497== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
 ==21497== Command: /usr/lib/R/bin/exec/R -f tests/grindy/test.R
-==21497== 
+==21497==
 ==21497== Conditional jump or move depends on uninitialised value(s)
 ==21497==    at 0x55879E0: __wcsnlen_sse4_1 (strlen.S:147)
 ==21497==    by 0x5574EC1: wcsrtombs (wcsrtombs.c:104)
@@ -18,7 +18,7 @@
 ==21497==    by 0x4F772E7: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==  Uninitialised value was created by a stack allocation
 ==21497==    at 0x509912D: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 
 R version 3.5.2 (2018-12-20) -- "Eggshell Igloo"
 Copyright (C) 2018 The R Foundation for Statistical Computing
@@ -54,7 +54,7 @@ Type 'q()' to quit R.
 ==21497==    by 0x4F72BEF: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==  Uninitialised value was created by a stack allocation
 ==21497==    at 0x509912D: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== Conditional jump or move depends on uninitialised value(s)
 ==21497==    at 0x5587AA9: __wcsnlen_sse4_1 (strlen.S:186)
 ==21497==    by 0x5574EC1: wcsrtombs (wcsrtombs.c:104)
@@ -70,7 +70,7 @@ Type 'q()' to quit R.
 ==21497==    by 0x4F72BEF: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==  Uninitialised value was created by a stack allocation
 ==21497==    at 0x509912D: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== Invalid read of size 16
 ==21497==    at 0x558798D: __wcsnlen_sse4_1 (strlen.S:117)
 ==21497==    by 0x5574EC1: wcsrtombs (wcsrtombs.c:104)
@@ -97,7 +97,7 @@ Type 'q()' to quit R.
 ==21497==    by 0x4F6A394: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F72BEF: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F747CE: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== Invalid read of size 16
 ==21497==    at 0x5587992: __wcsnlen_sse4_1 (strlen.S:117)
 ==21497==    by 0x5574EC1: wcsrtombs (wcsrtombs.c:104)
@@ -112,7 +112,7 @@ Type 'q()' to quit R.
 ==21497==    by 0x4F6A394: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F72BEF: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==  Address 0xcb9df40 is 16 bytes after a block of size 32 in arena "client"
-==21497== 
+==21497==
 ==21497== Conditional jump or move depends on uninitialised value(s)
 ==21497==    at 0x5587A61: __wcsnlen_sse4_1 (strlen.S:161)
 ==21497==    by 0x5574EC1: wcsrtombs (wcsrtombs.c:104)
@@ -126,7 +126,7 @@ Type 'q()' to quit R.
 ==21497==    by 0x4F747CE: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F6A394: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F72BEF: Rf_eval (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== Conditional jump or move depends on uninitialised value(s)
 ==21497==    at 0x5587A61: __wcsnlen_sse4_1 (strlen.S:161)
 ==21497==    by 0x5574EC1: wcsrtombs (wcsrtombs.c:104)
@@ -153,7 +153,7 @@ Type 'q()' to quit R.
 ==21497==    by 0x4F6A394: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F72BEF: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F747CE: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 Loading vapour
 ==21497== Conditional jump or move depends on uninitialised value(s)
 ==21497==    at 0x4056BF3: ???
@@ -174,7 +174,7 @@ Loading vapour
 ==21497==    by 0x500A2CD: R_Unserialize (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x500B519: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x500B8F1: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== Conditional jump or move depends on uninitialised value(s)
 ==21497==    at 0x4056BF3: ???
 ==21497==    by 0xE1E6E97: ???
@@ -194,7 +194,7 @@ Loading vapour
 ==21497==    by 0x500A2CD: R_Unserialize (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x500B519: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x500B8F1: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== Conditional jump or move depends on uninitialised value(s)
 ==21497==    at 0x4056BF3: ???
 ==21497==    by 0xAE18C57: ???
@@ -214,7 +214,7 @@ Loading vapour
 ==21497==    by 0x4FB23A9: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4FB2843: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4FB2B46: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== Invalid read of size 16
 ==21497==    at 0x55879F4: __wcsnlen_sse4_1 (strlen.S:152)
 ==21497==    by 0x5574EC1: wcsrtombs (wcsrtombs.c:104)
@@ -229,7 +229,7 @@ Loading vapour
 ==21497==    by 0x4F6A394: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F72BEF: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==  Address 0xab41fc0 is 32 bytes before a block of size 32 in arena "client"
-==21497== 
+==21497==
 ==21497== Invalid read of size 16
 ==21497==    at 0x55879F8: __wcsnlen_sse4_1 (strlen.S:152)
 ==21497==    by 0x5574EC1: wcsrtombs (wcsrtombs.c:104)
@@ -256,7 +256,7 @@ Loading vapour
 ==21497==    by 0x4F6A394: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F72BEF: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F747CE: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== Invalid read of size 16
 ==21497==    at 0x55879FD: __wcsnlen_sse4_1 (strlen.S:152)
 ==21497==    by 0x5574EC1: wcsrtombs (wcsrtombs.c:104)
@@ -283,7 +283,7 @@ Loading vapour
 ==21497==    by 0x4F6A394: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F72BEF: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F747CE: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== Invalid read of size 16
 ==21497==    at 0x5587ABD: __wcsnlen_sse4_1 (strlen.S:194)
 ==21497==    by 0x5574EC1: wcsrtombs (wcsrtombs.c:104)
@@ -310,7 +310,7 @@ Loading vapour
 ==21497==    by 0x4F6A394: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F72BEF: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F747CE: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== Invalid read of size 16
 ==21497==    at 0x5587AC2: __wcsnlen_sse4_1 (strlen.S:194)
 ==21497==    by 0x5574EC1: wcsrtombs (wcsrtombs.c:104)
@@ -337,7 +337,7 @@ Loading vapour
 ==21497==    by 0x4F6A394: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F72BEF: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F747CE: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== Invalid read of size 16
 ==21497==    at 0x5587AC7: __wcsnlen_sse4_1 (strlen.S:194)
 ==21497==    by 0x5574EC1: wcsrtombs (wcsrtombs.c:104)
@@ -352,38 +352,191 @@ Loading vapour
 ==21497==    by 0x4F6A394: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F72BEF: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==  Address 0xa9c2030 is 32 bytes before an unallocated block of size 48 in arena "client"
-==21497== 
+==21497==
 Testing vapour
-✔ | OK [31mF[39m [35mW[39m [34mS[39m | Context
-⠏ |  0       | test-features.RERROR 1: Latitude -3269904.988495 is invalid. Valid range is [-90,90]. This warning will not be issued any more
+✔ | OK [31mF[39m [35mW[39m [34mS[39m | Context
+
+⠏ |  0       | test-features.RERROR 1: Latitude -3269904.988495 is invalid. Valid range is [-90,90]. This warning will not be issued any more
 Warning 1: Longitude -16254.421048 has been modified to fit into range [-180,180]. This warning will not be issued any more
 ERROR 1: Longitude -1004858.408947 is unreasonable.  Setting to 0.This warning will not be issued any more
-⠋ |  1       | test-features.R⠙ |  2       | test-features.R⠹ |  3       | test-features.R⠸ |  4       | test-features.R⠼ |  5       | test-features.R⠴ |  6       | test-features.R⠦ |  7       | test-features.R⠧ |  8       | test-features.R⠇ |  9       | test-features.R⠏ | 10       | test-features.R⠋ | 11       | test-features.R⠙ | 12       | test-features.R⠹ | 13       | test-features.R⠸ | 14       | test-features.R⠼ | 15       | test-features.R⠴ | 16       | test-features.R⠦ | 17       | test-features.R⠧ | 18       | test-features.R⠇ | 19       | test-features.R⠏ | 20       | test-features.R⠋ | 21       | test-features.R⠙ | 22       | test-features.R⠹ | 23       | test-features.R⠸ | 24       | test-features.R⠼ | 25       | test-features.R⠴ | 26       | test-features.R⠦ | 27       | test-features.R⠧ | 28       | test-features.R⠇ | 29       | test-features.R⠏ | 30       | test-features.R⠋ | 31       | test-features.R⠙ | 32       | test-features.R⠹ | 33       | test-features.R⠸ | 34       | test-features.R⠼ | 35       | test-features.R⠴ | 36       | test-features.R⠦ | 37       | test-features.R⠧ | 38       | test-features.R⠇ | 39       | test-features.R⠏ | 40       | test-features.R⠋ | 41       | test-features.R⠙ | 42       | test-features.R⠹ | 43       | test-features.R⠸ | 44       | test-features.R⠼ | 45       | test-features.R⠴ | 46       | test-features.R⠦ | 47       | test-features.R⠧ | 48       | test-features.R⠇ | 49       | test-features.R⠏ | 50       | test-features.R⠋ | 51       | test-features.R⠙ | 52       | test-features.R⠹ | 53       | test-features.R⠸ | 54       | test-features.R⠼ | 55       | test-features.R⠴ | 56       | test-features.R⠦ | 57       | test-features.R⠧ | 58       | test-features.R⠇ | 59       | test-features.R⠏ | 60       | test-features.R⠋ | 61       | test-features.R⠙ | 62       | test-features.R⠹ | 63       | test-features.R⠸ | 64       | test-features.R⠼ | 65       | test-features.R⠴ | 66       | test-features.R⠦ | 67       | test-features.R⠧ | 68       | test-features.R⠇ | 69       | test-features.R⠏ | 70       | test-features.R⠋ | 71       | test-features.R⠙ | 72       | test-features.R⠹ | 73       | test-features.R⠸ | 74       | test-features.R⠼ | 75       | test-features.R⠴ | 76       | test-features.R⠦ | 77       | test-features.R⠧ | 78       | test-features.R⠇ | 79       | test-features.R[32m✔[39m | 79       | test-features.R[36m [104.5 s][39m
-⠏ |  0       | test-helpers⠋ |  1       | test-helpers⠙ |  2       | test-helpers⠹ |  3       | test-helpers⠸ |  4       | test-helpers⠼ |  5       | test-helpers⠴ |  6       | test-helpers⠦ |  7       | test-helpers⠧ |  8       | test-helpers[32m✔[39m |  8       | test-helpers[36m [24.2 s][39m
-⠏ |  0       | test-limit_skip_n⠋ |  0     1 | test-limit_skip_n[32m✔[39m |  0     1 | test-limit_skip_n[36m [0.1 s][39m
+
+⠋ |  1       | test-features.R
+⠙ |  2       | test-features.R
+⠹ |  3       | test-features.R
+⠸ |  4       | test-features.R
+⠼ |  5       | test-features.R
+⠴ |  6       | test-features.R
+⠦ |  7       | test-features.R
+⠧ |  8       | test-features.R
+⠇ |  9       | test-features.R
+⠏ | 10       | test-features.R
+⠋ | 11       | test-features.R
+⠙ | 12       | test-features.R
+⠹ | 13       | test-features.R
+⠸ | 14       | test-features.R
+⠼ | 15       | test-features.R
+⠴ | 16       | test-features.R
+⠦ | 17       | test-features.R
+⠧ | 18       | test-features.R
+⠇ | 19       | test-features.R
+⠏ | 20       | test-features.R
+⠋ | 21       | test-features.R
+⠙ | 22       | test-features.R
+⠹ | 23       | test-features.R
+⠸ | 24       | test-features.R
+⠼ | 25       | test-features.R
+⠴ | 26       | test-features.R
+⠦ | 27       | test-features.R
+⠧ | 28       | test-features.R
+⠇ | 29       | test-features.R
+⠏ | 30       | test-features.R
+⠋ | 31       | test-features.R
+⠙ | 32       | test-features.R
+⠹ | 33       | test-features.R
+⠸ | 34       | test-features.R
+⠼ | 35       | test-features.R
+⠴ | 36       | test-features.R
+⠦ | 37       | test-features.R
+⠧ | 38       | test-features.R
+⠇ | 39       | test-features.R
+⠏ | 40       | test-features.R
+⠋ | 41       | test-features.R
+⠙ | 42       | test-features.R
+⠹ | 43       | test-features.R
+⠸ | 44       | test-features.R
+⠼ | 45       | test-features.R
+⠴ | 46       | test-features.R
+⠦ | 47       | test-features.R
+⠧ | 48       | test-features.R
+⠇ | 49       | test-features.R
+⠏ | 50       | test-features.R
+⠋ | 51       | test-features.R
+⠙ | 52       | test-features.R
+⠹ | 53       | test-features.R
+⠸ | 54       | test-features.R
+⠼ | 55       | test-features.R
+⠴ | 56       | test-features.R
+⠦ | 57       | test-features.R
+⠧ | 58       | test-features.R
+⠇ | 59       | test-features.R
+⠏ | 60       | test-features.R
+⠋ | 61       | test-features.R
+⠙ | 62       | test-features.R
+⠹ | 63       | test-features.R
+⠸ | 64       | test-features.R
+⠼ | 65       | test-features.R
+⠴ | 66       | test-features.R
+⠦ | 67       | test-features.R
+⠧ | 68       | test-features.R
+⠇ | 69       | test-features.R
+⠏ | 70       | test-features.R
+⠋ | 71       | test-features.R
+⠙ | 72       | test-features.R
+⠹ | 73       | test-features.R
+⠸ | 74       | test-features.R
+⠼ | 75       | test-features.R
+⠴ | 76       | test-features.R
+⠦ | 77       | test-features.R
+⠧ | 78       | test-features.R
+⠇ | 79       | test-features.R
+[32m✔[39m | 79       | test-features.R[36m [104.5 s][39m
+
+⠏ |  0       | test-helpers
+⠋ |  1       | test-helpers
+⠙ |  2       | test-helpers
+⠹ |  3       | test-helpers
+⠸ |  4       | test-helpers
+⠼ |  5       | test-helpers
+⠴ |  6       | test-helpers
+⠦ |  7       | test-helpers
+⠧ |  8       | test-helpers
+[32m✔[39m |  8       | test-helpers[36m [24.2 s][39m
+
+⠏ |  0       | test-limit_skip_n
+⠋ |  0     1 | test-limit_skip_n
+[32m✔[39m |  0     1 | test-limit_skip_n[36m [0.1 s][39m
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────
-[1mtest-limit_skip_n.R:3: [34mskip[39m: limit_n is robust[22m
+[1mtest-limit_skip_n.R:3: [34mskip[39m: limit_n is robust[22m
 Empty test
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────
-⠏ |  0       | test-names⠋ |  1       | test-names[32m✔[39m |  1       | test-names[36m [2.1 s][39m
-⠏ |  0       | test-raster-info⠋ |  1       | test-raster-infoERROR 4: : No such file or directory
-⠙ |  2       | test-raster-info⠹ |  3       | test-raster-info⠸ |  4       | test-raster-info⠼ |  5       | test-raster-info⠴ |  6       | test-raster-info⠦ |  7       | test-raster-info⠧ |  8       | test-raster-info[32m✔[39m |  8       | test-raster-info[36m [4.7 s][39m
-⠏ |  0       | rasterio-resampling⠋ |  1       | rasterio-resampling⠙ |  2       | rasterio-resampling⠹ |  3       | rasterio-resampling⠸ |  4       | rasterio-resampling⠼ |  5       | rasterio-resampling⠴ |  6       | rasterio-resampling⠦ |  7       | rasterio-resampling⠧ |  8       | rasterio-resampling⠇ |  9       | rasterio-resampling⠏ | 10       | rasterio-resampling⠋ | 11       | rasterio-resampling⠙ | 12       | rasterio-resampling⠹ | 13       | rasterio-resampling⠸ | 14       | rasterio-resampling⠼ | 15       | rasterio-resampling⠴ | 16       | rasterio-resampling⠦ | 17       | rasterio-resampling⠧ | 18       | rasterio-resampling⠇ | 19       | rasterio-resampling⠏ | 20       | rasterio-resampling⠋ | 21       | rasterio-resampling⠙ | 22       | rasterio-resampling⠹ | 23       | rasterio-resampling⠸ | 24       | rasterio-resampling⠼ | 25       | rasterio-resampling⠴ | 26       | rasterio-resampling⠦ | 27       | rasterio-resampling⠧ | 28       | rasterio-resampling⠇ | 29       | rasterio-resampling⠏ | 30       | rasterio-resampling⠋ | 31       | rasterio-resampling⠙ | 32       | rasterio-resampling⠹ | 33       | rasterio-resampling⠸ | 34       | rasterio-resampling[32m✔[39m | 34       | rasterio-resampling[36m [13.3 s][39m
-⠏ |  0       | test-utils⠋ |  1       | test-utils⠙ |  2       | test-utils⠹ |  3       | test-utils⠸ |  4       | test-utils⠼ |  5       | test-utils⠴ |  6       | test-utils⠦ |  7       | test-utils⠧ |  8       | test-utils[32m✔[39m |  8       | test-utils[36m [1.2 s][39m
 
-══ [1mResults[22m ═════════════════════════════════════════════════════════════════════════════════════════════════
-[36mDuration: 153.7 s[39m
+⠏ |  0       | test-names
+⠋ |  1       | test-names
+[32m✔[39m |  1       | test-names[36m [2.1 s][39m
 
-OK:       [32m138[39m
-Failed:   [32m0[39m
-Warnings: [32m0[39m
-Skipped:  [34m1[39m
-> 
-==21497== 
+⠏ |  0       | test-raster-info
+⠋ |  1       | test-raster-infoERROR 4: : No such file or directory
+
+⠙ |  2       | test-raster-info
+⠹ |  3       | test-raster-info
+⠸ |  4       | test-raster-info
+⠼ |  5       | test-raster-info
+⠴ |  6       | test-raster-info
+⠦ |  7       | test-raster-info
+⠧ |  8       | test-raster-info
+[32m✔[39m |  8       | test-raster-info[36m [4.7 s][39m
+
+⠏ |  0       | rasterio-resampling
+⠋ |  1       | rasterio-resampling
+⠙ |  2       | rasterio-resampling
+⠹ |  3       | rasterio-resampling
+⠸ |  4       | rasterio-resampling
+⠼ |  5       | rasterio-resampling
+⠴ |  6       | rasterio-resampling
+⠦ |  7       | rasterio-resampling
+⠧ |  8       | rasterio-resampling
+⠇ |  9       | rasterio-resampling
+⠏ | 10       | rasterio-resampling
+⠋ | 11       | rasterio-resampling
+⠙ | 12       | rasterio-resampling
+⠹ | 13       | rasterio-resampling
+⠸ | 14       | rasterio-resampling
+⠼ | 15       | rasterio-resampling
+⠴ | 16       | rasterio-resampling
+⠦ | 17       | rasterio-resampling
+⠧ | 18       | rasterio-resampling
+⠇ | 19       | rasterio-resampling
+⠏ | 20       | rasterio-resampling
+⠋ | 21       | rasterio-resampling
+⠙ | 22       | rasterio-resampling
+⠹ | 23       | rasterio-resampling
+⠸ | 24       | rasterio-resampling
+⠼ | 25       | rasterio-resampling
+⠴ | 26       | rasterio-resampling
+⠦ | 27       | rasterio-resampling
+⠧ | 28       | rasterio-resampling
+⠇ | 29       | rasterio-resampling
+⠏ | 30       | rasterio-resampling
+⠋ | 31       | rasterio-resampling
+⠙ | 32       | rasterio-resampling
+⠹ | 33       | rasterio-resampling
+⠸ | 34       | rasterio-resampling
+[32m✔[39m | 34       | rasterio-resampling[36m [13.3 s][39m
+
+⠏ |  0       | test-utils
+⠋ |  1       | test-utils
+⠙ |  2       | test-utils
+⠹ |  3       | test-utils
+⠸ |  4       | test-utils
+⠼ |  5       | test-utils
+⠴ |  6       | test-utils
+⠦ |  7       | test-utils
+⠧ |  8       | test-utils
+[32m✔[39m |  8       | test-utils[36m [1.2 s][39m
+
+══ [1mResults[22m ═════════════════════════════════════════════════════════════════════════════════════════════════
+[36mDuration: 153.7 s[39m
+
+OK:       [32m138[39m
+Failed:   [32m0[39m
+Warnings: [32m0[39m
+Skipped:  [34m1[39m
+>
+==21497==
 ==21497== HEAP SUMMARY:
 ==21497==     in use at exit: 84,433,783 bytes in 18,923 blocks
 ==21497==   total heap usage: 1,263,588 allocs, 1,244,665 frees, 1,262,770,270 bytes allocated
-==21497== 
+==21497==
 ==21497== 152 (24 direct, 128 indirect) bytes in 1 blocks are definitely lost in loss record 276 of 2,632
 ==21497==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
 ==21497==    by 0x1C02D29D: nclistnew (in /usr/lib/x86_64-linux-gnu/libnetcdf.so.13)
@@ -397,7 +550,7 @@ Skipped:  [34m1[39m
 ==21497==    by 0x180C0F48: sds_info_cpp(char const*) (sds_io.cpp:14)
 ==21497==    by 0x180B2FE9: _vapour_sds_info_cpp (RcppExports.cpp:72)
 ==21497==    by 0x4F2C8D5: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== 200 bytes in 1 blocks are definitely lost in loss record 309 of 2,632
 ==21497==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
 ==21497==    by 0x18F7D56F: CPLMalloc (in /usr/lib/libgdal.so.20.4.2)
@@ -411,7 +564,7 @@ Skipped:  [34m1[39m
 ==21497==    by 0x4F72DB9: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x502DA95: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F7302A: Rf_eval (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== 549 (24 direct, 525 indirect) bytes in 1 blocks are definitely lost in loss record 404 of 2,632
 ==21497==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
 ==21497==    by 0x1C02D29D: nclistnew (in /usr/lib/x86_64-linux-gnu/libnetcdf.so.13)
@@ -425,7 +578,7 @@ Skipped:  [34m1[39m
 ==21497==    by 0x180C0F48: sds_info_cpp(char const*) (sds_io.cpp:14)
 ==21497==    by 0x180B2FE9: _vapour_sds_info_cpp (RcppExports.cpp:72)
 ==21497==    by 0x4F2C8D5: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== 1,224 bytes in 3 blocks are definitely lost in loss record 480 of 2,632
 ==21497==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
 ==21497==    by 0x18F7D56F: CPLMalloc (in /usr/lib/libgdal.so.20.4.2)
@@ -439,7 +592,7 @@ Skipped:  [34m1[39m
 ==21497==    by 0x4F6A394: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F72BEF: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F747CE: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== 2,048 bytes in 1 blocks are definitely lost in loss record 509 of 2,632
 ==21497==    at 0x4C31B25: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
 ==21497==    by 0x1C02D9A1: ncbytessetalloc (in /usr/lib/x86_64-linux-gnu/libnetcdf.so.13)
@@ -453,7 +606,7 @@ Skipped:  [34m1[39m
 ==21497==    by 0x187CCF67: ??? (in /usr/lib/libgdal.so.20.4.2)
 ==21497==    by 0x18AB3425: GDALOpenEx (in /usr/lib/libgdal.so.20.4.2)
 ==21497==    by 0x180C0F48: sds_info_cpp(char const*) (sds_io.cpp:14)
-==21497== 
+==21497==
 ==21497== 2,800 bytes in 8 blocks are definitely lost in loss record 525 of 2,632
 ==21497==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
 ==21497==    by 0x18F7D56F: CPLMalloc (in /usr/lib/libgdal.so.20.4.2)
@@ -467,7 +620,7 @@ Skipped:  [34m1[39m
 ==21497==    by 0x4F6A394: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F72BEF: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F747CE: ??? (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== 13,056 bytes in 1 blocks are possibly lost in loss record 1,583 of 2,632
 ==21497==    at 0x4C2FA3F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
 ==21497==    by 0x4C31D84: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
@@ -481,7 +634,7 @@ Skipped:  [34m1[39m
 ==21497==    by 0x18D0CB5F: ??? (in /usr/lib/libgdal.so.20.4.2)
 ==21497==    by 0x18CFF102: ??? (in /usr/lib/libgdal.so.20.4.2)
 ==21497==    by 0x18CFF1AE: ??? (in /usr/lib/libgdal.so.20.4.2)
-==21497== 
+==21497==
 ==21497== 20,590 (80 direct, 20,510 indirect) bytes in 1 blocks are definitely lost in loss record 1,928 of 2,632
 ==21497==    at 0x4C3017F: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
 ==21497==    by 0x18CFED6D: ??? (in /usr/lib/libgdal.so.20.4.2)
@@ -495,7 +648,7 @@ Skipped:  [34m1[39m
 ==21497==    by 0x4F7302A: Rf_eval (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F747CE: ??? (in /usr/lib/R/lib/libR.so)
 ==21497==    by 0x4F72DB9: Rf_eval (in /usr/lib/R/lib/libR.so)
-==21497== 
+==21497==
 ==21497== LEAK SUMMARY:
 ==21497==    definitely lost: 6,400 bytes in 16 blocks
 ==21497==    indirectly lost: 21,163 bytes in 326 blocks
@@ -506,6 +659,6 @@ Skipped:  [34m1[39m
 ==21497==         suppressed: 0 bytes in 0 blocks
 ==21497== Reachable blocks (those to which a pointer was found) are not shown.
 ==21497== To see them, rerun with: --leak-check=full --show-leak-kinds=all
-==21497== 
+==21497==
 ==21497== For counts of detected and suppressed errors, rerun with: -v
 ==21497== ERROR SUMMARY: 1655 errors from 24 contexts (suppressed: 0 from 0)
