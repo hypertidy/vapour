@@ -64,9 +64,9 @@ test_that("empty geometry set as expected", {
 
 test_that("limit_n works",
           {
-            expect_silent(vapour_geom_summary(f, limit_n = 1L)) %>% unlist() %>% expect_length(6L)
+            expect_silent(vapour_geom_summary(f, limit_n = 1L)) %>% unlist() %>% expect_length(7L)
 
-            expect_silent(vapour_geom_summary(dsource, limit_n = 1L)) %>% unlist() %>% expect_length(6L)
+            expect_silent(vapour_geom_summary(dsource, limit_n = 1L)) %>% unlist() %>% expect_length(7L)
             expect_silent(av_atts <- vapour_read_attributes(f, limit_n = 1)) %>% expect_length(2L) %>% expect_named(c("level", "sst"))
             expect_silent(vapour_read_geometry(f, limit_n = 1L)) %>% expect_length(1L)
 

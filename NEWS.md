@@ -1,5 +1,7 @@
 # vapour 0.2.0
 
+* Add 'type' to output of `vapour_geom_summary`, the integer code for each geometry type. 
+
 * Restructured conversion to text geometries to properly free up memory, was causing memory leaks (found
  with valgrind). 
  

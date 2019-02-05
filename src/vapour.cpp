@@ -556,6 +556,12 @@ List vapour_read_geometry_cpp(Rcpp::CharacterVector dsource,
           pts = GetPointsInternal(poGeometry, 1);
           feature_xx.push_back(pts);
         }
+        if (what[0] == "type") {
+          OGRwkbGeometryType gtyp = OGR_G_GetGeometryType(poGeometry);
+          Rcpp::IntegerVector r_gtyp = Rcpp::IntegerVector(1);
+          r_gtyp[0] = (int)gtyp;
+          feature_xx.push_back(r_gtyp);
+        }
       }
       OGRFeature::DestroyFeature( poFeature );
       lFeature = lFeature + 1;

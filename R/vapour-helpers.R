@@ -14,6 +14,7 @@
 #' @return list containing the following
 #' * `FID` the feature id value (an integer, usually sequential)
 #' * `valid_geometry` logical value if a non-empty geometry is available
+#' * `type` integer value of geometry type from [GDAL enumeration](https://www.gdal.org/ogr__core_8h.html#a800236a0d460ef66e687b7b65610f12a)
 #' * `xmin, xmax, ymin, ymax` numeric values of the extent (bounding box) of each geometry
 #' @export
 #'
@@ -31,12 +32,17 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, s
   #limit_n <- validate_limit_n(limit_n)
   if (!is.numeric(layer)) layer <- index_layer(x = dsource, layername = layer)
   extent <- validate_extent(extent, sql, warn = FALSE)
+
   extents <- vapour_read_extent(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
   fids <- vapour_read_names(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
-
+  ## FIXME the other funs deal with these args
+  limit_n <- validate_limit_n(limit_n)
+  extent <- validate_extent(extent, sql)
+   types <- unlist(vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent, what = "type"))
   na_geoms <- unlist(lapply(extents, anyNA))
   list(FID = fids,
        valid_geometry = !na_geoms,
+       type = types,
        xmin = unlist(lapply(extents, "[", 1L)),
        xmax = unlist(lapply(extents, "[", 2L)),
        ymin = unlist(lapply(extents, "[", 3L)),
