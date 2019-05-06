@@ -9,6 +9,9 @@ dsource <- system.file(file.path("extdata/tab", pfile), package="vapour")
 test_that("geometry read works", {
 
   gbin <- vapour_read_geometry_cpp(f, what = "geometry")
+  gpt <- vapour_read_geometry_cpp(f, what = "point")
+  gpt1 <- vapour_read_geometry_cpp(f, what = "point", skip_n = 3, limit_n = 1)
+
   gjsn <- vapour_read_geometry_cpp(f, what = "text", textformat = "json")
   ggml <- vapour_read_geometry_cpp(f, what = "text", textformat = "gml")
   ## expect_output doesn't see it but this gets messages from GDAL because
@@ -25,6 +28,12 @@ test_that("geometry read works", {
   gkml %>% expect_length(7L)
   gwkt %>% expect_length(7L)
   gext %>% expect_length(7L)
+  gpt %>% expect_length(7L)
+  gpt1 %>% expect_length(1L)
+
+  expect_equivalent(round(gpt1[[1]][[2]][[1]], digits = 2),
+                    c(-305926.42, -306449.2, -306959.29, -306557.76, -305926.42))
+
 
   gbin[[1]] %>% expect_type("raw")
   gjsn[[1]] %>% expect_type("character") %>% grepl("MultiLineString", .) %>% expect_true()
@@ -38,16 +47,24 @@ test_that("geometry read works", {
   expect_identical(gkml, vapour_read_geometry_text(f, textformat = "kml"))
   expect_identical(gwkt, vapour_read_geometry_text(f, textformat = "wkt"))
   expect_identical(gext, vapour_read_extent(f))
-
+  expect_identical(vapour_layer_names(dsource,
+                   sql = "SELECT 1 FROM list_locality_postcode_meander_valley"),
+                   "list_locality_postcode_meander_valley")
   expect_error(vapour_read_extent(dsource, layer = "list_locality_postcode_meander_val"), "layer index not found for")
   expect_silent(vapour_read_attributes(dsource, layer = "list_locality_postcode_meander_valley"))
-
+pprj <- "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs "
+expect_warning(expect_equal(vapour_projection_info_cpp(f)$Proj4[1], pprj), "not null")
 
   expect_silent(vapour_geom_summary(f, layer = "sst_c"))
   expect_error(vapour_geom_summary(f, layer = "nolayer"))
 
   expect_silent(vapour_geom_summary(dsource, layer = 0))
   expect_silent(vapour_geom_summary(dsource, layer = "list_locality_postcode_meander_valley"))
+
+  p3d <- system.file("extdata/point3d.gpkg", package = "vapour")
+  ## attachPoints
+  expect_equal(vapour_read_geometry_cpp(p3d, what = "point")[[1]],
+               list(x = 0, y = 0, z = 0))
 
 })
 
