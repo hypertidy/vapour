@@ -96,7 +96,7 @@ AC_MSG_CHECKING([GDAL version >= 2.0.0])
 GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d "." -f1`
 if test ${GDAL_MAJ_VER} -lt 2 ; then
   AC_MSG_RESULT(no)
-  AC_MSG_ERROR([sf is not compatible with GDAL versions below 2.0.0])
+  AC_MSG_ERROR([GDAL version 2.0.0 or above is required])
 else
    AC_MSG_RESULT(yes)
 fi
