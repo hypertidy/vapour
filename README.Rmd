@@ -32,7 +32,6 @@ knitr::opts_chunk$set(
 library(dplyr)
 ```
 
-
 ## Overview
 
 The vapour package provides access to the basic *read* functions available in [GDAL](http://www.gdal.org/)for both [raster](http://www.gdal.org/gdal_datamodel.html) and a [vector](http://www.gdal.org/ogr_arch.html) data sources. 

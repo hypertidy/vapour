@@ -16,3 +16,4 @@
 ^vapour\.Rproj$
 ^config\\..*$
 
+^CRAN-RELEASE$

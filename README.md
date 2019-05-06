@@ -252,11 +252,11 @@ rbenchmark::benchmark (
                        f_va3 (fname),
                        replications = 10)
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.257    3.836     0.249    0.007          0
-#> 2 f_sf2(fname)           10   0.174    2.597     0.174    0.000          0
-#> 3 f_va1(fname)           10   0.067    1.000     0.067    0.000          0
-#> 4 f_va2(fname)           10   0.077    1.149     0.074    0.004          0
-#> 5 f_va3(fname)           10   0.226    3.373     0.226    0.000          0
+#> 1 f_sf1(fname)           10   0.245    4.016     0.245    0.000          0
+#> 2 f_sf2(fname)           10   0.173    2.836     0.172    0.000          0
+#> 3 f_va1(fname)           10   0.061    1.000     0.053    0.008          0
+#> 4 f_va2(fname)           10   0.076    1.246     0.068    0.008          0
+#> 5 f_va3(fname)           10   0.228    3.738     0.220    0.008          0
 #>   sys.child
 #> 1         0
 #> 2         0

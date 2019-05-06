@@ -186,11 +186,13 @@
 #&gt; checking gdal-config usability... 
   
    checking gdal-config usability... yes
-#&gt;    configure: GDAL: 2.4.0
+#&gt; 
+  
+   configure: GDAL: 2.4.0
 #&gt; checking GDAL version &gt;= 2.0.0... 
   
    checking GDAL version &gt;= 2.0.0... yes
-#&gt; 
+#&gt; checking for gcc... 
   
    checking for gcc... gcc -std=gnu99
 #&gt; 
@@ -319,20 +321,32 @@ checking GDAL: checking whether PROJ.4 is available fur running:...
 checking proj_api.h usability... 
   
    checking proj_api.h usability... yes
-#&gt; checking proj_api.h presence... 
+#&gt; 
+  
+checking proj_api.h presence... 
   
    checking proj_api.h presence... yes
-#&gt;    checking for proj_api.h... yes
+#&gt; 
+  
+checking for proj_api.h... 
+  
+   checking for proj_api.h... yes
 #&gt; 
   
    configure: PROJ: 5.2.0
-#&gt; checking for pj_init_plus in -lproj... 
+#&gt; 
+  
+checking for pj_init_plus in -lproj... 
   
    checking for pj_init_plus in -lproj... yes
 #&gt; 
   
+checking PROJ.4: epsg found and readable... 
+  
    checking PROJ.4: epsg found and readable... yes
 #&gt; 
+  
+checking PROJ.4: conus found and readable... 
   
    checking PROJ.4: conus found and readable... yes
 #&gt; 
@@ -340,13 +354,17 @@ checking proj_api.h usability...
 checking for geos-config... 
   
    checking for geos-config... /usr/bin/geos-config
-#&gt; checking geos-config usability... 
+#&gt; 
+  
+checking geos-config usability... 
   
    checking geos-config usability... yes
 #&gt; 
   
    configure: GEOS: 3.7.0
-#&gt; checking GEOS version &gt;= 3.3.0... 
+#&gt; 
+  
+checking GEOS version &gt;= 3.3.0... 
   
    checking GEOS version &gt;= 3.3.0... yes
 #&gt; 
@@ -354,10 +372,16 @@ checking for geos-config...
 checking geos_c.h usability... 
   
    checking geos_c.h usability... yes
-#&gt; checking geos_c.h presence... 
+#&gt; 
+  
+checking geos_c.h presence... 
   
    checking geos_c.h presence... yes
-#&gt;    checking for geos_c.h... yes
+#&gt; 
+  
+checking for geos_c.h... 
+  
+   checking for geos_c.h... yes
 #&gt; 
   
 checking geos: linking with -L/usr/lib/x86_64-linux-gnu -lgeos_c... 
@@ -368,15 +392,25 @@ checking geos: linking with -L/usr/lib/x86_64-linux-gnu -lgeos_c...
 checking liblwgeom.h usability... 
   
    checking liblwgeom.h usability... no
-#&gt; checking liblwgeom.h presence... 
+#&gt; 
+  
+checking liblwgeom.h presence... 
   
    checking liblwgeom.h presence... no
-#&gt;    checking for liblwgeom.h... no
+#&gt; 
+  
+checking for liblwgeom.h... 
+  
+   checking for liblwgeom.h... no
 #&gt; 
   
    configure: liblwgeom.h not found.
-#&gt;    configure: Package CPP flags:   -I/usr/include/gdal -I/usr/include
-#&gt;    configure: Package LIBS:  -L/usr/lib -lgdal -L/usr/lib/x86_64-linux-gnu -lgeos_c -lproj 
+#&gt; 
+  
+   configure: Package CPP flags:   -I/usr/include/gdal -I/usr/include
+#&gt; 
+  
+   configure: Package LIBS:  -L/usr/lib -lgdal -L/usr/lib/x86_64-linux-gnu -lgeos_c -lproj 
 #&gt; 
   
    configure: creating ./config.status
@@ -445,7 +479,7 @@ checking liblwgeom.h usability...
    g++ -std=gnu++11 -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -Wl,-z,relro -o vapour.so RcppExports.o binary-geom.o contourize.o gdal_utils.o gdal_warper.o init.o rasterio.o sds_io.o vapour.o -L/usr/lib -lgdal -L/usr/lib/x86_64-linux-gnu -lgeos_c -lproj -L/usr/lib/R/lib -lR
 #&gt; 
   
-   installing to /mnt/tmp/Rtmp0E4WPr/devtools_install_156c3b3e89c4/00LOCK-vapour/00new/vapour/libs
+   installing to /mnt/tmp/RtmpnDgfTs/devtools_install_3deb65f87aa0/00LOCK-vapour/00new/vapour/libs
 #&gt; 
   
    ** checking absolute paths in shared objects and dynamic libraries
@@ -504,11 +538,11 @@ checking liblwgeom.h usability...
 <a class="sourceLine" id="cb9-6" data-line-number="6">                       <span class="kw">f_va3</span> (fname),</a>
 <a class="sourceLine" id="cb9-7" data-line-number="7">                       <span class="dt">replications =</span> <span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt;           test replications elapsed relative user.self sys.self user.child</span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt; 1 f_sf1(fname)           10   0.243    3.919     0.239    0.003          0</span></a>
-<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#&gt; 2 f_sf2(fname)           10   0.174    2.806     0.171    0.004          0</span></a>
-<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#&gt; 3 f_va1(fname)           10   0.062    1.000     0.058    0.004          0</span></a>
-<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt; 4 f_va2(fname)           10   0.079    1.274     0.075    0.004          0</span></a>
-<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt; 5 f_va3(fname)           10   0.223    3.597     0.223    0.000          0</span></a>
+<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt; 1 f_sf1(fname)           10   0.247    3.921     0.239    0.008          0</span></a>
+<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#&gt; 2 f_sf2(fname)           10   0.182    2.889     0.177    0.004          0</span></a>
+<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#&gt; 3 f_va1(fname)           10   0.063    1.000     0.064    0.000          0</span></a>
+<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt; 4 f_va2(fname)           10   0.078    1.238     0.073    0.004          0</span></a>
+<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt; 5 f_va3(fname)           10   0.231    3.667     0.228    0.003          0</span></a>
 <a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#&gt;   sys.child</span></a>
 <a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#&gt; 1         0</span></a>
 <a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co">#&gt; 2         0</span></a>
