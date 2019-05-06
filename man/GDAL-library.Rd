@@ -35,4 +35,11 @@ as described for "GDALVersionInfo". \href{https://www.gdal.org/gdal_8h.html}{GDA
 }
 \examples{
 vapour_gdal_version()
+
+drv <- vapour_all_drivers()
+
+f <- system.file("extdata/sst_c.gpkg", package = "vapour")
+vapour_driver(f)
+
+as.data.frame(drv)[match(vapour_driver(f), drv$driver), ]
 }

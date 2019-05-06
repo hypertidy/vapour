@@ -22,3 +22,12 @@ Use this to compare the interpreted versions converted into R types by
 These are defined for the enum OGRFieldType in GDAL itself.
 \url{https://gdal.org/ogr__core_8h.html#a787194bea637faf12d61643124a7c9fc}
 }
+\examples{
+file <- "list_locality_postcode_meander_valley.tab"
+mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+vapour_report_attributes(mvfile)
+
+## modified by sql argument
+vapour_report_attributes(mvfile,
+  sql = "SELECT POSTCODE, NAME FROM list_locality_postcode_meander_valley")
+}

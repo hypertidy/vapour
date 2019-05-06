@@ -150,6 +150,28 @@ the grid and may not align with the grid spacing itself (though they often do in
 <p>The coordinate system of the GCPs is currently not read.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'>## this file has no ground control points</span>
+<span class='co'>## they are rare, and tend to be in large files</span>
+<span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"sst.tif"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"vapour"</span>)
+<span class='fu'>vapour_raster_gcp</span>(<span class='no'>f</span>)</div><div class='output co'>#&gt; No GCP (ground control points) found.</div><div class='output co'>#&gt; $Pixel
+#&gt; NULL
+#&gt; 
+#&gt; $Line
+#&gt; NULL
+#&gt; 
+#&gt; $X
+#&gt; NULL
+#&gt; 
+#&gt; $Y
+#&gt; NULL
+#&gt; 
+#&gt; $Z
+#&gt; NULL
+#&gt; 
+#&gt; $CRS
+#&gt; NULL
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -159,7 +181,9 @@ the grid and may not align with the grid spacing itself (though they often do in
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

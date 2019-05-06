@@ -131,15 +131,29 @@ their native usage. GDAL is not a lightweight library, but provide a very
 nice abstraction over format details for a very large number of different
 formats.</p>
 <p>Functions for raster and vector sources are included.</p>
-<table class='table'>
+<p>#'</p><table class='table'>
+<tr><td></td><td><code><a href='GDAL-library.html'>vapour_all_drivers</a></code></td></tr>
+<tr><td></td><td>list of all available drivers, with type and features</td></tr>
+<tr><td></td><td><code><a href='GDAL-library.html'>vapour_gdal_version</a></code></td></tr>
+<tr><td></td><td>report version of GDAL in use</td></tr>
+<tr><td></td><td></td></tr>
+</table>
+    <table class='table'>
+<tr><td></td><td><code><a href='vapour_raster_gcp.html'>vapour_raster_gcp</a></code></td></tr>
+<tr><td></td><td>return internal ground control points, if present</td></tr>
 <tr><td></td><td><code><a href='vapour_raster_info.html'>vapour_raster_info</a></code></td></tr>
 <tr><td></td><td>structural metadata of a source</td></tr>
 <tr><td></td><td><code><a href='vapour_read_raster.html'>vapour_read_raster</a></code></td></tr>
 <tr><td></td><td>read data direct from a window of a raster band source</td></tr>
 <tr><td></td><td><code><a href='vapour_sds_names.html'>vapour_sds_names</a></code></td></tr>
 <tr><td></td><td>list individual raster sources in a source containing subdatasets</td></tr>
+<tr><td></td><td></td></tr>
 </table>
     <table class='table'>
+<tr><td></td><td><code><a href='GDAL-library.html'>vapour_driver</a></code></td></tr>
+<tr><td></td><td>report name of the driver used for a given source</td></tr>
+<tr><td></td><td><code><a href='vapour_geom_summary.html'>vapour_geom_summary</a></code></td></tr>
+<tr><td></td><td>report simple properties of each feature geometry</td></tr>
 <tr><td></td><td><code><a href='vapour_layer_names.html'>vapour_layer_names</a></code></td></tr>
 <tr><td></td><td>list names of vector layers in a data source</td></tr>
 <tr><td></td><td><code><a href='vapour_read_names.html'>vapour_read_names</a></code></td></tr>
@@ -152,6 +166,9 @@ formats.</p>
 <tr><td></td><td>read geometry in binary (blob, WKB) form</td></tr>
 <tr><td></td><td><code><a href='vapour_read_geometry.html'>vapour_read_geometry_text</a></code></td></tr>
 <tr><td></td><td>read geometry in text form, various formats</td></tr>
+<tr><td></td><td><code><a href='vapour_report_attributes.html'>vapour_report_attributes</a></code></td></tr>
+<tr><td></td><td>report internal type of each attribute by name</td></tr>
+<tr><td></td><td></td></tr>
 </table>
     <p>As far as possible vapour aims to minimize the level of interpretation
 provided for the functions, so that developers can choose how things are

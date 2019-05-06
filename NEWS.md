@@ -16,11 +16,12 @@
  are used and read in full. 
 
 * Vector read functions gain new `extent` argument to apply a spatial filter in 
- conjunction with the `sql` argument, per discussion #34. The extent can be of 
+ conjunction with the `sql` argument, per discussion (#34). The extent can be of 
  type sp, sf, raster, or generic vector `c(xmin, xmax, ymin, ymax)`.  The extent 
  is ignored if the `sql` argument is not specified, with a warning.  Applies to 
  `vapour_geom_summary()`,  `vapour_read_attributes()`, `vapour_read_extent()`, 
- `vapour_read_geometry()`, `vapour_read_geometry_text()`, and `vapour_read_names()`. 
+ `vapour_read_geometry()`, `vapour_read_geometry_text()`, and `vapour_read_names()`.
+  Thanks to Joseph Stachelek for the suggestion. 
 
 * Vector read functions gain new `limit_n` and `skip_n` arguments to specify a 
  sequential set of features to be read, added to `vapour_geom_summary()`,  
@@ -32,7 +33,7 @@
  of the data source. 
 
 * New argument `min_max` to allow fast default use of `vapour_raster_info()`, as 
- per #50. 
+ per (#50). 
 
 * New function `vapour_raster_gcp()` to return GCP (ground control points) if 
  present. 

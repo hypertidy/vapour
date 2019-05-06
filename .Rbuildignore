@@ -14,3 +14,5 @@
 ^inst/benchmarks/test-mem.R$
 ^tests/grindy$
 ^vapour\.Rproj$
+^config\\..*$
+

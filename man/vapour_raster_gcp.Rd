@@ -31,3 +31,9 @@ the grid and may not align with the grid spacing itself (though they often do in
 
 The coordinate system of the GCPs is currently not read.
 }
+\examples{
+## this file has no ground control points
+## they are rare, and tend to be in large files
+f <- system.file("extdata", "sst.tif", package = "vapour")
+vapour_raster_gcp(f)
+}

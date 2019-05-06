@@ -139,6 +139,11 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
 #'  \item \code{Z} the Z coordinate of the GCP (usually zero)
 #' }
 #' @export
+#' @examples
+#' ## this file has no ground control points
+#' ## they are rare, and tend to be in large files
+#' f <- system.file("extdata", "sst.tif", package = "vapour")
+#' vapour_raster_gcp(f)
 vapour_raster_gcp <- function(x, ...) {
   if (file.exists(x)) x <- normalizePath(x)
   raster_gcp_cpp(x)

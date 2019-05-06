@@ -1,7 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-
 # vapour
 
 [![Travis-CI Build
@@ -253,11 +252,11 @@ rbenchmark::benchmark (
                        f_va3 (fname),
                        replications = 10)
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.244    4.000     0.232    0.012          0
-#> 2 f_sf2(fname)           10   0.171    2.803     0.167    0.004          0
-#> 3 f_va1(fname)           10   0.061    1.000     0.061    0.000          0
-#> 4 f_va2(fname)           10   0.075    1.230     0.063    0.012          0
-#> 5 f_va3(fname)           10   0.221    3.623     0.218    0.004          0
+#> 1 f_sf1(fname)           10   0.257    3.836     0.249    0.007          0
+#> 2 f_sf2(fname)           10   0.174    2.597     0.174    0.000          0
+#> 3 f_va1(fname)           10   0.067    1.000     0.067    0.000          0
+#> 4 f_va2(fname)           10   0.077    1.149     0.074    0.004          0
+#> 5 f_va3(fname)           10   0.226    3.373     0.226    0.000          0
 #>   sys.child
 #> 1         0
 #> 2         0

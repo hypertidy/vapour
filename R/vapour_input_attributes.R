@@ -104,6 +104,14 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, ski
 #'
 #' @inheritParams vapour_read_geometry
 #' @export
+#' @examples
+#' file <- "list_locality_postcode_meander_valley.tab"
+#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+#' vapour_report_attributes(mvfile)
+#'
+#' ## modified by sql argument
+#' vapour_report_attributes(mvfile,
+#'   sql = "SELECT POSTCODE, NAME FROM list_locality_postcode_meander_valley")
 vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   vapour_report_attributes_cpp(dsource, layer, sql = sql)

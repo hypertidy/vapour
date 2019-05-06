@@ -145,6 +145,17 @@ Use this to compare the interpreted versions converted into R types by
 <a href='https://gdal.org/ogr__core_8h.html#a787194bea637faf12d61643124a7c9fc'>https://gdal.org/ogr__core_8h.html#a787194bea637faf12d61643124a7c9fc</a></p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>file</span> <span class='kw'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span>
+<span class='no'>mvfile</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/file.path'>file.path</a></span>(<span class='st'>"extdata/tab"</span>, <span class='no'>file</span>), <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"vapour"</span>)
+<span class='fu'>vapour_report_attributes</span>(<span class='no'>mvfile</span>)</div><div class='output co'>#&gt;     LOCAL_ID         NAME     POSTCODE     PLAN_REF     GAZ_DATE   NOM_REG_NO 
+#&gt;    "OFTReal"  "OFTString" "OFTInteger"  "OFTString"    "OFTDate"  "OFTString" 
+#&gt;          UFI   CREATED_ON    LIST_GUID   SHAPE_AREA    SHAPE_LEN 
+#&gt;  "OFTString"  "OFTString"  "OFTString"    "OFTReal"    "OFTReal" </div><div class='input'>
+<span class='co'>## modified by sql argument</span>
+<span class='fu'>vapour_report_attributes</span>(<span class='no'>mvfile</span>,
+  <span class='kw'>sql</span> <span class='kw'>=</span> <span class='st'>"SELECT POSTCODE, NAME FROM list_locality_postcode_meander_valley"</span>)</div><div class='output co'>#&gt;     POSTCODE         NAME 
+#&gt; "OFTInteger"  "OFTString" </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -152,7 +163,9 @@ Use this to compare the interpreted versions converted into R types by
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#details">Details</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
