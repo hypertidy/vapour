@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • vapour</title>
+<title>Read feature field attributes types. — vapour_report_attributes • vapour</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,12 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Read feature field attributes types. — vapour_report_attributes" />
+
+<meta property="og:description" content="Obtains the internal type-constant name for the data attributes in a source.
+Use this to compare the interpreted versions converted into R types by
+vapour_read_attributes." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -47,7 +52,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -100,114 +105,55 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Read feature field attributes types.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/hypertidy/vapour/blob/master/R/vapour_input_attributes.R'><code>R/vapour_input_attributes.R</code></a></small>
+    <div class="hidden name"><code>vapour_report_attributes.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>Obtains the internal type-constant name for the data attributes in a source.
+Use this to compare the interpreted versions converted into R types by
+<code>vapour_read_attributes</code>.</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="GDAL-library.html">vapour_gdal_version()</a></code> <code><a href="GDAL-library.html">vapour_all_drivers()</a></code> <code><a href="GDAL-library.html">vapour_driver()</a></code> </p>
-        </td>
-        <td><p>GDAL version and drivers.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="sst_c.html">sst_c</a></code> </p>
-        </td>
-        <td><p>SST contours</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour-package.html">vapour-package</a></code> </p>
-        </td>
-        <td><p>vapour</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_geom_summary.html">vapour_geom_summary()</a></code> </p>
-        </td>
-        <td><p>Summary of available geometry</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_layer_names.html">vapour_layer_names()</a></code> </p>
-        </td>
-        <td><p>Read GDAL layer names</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_raster_gcp.html">vapour_raster_gcp()</a></code> </p>
-        </td>
-        <td><p>Raster ground control points</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_raster_info.html">vapour_raster_info()</a></code> </p>
-        </td>
-        <td><p>Raster information</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_read_attributes.html">vapour_read_attributes()</a></code> </p>
-        </td>
-        <td><p>Read feature attribute data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_read_geometry.html">vapour_read_geometry()</a></code> <code><a href="vapour_read_geometry.html">vapour_read_geometry_text()</a></code> <code><a href="vapour_read_geometry.html">vapour_read_extent()</a></code> </p>
-        </td>
-        <td><p>Read GDAL feature geometry</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_read_names.html">vapour_read_names()</a></code> </p>
-        </td>
-        <td><p>Read feature names</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_read_raster.html">vapour_read_raster()</a></code> </p>
-        </td>
-        <td><p>Raster IO (read)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_report_attributes.html">vapour_report_attributes()</a></code> </p>
-        </td>
-        <td><p>Read feature field attributes types.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vapour_sds_names.html">vapour_sds_names()</a></code> </p>
-        </td>
-        <td><p>GDAL raster subdatasets (variables)</p></td>
-      </tr>
-    </tbody>
+    <pre class="usage"><span class='fu'>vapour_report_attributes</span>(<span class='no'>dsource</span>, <span class='kw'>layer</span> <span class='kw'>=</span> <span class='fl'>0L</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>dsource</th>
+      <td><p>data source name (path to file, connection string, URL)</p></td>
+    </tr>
+    <tr>
+      <th>layer</th>
+      <td><p>integer of layer to work with, defaults to the first (0) or the name of the layer</p></td>
+    </tr>
+    <tr>
+      <th>sql</th>
+      <td><p>if not empty this is executed against the data source (layer will be ignored)</p></td>
+    </tr>
     </table>
-  </div>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    <p>These are defined for the enum OGRFieldType in GDAL itself.
+<a href='https://gdal.org/ogr__core_8h.html#a787194bea637faf12d61643124a7c9fc'>https://gdal.org/ogr__core_8h.html#a787194bea637faf12d61643124a7c9fc</a></p>
+    
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
-    </ul>
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#details">Details</a></li>
+          </ul>
+
   </div>
 </div>
 
