@@ -5,8 +5,10 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vapour}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include = FALSE}
@@ -77,8 +79,26 @@ str(head(vapour_read_extent(mvfile)))
 
 This makes for a very lightweight summary data set that will scale to hundreds of large inputs. 
 
+There is a `vapour_geom_summary()` function to read only the information about each geometry. 
+
+```{r}
+
+vapour_geom_summary(mvfile)
+```
 
 
+Each function that relates to geometry includes arguments `skip_n` and `limit_n` to first specify the number of features to ignore, and second to set a maximum number of features visited. These interact, and so can be used to scan through a source. Both are applied after the `sql` argument. 
+
+```{r skip-limit}
+vapour_geom_summary(mvfile, limit_n = 4)$FID
+
+vapour_geom_summary(mvfile, skip_n = 2, limit_n = 6)$FID
+
+vapour_geom_summary(mvfile, skip_n = 6)$FID
+
+```
+
+Each geometry function also includes an `extent` argument, which takes a simple vector of four values `xmin, xmax, ymin, ymax` or sp bbox, sf bbox, or raster extent. This is only applied if the sql argument is non empty, and corresponds to the [SpatialFilter argument of ExecuteSQL](https://www.gdal.org/ogr_sql.html#ogr_sql_exec_sql). 
 
 ## Raster data
 
@@ -91,13 +111,39 @@ vapour_raster_info(f)
 
 ```
 
+Read raster data (requires explicit setting of `window` argument, and is not useful
+without being used in the context of the raster dimensions).
 
+```{r raster-read} 
+vapour_read_raster(f, window = c(0, 0, 6, 5))
 
+## the final two arguments specify up- or down-sampling
+## controlled by resample argument
+vapour_read_raster(f, window = c(0, 0, 6, 5, 8, 9))
 
-SQL is available for general GDAL vector data. 
+## if window is not included, and native TRUE then we get the entire window
+str(vapour_read_raster(f, native = TRUE))
+
+## notice this is the length of the dimXY above
+prod(vapour_raster_info(f)$dimXY)
+
+```
+
+By chaining together what we know about how raster data works we can get exactly what we want from GDAL. 
+
+```{r gdal-flex}
+mm <- matrix(vapour_read_raster(f, native = TRUE), 
+      vapour_raster_info(f)$dimXY)
+mm[mm < -1e6] <- NA
+image(mm[,ncol(mm):1], asp = 2)
+```
+
+An example of using this facility interactively is in [lazyraster](https://github.com/hypertidy/lazyraster). 
 
 
 ## OGRSQL
+
+SQL is available for general GDAL vector data. 
 
 Note that each lower-level function accepts a `sql` argument, 
 which sends a query to the GDAL library to be executed against
@@ -136,3 +182,19 @@ See http://www.gdal.org/ogr_sql.html
 There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables. 
 
 
+# GDAL information
+
+Find the GDAL version and drivers available. 
+
+```{r GDAL-info}
+vapour_gdal_version()
+
+str(vapour_all_drivers())
+
+```
+
+Find the driver that will be used for a given data source. 
+
+```{r GDAL-driver}
+vapour_driver(mvfile)
+```

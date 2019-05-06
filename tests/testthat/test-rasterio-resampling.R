@@ -1,5 +1,5 @@
 context("rasterio-resampling")
-
+skip_on_cran()
 f <- system.file("extdata", "sst.tif", package = "vapour")
 ## writeLines(paste(as.character(vapour_read_raster(f, window = c(0, 0, 10, 10, 5, 5))), collapse = "\", \""))
 
