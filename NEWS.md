@@ -1,5 +1,7 @@
 # vapour 0.2.0
 
+* Fixed incorrect use of C-level `printf()` and unnecessary tests thanks to CRAN 
+ feedback. 
 * Add 'type' to output of `vapour_geom_summary()`, the integer code for each 
  geometry type. 
 
@@ -12,7 +14,7 @@
  so will be rarely used and probably never had any impact before. 
 
 * Raster read gains a new argument `native = FALSE` to control use of the native 
- window without specifiying it. If `native = TRUE` then the native dimensions 
+ window without specifying it. If `native = TRUE` then the native dimensions 
  are used and read in full. 
 
 * Vector read functions gain new `extent` argument to apply a spatial filter in 

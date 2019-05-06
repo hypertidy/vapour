@@ -100,13 +100,12 @@ accessible online image services.
 This partly draws on work done in [the sf
 package](https://github.com/r-spatial/sf) and in packages `rgdal` and `rgdal2`.
 I'm amazed that something as powerful and general as GDAL is still only
-available through these lenses, but recentish improvements make things much
+available through these lenses, but recent improvements make things much
 easier to use and share. Specifically `Rcpp` means that access to external libs
 is simplified, easier to learn and easier to get started and make progress. The
 other part is that cross-platform support is now much better, with more
 consistency on the libraries available on the CRAN machines and in other
 contexts.
-
 
 ## Warnings
 

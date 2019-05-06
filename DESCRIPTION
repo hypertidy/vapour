@@ -32,8 +32,10 @@ Suggests:
     testthat,
     knitr,
     rbenchmark,
-    rmarkdown
+    rmarkdown,
+    spelling
 SystemRequirements: GDAL (>= 2.0.0), PROJ.4 (>= 4.8.0)
 VignetteBuilder: knitr
 URL: https://github.com/hypertidy/vapour
 BugReports: https://github.com/hypertidy/vapour/issues
+Language: en-US

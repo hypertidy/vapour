@@ -94,8 +94,8 @@ image services.
 This partly draws on work done in [the sf
 package](https://github.com/r-spatial/sf) and in packages `rgdal` and
 `rgdal2`. I’m amazed that something as powerful and general as GDAL is
-still only available through these lenses, but recentish improvements
-make things much easier to use and share. Specifically `Rcpp` means that
+still only available through these lenses, but recent improvements make
+things much easier to use and share. Specifically `Rcpp` means that
 access to external libs is simplified, easier to learn and easier to get
 started and make progress. The other part is that cross-platform support
 is now much better, with more consistency on the libraries available on
@@ -252,11 +252,11 @@ rbenchmark::benchmark (
                        f_va3 (fname),
                        replications = 10)
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.245    4.016     0.245    0.000          0
-#> 2 f_sf2(fname)           10   0.173    2.836     0.172    0.000          0
-#> 3 f_va1(fname)           10   0.061    1.000     0.053    0.008          0
-#> 4 f_va2(fname)           10   0.076    1.246     0.068    0.008          0
-#> 5 f_va3(fname)           10   0.228    3.738     0.220    0.008          0
+#> 1 f_sf1(fname)           10   0.252    4.065     0.240    0.012          0
+#> 2 f_sf2(fname)           10   0.185    2.984     0.181    0.004          0
+#> 3 f_va1(fname)           10   0.062    1.000     0.062    0.000          0
+#> 4 f_va2(fname)           10   0.076    1.226     0.064    0.012          0
+#> 5 f_va3(fname)           10   0.237    3.823     0.220    0.016          0
 #>   sys.child
 #> 1         0
 #> 2         0
