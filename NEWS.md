@@ -1,3 +1,5 @@
+# vapour (development version)
+
 # vapour 0.2.0
 
 * Fixed incorrect use of C-level `printf()` and unnecessary tests thanks to CRAN 
