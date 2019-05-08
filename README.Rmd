@@ -63,9 +63,14 @@ The workflows available are intended to support development of applications in R
 
 The package can be installed from Github.
 
-```R
-devtools::install_github("hypertidy/vapour", build_vignettes = TRUE)
+```{r, install-cran, eval=FALSE}
+## install.packages("remotes")
+remotes::install_cran("vapour")
+```q()
+The development version can be installed from Github.
 
+```{r install-dev, eval=FALSE}
+remotes::install_github("hypertidy/vapour")
 ```
 
 You will need development tools for building R packages. 

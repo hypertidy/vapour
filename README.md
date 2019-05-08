@@ -54,8 +54,13 @@ constrained to any particular data model.
 
 The package can be installed from Github.
 
+`r ## install.packages("remotes") remotes::install_cran("vapour")`q()
+The development version can be installed from Github.
+
+\`\`\`
+
 ``` r
-devtools::install_github("hypertidy/vapour", build_vignettes = TRUE)
+remotes::install_github("hypertidy/vapour")
 ```
 
 You will need development tools for building R packages.
@@ -252,11 +257,11 @@ rbenchmark::benchmark (
                        f_va3 (fname),
                        replications = 10)
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.252    4.065     0.240    0.012          0
-#> 2 f_sf2(fname)           10   0.185    2.984     0.181    0.004          0
-#> 3 f_va1(fname)           10   0.062    1.000     0.062    0.000          0
-#> 4 f_va2(fname)           10   0.076    1.226     0.064    0.012          0
-#> 5 f_va3(fname)           10   0.237    3.823     0.220    0.016          0
+#> 1 f_sf1(fname)           10   0.256    4.197     0.256    0.000          0
+#> 2 f_sf2(fname)           10   0.178    2.918     0.177    0.000          0
+#> 3 f_va1(fname)           10   0.061    1.000     0.061    0.000          0
+#> 4 f_va2(fname)           10   0.077    1.262     0.078    0.000          0
+#> 5 f_va3(fname)           10   0.224    3.672     0.217    0.008          0
 #>   sys.child
 #> 1         0
 #> 2         0
