@@ -7,3 +7,4 @@ inst/proj
 src/Makevars
 config.*
 inst/doc
+autom4te.cache
