@@ -17,3 +17,4 @@
 ^config\\..*$
 ^autom4te\.cache$
 ^CRAN-RELEASE$
+^revdep$

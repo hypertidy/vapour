@@ -87,7 +87,8 @@ vapour_layer_names <- function(dsource, sql = "") {
 vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
-
+  skip_n <- skip_n[1L]
+  if (skip_n < 0) stop("skip_n must be 0, or higher")
   extent <- validate_extent(extent, sql)
   fids <- vapour_read_names_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent)
   unlist(lapply(fids, function(x) if (is.null(x)) NA_real_ else x))

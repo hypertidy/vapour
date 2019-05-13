@@ -290,10 +290,14 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
     Rcpp::stop("Number of features exceeds maximal number able to be read");
 
 
-
+// this is poorly laid out but works, check twice to avoid
+// over allocating as per #60
   if (limit_n[0] > 0) {
     if (limit_n[0] < nFeature) {
-      nFeature = limit_n[0];
+      nFeature = nFeature - skip_n[0];
+      if (limit_n[0] < nFeature) {
+        nFeature = limit_n[0];
+      }
     }
   }
 
@@ -754,12 +758,12 @@ List vapour_read_names_cpp(Rcpp::CharacterVector dsource,
     poLayer->ResetReading();
 
   }
-
   if (limit_n[0] > 0) {
     if (limit_n[0] < nFeature) {
       nFeature = limit_n[0];
     }
   }
+
   if (nFeature < 1) {
     if (skip_n[0] > 0) {
       Rcpp::stop("no features to be read (is 'skip_n' set too high?");
@@ -781,7 +785,7 @@ List vapour_read_names_cpp(Rcpp::CharacterVector dsource,
       lFeature++;
     }
     iFeature++;
-    if (limit_n[0] > 0 && iFeature >= limit_n[0]) {
+    if (limit_n[0] > 0 && lFeature >= limit_n[0]) {
       break;  // short-circuit for limit_n
     }
   }

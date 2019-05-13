@@ -1,5 +1,8 @@
 # vapour (development version)
 
+* Fixed failure in `limit_n`, `skip_n` behaviour for reading names (FIDs) and attributes, 
+ (#60).
+ 
 # vapour 0.2.0
 
 * Fixed incorrect use of C-level `printf()` and unnecessary tests thanks to CRAN 
