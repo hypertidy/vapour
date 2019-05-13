@@ -19,7 +19,7 @@ Rcpp::CharacterVector vapour_gdal_version_cpp()
 Rcpp::List vapour_all_drivers_cpp()
 {
   GDALAllRegister();
-  GDALDriverManager *dm;
+
   int n = GetGDALDriverManager()->GetDriverCount();
 
   Rcpp::CharacterVector sname(n);

@@ -646,7 +646,7 @@ List vapour_projection_info_cpp(Rcpp::CharacterVector dsource,
   } else {
     Rcpp::warning("not null");
     // SRS is not NULL, so explore validation
-    OGRErr err = SRS->Validate();
+  //  OGRErr err = SRS->Validate();
     SRS->exportToProj4(&proj);
     outproj[0] = proj;
     info_out[0] = Rcpp::clone(outproj);
@@ -843,7 +843,7 @@ CharacterVector vapour_report_attributes_cpp(Rcpp::CharacterVector dsource,
   poLayer->ResetReading();
 
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-  int iFeature = 0;
+  //int iFeature = 0;
   poFeature = poLayer->GetNextFeature();
 
   int fieldcount = poFDefn->GetFieldCount();

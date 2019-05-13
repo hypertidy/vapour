@@ -39,7 +39,7 @@ List raster_info_cpp (CharacterVector filename, LogicalVector min_max)
 
   GDALRasterBandH  hBand;
   int             nBlockXSize, nBlockYSize;
-  int             bGotMin, bGotMax;
+  //int             bGotMin, bGotMax;
   double          adfMinMax[2];
 
   hBand = GDALGetRasterBand(hDataset, 1);

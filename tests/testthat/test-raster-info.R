@@ -1,8 +1,26 @@
 context("test-raster-info")
-skip_on_appveyor()
-skip_on_travis()
-skip_on_cran()
+
+test_that("sds checks work", {
+  f <- system.file("extdata/gdal/geos_rad.nc", package = "vapour", mustWork = TRUE)
+  expect_silent(sds_boilerplate_checks(f))
+  f <- system.file("extdata/sst.tif", package = "vapour", mustWork = TRUE)
+  expect_silent(sds_boilerplate_checks(f))
+  f<- system.file("extdata/gdal/sds.nc", package = "vapour", mustWork = TRUE)
+  expect_message(sds_boilerplate_checks(f))
+  expect_error(sds_boilerplate_checks(f, "vv"), "sds must be specified by number, starting from 1")
+  expect_silent(sds_boilerplate_checks(f, 1))
+  expect_error(sds_boilerplate_checks(f, 0))
+  expect_error(sds_boilerplate_checks(f, 0:1))
+
+  expect_equal(sds_boilerplate_checks(f, 1), sprintf("NETCDF:\"%s\":vv", f))
+  expect_equal(sds_boilerplate_checks(f, 2), sprintf("NETCDF:\"%s\":vv2", f))
+
+})
+
 test_that("raster info works", {
+  skip_on_appveyor()
+  skip_on_travis()
+  skip_on_cran()
   f <- system.file("extdata/gdal/complex.h5", package = "vapour", mustWork = TRUE)
   expect_error(vapour_sds_names(), 'argument "x" is missing, with no default')
   expect_error(vapour_sds_names(""), 'cannot open dataset')
