@@ -66,6 +66,12 @@ expect_warning(expect_equal(vapour_projection_info_cpp(f)$Proj4[1], pprj), "not 
   expect_equal(vapour_read_geometry_cpp(p3d, what = "point")[[1]],
                list(x = 0, y = 0, z = 0))
 
+  expect_warning(vapour_read_attributes(f, layer = factor("sst_c")), "layer is a factor, converting to character")
+
+  expect_error(vapour_layer_names("nothing at all"), "Open failed")
+
+  expect_error(vapour_read_attributes(f, layer = "not a layer"), "layer index not found for:")
+
 })
 
 test_that("empty geometry set as expected", {

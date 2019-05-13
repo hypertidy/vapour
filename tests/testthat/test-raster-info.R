@@ -14,7 +14,7 @@ test_that("sds checks work", {
 
   expect_equal(sds_boilerplate_checks(f, 1), sprintf("NETCDF:\"%s\":vv", f))
   expect_equal(sds_boilerplate_checks(f, 2), sprintf("NETCDF:\"%s\":vv2", f))
-
+  expect_error(sds_boilerplate_checks(f, 3), "'sds' must not exceed number of subdatasets \\(2)")
 })
 
 test_that("raster info works", {
