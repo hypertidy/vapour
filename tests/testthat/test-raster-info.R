@@ -1,5 +1,11 @@
 context("test-raster-info")
 
+## too flaky
+skip_on_appveyor()
+skip_on_travis()
+skip_on_cran()
+
+
 test_that("sds checks work", {
   f <- system.file("extdata/gdal/geos_rad.nc", package = "vapour", mustWork = TRUE)
   f <- normalizePath(f)
@@ -21,9 +27,7 @@ test_that("sds checks work", {
 })
 
 test_that("raster info works", {
-  skip_on_appveyor()
-  skip_on_travis()
-  skip_on_cran()
+
   f <- system.file("extdata/gdal/complex.h5", package = "vapour", mustWork = TRUE)
   expect_error(vapour_sds_names(), 'argument "x" is missing, with no default')
   expect_error(vapour_sds_names(""), 'cannot open dataset')
