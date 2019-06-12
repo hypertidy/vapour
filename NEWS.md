@@ -1,5 +1,8 @@
 # vapour (development version)
 
+* Added 'proj4' string as well as 'projection' (WKT) to the output of `vapour_raster_info()`  
+ (these aren't always available, especially not for longlat NetCDF). 
+
 * Fixed failure in `limit_n`, `skip_n` behaviour for reading names (FIDs) and attributes, 
  (#60).
  

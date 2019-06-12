@@ -49,7 +49,7 @@ List raster_info_cpp (CharacterVector filename, LogicalVector min_max)
     GDALComputeRasterMinMax(hBand, TRUE, adfMinMax);
   }
 
-  int nn = 6;
+  int nn = 7;
   Rcpp::List out(nn);
   Rcpp::CharacterVector names(nn);
   out[0] = trans;
@@ -82,9 +82,16 @@ List raster_info_cpp (CharacterVector filename, LogicalVector min_max)
   out[5] = nBands;
   names[5] = "bands";
 
+  char *stri;
+  OGRSpatialReference oSRS;
+  oSRS.importFromWkt(proj);
+  oSRS.exportToProj4(&stri);
+  out[6] =  Rcpp::CharacterVector::create(stri);
+  names[6] = "proj4";
+
   out.attr("names") = names;
 
-
+  CPLFree(stri);
   // close up
   GDALClose( hDataset );
   return out;

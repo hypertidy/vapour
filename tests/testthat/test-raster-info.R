@@ -15,15 +15,18 @@ test_that("sds checks work", {
   expect_silent(sds_boilerplate_checks(f1))
   fsds <- system.file("extdata/gdal/sds.nc", package = "vapour", mustWork = TRUE)
   fsds <- normalizePath(f1)
+  ## expectations not met 2019-06-12, why?
   expect_message(sds_boilerplate_checks(fsds))
   expect_error(sds_boilerplate_checks(fsds, "vv"), "sds must be specified by number, starting from 1")
-  expect_silent(sds_boilerplate_checks(fsds, 1))
   expect_error(sds_boilerplate_checks(fsds, 0))
   expect_error(sds_boilerplate_checks(fsds, 0:1))
-
   expect_equal(sds_boilerplate_checks(fsds, 1), sprintf("NETCDF:\"%s\":vv", fsds))
   expect_equal(sds_boilerplate_checks(fsds, 2), sprintf("NETCDF:\"%s\":vv2", fsds))
   expect_error(sds_boilerplate_checks(fsds, 3), "'sds' must not exceed number of subdatasets \\(2)")
+
+
+  expect_silent(sds_boilerplate_checks(fsds, 1))
+
 })
 
 test_that("raster info works", {

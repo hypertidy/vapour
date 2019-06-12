@@ -60,6 +60,7 @@ KML
 Lanczos
 lazyraster
 libs
+longlat
 MacOS
 minmax
 modularity
@@ -82,6 +83,7 @@ OSX
 persientent
 podaac
 pre
+proj
 RasterIO
 rasters
 Rcpp
