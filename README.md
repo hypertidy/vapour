@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# vapour
+# vapour <img src="man/figures/logo.png" align="right" height="228" />
 
 [![Travis-CI Build
 Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_release&label=linux)](https://travis-ci.org/hypertidy/vapour)
@@ -107,6 +107,8 @@ is now much better, with more consistency on the libraries available on
 the CRAN machines and in other contexts.
 
 ## Warnings
+
+You might burn limbs off.
 
 It’s possible to give problematic “SELECT” statements via the `sql`
 argument. Note that the geometry readers `vapour_read_geometry`,
@@ -257,11 +259,11 @@ rbenchmark::benchmark (
                        f_va3 (fname),
                        replications = 10)
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.256    4.197     0.256    0.000          0
-#> 2 f_sf2(fname)           10   0.178    2.918     0.177    0.000          0
-#> 3 f_va1(fname)           10   0.061    1.000     0.061    0.000          0
-#> 4 f_va2(fname)           10   0.077    1.262     0.078    0.000          0
-#> 5 f_va3(fname)           10   0.224    3.672     0.217    0.008          0
+#> 1 f_sf1(fname)           10   0.218    3.516     0.213    0.004          0
+#> 2 f_sf2(fname)           10   0.156    2.516     0.157    0.000          0
+#> 3 f_va1(fname)           10   0.062    1.000     0.058    0.004          0
+#> 4 f_va2(fname)           10   0.075    1.210     0.067    0.007          0
+#> 5 f_va3(fname)           10   0.201    3.242     0.196    0.004          0
 #>   sys.child
 #> 1         0
 #> 2         0

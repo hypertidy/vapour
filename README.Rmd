@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 
 ```
-# vapour
+# vapour  <img src="man/figures/logo.png" align="right" height="228" />
 
 [![Travis-CI Build Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_release&label=linux)](https://travis-ci.org/hypertidy/vapour)
 [![OSX Build Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=osx_release&label=osx)](https://travis-ci.org/hypertidy/vapour)
@@ -113,6 +113,8 @@ consistency on the libraries available on the CRAN machines and in other
 contexts.
 
 ## Warnings
+
+You might burn limbs off. 
 
 It's possible to give problematic "SELECT" statements via the `sql` argument.
 Note that the geometry readers `vapour_read_geometry`,

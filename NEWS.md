@@ -1,5 +1,7 @@
 # vapour (development version)
 
+* Added a hex sticker!  Thanks to @Maschette. 
+
 * Added 'proj4' string as well as 'projection' (WKT) to the output of `vapour_raster_info()`  
  (these aren't always available, especially not for longlat NetCDF). 
 

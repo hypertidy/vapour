@@ -8,7 +8,8 @@ Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c(
              person("Roger", "Bivand", role = "ctb", comment = "wrote configure.ac, copied here from rgdal"),
              person("Jim", "Hester", role = "ctb", comment = "wrote CollectorList.h, copied here from fs package"), 
              person("Timothy", "Keitt", role = c("ctb"), comment = "wrote GetPointsInternal copied here from rgdal2 package"), 
-             person("Jeroen", "Ooms", role = c("ctb"), comment = "tweaked build process"))
+             person("Jeroen", "Ooms", role = c("ctb"), comment = "tweaked build process"), 
+             person("Dale", "Maschette", role = c("ctb"), comment = "created the hex logo"))
 Description: Provides low-level access to 'GDAL' functionality for R packages. The aim is to minimize
   the level of interpretation put on the 'GDAL' facilities, to enable direct use of it for a variety of purposes. 
   'GDAL' is the 'Geospatial Data Abstraction Library' a translator for raster and vector geospatial data formats 
