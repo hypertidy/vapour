@@ -15,14 +15,14 @@ status](https://ci.appveyor.com/api/projects/status/github/hypertidy/vapour?bran
 ## Overview
 
 The vapour package provides access to the basic *read* functions
-available in [GDAL](http://www.gdal.org/)for both
-[raster](http://www.gdal.org/gdal_datamodel.html) and a
+available in [GDAL](http://www.gdal.org/) for both
+[raster](http://www.gdal.org/gdal_datamodel.html) and
 [vector](http://www.gdal.org/ogr_arch.html) data sources.
 
 The functions are deliberately *lower-level* than these data models and
 provide access to the component entities independently.
 
-For vector data vapour provides:
+For vector data:
 
   - read access to feature attributes.
   - read access to raw binary geometry.
@@ -33,9 +33,11 @@ For vector data vapour provides:
 All vector/feature read tasks can optionally apply an arbitrary limit to
 the maximum number of features read or queried, and all allow execution
 of [OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to data
-extraction.
+extraction. In combination with a SQL query a [bounding box spatial
+filter](https://gdal.org/user/ogr_sql_dialect.html#executesql) can be
+applied via the `extent` argument.
 
-For raster data vapour provides:
+For raster data:
 
   - read access to the list of available rasters within a collection
     source (subdatasets).
@@ -54,10 +56,12 @@ constrained to any particular data model.
 
 The package can be installed from Github.
 
-`r ## install.packages("remotes") remotes::install_cran("vapour")`q()
-The development version can be installed from Github.
+``` r
+## install.packages("remotes")
+remotes::install_cran("vapour")
+```
 
-\`\`\`
+The development version can be installed from Github.
 
 ``` r
 remotes::install_github("hypertidy/vapour")
@@ -88,13 +92,9 @@ features* and *affine-based regular rasters composed of 2D slices*.
 (GDAL will possibly remove these limitations over time but still there
 will always be value in having modularity in an ecosystem of tools.)
 
-These loftier general needs have come out of smaller more concrete
-goals, one was access to the “attributes-only” capacity of GDAL as a
-virtual database engine, and another access to the dense structures
-provided by transport vector data. GDAL’s dynamic resampling of
-arbitrary raster windows is also very useful for interactive tools on
-local data, and seems under-utilized in favour of less accessible online
-image services.
+GDAL’s dynamic resampling of arbitrary raster windows is also very
+useful for interactive tools on local data, and seems under-utilized in
+favour of less accessible online image services.
 
 This partly draws on work done in [the sf
 package](https://github.com/r-spatial/sf) and in packages `rgdal` and
@@ -259,11 +259,11 @@ rbenchmark::benchmark (
                        f_va3 (fname),
                        replications = 10)
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.218    3.516     0.213    0.004          0
-#> 2 f_sf2(fname)           10   0.156    2.516     0.157    0.000          0
-#> 3 f_va1(fname)           10   0.062    1.000     0.058    0.004          0
-#> 4 f_va2(fname)           10   0.075    1.210     0.067    0.007          0
-#> 5 f_va3(fname)           10   0.201    3.242     0.196    0.004          0
+#> 1 f_sf1(fname)           10   0.218    3.574     0.214    0.004          0
+#> 2 f_sf2(fname)           10   0.156    2.557     0.155    0.000          0
+#> 3 f_va1(fname)           10   0.061    1.000     0.061    0.000          0
+#> 4 f_va2(fname)           10   0.077    1.262     0.078    0.000          0
+#> 5 f_va3(fname)           10   0.197    3.230     0.190    0.008          0
 #>   sys.child
 #> 1         0
 #> 2         0

@@ -34,12 +34,12 @@ library(dplyr)
 
 ## Overview
 
-The vapour package provides access to the basic *read* functions available in [GDAL](http://www.gdal.org/)for both [raster](http://www.gdal.org/gdal_datamodel.html) and a [vector](http://www.gdal.org/ogr_arch.html) data sources. 
+The vapour package provides access to the basic *read* functions available in [GDAL](http://www.gdal.org/) for both [raster](http://www.gdal.org/gdal_datamodel.html) and [vector](http://www.gdal.org/ogr_arch.html) data sources. 
 
 The functions are deliberately *lower-level* than these data models and provide access to the
 component entities independently. 
 
-For vector data vapour provides: 
+For vector data: 
 
 * read access to feature attributes.
 * read access to raw binary geometry.
@@ -47,9 +47,10 @@ For vector data vapour provides:
 * read access to the extent, or bounding box, of feature geometries. 
 * helper functions to summarize feature identity and geometry status
 
-All vector/feature read tasks can optionally apply an arbitrary limit to the maximum number of features read or queried, and all allow execution of [OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to data extraction. 
+All vector/feature read tasks can optionally apply an arbitrary limit to the maximum number of features read or queried, and all allow execution of [OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to data extraction. In combination with a SQL
+query a [bounding box spatial filter](https://gdal.org/user/ogr_sql_dialect.html#executesql) can be applied via the `extent` argument. 
 
-For raster data vapour provides: 
+For raster data: 
 
 * read access to the list of available rasters within a collection source (subdatasets). 
 * read access to *structural metadata* for individual raster sources. 
@@ -66,7 +67,9 @@ The package can be installed from Github.
 ```{r, install-cran, eval=FALSE}
 ## install.packages("remotes")
 remotes::install_cran("vapour")
-```q()
+```
+
+
 The development version can be installed from Github.
 
 ```{r install-dev, eval=FALSE}
@@ -95,15 +98,11 @@ and *affine-based regular rasters composed of 2D slices*. (GDAL will possibly
 remove these limitations over time but still there will always be value in
 having modularity in an ecosystem of tools.)
 
-These loftier general needs have come out of smaller more concrete goals, one
-was access to the "attributes-only" capacity of GDAL as a virtual database
-engine, and another access to the dense structures provided by transport vector
-data. GDAL's dynamic resampling of arbitrary raster windows is also very useful
+GDAL's dynamic resampling of arbitrary raster windows is also very useful
 for interactive tools on local data, and seems under-utilized in favour of less
 accessible online image services.
 
-This partly draws on work done in [the sf
-package](https://github.com/r-spatial/sf) and in packages `rgdal` and `rgdal2`.
+This partly draws on work done in [the sf package](https://github.com/r-spatial/sf) and in packages `rgdal` and `rgdal2`.
 I'm amazed that something as powerful and general as GDAL is still only
 available through these lenses, but recent improvements make things much
 easier to use and share. Specifically `Rcpp` means that access to external libs
