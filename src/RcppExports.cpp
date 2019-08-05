@@ -5,6 +5,17 @@
 
 using namespace Rcpp;
 
+// VSI_list
+CharacterVector VSI_list(CharacterVector urlpath);
+RcppExport SEXP _vapour_VSI_list(SEXP urlpathSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type urlpath(urlpathSEXP);
+    rcpp_result_gen = Rcpp::wrap(VSI_list(urlpath));
+    return rcpp_result_gen;
+END_RCPP
+}
 // vapour_gdal_version_cpp
 Rcpp::CharacterVector vapour_gdal_version_cpp();
 RcppExport SEXP _vapour_vapour_gdal_version_cpp() {
