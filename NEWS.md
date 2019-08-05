@@ -1,5 +1,7 @@
 # vapour (development version)
 
+* New function `vapour_vsi_list()` to list contents of virtual files.  See https://twitter.com/mdsumner/status/1158335706483179521 and https://github.com/hypertidy/vapour/issues/55 for inspirations. 
+
 * Added a hex sticker!  Thanks to @Maschette. 
 
 * Added 'proj4' string as well as 'projection' (WKT) to the output of `vapour_raster_info()`  
