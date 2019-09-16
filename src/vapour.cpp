@@ -209,8 +209,37 @@ Rcpp::List allocate_attribute(OGRFeatureDefn *poFDefn, int n_features, bool int6
   out.attr("names") = names;
   return out;
 }
+// [[Rcpp::export]]
+DoubleVector find_feature_count_cpp(Rcpp::CharacterVector dsource,
+                                    Rcpp::IntegerVector layer = 0,
+                                    Rcpp::LogicalVector iterate = true) {
+  GDALAllRegister();
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
 
 
+  OGRLayer  *aLayer;
+  aLayer =  poDS->GetLayer(layer[0]);
+  OGRFeature *aFeature;
+  aLayer->ResetReading();
+  double nFeature = (double)aLayer->GetFeatureCount();
+  if (iterate) {
+    nFeature = 0;
+    while( (aFeature = aLayer->GetNextFeature()) != NULL )
+    {
+      nFeature++;
+      OGRFeature::DestroyFeature(aFeature);
+    }
+
+  }
+  GDALClose( poDS );
+
+  return(nFeature);
+}
 
 // [[Rcpp::export]]
 List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
@@ -269,7 +298,7 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
   OGRFeature *poFeature;
   poLayer->ResetReading();
   double nFeature = (double)poLayer->GetFeatureCount();
-
+nFeature = -1;
   if (nFeature == -1) {
 
   Rprintf("manually finding feature count");

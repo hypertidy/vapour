@@ -15,6 +15,16 @@
 #' @return character vector listing of items
 #'
 #' @examples
+#' \donttest{
+#' \dontrun{
+#' ## example from https://github.com/hypertidy/vapour/issues/55
+#' file <- "http/radmap_v3_2015_filtered_dose/radmap_v3_2015_filtered_dose.ers.zip"
+#' url <- "http://dapds00.nci.org.au/thredds/fileServer/rr2/national_geophysical_compilations"
+#' u <- sprintf("/vsizip//vsicurl/%s", file.path(url, file))
+#' vapour_vsi_list(u)
+#' #[1] "radmap_v3_2015_filtered_dose"     "radmap_v3_2015_filtered_dose.ers"
+#' #[3] "radmap_v3_2015_filtered_dose.isi" "radmap_v3_2015_filtered_dose.txt"
+#' }}
 #' @export
 vapour_vsi_list <- function(dsource, ...) {
   VSI_list(dsource)

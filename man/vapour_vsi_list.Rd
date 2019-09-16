@@ -25,3 +25,12 @@ Note that the listing is not recursive, and so cannot be used for automation. On
 use this function interactively to determine a  useable \code{/vsiPREFIX/dsource} data
 source string.
 }
+\examples{
+\donttest{
+\dontrun{
+u <- "/vsizip//vsicurl/http://dapds00.nci.org.au/thredds/fileServer/rr2/national_geophysical_compilations/http/radmap_v3_2015_filtered_dose/radmap_v3_2015_filtered_dose.ers.zip"
+vapour_vsi_list(u)
+#[1] "radmap_v3_2015_filtered_dose"     "radmap_v3_2015_filtered_dose.ers"
+#[3] "radmap_v3_2015_filtered_dose.isi" "radmap_v3_2015_filtered_dose.txt"
+}}
+}

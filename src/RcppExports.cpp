@@ -107,6 +107,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// find_feature_count_cpp
+DoubleVector find_feature_count_cpp(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::LogicalVector iterate);
+RcppExport SEXP _vapour_find_feature_count_cpp(SEXP dsourceSEXP, SEXP layerSEXP, SEXP iterateSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< Rcpp::LogicalVector >::type iterate(iterateSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_feature_count_cpp(dsource, layer, iterate));
+    return rcpp_result_gen;
+END_RCPP
+}
 // vapour_read_attributes_cpp
 List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector sql, Rcpp::IntegerVector limit_n, Rcpp::IntegerVector skip_n, Rcpp::NumericVector ex);
 RcppExport SEXP _vapour_vapour_read_attributes_cpp(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP limit_nSEXP, SEXP skip_nSEXP, SEXP exSEXP) {

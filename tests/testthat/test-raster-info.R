@@ -14,7 +14,7 @@ test_that("sds checks work", {
   f1 <- normalizePath(f1)
   expect_silent(sds_boilerplate_checks(f1))
   fsds <- system.file("extdata/gdal/sds.nc", package = "vapour", mustWork = TRUE)
-  fsds <- normalizePath(f1)
+  fsds <- normalizePath(fsds)
   ## expectations not met 2019-06-12, why?
   expect_message(sds_boilerplate_checks(fsds))
   expect_error(sds_boilerplate_checks(fsds, "vv"), "sds must be specified by number, starting from 1")
@@ -34,7 +34,6 @@ test_that("raster info works", {
   f <- system.file("extdata/gdal/complex.h5", package = "vapour", mustWork = TRUE)
   expect_error(vapour_sds_names(), 'argument "x" is missing, with no default')
   expect_error(vapour_sds_names(""), 'cannot open dataset')
-
 
   expect_message(sds_boilerplate_checks(f), "subdataset \\(variable\\) used is '//f16'")
   expect_error(sds_boilerplate_checks(f, 0), "sds must be 1 at minimum")

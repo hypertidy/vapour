@@ -2,6 +2,7 @@ context("test-features.R")
 
 
 f <- system.file("extdata", "sst_c.gpkg", package = "vapour")
+f2 <- system.file("extdata/osm/myosmfile.osm", package = "vapour", mustWork = TRUE)
 
 pfile <- "list_locality_postcode_meander_valley.tab"
 dsource <- system.file(file.path("extdata/tab", pfile), package="vapour")
@@ -14,9 +15,10 @@ test_that("geometry read works", {
 
   gjsn <- vapour_read_geometry_cpp(f, what = "text", textformat = "json")
   ggml <- vapour_read_geometry_cpp(f, what = "text", textformat = "gml")
-  ## expect_output doesn't see it but this gets messages from GDAL because
+  ## can't usse sst gpkg because
   ## kml can't be in a projection
-  gkml <- vapour_read_geometry_cpp(f, what = "text", textformat = "kml")
+  expect_warning(gkml <- vapour_read_geometry_cpp(f2, what = "text", textformat = "kml"))
+
   #gkml <- vapour_read_geometry_cpp(system.file("extdata", "point.shp", package = "vapour"),
                       # what = "text", textformat = "kml")
   gwkt <- vapour_read_geometry_cpp(f, what = "text", textformat = "wkt")
@@ -25,7 +27,7 @@ test_that("geometry read works", {
   gbin %>% expect_length(7L)
   gjsn %>% expect_length(7L)
   ggml %>% expect_length(7L)
-  gkml %>% expect_length(7L)
+  gkml %>% expect_length(1L)
   gwkt %>% expect_length(7L)
   gext %>% expect_length(7L)
   gpt %>% expect_length(7L)
@@ -44,14 +46,17 @@ test_that("geometry read works", {
 
   expect_identical(gjsn, vapour_read_geometry_text(f))
   expect_identical(ggml, vapour_read_geometry_text(f, textformat = "gml"))
-  expect_identical(gkml, vapour_read_geometry_text(f, textformat = "kml"))
-  expect_identical(gwkt, vapour_read_geometry_text(f, textformat = "wkt"))
+  expect_identical(gkml, vapour_read_geometry_text(f2, textformat = "kml"))
+  expect_warning(expect_identical(gwkt, vapour_read_geometry_text(f, textformat = "wkt")))
   expect_identical(gext, vapour_read_extent(f))
   expect_identical(vapour_layer_names(dsource,
                    sql = "SELECT 1 FROM list_locality_postcode_meander_valley"),
                    "list_locality_postcode_meander_valley")
   expect_error(vapour_read_extent(dsource, layer = "list_locality_postcode_meander_val"), "layer index not found for")
-  expect_silent(vapour_read_attributes(dsource, layer = "list_locality_postcode_meander_valley"))
+  ## no longer silent
+  ## Warning 1: No translation from Polar_Stereographic to MapInfo known
+  #Warning 6: Unhandled projection method Polar_Stereographic
+  #expect_silent(vapour_read_attributes(dsource, layer = "list_locality_postcode_meander_valley"))
 pprj <- "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs "
 expect_warning(expect_equal(vapour_projection_info_cpp(f)$Proj4[1], pprj), "not null")
 
@@ -120,9 +125,10 @@ test_that("extent clipping combined with sql works",
             expect_length(g3$xmin, 4L)
 
 
-            expect_silent(av1 <- vapour_read_attributes(f))
+            expect_output(av1 <- vapour_read_attributes(f), "manually finding feature count")
             expect_warning(av2 <- vapour_read_attributes(f, extent = ex))
-            expect_silent(av3 <- vapour_read_attributes(f, extent = ex, sql = "SELECT * FROM sst_c"))
+            expect_output(av3 <- vapour_read_attributes(f, extent = ex, sql = "SELECT * FROM sst_c"),
+                          "manually finding feature count")
             expect_length(av3$level, 4L)
             expect_length(av3$sst, 4L)
 

@@ -37,6 +37,10 @@ vapour_layer_names_cpp <- function(dsource, sql = "") {
     .Call('_vapour_vapour_layer_names_cpp', PACKAGE = 'vapour', dsource, sql)
 }
 
+find_feature_count_cpp <- function(dsource, layer = 0L, iterate = TRUE) {
+    .Call('_vapour_find_feature_count_cpp', PACKAGE = 'vapour', dsource, layer, iterate)
+}
+
 vapour_read_attributes_cpp <- function(dsource, layer = 0L, sql = "", limit_n = 0L, skip_n = 0L, ex = 0L) {
     .Call('_vapour_vapour_read_attributes_cpp', PACKAGE = 'vapour', dsource, layer, sql, limit_n, skip_n, ex)
 }
