@@ -2,7 +2,7 @@
 
 language: r
 sudo: enabled
-dist: trusty
+dist: xenial
 cache:
   - packages
   - ccache
@@ -31,16 +31,16 @@ matrix:
     include:
         - os: linux
           r: release
-          dist: trusty # 14.04
+          dist: xenial # 16.04
           env:
-           - BUILD_NAME=trusty_release
+           - BUILD_NAME=xenial_release
            - R_CODECOV=true
         - os: linux
           r: devel
-          dist: trusty
+          dist: xenial
         - os: linux
           r: oldrel
-          dist: trusty
+          dist: xenial
         - os: osx
           r: release
           before_install: ''
