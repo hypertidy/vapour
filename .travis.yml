@@ -2,7 +2,7 @@
 
 language: r
 sudo: enabled
-dist: xenial
+dist: bionic
 cache:
   - packages
   - ccache
@@ -31,16 +31,16 @@ matrix:
     include:
         - os: linux
           r: release
-          dist: xenial # 16.04
+          dist: bionic # 18.04
           env:
-           - BUILD_NAME=xenial_release
+           - BUILD_NAME=bionic_release
            - R_CODECOV=true
         - os: linux
           r: devel
-          dist: xenial
+          dist: bionic
         - os: linux
           r: oldrel
-          dist: xenial
+          dist: bionic
         - os: osx
           r: release
           before_install: ''
