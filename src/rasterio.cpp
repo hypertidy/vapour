@@ -85,7 +85,7 @@ List raster_info_cpp (CharacterVector filename, LogicalVector min_max)
 
   char *stri;
   OGRSpatialReference oSRS;
-  oSRS.importFromWkt(proj);
+  oSRS.importFromWkt(&proj);
   oSRS.exportToProj4(&stri);
   out[6] =  Rcpp::CharacterVector::create(stri);
   names[6] = "proj4";
