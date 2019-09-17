@@ -34,7 +34,7 @@ library(dplyr)
 
 ## Overview
 
-The vapour package provides access to the basic *read* functions available in [GDAL](https://www.gdal.org/) for both [raster](https://www.gdal.org/raster_datamodel.html) and [vector](https://gdal.org/tutorials/vector_api_tut.html) data sources. 
+The vapour package provides access to the basic *read* functions available in [GDAL](https://www.gdal.org/) for both [raster](https://gdal.org/user/raster_data_model.html) and [vector](https://gdal.org/user/vector_data_model.html) data sources. 
 
 The functions are deliberately *lower-level* than these data models and provide access to the
 component entities independently. 

@@ -16,8 +16,8 @@ status](https://ci.appveyor.com/api/projects/status/github/hypertidy/vapour?bran
 
 The vapour package provides access to the basic *read* functions
 available in [GDAL](https://www.gdal.org/) for both
-[raster](https://www.gdal.org/raster_datamodel.html) and
-[vector](https://gdal.org/tutorials/vector_api_tut.html) data sources.
+[raster](https://gdal.org/user/raster_data_model.html) and
+[vector](https://gdal.org/user/vector_data_model.html) data sources.
 
 The functions are deliberately *lower-level* than these data models and
 provide access to the component entities independently.
@@ -249,11 +249,11 @@ rbenchmark::benchmark (
                        replications = 10)
 #> manually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature count
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.229    3.271     0.230    0.001          0
-#> 2 f_sf2(fname)           10   0.165    2.357     0.165    0.000          0
-#> 3 f_va1(fname)           10   0.070    1.000     0.066    0.003          0
-#> 4 f_va2(fname)           10   0.085    1.214     0.077    0.008          0
-#> 5 f_va3(fname)           10   0.214    3.057     0.206    0.008          0
+#> 1 f_sf1(fname)           10   0.237    3.247     0.232    0.004          0
+#> 2 f_sf2(fname)           10   0.163    2.233     0.163    0.000          0
+#> 3 f_va1(fname)           10   0.073    1.000     0.061    0.012          0
+#> 4 f_va2(fname)           10   0.087    1.192     0.087    0.000          0
+#> 5 f_va3(fname)           10   0.219    3.000     0.207    0.012          0
 #>   sys.child
 #> 1         0
 #> 2         0
