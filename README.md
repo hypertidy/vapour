@@ -199,245 +199,6 @@ leaving them separate here. The three approaches are:
 library (vapour)
 ```
 
-    #> Loading vapour
-    #> Re-compiling vapour
-    #>   
-    ─  installing *source* package ‘vapour’ ... (562ms)
-    #> 
-      
-       ** using staged installation
-    #> 
-      
-       configure: CC: gcc -std=gnu99
-    #>    configure: CXX: g++ -std=gnu++11
-    #> 
-      
-       checking for gdal-config... /usr/bin/gdal-config
-    #> checking gdal-config usability... 
-      
-       checking gdal-config usability... yes
-    #>    configure: GDAL: 2.4.2
-    #> checking GDAL version >= 2.0.1... 
-      
-       checking GDAL version >= 2.0.1... yes
-    #> 
-      
-       checking for gcc... gcc -std=gnu99
-    #> 
-      
-    checking whether the C compiler works... 
-      
-       checking whether the C compiler works... yes
-    #>    checking for C compiler default output file name... a.out
-    #> 
-      
-    checking for suffix of executables... 
-      
-       checking for suffix of executables... 
-    #> 
-      
-    checking whether we are cross compiling... 
-      
-       checking whether we are cross compiling... no
-    #> 
-      
-    checking for suffix of object files... 
-      
-       checking for suffix of object files... o
-    #> checking whether we are using the GNU C compiler... 
-      
-       checking whether we are using the GNU C compiler... yes
-    #> checking whether gcc -std=gnu99 accepts -g... 
-      
-       checking whether gcc -std=gnu99 accepts -g... yes
-    #> checking for gcc -std=gnu99 option to accept ISO C89... 
-      
-       checking for gcc -std=gnu99 option to accept ISO C89... none needed
-    #> checking how to run the C preprocessor... 
-      
-       checking how to run the C preprocessor... gcc -std=gnu99 -E
-    #> 
-      
-    checking for grep that handles long lines and -e... 
-      
-       checking for grep that handles long lines and -e... /bin/grep
-    #> checking for egrep... 
-      
-       checking for egrep... /bin/grep -E
-    #> checking for ANSI C header files... 
-      
-       checking for ANSI C header files... yes
-    #> 
-      
-    checking for sys/types.h... 
-      
-       checking for sys/types.h... yes
-    #> 
-      
-    checking for sys/stat.h... 
-      
-       checking for sys/stat.h... yes
-    #> 
-      
-    checking for stdlib.h... 
-      
-       checking for stdlib.h... yes
-    #> 
-      
-    checking for string.h... 
-      
-       checking for string.h... yes
-    #> 
-      
-    checking for memory.h... 
-      
-       checking for memory.h... yes
-    #> 
-      
-    checking for strings.h... 
-      
-       checking for strings.h... yes
-    #> 
-      
-    checking for inttypes.h... 
-      
-       checking for inttypes.h... yes
-    #> 
-      
-    checking for stdint.h... 
-      
-       checking for stdint.h... yes
-    #> 
-      
-    checking for unistd.h... 
-      
-       checking for unistd.h... yes
-    #> 
-      
-    checking gdal.h usability... 
-      
-       checking gdal.h usability... yes
-    #> checking gdal.h presence... 
-      
-       checking gdal.h presence... yes
-    #>    checking for gdal.h... yes
-    #> 
-      
-    checking GDAL: linking with --libs only... 
-      
-       checking GDAL: linking with --libs only... yes
-    #> 
-      
-       checking GDAL: /usr/share/gdal/pcs.csv readable... yes
-    #> 
-      
-    checking GDAL: checking whether PROJ is available for linking:... 
-      
-       checking GDAL: checking whether PROJ is available for linking:... yes
-    #> checking GDAL: checking whether PROJ is available fur running:... 
-      
-       checking GDAL: checking whether PROJ is available fur running:... yes
-    #> 
-      
-       configure: pkg-config proj exists, will use it
-    #> 
-      
-    checking proj_api.h usability... 
-      
-       checking proj_api.h usability... yes
-    #> checking proj_api.h presence... 
-      
-       checking proj_api.h presence... yes
-    #>    checking for proj_api.h... yes
-    #> 
-      
-       configure: PROJ: 5.2.0
-    #> 
-      
-    checking for pj_init_plus in -lproj... 
-      
-       checking for pj_init_plus in -lproj... yes
-    #> 
-      
-       checking PROJ: epsg found and readable... yes
-    #> 
-      
-       configure: Package CPP flags:  -I/usr/include/gdal
-    #>    configure: Package LIBS: -lproj   -L/usr/lib -lgdal
-    #> 
-      
-       configure: creating ./config.status
-    #> 
-      
-       config.status: creating src/Makevars
-    #> 
-      
-       ** libs
-    #> 
-      
-       g++ -std=gnu++11 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/gdal -I"/usr/local/lib/R/site-library/Rcpp/include"   -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-uuRxut/r-base-3.6.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -UNDEBUG -Wall -pedantic -g -O0 -c RcppExports.cpp -o RcppExports.o
-    #> 
-      
-       g++ -std=gnu++11 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/gdal -I"/usr/local/lib/R/site-library/Rcpp/include"   -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-uuRxut/r-base-3.6.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -UNDEBUG -Wall -pedantic -g -O0 -c VSIReadDirEx.cpp -o VSIReadDirEx.o
-    #> 
-      
-       g++ -std=gnu++11 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/gdal -I"/usr/local/lib/R/site-library/Rcpp/include"   -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-uuRxut/r-base-3.6.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -UNDEBUG -Wall -pedantic -g -O0 -c binary-geom.cpp -o binary-geom.o
-    #> 
-      
-       g++ -std=gnu++11 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/gdal -I"/usr/local/lib/R/site-library/Rcpp/include"   -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-uuRxut/r-base-3.6.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -UNDEBUG -Wall -pedantic -g -O0 -c contourize.cpp -o contourize.o
-    #> 
-      
-       g++ -std=gnu++11 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/gdal -I"/usr/local/lib/R/site-library/Rcpp/include"   -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-uuRxut/r-base-3.6.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -UNDEBUG -Wall -pedantic -g -O0 -c gdal_utils.cpp -o gdal_utils.o
-    #> 
-      
-       g++ -std=gnu++11 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/gdal -I"/usr/local/lib/R/site-library/Rcpp/include"   -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-uuRxut/r-base-3.6.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -UNDEBUG -Wall -pedantic -g -O0 -c gdal_warper.cpp -o gdal_warper.o
-    #> 
-      
-       gcc -std=gnu99 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/gdal -I"/usr/local/lib/R/site-library/Rcpp/include"   -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-uuRxut/r-base-3.6.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -UNDEBUG -Wall -pedantic -g -O0 -c init.c -o init.o
-    #> 
-      
-       g++ -std=gnu++11 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/gdal -I"/usr/local/lib/R/site-library/Rcpp/include"   -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-uuRxut/r-base-3.6.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -UNDEBUG -Wall -pedantic -g -O0 -c rasterio.cpp -o rasterio.o
-    #> 
-      
-       rasterio.cpp: In function ‘Rcpp::List raster_info_cpp(Rcpp::CharacterVector, Rcpp::LogicalVector)’:
-    #>    rasterio.cpp:89:31: warning: ‘OGRErr OGRSpatialReference::importFromWkt(char**)’ is deprecated [-Wdeprecated-declarations]
-    #>       oSRS.importFromWkt(&proj_tmp);
-    #>                                   ^
-    #>    In file included from /usr/include/gdal/ogr_geometry.h:38:0,
-    #>                     from /usr/include/gdal/ogr_feature.h:36,
-    #>                     from /usr/include/gdal/gdal_priv.h:77,
-    #>                     from rasterio.cpp:4:
-    #>    /usr/include/gdal/ogr_spatialref.h:209:17: note: declared here
-    #>         OGRErr      importFromWkt( char ** )
-    #>                     ^~~~~~~~~~~~~
-    #> 
-      
-       g++ -std=gnu++11 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/gdal -I"/usr/local/lib/R/site-library/Rcpp/include"   -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-uuRxut/r-base-3.6.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -UNDEBUG -Wall -pedantic -g -O0 -c sds_io.cpp -o sds_io.o
-    #> 
-      
-       g++ -std=gnu++11 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/gdal -I"/usr/local/lib/R/site-library/Rcpp/include"   -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-uuRxut/r-base-3.6.1=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -UNDEBUG -Wall -pedantic -g -O0 -c vapour.cpp -o vapour.o
-    #> 
-      
-       g++ -std=gnu++11 -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -Wl,-z,relro -o vapour.so RcppExports.o VSIReadDirEx.o binary-geom.o contourize.o gdal_utils.o gdal_warper.o init.o rasterio.o sds_io.o vapour.o -lproj -L/usr/lib -lgdal -L/usr/lib/R/lib -lR
-    #> 
-      
-       installing to /rdsi/PRIVATE/raad/dev/__tmp_mike/RtmpCRyhkR/devtools_install_45fd7ad50d13/00LOCK-vapour/00new/vapour/libs
-    #> 
-      
-       ** checking absolute paths in shared objects and dynamic libraries
-    #> 
-      
-    ─  DONE (vapour)
-    #> 
-    #> 
-    #> Attaching package: 'testthat'
-    #> The following objects are masked from 'package:magrittr':
-    #> 
-    #>     equals, is_less_than, not
-    #> The following object is masked from 'package:dplyr':
-    #> 
-    #>     matches
-
 ``` r
 f_va1 <- function (fname) # read all then sub-select
 {
@@ -488,11 +249,11 @@ rbenchmark::benchmark (
                        replications = 10)
 #> manually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature count
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.233    3.149     0.225    0.008          0
-#> 2 f_sf2(fname)           10   0.170    2.297     0.170    0.000          0
-#> 3 f_va1(fname)           10   0.074    1.000     0.070    0.003          0
-#> 4 f_va2(fname)           10   0.087    1.176     0.071    0.016          0
-#> 5 f_va3(fname)           10   0.223    3.014     0.224    0.000          0
+#> 1 f_sf1(fname)           10   0.229    3.271     0.230    0.001          0
+#> 2 f_sf2(fname)           10   0.165    2.357     0.165    0.000          0
+#> 3 f_va1(fname)           10   0.070    1.000     0.066    0.003          0
+#> 4 f_va2(fname)           10   0.085    1.214     0.077    0.008          0
+#> 5 f_va3(fname)           10   0.214    3.057     0.206    0.008          0
 #>   sys.child
 #> 1         0
 #> 2         0
@@ -504,8 +265,8 @@ rbenchmark::benchmark (
 Reading geometries only, as opposed to the `sf` reading of all
 geometries and attributes, affords a speed increase of about 25%, while
 utilizing the SQL capabilities of
-[`ogr_sql`](http://www.gdal.org/ogr_sql.html) offers an increase of
-around 75%.
+[`ogr_sql`](https://gdal.org/user/ogr_sql_dialect.html) offers an
+increase of around 75%.
 
 ## Context
 

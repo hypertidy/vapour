@@ -12,6 +12,7 @@ dplyr
 dplyrexpt
 enum
 EWKB
+executesql
 ExecuteSQL
 favour
 FID

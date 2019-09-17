@@ -98,7 +98,7 @@ vapour_geom_summary(mvfile, skip_n = 6)$FID
 
 ```
 
-Each geometry function also includes an `extent` argument, which takes a simple vector of four values `xmin, xmax, ymin, ymax` or sp bbox, sf bbox, or raster extent. This is only applied if the sql argument is non empty, and corresponds to the [SpatialFilter argument of ExecuteSQL](https://www.gdal.org/ogr_sql.html#ogr_sql_exec_sql). 
+Each geometry function also includes an `extent` argument, which takes a simple vector of four values `xmin, xmax, ymin, ymax` or sp bbox, sf bbox, or raster extent. This is only applied if the sql argument is non empty, and corresponds to the [SpatialFilter argument of ExecuteSQL](https://gdal.org/user/ogr_sql_dialect.html#executesql). 
 
 ## Raster data
 
@@ -176,7 +176,7 @@ vapour_read_attributes(mvfile, sql = sprintf("SELECT COUNT(*) AS n FROM %s WHERE
 shp <- system.file("extdata/point.shp", package="vapour")
 vapour_read_attributes(shp, sql = sprintf("SELECT COUNT(*) AS n FROM %s WHERE FID < 2", "point"))
 ```
-See http://www.gdal.org/ogr_sql.html
+See https://gdal.org/user/ogr_sql_dialect.html
 
 
 There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables. 

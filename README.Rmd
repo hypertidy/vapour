@@ -196,12 +196,10 @@ separate here. The three approaches are:
 3. Read geometry as `json` (text), pre-selected via SQL, and convert with
    the `geojsonsf` package
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 library (vapour)
 ```
-```{r, echo = FALSE}
-devtools::load_all (".")
-```
+
 ```{r f_va}
 f_va1 <- function (fname) # read all then sub-select
 {
@@ -258,7 +256,7 @@ unlink ("usa_parks", recursive = TRUE)
 
 Reading geometries only, as opposed to the `sf` reading of all geometries and
 attributes, affords a speed increase of about 25%, while utilizing the SQL
-capabilities of [`ogr_sql`](http://www.gdal.org/ogr_sql.html) offers an increase
+capabilities of [`ogr_sql`](https://gdal.org/user/ogr_sql_dialect.html) offers an increase
 of around 75%.
 
 ## Context

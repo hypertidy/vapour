@@ -262,7 +262,7 @@
 <a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#&gt;  [1]  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29</span></a>
 <a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co">#&gt; [24] 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52</span></a>
 <a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#&gt; [47] 53 54 55 56 57 58</span></a></code></pre></div>
-<p>Each geometry function also includes an <code>extent</code> argument, which takes a simple vector of four values <code>xmin, xmax, ymin, ymax</code> or sp bbox, sf bbox, or raster extent. This is only applied if the sql argument is non empty, and corresponds to the <a href="https://www.gdal.org/ogr_sql.html#ogr_sql_exec_sql">SpatialFilter argument of ExecuteSQL</a>.</p>
+<p>Each geometry function also includes an <code>extent</code> argument, which takes a simple vector of four values <code>xmin, xmax, ymin, ymax</code> or sp bbox, sf bbox, or raster extent. This is only applied if the sql argument is non empty, and corresponds to the <a href="https://gdal.org/user/ogr_sql_dialect.html#executesql">SpatialFilter argument of ExecuteSQL</a>.</p>
 <div id="raster-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#raster-data" class="anchor"></a>Raster data</h2>
@@ -377,7 +377,7 @@
 <a class="sourceLine" id="cb12-20" data-line-number="20"><span class="co">#&gt; manually finding feature count</span></a>
 <a class="sourceLine" id="cb12-21" data-line-number="21"><span class="co">#&gt; $n</span></a>
 <a class="sourceLine" id="cb12-22" data-line-number="22"><span class="co">#&gt; [1] 2</span></a></code></pre></div>
-<p>See <a href="http://www.gdal.org/ogr_sql.html" class="uri">http://www.gdal.org/ogr_sql.html</a></p>
+<p>See <a href="https://gdal.org/user/ogr_sql_dialect.html" class="uri">https://gdal.org/user/ogr_sql_dialect.html</a></p>
 <p>There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables.</p>
 </div>
 <div id="gdal-information" class="section level1">
