@@ -2,7 +2,7 @@
 
 language: r
 sudo: enabled
-dist: bionic
+
 cache:
   - packages
   - ccache
@@ -31,16 +31,16 @@ matrix:
     include:
         - os: linux
           r: release
-          dist: bionic # 18.04
+          dist: trusty
           env:
-           - BUILD_NAME=bionic_release
+           - BUILD_NAME=trusty_release
            - R_CODECOV=true
         - os: linux
           r: devel
-          dist: bionic
+          dist: trusty
         - os: linux
           r: oldrel
-          dist: bionic
+          dist: trusty
         - os: osx
           r: release
           before_install: ''
