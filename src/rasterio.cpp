@@ -75,7 +75,7 @@ List raster_info_cpp (CharacterVector filename, LogicalVector min_max)
   const char *proj;
   proj = GDALGetProjectionRef(hDataset);
   //https://gis.stackexchange.com/questions/164279/how-do-i-create-ogrspatialreference-from-raster-files-georeference-c
-  char *proj_tmp = (char *) proj;
+  //char *proj_tmp = (char *) proj;
   out[4] = Rcpp::CharacterVector::create(proj);
   names[4] = "projection";
 
@@ -84,16 +84,16 @@ List raster_info_cpp (CharacterVector filename, LogicalVector min_max)
   out[5] = nBands;
   names[5] = "bands";
 
-  char *stri;
-  OGRSpatialReference oSRS;
-  oSRS.importFromWkt(&proj_tmp);
-  oSRS.exportToProj4(&stri);
-  out[6] =  Rcpp::CharacterVector::create(stri);
+  //char *stri;
+  //OGRSpatialReference oSRS;
+  //oSRS.importFromWkt(&proj_tmp);
+  //oSRS.exportToProj4(&stri);
+  out[6] =  Rcpp::CharacterVector::create(""); //Rcpp::CharacterVector::create(stri);
   names[6] = "proj4";
 
   out.attr("names") = names;
 
-  CPLFree(stri);
+  //CPLFree(stri);
   // close up
   GDALClose( hDataset );
   return out;

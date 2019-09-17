@@ -1,11 +1,14 @@
 
 Hello, 
 
-Submission of vapour 0.3.0: 
+(second try, first failed pre-checks)
+
+Submission  of vapour 0.3.0: 
 
 * deprecated configure R CMD config CPP removed
 * use of PROJ 6 deprecated API enable
 * size of installed directories is expected for GDAL 
+* removed problematic string conversion 
 
 Thank you
 

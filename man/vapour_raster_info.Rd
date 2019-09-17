@@ -30,6 +30,7 @@ The structural metadata are
 \item{tilesXY}{dimensions x-y of internal tiling scheme}
 \item{projection}{text version of map projection parameter string}
 \item{bands}{number of bands in the dataset}
+\item{proj4}{not implemented}
 }
 
 On access vapour functions will report on the existence of subdatasets while
