@@ -67,7 +67,7 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #'
 #' @section The Geo Transform:
 #'
-#' From \url{http://www.gdal.org/gdal_datamodel.html}.
+#' From \url{https://gdal.org/user/raster_data_model.html}.
 #'
 #' The affine transform consists of six coefficients returned by
 #' `GDALDataset::GetGeoTransform()` which map pixel/line coordinates into

@@ -20,7 +20,7 @@ Use this to compare the interpreted versions converted into R types by
 }
 \details{
 These are defined for the enum OGRFieldType in GDAL itself.
-\url{https://gdal.org/ogr__core_8h.html#a787194bea637faf12d61643124a7c9fc}
+\url{https://gdal.org/doxygen/ogr__core_8h.html#a787194bea637faf12d61643124a7c9fc}
 }
 \examples{
 file <- "list_locality_postcode_meander_valley.tab"

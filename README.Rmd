@@ -34,7 +34,7 @@ library(dplyr)
 
 ## Overview
 
-The vapour package provides access to the basic *read* functions available in [GDAL](http://www.gdal.org/) for both [raster](http://www.gdal.org/gdal_datamodel.html) and [vector](http://www.gdal.org/ogr_arch.html) data sources. 
+The vapour package provides access to the basic *read* functions available in [GDAL](https://www.gdal.org/) for both [raster](https://www.gdal.org/raster_datamodel.html) and [vector](https://gdal.org/tutorials/vector_api_tut.html) data sources. 
 
 The functions are deliberately *lower-level* than these data models and provide access to the
 component entities independently. 
@@ -47,14 +47,14 @@ For vector data:
 * read access to the extent, or bounding box, of feature geometries. 
 * helper functions to summarize feature identity and geometry status
 
-All vector/feature read tasks can optionally apply an arbitrary limit to the maximum number of features read or queried, and all allow execution of [OGRSQL](http://www.gdal.org/ogr_sql.html) to a layer prior to data extraction. In combination with a SQL
+All vector/feature read tasks can optionally apply an arbitrary limit to the maximum number of features read or queried, and all allow execution of [OGRSQL](https://gdal.org/user/ogr_sql_dialect.html) to a layer prior to data extraction. In combination with a SQL
 query a [bounding box spatial filter](https://gdal.org/user/ogr_sql_dialect.html#executesql) can be applied via the `extent` argument. 
 
 For raster data: 
 
 * read access to the list of available rasters within a collection source (subdatasets). 
 * read access to *structural metadata* for individual raster sources. 
-* read access for raw data using GDAL's  [RasterIO framework](http://www.gdal.org/classGDALRasterBand.html#a30786c81246455321e96d73047b8edf1) and its dynamic image decimation / replication resampling algorithms. 
+* read access for raw data using GDAL's  [RasterIO framework](https://gdal.org/tutorials/raster_api_tut.html) and its dynamic image decimation / replication resampling algorithms. 
 
 
 The workflows available are intended to support development of applications in R for these vector and [raster data](https://en.wikipedia.org/wiki/Raster_data) without being constrained to any particular data model. 
@@ -293,5 +293,5 @@ Raymond have endured ravings about wanting this level of control for many years.
 # Code of conduct
 
 Please note that this project is released with a [Contributor Code of
-Conduct](CONDUCT.md). By participating in this project you agree to abide by its
+Conduct](https://github.com/hypertidy/vapour/blob/master/CONDUCT.md). By participating in this project you agree to abide by its
 terms.

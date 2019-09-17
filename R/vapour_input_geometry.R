@@ -14,7 +14,7 @@
 #' while looping through available features `skip_n` features are ignored, and then a feature-count begins and the loop
 #' is stopped if `limit_n` is reached.
 #'
-#' Note that `extent` applies to the 'SpatialFilter' of 'ExecuteSQL': https://www.gdal.org/ogr_sql.html#ogr_sql_exec_sql.
+#' Note that `extent` applies to the 'SpatialFilter' of 'ExecuteSQL': https://gdal.org/user/ogr_sql_dialect.html#executesql.
 #' @param dsource data source name (path to file, connection string, URL)
 #' @param layer integer of layer to work with, defaults to the first (0) or the name of the layer
 #' @param sql if not empty this is executed against the data source (layer will be ignored)

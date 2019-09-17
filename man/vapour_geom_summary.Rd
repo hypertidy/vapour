@@ -25,7 +25,7 @@ list containing the following
 \itemize{
 \item \code{FID} the feature id value (an integer, usually sequential)
 \item \code{valid_geometry} logical value if a non-empty geometry is available
-\item \code{type} integer value of geometry type from \href{https://www.gdal.org/ogr__core_8h.html#a800236a0d460ef66e687b7b65610f12a}{GDAL enumeration}
+\item \code{type} integer value of geometry type from \href{https://gdal.org/doxygen/ogr__core_8h.html#a800236a0d460ef66e687b7b65610f12a}{GDAL enumeration}
 \item \code{xmin, xmax, ymin, ymax} numeric values of the extent (bounding box) of each geometry
 }
 }

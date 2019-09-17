@@ -5,17 +5,25 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lightweight Access to the 'Geospatial Data Abstraction Library' ('GDAL') • vapour</title>
+<title>Lightweight Access to the Geospatial Data Abstraction Library (GDAL) • vapour</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Lightweight Access to the 'Geospatial Data Abstraction Library' ('GDAL')">
-<meta property="og:description" content="Provides low-level access to 'GDAL' functionality for R packages. The aim is to minimize
-  the level of interpretation put on the 'GDAL' facilities, to enable direct use of it for a variety of purposes. 
-  'GDAL' is the 'Geospatial Data Abstraction Library' a translator for raster and vector geospatial data formats 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<script src="pkgdown.js"></script><meta property="og:title" content="Lightweight Access to the Geospatial Data Abstraction Library (GDAL)">
+<meta property="og:description" content="Provides low-level access to GDAL functionality for R packages. The aim is to minimize
+  the level of interpretation put on the GDAL facilities, to enable direct use of it for a variety of purposes. 
+  GDAL is the Geospatial Data Abstraction Library a translator for raster and vector geospatial data formats 
   that presents a single raster abstract data model and single vector abstract data model to the calling application 
-  for all supported formats &lt;http://gdal.org/&gt;. Other available packages 'rgdal' and 'sf' also provide access to 
-  the 'GDAL' library, but neither can be used for these lower level tasks, and both do many other tasks. ">
+  for all supported formats &lt;http://gdal.org/&gt;. Other available packages rgdal and sf also provide access to 
+  the GDAL library, but neither can be used for these lower level tasks, and both do many other tasks. ">
+<meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -23,7 +31,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-article">
+    <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -35,7 +43,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -43,7 +51,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -60,7 +68,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/hypertidy/vapour">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -73,23 +81,21 @@
 <!--/.navbar -->
 
       
-      </header><div class="row">
-  <div class="col-md-9 contents">
-    
 
-    
-    
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+      </header><div class="row">
+  <div class="contents col-md-9">
+
 <div id="vapour" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#vapour" class="anchor"></a>vapour</h1></div>
+<a href="#vapour" class="anchor"></a>vapour <img src="reference/figures/logo.png" align="right" height="228">
+</h1></div>
 
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p>The vapour package provides access to the basic <em>read</em> functions available in <a href="http://www.gdal.org/">GDAL</a>for both <a href="http://www.gdal.org/gdal_datamodel.html">raster</a> and a <a href="http://www.gdal.org/ogr_arch.html">vector</a> data sources.</p>
+<p>The vapour package provides access to the basic <em>read</em> functions available in <a href="http://www.gdal.org/">GDAL</a> for both <a href="http://www.gdal.org/gdal_datamodel.html">raster</a> and <a href="http://www.gdal.org/ogr_arch.html">vector</a> data sources.</p>
 <p>The functions are deliberately <em>lower-level</em> than these data models and provide access to the component entities independently.</p>
-<p>For vector data vapour provides:</p>
+<p>For vector data:</p>
 <ul>
 <li>read access to feature attributes.</li>
 <li>read access to raw binary geometry.</li>
@@ -97,8 +103,8 @@
 <li>read access to the extent, or bounding box, of feature geometries.</li>
 <li>helper functions to summarize feature identity and geometry status</li>
 </ul>
-<p>All vector/feature read tasks can optionally apply an arbitrary limit to the maximum number of features read or queried, and all allow execution of <a href="http://www.gdal.org/ogr_sql.html">OGRSQL</a> to a layer prior to data extraction.</p>
-<p>For raster data vapour provides:</p>
+<p>All vector/feature read tasks can optionally apply an arbitrary limit to the maximum number of features read or queried, and all allow execution of <a href="http://www.gdal.org/ogr_sql.html">OGRSQL</a> to a layer prior to data extraction. In combination with a SQL query a <a href="https://gdal.org/user/ogr_sql_dialect.html#executesql">bounding box spatial filter</a> can be applied via the <code>extent</code> argument.</p>
+<p>For raster data:</p>
 <ul>
 <li>read access to the list of available rasters within a collection source (subdatasets).</li>
 <li>read access to <em>structural metadata</em> for individual raster sources.</li>
@@ -110,7 +116,10 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>The package can be installed from Github.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"hypertidy/vapour"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">## install.packages("remotes")</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">remotes<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_cran.html">install_cran</a></span>(<span class="st">"vapour"</span>)</a></code></pre></div>
+<p>The development version can be installed from Github.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">remotes<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"hypertidy/vapour"</span>)</a></code></pre></div>
 <p>You will need development tools for building R packages.</p>
 <p>On Linux and MacOS building also requires an available GDAL installation, but on Windows the ROpenSci rwinlib tools are used and the required GDAL will be downloaded and used when building the package. This installation is self-contained and only affects the use of R, it can be used alongside other applications using GDAL.</p>
 </div>
@@ -120,12 +129,13 @@
 <p>The goal of vapour is to provide a basic <strong>GDAL API</strong> package for R. The key functions provide vector geometry or attributes and raster data and raster metadata.</p>
 <p>The priority is to give low-level access to key functionality rather than comprehensive coverage of the library. The real advantage of <code>vapour</code> is the flexibility of a modular workflow, not the outright efficiency.</p>
 <p>A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are <em>simple features</em> and <em>affine-based regular rasters composed of 2D slices</em>. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools.)</p>
-<p>These loftier general needs have come out of smaller more concrete goals, one was access to the “attributes-only” capacity of GDAL as a virtual database engine, and another access to the dense structures provided by transport vector data. GDAL’s dynamic resampling of arbitrary raster windows is also very useful for interactive tools on local data, and seems under-utilized in favour of less accessible online image services.</p>
+<p>GDAL’s dynamic resampling of arbitrary raster windows is also very useful for interactive tools on local data, and seems under-utilized in favour of less accessible online image services.</p>
 <p>This partly draws on work done in <a href="https://github.com/r-spatial/sf">the sf package</a> and in packages <code>rgdal</code> and <code>rgdal2</code>. I’m amazed that something as powerful and general as GDAL is still only available through these lenses, but recent improvements make things much easier to use and share. Specifically <code>Rcpp</code> means that access to external libs is simplified, easier to learn and easier to get started and make progress. The other part is that cross-platform support is now much better, with more consistency on the libraries available on the CRAN machines and in other contexts.</p>
 </div>
 <div id="warnings" class="section level2">
 <h2 class="hasAnchor">
 <a href="#warnings" class="anchor"></a>Warnings</h2>
+<p>You might burn limbs off.</p>
 <p>It’s possible to give problematic “SELECT” statements via the <code>sql</code> argument. Note that the geometry readers <code>vapour_read_geometry</code>, <code>vapour_read_geometry_text</code>, and <code>vapour_read_extent</code> will strip out the <code>SELECT ... FROM</code> clause and replace it with <code>SELECT * FROM</code> to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or <code>dplyr</code> to create any <code>SELECT</code> statement. The function <code>vapour_read_geometry</code> will return a list of NULLs, in this case.</p>
 <p>I haven’t tried this against a real database, I’m not sure if we need <code>AsBinary()</code> around EWKB geoms, for example - but at any rate these can be ingested by <code>sf</code>.</p>
 </div>
@@ -133,105 +143,105 @@
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
 <p>The package documentation page gives an overview of available functions.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/help">help</a></span>(<span class="st">"vapour-package"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/help.html">help</a></span>(<span class="st">"vapour-package"</span>)</a></code></pre></div>
 <p>See the vignettes and documentation for examples WIP.</p>
 <p>The following concrete example illustrates the motivation for <code>vapour</code>, through a timing benchmark for one standard operation: extracting feature geometries from a data set within a user-defined bounding box. The data set is the one used throughout the book <a href="https://geocompr.robinlovelace.net/">Geocomputation in R</a> by Robin Lovelace, Jakub Nowosad, and Jannes Muenchow, and can be obtained with the following code.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">url &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span> (<span class="st">"http://www.naturalearthdata.com/http//www.naturalearthdata.com"</span>,</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">                <span class="st">"download/10m/cultural/ne_10m_parks_and_protected_lands.zip"</span>)</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/download.file">download.file</a></span> (<span class="dt">url =</span> url, <span class="dt">destfile =</span> <span class="st">"USA_parks.zip"</span>)</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/unzip">unzip</a></span> (<span class="dt">zipfile =</span> <span class="st">"USA_parks.zip"</span>, <span class="dt">exdir =</span> <span class="st">"usa_parks"</span>)</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5">fname &lt;-<span class="st"> "usa_parks/ne_10m_parks_and_protected_lands_area.shp"</span></a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">url &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span> (<span class="st">"http://www.naturalearthdata.com/http//www.naturalearthdata.com"</span>,</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">                <span class="st">"download/10m/cultural/ne_10m_parks_and_protected_lands.zip"</span>)</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span> (<span class="dt">url =</span> url, <span class="dt">destfile =</span> <span class="st">"USA_parks.zip"</span>)</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/utils/unzip.html">unzip</a></span> (<span class="dt">zipfile =</span> <span class="st">"USA_parks.zip"</span>, <span class="dt">exdir =</span> <span class="st">"usa_parks"</span>)</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">fname &lt;-<span class="st"> "usa_parks/ne_10m_parks_and_protected_lands_area.shp"</span></a></code></pre></div>
 <p>That last <code>fname</code> is the file we’re interested in, which contains polygons for all United States parks. We now construct a timing benchmark for three ways of extracting the data within a pre-defined bounding box of:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span> (magrittr)</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">bb &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span> (<span class="op">-</span><span class="dv">120</span>, <span class="dv">20</span>, <span class="dv">-100</span>, <span class="dv">40</span>)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span> (bb) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span> (<span class="st">"xmin"</span>, <span class="st">"ymin"</span>, <span class="st">"xmax"</span>, <span class="st">"ymax"</span>)</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">bb_sf &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_bbox">st_bbox</a></span> (bb, <span class="dt">crs =</span> sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_crs">st_crs</a></span> (<span class="dv">4326</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="st">    </span>sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_as_sfc">st_as_sfc</a></span> ()</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span> (magrittr)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">bb &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span> (<span class="op">-</span><span class="dv">120</span>, <span class="dv">20</span>, <span class="dv">-100</span>, <span class="dv">40</span>)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span> (bb) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span> (<span class="st">"xmin"</span>, <span class="st">"ymin"</span>, <span class="st">"xmax"</span>, <span class="st">"ymax"</span>)</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">bb_sf &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_bbox.html">st_bbox</a></span> (bb, <span class="dt">crs =</span> sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_crs.html">st_crs</a></span> (<span class="dv">4326</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="st">    </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_as_sfc.html">st_as_sfc</a></span> ()</a></code></pre></div>
 <p>First, we define a function to do the desired extraction using the <a href="https://cran.r-project.org/package=sf"><code>sf</code> package</a>, comparing both <code>st_crop</code> and the <code>sf::[</code> sub-selection operator:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">f_sf1 &lt;-<span class="st"> </span><span class="cf">function</span> (fname)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">{</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">    usa_parks &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_read">st_read</a></span> (fname, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/message">suppressMessages</a></span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/warning">suppressWarnings</a></span> (</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">                    parks2 &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_crop">st_crop</a></span> (usa_parks, bb_sf)</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">                    ))</a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">}</a>
-<a class="sourceLine" id="cb5-8" data-line-number="8">f_sf2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname)</a>
-<a class="sourceLine" id="cb5-9" data-line-number="9">{</a>
-<a class="sourceLine" id="cb5-10" data-line-number="10">    usa_parks &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_read">st_read</a></span> (fname, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb5-11" data-line-number="11">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/message">suppressMessages</a></span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/warning">suppressWarnings</a></span> (</a>
-<a class="sourceLine" id="cb5-12" data-line-number="12">                    parks2 &lt;-<span class="st"> </span>usa_parks [bb_sf, ]</a>
-<a class="sourceLine" id="cb5-13" data-line-number="13">                    ))</a>
-<a class="sourceLine" id="cb5-14" data-line-number="14">}</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">f_sf1 &lt;-<span class="st"> </span><span class="cf">function</span> (fname)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">{</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">    usa_parks &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">st_read</a></span> (fname, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">    <span class="kw"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span> (<span class="kw"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span> (</a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">                    parks2 &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_crop.html">st_crop</a></span> (usa_parks, bb_sf)</a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">                    ))</a>
+<a class="sourceLine" id="cb6-7" data-line-number="7">}</a>
+<a class="sourceLine" id="cb6-8" data-line-number="8">f_sf2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname)</a>
+<a class="sourceLine" id="cb6-9" data-line-number="9">{</a>
+<a class="sourceLine" id="cb6-10" data-line-number="10">    usa_parks &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">st_read</a></span> (fname, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb6-11" data-line-number="11">    <span class="kw"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span> (<span class="kw"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span> (</a>
+<a class="sourceLine" id="cb6-12" data-line-number="12">                    parks2 &lt;-<span class="st"> </span>usa_parks [bb_sf, ]</a>
+<a class="sourceLine" id="cb6-13" data-line-number="13">                    ))</a>
+<a class="sourceLine" id="cb6-14" data-line-number="14">}</a></code></pre></div>
 <p>Then three approaches using <code>vapour</code>, in each case extracting equivalent data to <code>sf</code> - that is, both geometries and attributes - yet simply leaving them separate here. The three approaches are:</p>
-<ol style="list-style-type: decimal">
+<ol>
 <li>Read geometry as <code>WKB</code>, sub-select after reading, and convert to <code>sfc</code> lists;</li>
 <li>Read geometry as <code>WKB</code> pre-selected via an SQL statement, and convert to <code>sfc</code> lists; and</li>
 <li>Read geometry as <code>json</code> (text), pre-selected via SQL, and convert with the <code>geojsonsf</code> package</li>
 </ol>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span> (vapour)</a></code></pre></div>
-<pre><code>#&gt; Loading vapour
-#&gt; 
-#&gt; Attaching package: 'testthat'
-#&gt; The following objects are masked from 'package:magrittr':
-#&gt; 
-#&gt;     equals, is_less_than, not
-#&gt; The following object is masked from 'package:dplyr':
-#&gt; 
-#&gt;     matches</code></pre>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">f_va1 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># read all then sub-select</span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">{</a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">    ext &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/do.call">do.call</a></span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">    indx &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/which">which</a></span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span></a>
-<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])</a>
-<a class="sourceLine" id="cb8-6" data-line-number="6">    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry</a></span> (fname) [indx] <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_as_sfc">st_as_sfc</a></span> ()</a>
-<a class="sourceLine" id="cb8-8" data-line-number="8">    a &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span> (<span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname), <span class="cf">function</span> (i) i [indx])</a>
-<a class="sourceLine" id="cb8-9" data-line-number="9">}</a>
-<a class="sourceLine" id="cb8-10" data-line-number="10">f_va2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># read selection only via SQL</span></a>
-<a class="sourceLine" id="cb8-11" data-line-number="11">{</a>
-<a class="sourceLine" id="cb8-12" data-line-number="12">    ext &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/do.call">do.call</a></span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname))</a>
-<a class="sourceLine" id="cb8-13" data-line-number="13">    indx &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/which">which</a></span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span></a>
-<a class="sourceLine" id="cb8-14" data-line-number="14"><span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])</a>
-<a class="sourceLine" id="cb8-15" data-line-number="15">    n &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span> (<span class="kw"><a href="reference/vapour_read_names.html">vapour_read_names</a></span> (fname) [indx], <span class="dt">collapse =</span> <span class="st">","</span>) <span class="co"># GDAL FIDs</span></a>
-<a class="sourceLine" id="cb8-16" data-line-number="16">    stmt &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span> (<span class="st">"SELECT FID FROM "</span>, <span class="kw"><a href="reference/vapour_layer_names.html">vapour_layer_names</a></span> (fname),</a>
-<a class="sourceLine" id="cb8-17" data-line-number="17">                    <span class="st">" WHERE FID in ("</span>, n, <span class="st">")"</span>)</a>
-<a class="sourceLine" id="cb8-18" data-line-number="18">    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry</a></span> (fname, <span class="dt">sql =</span> stmt) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb8-19" data-line-number="19"><span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_as_sfc">st_as_sfc</a></span> ()</a>
-<a class="sourceLine" id="cb8-20" data-line-number="20">    a &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname, <span class="dt">sql =</span> stmt)</a>
-<a class="sourceLine" id="cb8-21" data-line-number="21">}</a>
-<a class="sourceLine" id="cb8-22" data-line-number="22">f_va3 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># convert json text via geojsonsf</span></a>
-<a class="sourceLine" id="cb8-23" data-line-number="23">{</a>
-<a class="sourceLine" id="cb8-24" data-line-number="24">    ext &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/do.call">do.call</a></span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span></a>
-<a class="sourceLine" id="cb8-25" data-line-number="25">    indx &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/which">which</a></span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span></a>
-<a class="sourceLine" id="cb8-26" data-line-number="26"><span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])</a>
-<a class="sourceLine" id="cb8-27" data-line-number="27">    n &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span> (<span class="kw"><a href="reference/vapour_read_names.html">vapour_read_names</a></span> (fname) [indx], <span class="dt">collapse =</span> <span class="st">","</span>) <span class="co"># GDAL FIDs</span></a>
-<a class="sourceLine" id="cb8-28" data-line-number="28">    stmt &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span> (<span class="st">"SELECT FID FROM "</span>, <span class="kw"><a href="reference/vapour_layer_names.html">vapour_layer_names</a></span> (fname),</a>
-<a class="sourceLine" id="cb8-29" data-line-number="29">                    <span class="st">" WHERE FID in ("</span>, n, <span class="st">")"</span>)</a>
-<a class="sourceLine" id="cb8-30" data-line-number="30">    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry_text</a></span> (fname, <span class="dt">textformat =</span> <span class="st">"json"</span>, <span class="dt">sql =</span> stmt) </a>
-<a class="sourceLine" id="cb8-31" data-line-number="31">    g &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span> (g, <span class="cf">function</span> (i) geojsonsf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/geojsonsf/topics/geojson_sfc">geojson_sfc</a></span> (i) [[<span class="dv">1</span>]]) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb8-32" data-line-number="32"><span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/sfc">st_sfc</a></span> ()</a>
-<a class="sourceLine" id="cb8-33" data-line-number="33">    a &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname, <span class="dt">sql =</span> stmt)</a>
-<a class="sourceLine" id="cb8-34" data-line-number="34">}</a></code></pre></div>
+<!-- end list --><div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span> (vapour)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co">#&gt; Loading vapour</span></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co">#&gt; Attaching package: 'testthat'</span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt; The following objects are masked from 'package:magrittr':</span></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt;     equals, is_less_than, not</span></a>
+<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt; The following object is masked from 'package:dplyr':</span></a>
+<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="co">#&gt;     matches</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">f_va1 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># read all then sub-select</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">{</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">    ext &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">    indx &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])</a>
+<a class="sourceLine" id="cb9-6" data-line-number="6">    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry</a></span> (fname) [indx] <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_as_sfc.html">st_as_sfc</a></span> ()</a>
+<a class="sourceLine" id="cb9-8" data-line-number="8">    a &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span> (<span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname), <span class="cf">function</span> (i) i [indx])</a>
+<a class="sourceLine" id="cb9-9" data-line-number="9">}</a>
+<a class="sourceLine" id="cb9-10" data-line-number="10">f_va2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># read selection only via SQL</span></a>
+<a class="sourceLine" id="cb9-11" data-line-number="11">{</a>
+<a class="sourceLine" id="cb9-12" data-line-number="12">    ext &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname))</a>
+<a class="sourceLine" id="cb9-13" data-line-number="13">    indx &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])</a>
+<a class="sourceLine" id="cb9-15" data-line-number="15">    n &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span> (<span class="kw"><a href="reference/vapour_read_names.html">vapour_read_names</a></span> (fname) [indx], <span class="dt">collapse =</span> <span class="st">","</span>) <span class="co"># GDAL FIDs</span></a>
+<a class="sourceLine" id="cb9-16" data-line-number="16">    stmt &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span> (<span class="st">"SELECT FID FROM "</span>, <span class="kw"><a href="reference/vapour_layer_names.html">vapour_layer_names</a></span> (fname),</a>
+<a class="sourceLine" id="cb9-17" data-line-number="17">                    <span class="st">" WHERE FID in ("</span>, n, <span class="st">")"</span>)</a>
+<a class="sourceLine" id="cb9-18" data-line-number="18">    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry</a></span> (fname, <span class="dt">sql =</span> stmt) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb9-19" data-line-number="19"><span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_as_sfc.html">st_as_sfc</a></span> ()</a>
+<a class="sourceLine" id="cb9-20" data-line-number="20">    a &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname, <span class="dt">sql =</span> stmt)</a>
+<a class="sourceLine" id="cb9-21" data-line-number="21">}</a>
+<a class="sourceLine" id="cb9-22" data-line-number="22">f_va3 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># convert json text via geojsonsf</span></a>
+<a class="sourceLine" id="cb9-23" data-line-number="23">{</a>
+<a class="sourceLine" id="cb9-24" data-line-number="24">    ext &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span></a>
+<a class="sourceLine" id="cb9-25" data-line-number="25">    indx &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb9-26" data-line-number="26"><span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])</a>
+<a class="sourceLine" id="cb9-27" data-line-number="27">    n &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span> (<span class="kw"><a href="reference/vapour_read_names.html">vapour_read_names</a></span> (fname) [indx], <span class="dt">collapse =</span> <span class="st">","</span>) <span class="co"># GDAL FIDs</span></a>
+<a class="sourceLine" id="cb9-28" data-line-number="28">    stmt &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span> (<span class="st">"SELECT FID FROM "</span>, <span class="kw"><a href="reference/vapour_layer_names.html">vapour_layer_names</a></span> (fname),</a>
+<a class="sourceLine" id="cb9-29" data-line-number="29">                    <span class="st">" WHERE FID in ("</span>, n, <span class="st">")"</span>)</a>
+<a class="sourceLine" id="cb9-30" data-line-number="30">    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry_text</a></span> (fname, <span class="dt">textformat =</span> <span class="st">"json"</span>, <span class="dt">sql =</span> stmt) </a>
+<a class="sourceLine" id="cb9-31" data-line-number="31">    g &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span> (g, <span class="cf">function</span> (i) geojsonsf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/geojsonsf/man/geojson_sfc.html">geojson_sfc</a></span> (i) [[<span class="dv">1</span>]]) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb9-32" data-line-number="32"><span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/sfc.html">st_sfc</a></span> ()</a>
+<a class="sourceLine" id="cb9-33" data-line-number="33">    a &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname, <span class="dt">sql =</span> stmt)</a>
+<a class="sourceLine" id="cb9-34" data-line-number="34">}</a></code></pre></div>
 <p>The benchmark timings - in particular the “relative” values - then illustrate the advantages of <code>vapour</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">rbenchmark<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rbenchmark/topics/benchmark">benchmark</a></span> (</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2">                       <span class="kw">f_sf1</span> (fname),</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3">                       <span class="kw">f_sf2</span> (fname),</a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">                       <span class="kw">f_va1</span> (fname),</a>
-<a class="sourceLine" id="cb9-5" data-line-number="5">                       <span class="kw">f_va2</span> (fname),</a>
-<a class="sourceLine" id="cb9-6" data-line-number="6">                       <span class="kw">f_va3</span> (fname),</a>
-<a class="sourceLine" id="cb9-7" data-line-number="7">                       <span class="dt">replications =</span> <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt;           test replications elapsed relative user.self sys.self user.child</span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt; 1 f_sf1(fname)           10   0.256    4.000     0.256    0.000          0</span></a>
-<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#&gt; 2 f_sf2(fname)           10   0.181    2.828     0.177    0.004          0</span></a>
-<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#&gt; 3 f_va1(fname)           10   0.064    1.000     0.064    0.000          0</span></a>
-<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt; 4 f_va2(fname)           10   0.080    1.250     0.072    0.008          0</span></a>
-<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt; 5 f_va3(fname)           10   0.254    3.969     0.250    0.004          0</span></a>
-<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#&gt;   sys.child</span></a>
-<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#&gt; 1         0</span></a>
-<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co">#&gt; 2         0</span></a>
-<a class="sourceLine" id="cb9-17" data-line-number="17"><span class="co">#&gt; 3         0</span></a>
-<a class="sourceLine" id="cb9-18" data-line-number="18"><span class="co">#&gt; 4         0</span></a>
-<a class="sourceLine" id="cb9-19" data-line-number="19"><span class="co">#&gt; 5         0</span></a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">rbenchmark<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/rbenchmark/man/benchmark.html">benchmark</a></span> (</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">                       <span class="kw">f_sf1</span> (fname),</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">                       <span class="kw">f_sf2</span> (fname),</a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">                       <span class="kw">f_va1</span> (fname),</a>
+<a class="sourceLine" id="cb10-5" data-line-number="5">                       <span class="kw">f_va2</span> (fname),</a>
+<a class="sourceLine" id="cb10-6" data-line-number="6">                       <span class="kw">f_va3</span> (fname),</a>
+<a class="sourceLine" id="cb10-7" data-line-number="7">                       <span class="dt">replications =</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt;           test replications elapsed relative user.self sys.self user.child</span></a>
+<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt; 1 f_sf1(fname)           10   0.218    3.574     0.214    0.004          0</span></a>
+<a class="sourceLine" id="cb10-10" data-line-number="10"><span class="co">#&gt; 2 f_sf2(fname)           10   0.156    2.557     0.155    0.000          0</span></a>
+<a class="sourceLine" id="cb10-11" data-line-number="11"><span class="co">#&gt; 3 f_va1(fname)           10   0.061    1.000     0.061    0.000          0</span></a>
+<a class="sourceLine" id="cb10-12" data-line-number="12"><span class="co">#&gt; 4 f_va2(fname)           10   0.077    1.262     0.078    0.000          0</span></a>
+<a class="sourceLine" id="cb10-13" data-line-number="13"><span class="co">#&gt; 5 f_va3(fname)           10   0.197    3.230     0.190    0.008          0</span></a>
+<a class="sourceLine" id="cb10-14" data-line-number="14"><span class="co">#&gt;   sys.child</span></a>
+<a class="sourceLine" id="cb10-15" data-line-number="15"><span class="co">#&gt; 1         0</span></a>
+<a class="sourceLine" id="cb10-16" data-line-number="16"><span class="co">#&gt; 2         0</span></a>
+<a class="sourceLine" id="cb10-17" data-line-number="17"><span class="co">#&gt; 3         0</span></a>
+<a class="sourceLine" id="cb10-18" data-line-number="18"><span class="co">#&gt; 4         0</span></a>
+<a class="sourceLine" id="cb10-19" data-line-number="19"><span class="co">#&gt; 5         0</span></a></code></pre></div>
 <p>Reading geometries only, as opposed to the <code>sf</code> reading of all geometries and attributes, affords a speed increase of about 25%, while utilizing the SQL capabilities of <a href="http://www.gdal.org/ogr_sql.html"><code>ogr_sql</code></a> offers an increase of around 75%.</p>
 </div>
 <div id="context" class="section level2">
@@ -251,6 +261,7 @@
 <a href="#code-of-conduct" class="anchor"></a>Code of conduct</h1>
 <p>Please note that this project is released with a <a href="CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
 </div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -274,12 +285,12 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Michael Sumner <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-2471-7511" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID" height="16"></a> </li>
+<li>Michael Sumner <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-2471-7511" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
 <li><a href="authors.html">All authors...</a></li>
 </ul>
 </div>
 
-      <div class="dev-status">
+  <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://travis-ci.org/hypertidy/vapour"><img src="http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&amp;env=BUILD_NAME=trusty_release&amp;label=linux" alt="Travis-CI Build Status"></a></li>
@@ -291,7 +302,6 @@
 </ul>
 </div>
 </div>
-
 </div>
 
 
@@ -300,12 +310,14 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

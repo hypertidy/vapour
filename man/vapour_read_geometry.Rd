@@ -45,7 +45,7 @@ Note that \code{limit_n} and \code{skip_n} interact with the affect of \code{sql
 while looping through available features \code{skip_n} features are ignored, and then a feature-count begins and the loop
 is stopped if \code{limit_n} is reached.
 
-Note that \code{extent} applies to the 'SpatialFilter' of 'ExecuteSQL': https://www.gdal.org/ogr_sql.html#ogr_sql_exec_sql.
+Note that \code{extent} applies to the 'SpatialFilter' of 'ExecuteSQL': https://gdal.org/user/ogr_sql_dialect.html#executesql.
 }
 \examples{
 file <- "list_locality_postcode_meander_valley.tab"

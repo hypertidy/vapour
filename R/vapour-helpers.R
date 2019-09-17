@@ -14,7 +14,7 @@
 #' @return list containing the following
 #' * `FID` the feature id value (an integer, usually sequential)
 #' * `valid_geometry` logical value if a non-empty geometry is available
-#' * `type` integer value of geometry type from [GDAL enumeration](https://www.gdal.org/ogr__core_8h.html#a800236a0d460ef66e687b7b65610f12a)
+#' * `type` integer value of geometry type from [GDAL enumeration](https://gdal.org/doxygen/ogr__core_8h.html#a800236a0d460ef66e687b7b65610f12a)
 #' * `xmin, xmax, ymin, ymax` numeric values of the extent (bounding box) of each geometry
 #' @export
 #'
@@ -54,7 +54,7 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, s
 #' Return information about the GDAL library in use.
 #'
 #' `vapour_gdal_version` returns the version of GDAL as a string. This corresponds to the "--version"
-#' as described for "GDALVersionInfo". [GDAL documentation](https://www.gdal.org/gdal_8h.html).
+#' as described for "GDALVersionInfo". [GDAL documentation](https://www.gdal.org/).
 #'
 #' `vapour_all_drivers` returns the names and capabilities of all available drivers, in a list. This contains:
 #' * `driver` the driver (short) name

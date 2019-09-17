@@ -9,7 +9,7 @@
 #' Data Abstraction Library' a translator for raster and vector geospatial data
 #' formats that presents a single raster abstract data model and single vector
 #' abstract data model to the calling application for all supported formats
-#' <http://gdal.org/>.
+#' <https://gdal.org/>.
 #'
 #' Lightweight means we access parts of the GDAL API as near as possible to
 #' their native usage. GDAL is not a lightweight library, but provide a very

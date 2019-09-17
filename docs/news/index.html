@@ -8,21 +8,32 @@
 
 <title>Changelog • vapour</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,7 +41,11 @@
 
 
 
+
 <meta property="og:title" content="Changelog" />
+<meta property="og:image" content="/logo.png" />
+<meta name="twitter:card" content="summary" />
+
 
 
 
@@ -42,6 +57,7 @@
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
 
 
   </head>
@@ -60,7 +76,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -68,7 +84,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -82,11 +98,10 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/hypertidy/vapour">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -97,6 +112,7 @@
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -106,6 +122,18 @@
       <small>Source: <a href='https://github.com/hypertidy/vapour/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="vapour-development-version" class="section level1">
+<h1 class="page-header">
+<a href="#vapour-development-version" class="anchor"></a>vapour (development version)<small> Unreleased </small>
+</h1>
+<ul>
+<li><p>New function <code><a href="../reference/vapour_vsi_list.html">vapour_vsi_list()</a></code> to list contents of virtual files. See <a href="https://twitter.com/mdsumner/status/1158335706483179521" class="uri">https://twitter.com/mdsumner/status/1158335706483179521</a> and <a href="https://github.com/hypertidy/vapour/issues/55" class="uri">https://github.com/hypertidy/vapour/issues/55</a> for inspirations.</p></li>
+<li><p>Added a hex sticker! Thanks to <a href='https://github.com/Maschette'>@Maschette</a>.</p></li>
+<li><p>Added ‘proj4’ string as well as ‘projection’ (WKT) to the output of <code><a href="../reference/vapour_raster_info.html">vapour_raster_info()</a></code><br>
+(these aren’t always available, especially not for longlat NetCDF).</p></li>
+<li><p>Fixed failure in <code>limit_n</code>, <code>skip_n</code> behaviour for reading names (FIDs) and attributes, (<a href='https://github.com/hypertidy/vapour/issues/60'>#60</a>).</p></li>
+</ul>
+</div>
     <div id="vapour-0-2-0" class="section level1">
 <h1 class="page-header">
 <a href="#vapour-0-2-0" class="anchor"></a>vapour 0.2.0<small> 2019-05-06 </small>
@@ -116,7 +144,7 @@
 <li><p>Restructured conversion to text geometries to properly free up memory, was causing memory leaks (found with valgrind).</p></li>
 <li><p>Use of <code>sql</code> now correctly uses ‘GDALDataset::ReleaseResultsSet()’ in each applicable function. Query with the ‘sql’ argument was not being executed in <code><a href="../reference/vapour_layer_names.html">vapour_layer_names()</a></code> but now is - only has utility for insert and drop queries, so will be rarely used and probably never had any impact before.</p></li>
 <li><p>Raster read gains a new argument <code>native = FALSE</code> to control use of the native window without specifying it. If <code>native = TRUE</code> then the native dimensions are used and read in full.</p></li>
-<li><p>Vector read functions gain new <code>extent</code> argument to apply a spatial filter in conjunction with the <code>sql</code> argument, per discussion (<a href='https://github.com/hypertidy/vapour/issues/34'>#34</a>). The extent can be of type sp, sf, raster, or generic vector <code><a href="https://www.rdocumentation.org/packages/base/topics/c">c(xmin, xmax, ymin, ymax)</a></code>. The extent is ignored if the <code>sql</code> argument is not specified, with a warning. Applies to <code><a href="../reference/vapour_geom_summary.html">vapour_geom_summary()</a></code>, <code><a href="../reference/vapour_read_attributes.html">vapour_read_attributes()</a></code>, <code><a href="../reference/vapour_read_geometry.html">vapour_read_extent()</a></code>, <code><a href="../reference/vapour_read_geometry.html">vapour_read_geometry()</a></code>, <code><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_text()</a></code>, and <code><a href="../reference/vapour_read_names.html">vapour_read_names()</a></code>. Thanks to Joseph Stachelek for the suggestion.</p></li>
+<li><p>Vector read functions gain new <code>extent</code> argument to apply a spatial filter in conjunction with the <code>sql</code> argument, per discussion (<a href='https://github.com/hypertidy/vapour/issues/34'>#34</a>). The extent can be of type sp, sf, raster, or generic vector <code><a href="https://rdrr.io/r/base/c.html">c(xmin, xmax, ymin, ymax)</a></code>. The extent is ignored if the <code>sql</code> argument is not specified, with a warning. Applies to <code><a href="../reference/vapour_geom_summary.html">vapour_geom_summary()</a></code>, <code><a href="../reference/vapour_read_attributes.html">vapour_read_attributes()</a></code>, <code><a href="../reference/vapour_read_geometry.html">vapour_read_extent()</a></code>, <code><a href="../reference/vapour_read_geometry.html">vapour_read_geometry()</a></code>, <code><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_text()</a></code>, and <code><a href="../reference/vapour_read_names.html">vapour_read_names()</a></code>. Thanks to Joseph Stachelek for the suggestion.</p></li>
 <li><p>Vector read functions gain new <code>limit_n</code> and <code>skip_n</code> arguments to specify a sequential set of features to be read, added to <code><a href="../reference/vapour_geom_summary.html">vapour_geom_summary()</a></code>,<br><code><a href="../reference/vapour_read_attributes.html">vapour_read_attributes()</a></code>, <code><a href="../reference/vapour_read_geometry.html">vapour_read_extent()</a></code>, <code><a href="../reference/vapour_read_geometry.html">vapour_read_geometry()</a></code>, <code><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_text()</a></code>, and <code><a href="../reference/vapour_read_names.html">vapour_read_names()</a></code>. Their effect occurs after that of the <code>sql</code> argument.</p></li>
 <li><p>New function <code><a href="../reference/GDAL-library.html">vapour_driver()</a></code> to determine chosen driver (vector, short name) of the data source.</p></li>
 <li><p>New argument <code>min_max</code> to allow fast default use of <code><a href="../reference/vapour_raster_info.html">vapour_raster_info()</a></code>, as per (<a href='https://github.com/hypertidy/vapour/issues/50'>#50</a>).</p></li>
@@ -168,6 +196,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#vapour-development-version">development version</a></li>
         <li><a href="#vapour-0-2-0">0.2.0</a></li>
         <li><a href="#vapour-0-1-0">0.1.0</a></li>
         <li><a href="#vapour-0-0-1">0.0.1</a></li>
@@ -177,19 +206,23 @@
 
 </div>
 
+
       <footer>
       <div class="copyright">
   <p>Developed by Michael Sumner.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
