@@ -1,4 +1,8 @@
-# vapour (development version)
+# vapour 0.3.0
+
+* Updates to configure to remove deprecated R CMD config CPP (thanks to CRAN). 
+
+* Updates to enable use of the deprecated PROJ API. 
 
 * New function `vapour_vsi_list()` to list contents of virtual files.  See https://twitter.com/mdsumner/status/1158335706483179521 and https://github.com/hypertidy/vapour/issues/55 for inspirations. 
 

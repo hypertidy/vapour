@@ -1,19 +1,19 @@
 
 Hello, 
 
-Resubmission of 0.2.0: 
+Submission of vapour 0.3.0: 
 
-* current problem tests on CRAN should now pass
-* fixed printf() from C++, replaced with Rprintf()
-* size of installed directories is expected for Windows tools install of GDAL (afaik)
+* deprecated configure R CMD config CPP removed
+* use of PROJ 6 deprecated API enable
+* size of installed directories is expected for GDAL 
 
 Thank you
 
 
 ## Test environments
 
-* Linux Ubuntu 18.04 install, R 3.6.0
-* ubuntu 14.04 (on travis-ci), R 3.6.0
+* Linux Ubuntu 18.04 install, R 3.6.1
+* ubuntu 14.04 (on travis-ci), R 3.6.1
 * win-builder (devel)
 
 ## R CMD check results

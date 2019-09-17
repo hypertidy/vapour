@@ -249,11 +249,11 @@ rbenchmark::benchmark (
                        replications = 10)
 #> manually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature countmanually finding feature count
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.237    3.247     0.232    0.004          0
-#> 2 f_sf2(fname)           10   0.163    2.233     0.163    0.000          0
-#> 3 f_va1(fname)           10   0.073    1.000     0.061    0.012          0
-#> 4 f_va2(fname)           10   0.087    1.192     0.087    0.000          0
-#> 5 f_va3(fname)           10   0.219    3.000     0.207    0.012          0
+#> 1 f_sf1(fname)           10   0.245    3.356     0.245    0.000          0
+#> 2 f_sf2(fname)           10   0.170    2.329     0.169    0.000          0
+#> 3 f_va1(fname)           10   0.073    1.000     0.073    0.000          0
+#> 4 f_va2(fname)           10   0.089    1.219     0.080    0.008          0
+#> 5 f_va3(fname)           10   0.225    3.082     0.209    0.016          0
 #>   sys.child
 #> 1         0
 #> 2         0
