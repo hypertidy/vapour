@@ -4,7 +4,7 @@ using namespace Rcpp;
 #include "gdal_priv.h"
 #include "gdalwarper.h"
 #include "cpl_conv.h" // for CPLMalloc()
-#include "ogr_api.h" // for OGRSpatialReference
+#include "ogr_spatialref.h" // for OGRSpatialReference
 
 #include "gdal.h"  // for GCPs
 
