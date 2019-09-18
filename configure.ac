@@ -1,9 +1,8 @@
-dnl copied from github.com/r-spatial/sf/configure.ac 2017-09-17 Michael Sumner
-dnl copied from github.com/r-spatial/sf/configure.ac 2017-07-29 Michael Sumner
+dnl copied from github.com/r-spatial/sf/configure.ac 2019-09-17 Michael Sumner
+dnl remove GEOS and PROJ sections
 dnl
 
 dnl Process this file with autoconf to produce a configure script.
-dnl GDAL stuff largely copied from rgdal, (c) Roger Bivand
 AC_INIT(src/vapour.cpp)
 
 : ${R_HOME=`R RHOME`}
@@ -260,58 +259,8 @@ fi
 # test whether PROJ is available to gdal:
 #
 
-gdal_has_proj=no
-[cat > gdal_proj.cpp <<_EOCONF
-#include <gdal.h>
-#include <ogr_srs_api.h>
-#include <ogr_spatialref.h>
-int main(int argc, char *argv[]) {
-	OGRSpatialReference *dest = new OGRSpatialReference;
-	OGRSpatialReference *src = new OGRSpatialReference;
-    src->importFromEPSG(4326);
-    dest->importFromEPSG(3857);
-	OGRCoordinateTransformation *ct = OGRCreateCoordinateTransformation(src, dest);
-	return(ct == NULL); // signals PROJ is not available through gdal
-}
-_EOCONF]
+## I don't think we care if GDAL has PROJ for vapour at the moment. MSumner September 2019
 
-AC_MSG_CHECKING(GDAL: checking whether PROJ is available for linking:)
-${CXX} ${CPPFLAGS} -o gdal_proj gdal_proj.cpp ${LIBS} 2> errors.txt
-if test `echo $?` -ne 0 ; then
-gdal_has_proj=no
-AC_MSG_RESULT(no)
-else
-gdal_has_proj=yes
-AC_MSG_RESULT(yes)
-fi
-
-if test "${gdal_has_proj}" = no; then
-   cat errors.txt
-   AC_MSG_NOTICE([Install failure: compilation and/or linkage problems.])
-   AC_MSG_ERROR([cannot link projection code])
-fi
-
-AC_MSG_CHECKING(GDAL: checking whether PROJ is available fur running:)
-./gdal_proj
-if test `echo $?` -ne 0 ; then
-gdal_has_proj=no
-AC_MSG_RESULT(no)
-else
-gdal_has_proj=yes
-AC_MSG_RESULT(yes)
-fi
-if test "${gdal_has_proj}" = no; then
-   AC_MSG_ERROR([OGRCoordinateTransformation() does not return a coord.trans: PROJ not available?])
-fi
-rm -fr errors.txt gdal_proj.cpp gdal_proj
-
-
-
-
-#
-# add PROJ_LIBS
-#
-AC_SUBST([PKG_LIBS], ["${PROJ_LIBS} ${PKG_LIBS}"])
 
 #
 # concluding substitution
