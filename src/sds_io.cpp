@@ -56,3 +56,4 @@ CharacterVector sds_info_cpp(const char* pszFilename)
   GDALClose( (GDALDatasetH) poDataset );
   return ret;
 }
+

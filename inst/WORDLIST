@@ -4,6 +4,9 @@ AppVeyor
 bbox
 behaviour
 centre
+CMD
+config
+CPP
 CubicSpline
 datasource
 datasourcename
