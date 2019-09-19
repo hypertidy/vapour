@@ -2,6 +2,7 @@
 using namespace Rcpp;
 
 #include "ogr_spatialref.h" // for OGRSpatialReference
+#include "cpl_conv.h" // for CPLFree()
 
 // [[Rcpp::export]]
 CharacterVector proj_to_wkt_cpp(CharacterVector proj_str) {
