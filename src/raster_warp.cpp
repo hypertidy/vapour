@@ -14,7 +14,7 @@ NumericVector warp_memory_cpp(CharacterVector source_filename,
                            IntegerVector target_dim) {
   GDALDatasetH hSrcDS;
   GDALDatasetH hDstDS;
-  GDALRasterBandH poBand;
+  GDALRasterBandH poBand, dstBand;
   GDALDriverH hDriver;
   GDALDataType eDT;
 
@@ -86,7 +86,9 @@ NumericVector warp_memory_cpp(CharacterVector source_filename,
   //INIT_RASTERIO_EXTRA_ARG(psExtraArg);
 
   CPLErr err;
-  err = GDALRasterIO(poBand,  GF_Read, 0, 0, target_dim[0], target_dim[1],
+  dstBand = GDALGetRasterBand(hDstDS, 1);
+
+  err = GDALRasterIO(dstBand,  GF_Read, 0, 0, target_dim[0], target_dim[1],
                           double_scanline, target_dim[0], target_dim[1], GDT_Float64,
                           0, 0);
   NumericVector res(target_dim[0] * target_dim[1]);

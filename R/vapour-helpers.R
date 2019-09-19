@@ -1,7 +1,17 @@
-## helpers
+#' PROJ4 string to WKT
+#'
+#' Convert a PROJ4 string to Well Known Text.
+#'
+#' The function is vectorized because why not, but probably only ever will be
+#' used on single element vectors of character strings.
+#' @param crs PROJ4 string
+#' @export
+#' @examples
+#' vapour_srs_wkt("+proj=laea +datum=WGS84")
+vapour_srs_wkt <- function(crs) {
+  unlist(lapply(crs, proj_to_wkt_cpp))
+}
 
-## TODO
-## add limit_n, good example to ensure it works for extent, names, and check in combo with SQL
 
 
 #' Summary of available geometry

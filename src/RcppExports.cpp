@@ -5,21 +5,6 @@
 
 using namespace Rcpp;
 
-// warp_memory_cpp
-NumericVector warp_memory_cpp(CharacterVector source_filename, CharacterVector source_WKT, CharacterVector target_WKT, NumericVector target_geotransform, IntegerVector target_dim);
-RcppExport SEXP _vapour_warp_memory_cpp(SEXP source_filenameSEXP, SEXP source_WKTSEXP, SEXP target_WKTSEXP, SEXP target_geotransformSEXP, SEXP target_dimSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type source_filename(source_filenameSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type source_WKT(source_WKTSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type target_WKT(target_WKTSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type target_geotransform(target_geotransformSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type target_dim(target_dimSEXP);
-    rcpp_result_gen = Rcpp::wrap(warp_memory_cpp(source_filename, source_WKT, target_WKT, target_geotransform, target_dim));
-    return rcpp_result_gen;
-END_RCPP
-}
 // VSI_list
 CharacterVector VSI_list(CharacterVector urlpath);
 RcppExport SEXP _vapour_VSI_list(SEXP urlpathSEXP) {
@@ -48,6 +33,21 @@ BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     rcpp_result_gen = Rcpp::wrap(vapour_all_drivers_cpp());
+    return rcpp_result_gen;
+END_RCPP
+}
+// warp_memory_cpp
+NumericVector warp_memory_cpp(CharacterVector source_filename, CharacterVector source_WKT, CharacterVector target_WKT, NumericVector target_geotransform, IntegerVector target_dim);
+RcppExport SEXP _vapour_warp_memory_cpp(SEXP source_filenameSEXP, SEXP source_WKTSEXP, SEXP target_WKTSEXP, SEXP target_geotransformSEXP, SEXP target_dimSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type source_filename(source_filenameSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type source_WKT(source_WKTSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type target_WKT(target_WKTSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type target_geotransform(target_geotransformSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type target_dim(target_dimSEXP);
+    rcpp_result_gen = Rcpp::wrap(warp_memory_cpp(source_filename, source_WKT, target_WKT, target_geotransform, target_dim));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -96,6 +96,17 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const char* >::type pszFilename(pszFilenameSEXP);
     rcpp_result_gen = Rcpp::wrap(sds_info_cpp(pszFilename));
+    return rcpp_result_gen;
+END_RCPP
+}
+// proj_to_wkt_cpp
+CharacterVector proj_to_wkt_cpp(CharacterVector proj_str);
+RcppExport SEXP _vapour_proj_to_wkt_cpp(SEXP proj_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type proj_str(proj_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(proj_to_wkt_cpp(proj_str));
     return rcpp_result_gen;
 END_RCPP
 }

@@ -1,3 +1,9 @@
+# vapour dev
+
+* New function `vapour_srs_wkt()` to convert PROJ4 strings to Well-Known Text. 
+
+* New internal function `warp_memory_cpp()` to warp small in memory rasters. 
+
 # vapour 0.3.0
 
 * Updates to configure to remove deprecated R CMD config CPP (thanks to CRAN). 
