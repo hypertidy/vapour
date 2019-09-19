@@ -50,7 +50,7 @@ List raster_info_cpp (CharacterVector filename, LogicalVector min_max)
     GDALComputeRasterMinMax(hBand, TRUE, adfMinMax);
   }
 
-  int nn = 7;
+  int nn = 8;
   Rcpp::List out(nn);
   Rcpp::CharacterVector names(nn);
   out[0] = trans;
@@ -91,6 +91,9 @@ List raster_info_cpp (CharacterVector filename, LogicalVector min_max)
   out[6] =  Rcpp::CharacterVector::create(""); //Rcpp::CharacterVector::create(stri);
   names[6] = "proj4";
 
+  int succ;
+  out[7] = GDALGetRasterNoDataValue(hBand, &succ);
+  names[7] = "nodata_value";
   out.attr("names") = names;
 
   //CPLFree(stri);

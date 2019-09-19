@@ -27,7 +27,7 @@
 #' @param ... reserved
 #' @param native apply the full native window for read, `FALSE` by default
 #' @param sds index of subdataset to read (usually 1)
-#'
+#' @param set_na specify whether NA values should be set for the NODATA
 #' @export
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
@@ -40,7 +40,7 @@
 #' ## the method can be used to up-sample as well
 #' str(matrix(vapour_read_raster(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 #'
-vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL, native = FALSE) {
+vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL, native = FALSE, set_na = TRUE) {
   datasourcename <- sds_boilerplate_checks(x, sds = sds)
   resample <- tolower(resample)  ## ensure check internally is lower case
   if (!resample %in% c("nearestneighbour", "average", "bilinear", "cubic", "cubicspline",
@@ -75,5 +75,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
   ## GDAL error
   if (any(window[5:6] < 1)) stop("requested output dimension cannot be less than 1")
   ## pull a swifty here with [[  to return numeric or integer
-  raster_io_cpp(filename = datasourcename, window  = window, band = band, resample = resample[1L])[[1L]]
+  vals <- raster_io_cpp(filename = datasourcename, window  = window, band = band, resample = resample[1L])[[1L]]
+  if (set_na) vals[vals == ri$nodata_value] <- NA
+  vals
 }
