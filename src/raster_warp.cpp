@@ -24,6 +24,7 @@ NumericVector warp_memory_cpp(CharacterVector source_filename,
   CPLAssert( hSrcDS != NULL );
 
   if (source_WKT[0] != "") {
+    Rprintf("setting projection");
     GDALSetProjection( hSrcDS, source_WKT[0] );
   } else {
     source_WKT[0] = GDALGetProjectionRef(hSrcDS);
