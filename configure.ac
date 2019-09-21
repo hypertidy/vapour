@@ -255,6 +255,12 @@ AC_MSG_NOTICE([Copy data for:])
   fi
 fi
 
+
+## missing link thanks J
+if test "${NEED_DEPS}" = yes; then
+   AC_SUBST([PKG_LIBS], ["${PKG_LIBS} ${GDAL_DEP_LIBS}"])
+fi
+
 #
 # test whether PROJ is available to gdal:
 #

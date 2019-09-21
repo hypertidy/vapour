@@ -13,7 +13,6 @@ addons:
     sources:
       - sourceline: 'ppa:opencpu/jq'
       - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
-
     packages:
 #      - libprotobuf-dev
 #      - protobuf-compiler
@@ -26,6 +25,17 @@ addons:
       - libspatialite-dev
       - libgdal-dev
       - gdal-bin
+      - pkg-config
+  homebrew:
+    packages:
+      - pkg-config
+      - gdal
+      - netcdf
+      - sqlite
+      - curl
+      - libgit2
+      - udunits
+    update: true
 
 matrix:
     include:
@@ -44,7 +54,7 @@ matrix:
         - os: osx
           r: release
           before_install: ''
-          disable_homebrew: true
+          disable_homebrew: false
           env:
            - BUILD_NAME=osx_release
            - R_CODECOV=true
