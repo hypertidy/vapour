@@ -11,7 +11,8 @@ NumericVector warp_memory_cpp(CharacterVector source_filename,
                            CharacterVector source_WKT,
                            CharacterVector target_WKT,
                            NumericVector target_geotransform,
-                           IntegerVector target_dim) {
+                           IntegerVector target_dim,
+                           IntegerVector band) {
   GDALDatasetH hSrcDS;
   GDALDatasetH hDstDS;
   GDALRasterBandH poBand, dstBand;
@@ -30,6 +31,10 @@ NumericVector warp_memory_cpp(CharacterVector source_filename,
     source_WKT[0] = GDALGetProjectionRef(hSrcDS);
   }
   poBand = GDALGetRasterBand(hSrcDS, 1);
+
+  //TODO need type handling for nodata
+  //int serr;
+  //double no_data = GDALGetRasterNoDataValue(poBand, &serr);
   // Create output with same datatype as first input band.
   eDT = GDALGetRasterDataType(poBand);
 
@@ -87,14 +92,19 @@ NumericVector warp_memory_cpp(CharacterVector source_filename,
   //INIT_RASTERIO_EXTRA_ARG(psExtraArg);
 
   CPLErr err;
-  dstBand = GDALGetRasterBand(hDstDS, 1);
+  dstBand = GDALGetRasterBand(hDstDS, band[0]);
 
   err = GDALRasterIO(dstBand,  GF_Read, 0, 0, target_dim[0], target_dim[1],
                           double_scanline, target_dim[0], target_dim[1], GDT_Float64,
                           0, 0);
   NumericVector res(target_dim[0] * target_dim[1]);
-  for (int i = 0; i < (target_dim[0] * target_dim[1]); i++) res[i] = double_scanline[i];
-
+  for (int i = 0; i < (target_dim[0] * target_dim[1]); i++) {
+  //  if (((float)double_scanline[i] == (float)no_data) || ISNAN(double_scanline[i])) {
+  //    res[i] = NA_REAL;
+  //  } else {
+      res[i] = double_scanline[i];
+  //  }
+  }
 
   GDALClose( hDstDS );
   GDALClose( hSrcDS );

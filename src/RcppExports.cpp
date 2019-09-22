@@ -37,8 +37,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // warp_memory_cpp
-NumericVector warp_memory_cpp(CharacterVector source_filename, CharacterVector source_WKT, CharacterVector target_WKT, NumericVector target_geotransform, IntegerVector target_dim);
-RcppExport SEXP _vapour_warp_memory_cpp(SEXP source_filenameSEXP, SEXP source_WKTSEXP, SEXP target_WKTSEXP, SEXP target_geotransformSEXP, SEXP target_dimSEXP) {
+NumericVector warp_memory_cpp(CharacterVector source_filename, CharacterVector source_WKT, CharacterVector target_WKT, NumericVector target_geotransform, IntegerVector target_dim, IntegerVector band);
+RcppExport SEXP _vapour_warp_memory_cpp(SEXP source_filenameSEXP, SEXP source_WKTSEXP, SEXP target_WKTSEXP, SEXP target_geotransformSEXP, SEXP target_dimSEXP, SEXP bandSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -47,7 +47,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type target_WKT(target_WKTSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type target_geotransform(target_geotransformSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type target_dim(target_dimSEXP);
-    rcpp_result_gen = Rcpp::wrap(warp_memory_cpp(source_filename, source_WKT, target_WKT, target_geotransform, target_dim));
+    Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
+    rcpp_result_gen = Rcpp::wrap(warp_memory_cpp(source_filename, source_WKT, target_WKT, target_geotransform, target_dim, band));
     return rcpp_result_gen;
 END_RCPP
 }

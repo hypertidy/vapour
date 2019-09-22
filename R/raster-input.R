@@ -79,3 +79,41 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
   if (set_na) vals[vals == ri$nodata_value] <- NA
   vals
 }
+
+
+vapour_raster_warp <- function(x, band = 1L,
+                               geotransform = NULL,
+                               dimension = NULL,
+                               wkt = "",
+                               set_na = TRUE,
+                               source_wkt = NULL) {
+  stopifnot(is.numeric(band))
+  stopifnot(is.numeric(geotransform))
+  stopifnot(length(geotransform) == 6L)
+  stopifnot(is.numeric(dimension))
+  stopifnot(length(dimension) == 2L)
+  stopifnot(all(dimension > 0))
+  if (!is.null(source_wkt)) stopifnot(is.character(source_wkt))
+  stopifnot(nchar(source_wkt) > 10)
+  stopifnot(nchar(wkt)> 0)
+  ## TODO: validate geotransform, source_wkt, dimension
+  if (length(band) != 1) {
+    warning("more than one band requested, using first only")
+  }
+  if (is.null(source_wkt)) source_wkt <-  ""
+  if (band < 1) stop("band must be 1 or higher")
+  vals <- warp_memory_cpp(x, source_WKT = source_wkt,
+                                   target_WKT = wkt,
+                                   target_geotransform = geotransform,
+                                   target_dim = dimension, band = band)
+  #ri <- vapour_raster_info(x)
+  #if (set_na) {
+   # vals[vals == ri$nodata_value] <- NA
+   # x[abs(x - ri$nodata_value) < sqrt(.Machine$double.eps)] <- NA
+  #}
+  vals
+}
+
+
+
+

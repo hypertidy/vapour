@@ -13,8 +13,8 @@ vapour_all_drivers_cpp <- function() {
     .Call('_vapour_vapour_all_drivers_cpp', PACKAGE = 'vapour')
 }
 
-warp_memory_cpp <- function(source_filename, source_WKT, target_WKT, target_geotransform, target_dim) {
-    .Call('_vapour_warp_memory_cpp', PACKAGE = 'vapour', source_filename, source_WKT, target_WKT, target_geotransform, target_dim)
+warp_memory_cpp <- function(source_filename, source_WKT, target_WKT, target_geotransform, target_dim, band) {
+    .Call('_vapour_warp_memory_cpp', PACKAGE = 'vapour', source_filename, source_WKT, target_WKT, target_geotransform, target_dim, band)
 }
 
 raster_info_cpp <- function(filename, min_max) {
