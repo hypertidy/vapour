@@ -1,7 +1,7 @@
-# vapour dev
+# vapour 0.4.0
 
-* Fixed static linking for macOS build, thanks(!!) to Jeroen Ooms for guidance and 
- to CRAN for reporting the issue. 
+* Fixed static linking for MacOS build, thanks(!!) to Jeroen Ooms for guidance 
+ and thanks to CRAN for reporting the issue. 
  
 * New function `vapour_srs_wkt()` to convert PROJ4 strings to Well-Known Text. 
 
