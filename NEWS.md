@@ -1,5 +1,13 @@
 # vapour 0.4.0
 
+* New data set `tas_wkt` a Well-Known-Text string to simplify an example
+ in the documentation. 
+* The function `vapour_read_raster()` now returns a list with a single vector of
+ values from the requested band. In future this may return values from multiple
+ bands. The new function `vapour_warp_raster()` uses the same scheme.
+
+* New function `vapour_warp_raster()` to return a warped version from
+ a raster source. 
 * Fixed static linking for MacOS build, thanks(!!) to Jeroen Ooms for guidance 
  and thanks to CRAN for reporting the issue. 
  
