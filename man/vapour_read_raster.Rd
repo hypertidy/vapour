@@ -24,6 +24,9 @@ vapour_read_raster(x, band = 1, window, resample = "nearestneighbour",
 
 \item{set_na}{specify whether NA values should be set for the NODATA}
 }
+\value{
+list of numeric vectors (only one for 'band')
+}
 \description{
 Read a window of data from a GDAL raster source. The first argument is the source
 name and the second is a 6-element \code{window} of offset, source dimension, and output dimension.

@@ -20,8 +20,9 @@ test_that("resampling works", {
   for (i in seq_along(l)) {
     ## just check their length
     expect_equal(length(as.numeric(l[[i]])),
-                 length(vapour_read_raster(f, window = c(0, 0, 10, 10, 5, 5), resample = names(l)[i])))
+                 length(vapour_read_raster(f, window = c(0, 0, 10, 10, 5, 5), resample = names(l)[i])[[1]]))
   }
+
   expect_warning(vapour_read_raster(f, window = c(0, 0, 10, 10, 10, 10), resample = "idontexist"), "resample mode 'idontexist' is unknown")
 })
 test_that("window handling is sane", {
@@ -65,7 +66,7 @@ test_that("gcps work", {
 
 test_that("band sanity prevails", {
   f1 <- system.file("extdata/gdal/geos_rad.nc", package = "vapour", mustWork = TRUE)
-  expect_equivalent(unique(vapour_read_raster(f1, native = TRUE, band = 1)), 129.0)
+  expect_equivalent(unique(vapour_read_raster(f1, native = TRUE, band = 1)[[1]]), 129.0)
 
   expect_error(vapour_read_raster(f1))
   expect_silent(vapour_read_raster(f1, native = TRUE, band = 1))

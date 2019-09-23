@@ -22,6 +22,9 @@ vapour_warp_raster(x, band = 1L, geotransform = NULL,
 
 \item{source_wkt}{optional, override the projection of the source with WKT}
 }
+\value{
+list of vectors (only 1 for 'band') of numeric values, in raster order
+}
 \description{
 Read a window of data from a GDAL raster source through a warp specification.
 Only a single band may be read. The warp specification is provided by 'geotransform',

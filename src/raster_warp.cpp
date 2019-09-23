@@ -7,7 +7,7 @@ using namespace Rcpp;
 #include "cpl_conv.h" // for CPLMalloc()
 
 // [[Rcpp::export]]
-NumericVector warp_memory_cpp(CharacterVector source_filename,
+List warp_memory_cpp(CharacterVector source_filename,
                            CharacterVector source_WKT,
                            CharacterVector target_WKT,
                            NumericVector target_geotransform,
@@ -108,5 +108,8 @@ NumericVector warp_memory_cpp(CharacterVector source_filename,
 
   GDALClose( hDstDS );
   GDALClose( hSrcDS );
-  return res;
+  Rcpp::List outlist(1);  //hardcode to 1 for now
+  outlist[0] = res;
+
+  return outlist;
 }

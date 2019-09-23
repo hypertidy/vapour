@@ -37,7 +37,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // warp_memory_cpp
-NumericVector warp_memory_cpp(CharacterVector source_filename, CharacterVector source_WKT, CharacterVector target_WKT, NumericVector target_geotransform, IntegerVector target_dim, IntegerVector band);
+List warp_memory_cpp(CharacterVector source_filename, CharacterVector source_WKT, CharacterVector target_WKT, NumericVector target_geotransform, IntegerVector target_dim, IntegerVector band);
 RcppExport SEXP _vapour_warp_memory_cpp(SEXP source_filenameSEXP, SEXP source_WKTSEXP, SEXP target_WKTSEXP, SEXP target_geotransformSEXP, SEXP target_dimSEXP, SEXP bandSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

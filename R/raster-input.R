@@ -29,6 +29,7 @@
 #' @param sds index of subdataset to read (usually 1)
 #' @param set_na specify whether NA values should be set for the NODATA
 #' @export
+#' @return list of numeric vectors (only one for 'band')
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' ## a 5*5 window from a 10*10 region
@@ -75,8 +76,9 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
   ## GDAL error
   if (any(window[5:6] < 1)) stop("requested output dimension cannot be less than 1")
   ## pull a swifty here with [[  to return numeric or integer
-  vals <- raster_io_cpp(filename = datasourcename, window  = window, band = band, resample = resample[1L])[[1L]]
-  if (set_na) vals[vals == ri$nodata_value] <- NA
+  vals <- raster_io_cpp(filename = datasourcename, window  = window, band = band, resample = resample[1L])
+  if (set_na) vals[[1]][vals[[1]] == ri$nodata_value] <- NA   ## hardcode to 1 for now
+  names(vals) <- sprintf("Band%i",band)
   vals
 }
 
@@ -118,7 +120,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #' @param set_na NOT IMPLEMENTED logical, should 'NODATA' values be set to `NA`
 #' @param source_wkt optional, override the projection of the source with WKT
 #'
-#' @return vector of numeric values, in raster order
+#' @return list of vectors (only 1 for 'band') of numeric values, in raster order
 #' @export
 #'
 #' @examples
@@ -163,6 +165,7 @@ vapour_warp_raster <- function(x, band = 1L,
    # vals[vals == ri$nodata_value] <- NA
    # x[abs(x - ri$nodata_value) < sqrt(.Machine$double.eps)] <- NA
   #}
+  names(vals) <- sprintf("Band%i",band)
   vals
 }
 

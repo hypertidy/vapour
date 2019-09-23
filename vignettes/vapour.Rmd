@@ -130,8 +130,10 @@ prod(vapour_raster_info(f)$dimXY)
 
 By chaining together what we know about how raster data works we can get exactly what we want from GDAL. 
 
+(Note that `vapour_read_raster()` returns a list of one band, new behaviour since version 0.4.0). 
+
 ```{r gdal-flex}
-mm <- matrix(vapour_read_raster(f, native = TRUE), 
+mm <- matrix(vapour_read_raster(f, native = TRUE)[[1]], 
       vapour_raster_info(f)$dimXY)
 mm[mm < -1e6] <- NA
 image(mm[,ncol(mm):1], asp = 2)
