@@ -27,11 +27,3 @@ test_that("osm arbitrary FIDs as expected", {
   vapour_read_names(osmfile,  sql = "SELECT FID FROM lines", limit_n = 4) %>% expect_equal(100:103)
 })
 
-test_that("sds checks work", {
-  skip_on_travis()  # doesn't get the message for some reason
-  skip_on_appveyor()
-  skip_on_cran()
-  sds <- system.file("extdata/gdal/complex.h5", package = "vapour")
-  expect_message(sds_boilerplate_checks(sds), "subdataset \\(variable\\) used is '//f16'")
-  }
-)
