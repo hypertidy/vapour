@@ -76,6 +76,7 @@ nc
 ncols
 NearestNeighbour
 NetCDF
+NODATA
 Nowosad
 nrows
 NULLs
