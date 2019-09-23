@@ -21,7 +21,7 @@
 #' the default window specification will be used, the entire extent at native resolution. If 'window'
 #' is specified and `native = TRUE` then the window is used as-is, with a warning (native is ignored).
 #' @param x data source
-#' @param band index of which band to read
+#' @param band index of which band to read (1-based)
 #' @param window src_offset, src_dim, out_dim
 #' @param resample resampling method used (see details)
 #' @param ... reserved
@@ -81,7 +81,59 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 }
 
 
-vapour_raster_warp <- function(x, band = 1L,
+#' Raster input (warp)
+#'
+#' Read a window of data from a GDAL raster source through a warp specification.
+#' Only a single band may be read. The warp specification is provided by 'geotransform',
+#' 'dimension', and 'wkt' properties of the transformed output.
+#'
+#' This function is not memory safe, the source is left on disk but the output
+#' raster is all computed in memory so please be careful with very large values
+#' for 'dimension'. `1000 * 1000 * 8` for 1000 columns, 1000 rows and floating point
+#' double type will be 8Mb.
+#'
+#' There's no control over the output type (always double floating point) and no
+#' control for the resampling algorithm (uses 'nearest neighbour').
+#'
+#' 'wkt' refers to the full Well-Known-Text specification of a coordinate reference
+#' system. See [vapour_srs_wkt()] for conversion from PROJ.4 string to WKT.
+#'
+#' 'geotransform' is the six-figure affine transform 'xmin, xres, yskew, ymax, xskew, yres' see [vapour_raster_info()] for more detail.
+#'
+#' 'dimension' is the pixel dimensions of the output, x (ncol) then y (nrow).
+#'
+#' Values for missing data are not yet handled, just returned
+#' as-is. Note that there may be regions of "zero data" in a warped output,
+#' separate from propagated missing "NODATA" values in the source.
+#'
+#' Argument 'source_wkt' may be used to assign the proejction of the source, this
+#' is sometimes required especially for NetCDF files (no checking is done). If the
+#' source has no projection and this is not set GDAL will error.
+#'
+#' @param x data source string (file name or URL or database connection string)
+#' @param band index of band to read (1-based)
+#' @param geotransform the affine geotransform of the warped raster
+#' @param dimension dimensions in pixels of the warped raster (x, y)
+#' @param wkt projection of warped raster in Well-Known-Text
+#' @param set_na NOT IMPLEMENTED logical, should 'NODATA' values be set to `NA`
+#' @param source_wkt optional, override the projection of the source with WKT
+#'
+#' @return vector of numeric values, in raster order
+#' @export
+#'
+#' @examples
+#' gt <- c(-637239.4, 5030.0, 0.0, 261208.7, 0.0, -7760.0)
+#'
+#' f <- system.file("extdata", "sst.tif", package = "vapour")
+#' vals <- vapour_warp_raster(f, geotransform = gt,
+#'                               dimension = c(186, 298),
+#'                               wkt = tas_wkt)
+#' ## wkt, dimension, geotransform above created via
+#' ##p <- raster::projectRaster(f,
+#' ## crs = "+proj=laea +lon_0=147 +lat_0=-42 +datum=WGS84")
+#' ##writeRaster(p, "a.tif")
+#' ## vapour::vapour_raster_info("a.tif")
+vapour_warp_raster <- function(x, band = 1L,
                                geotransform = NULL,
                                dimension = NULL,
                                wkt = "",

@@ -10,7 +10,7 @@ vapour_read_raster(x, band = 1, window, resample = "nearestneighbour",
 \arguments{
 \item{x}{data source}
 
-\item{band}{index of which band to read}
+\item{band}{index of which band to read (1-based)}
 
 \item{window}{src_offset, src_dim, out_dim}
 

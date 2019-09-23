@@ -77,7 +77,7 @@ They are
 \item{GT0, xmin}{the x position of the lower left corner of the lower left pixel}
 \item{GT1, xres}{the scale of the x-axis, the width of the pixel in x-units}
 \item{GT2, yskew}{y component of the pixel width}
-\item{GT3, ymin}{the y position of the upper left corner of the upper left pixel}
+\item{GT3, ymax}{the y position of the upper left corner of the upper left pixel}
 \item{GT4, xskew}{x component of the pixel height}
 \item{GT5, yres}{the scale of the y-axis, the height of the pixel in \emph{negative} y-units}
 }
