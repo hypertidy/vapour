@@ -1,9 +1,9 @@
 context("test-raster-info")
 
 ## too flaky
-skip_on_appveyor()
-skip_on_travis()
-skip_on_cran()
+#skip_on_appveyor()
+#skip_on_travis()
+#skip_on_cran()
 
 
 test_that("sds checks work", {
