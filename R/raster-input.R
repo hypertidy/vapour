@@ -156,6 +156,7 @@ vapour_warp_raster <- function(x, band = 1L,
   }
   if (is.null(source_wkt)) source_wkt <-  ""
   if (band < 1) stop("band must be 1 or higher")
+  print(source_wkt)
   vals <- warp_memory_cpp(x, source_WKT = source_wkt,
                                    target_WKT = wkt,
                                    target_geotransform = geotransform,

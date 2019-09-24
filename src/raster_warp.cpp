@@ -24,11 +24,12 @@ List warp_memory_cpp(CharacterVector source_filename,
   hSrcDS = GDALOpen( source_filename[0], GA_ReadOnly );
   CPLAssert( hSrcDS != NULL );
 
-  if (source_WKT[0] != "") {
+  if (source_WKT[0].empty()) {
+    // do nothing
+  } else {
+
     Rprintf("setting projection");
     GDALSetProjection( hSrcDS, source_WKT[0] );
-  } else {
-    source_WKT[0] = GDALGetProjectionRef(hSrcDS);
   }
   poBand = GDALGetRasterBand(hSrcDS, 1);
 
