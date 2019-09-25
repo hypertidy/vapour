@@ -63,7 +63,7 @@ The workflows available are intended to support development of applications in R
 
 ## Installation
 
-The package can be installed from Github.
+The package can be installed from CRAN.
 
 ```{r, install-cran, eval=FALSE}
 ## install.packages("remotes")
