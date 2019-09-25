@@ -2,7 +2,7 @@
 
 ## BREAKING CHANGES
 
-* `vapour_read_raster()` now returns a list of (one) numeric vector. This change is so 
+* The function `vapour_read_raster()` now returns a list of (one) numeric vector. This change is so 
  a future version can return more than one band for this function and for `vapour_warp_raster()`. 
  
 ## NEW FEATURES
