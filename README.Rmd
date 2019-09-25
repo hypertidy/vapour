@@ -70,7 +70,6 @@ The package can be installed from CRAN.
 remotes::install_cran("vapour")
 ```
 
-
 The development version can be installed from Github.
 
 ```{r install-dev, eval=FALSE}
