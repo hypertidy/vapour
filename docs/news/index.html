@@ -138,10 +138,10 @@
 <a href="#new-features" class="anchor"></a>NEW FEATURES</h2>
 <ul>
 <li><p>New data set <code>tas_wkt</code> a Well-Known-Text string to simplify an example in the documentation.</p></li>
-<li><p>The function <code><a href="../reference/vapour_read_raster.html">vapour_read_raster()</a></code> now returns a list with a single vector of values from the requested band. In future this may return values from multiple bands. The new function <code><a href="../reference/vapour_warp_raster.html">vapour_warp_raster()</a></code> uses the same scheme.</p></li>
+<li><p>The function <code><a href="../reference/vapour_read_raster.html">vapour_read_raster()</a></code> now returns a list with a single vector of values from the requested band. In future this may return values from multiple bands. The new function <code>vapour_warp_raster()</code> uses the same scheme.</p></li>
 <li><p>Fixed static linking for MacOS build, thanks(!!) to Jeroen Ooms for guidance and thanks to CRAN for reporting the issue.</p></li>
 <li><p>New function <code><a href="../reference/vapour_srs_wkt.html">vapour_srs_wkt()</a></code> to convert PROJ4 strings to Well-Known Text.</p></li>
-<li><p>New <em>internal-only</em> function <code><a href="../reference/vapour_warp_raster.html">vapour_warp_raster()</a></code> to return a warped version from a raster source. Please use with caution, it’s still flaky for certain cases and will crash your session (setting projection on NetCDF 0,360 is one example but not fleshed out yet - see hypertidy/lazyraster for in-dev usage examples.)</p></li>
+<li><p>New <em>internal-only</em> function <code>vapour_warp_raster()</code> to return a warped version from a raster source. Please use with caution, it’s still flaky for certain cases and will crash your session (setting projection on NetCDF 0,360 is one example but not fleshed out yet - see hypertidy/lazyraster for in-dev usage examples.)</p></li>
 <li><p>New internal function <code>warp_memory_cpp()</code> to warp small in memory rasters.</p></li>
 </ul>
 </div>

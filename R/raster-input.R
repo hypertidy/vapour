@@ -119,15 +119,15 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #' @param wkt projection of warped raster in Well-Known-Text
 #' @param set_na NOT IMPLEMENTED logical, should 'NODATA' values be set to `NA`
 #' @param source_wkt optional, override the projection of the source with WKT
-#'
+#' @noRd
 #' @return list of vectors (only 1 for 'band') of numeric values, in raster order
 #' @examples
-#' gt <- c(-637239.4, 5030.0, 0.0, 261208.7, 0.0, -7760.0)
+#' #gt <- c(-637239.4, 5030.0, 0.0, 261208.7, 0.0, -7760.0)
 #'
-#' f <- system.file("extdata", "sst.tif", package = "vapour")
-#' vals <- vapour_warp_raster(f, geotransform = gt,
-#'                               dimension = c(186, 298),
-#'                               wkt = tas_wkt)
+#' #f <- system.file("extdata", "sst.tif", package = "vapour")
+#' #vals <- vapour_warp_raster(f, geotransform = gt,
+#' #                             dimension = c(186, 298),
+#' #                             wkt = tas_wkt)
 #' ## wkt, dimension, geotransform above created via
 #' ##p <- raster::projectRaster(f,
 #' ## crs = "+proj=laea +lon_0=147 +lat_0=-42 +datum=WGS84")

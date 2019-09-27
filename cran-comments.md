@@ -1,8 +1,9 @@
 
 Hello, 
 
-Submission  of vapour 0.4.0: 
+*Second* submission  of vapour 0.4.0: 
 
+* removed dysfunctional man page
 * fixed lack of support for static-linking on MacOS
 
 Thank you
