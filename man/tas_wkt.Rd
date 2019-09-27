@@ -10,5 +10,5 @@ centred on Tasmania.
 }
 \details{
 Created from '+proj=laea +lon_0=147 +lat_0=-42 +datum=WGS84'.
-Use in \code{\link[=vapour_warp_raster]{vapour_warp_raster()}} example.
+For use in a future warping example.
 }
