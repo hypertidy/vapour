@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>GDAL version and drivers. — vapour_gdal_version • vapour</title>
+<title>IN-DEV,NOT EXPORTED Raster input (warp) — vapour_warp_raster • vapour</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -42,8 +42,10 @@
 
 
 
-<meta property="og:title" content="GDAL version and drivers. — vapour_gdal_version" />
-<meta property="og:description" content="Return information about the GDAL library in use." />
+<meta property="og:title" content="IN-DEV,NOT EXPORTED Raster input (warp) — vapour_warp_raster" />
+<meta property="og:description" content="Read a window of data from a GDAL raster source through a warp specification.
+Only a single band may be read. The warp specification is provided by 'geotransform',
+'dimension', and 'wkt' properties of the transformed output." />
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -119,58 +121,93 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>GDAL version and drivers.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/hypertidy/vapour/blob/master/R/vapour-helpers.R'><code>R/vapour-helpers.R</code></a></small>
-    <div class="hidden name"><code>GDAL-library.Rd</code></div>
+    <h1>IN-DEV,NOT EXPORTED Raster input (warp)</h1>
+    <small class="dont-index">Source: <a href='https://github.com/hypertidy/vapour/blob/master/R/raster-input.R'><code>R/raster-input.R</code></a></small>
+    <div class="hidden name"><code>vapour_warp_raster.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Return information about the GDAL library in use.</p>
+    <p>Read a window of data from a GDAL raster source through a warp specification.
+Only a single band may be read. The warp specification is provided by 'geotransform',
+'dimension', and 'wkt' properties of the transformed output.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vapour_gdal_version</span>()
-
-<span class='fu'>vapour_all_drivers</span>()
-
-<span class='fu'>vapour_driver</span>(<span class='no'>dsource</span>)</pre>
+    <pre class="usage"><span class='fu'>vapour_warp_raster</span>(<span class='no'>x</span>, <span class='kw'>band</span> <span class='kw'>=</span> <span class='fl'>1L</span>, <span class='kw'>geotransform</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>dimension</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>wkt</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>set_na</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>source_wkt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dsource</th>
-      <td><p>data source string (i.e. file name or URL or database connection string)</p></td>
+      <th>x</th>
+      <td><p>data source string (file name or URL or database connection string)</p></td>
+    </tr>
+    <tr>
+      <th>band</th>
+      <td><p>index of band to read (1-based)</p></td>
+    </tr>
+    <tr>
+      <th>geotransform</th>
+      <td><p>the affine geotransform of the warped raster</p></td>
+    </tr>
+    <tr>
+      <th>dimension</th>
+      <td><p>dimensions in pixels of the warped raster (x, y)</p></td>
+    </tr>
+    <tr>
+      <th>wkt</th>
+      <td><p>projection of warped raster in Well-Known-Text</p></td>
+    </tr>
+    <tr>
+      <th>set_na</th>
+      <td><p>NOT IMPLEMENTED logical, should 'NODATA' values be set to <code>NA</code></p></td>
+    </tr>
+    <tr>
+      <th>source_wkt</th>
+      <td><p>optional, override the projection of the source with WKT</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>list of vectors (only 1 for 'band') of numeric values, in raster order</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>vapour_gdal_version</code> returns the version of GDAL as a string. This corresponds to the "--version"
-as described for "GDALVersionInfo". <a href='https://www.gdal.org/'>GDAL documentation</a>.</p>
-<p><code>vapour_all_drivers</code> returns the names and capabilities of all available drivers, in a list. This contains:</p><ul>
-<li><p><code>driver</code> the driver (short) name</p></li>
-<li><p><code>name</code> the (long) description name</p></li>
-<li><p><code>vector</code> logical vector indicating a vector driver</p></li>
-<li><p><code>raster</code> logical vector indicating a raster driver</p></li>
-<li><p><code>create</code> driver can create (note vapour provides no write capacity)</p></li>
-<li><p><code>copy</code>   driver can copy (note vapour provides no write capacity)</p></li>
-<li><p><code>virtual</code> driver has virtual capabilities ('vsi')</p></li>
-</ul>
-
+    <p>This function is not memory safe, the source is left on disk but the output
+raster is all computed in memory so please be careful with very large values
+for 'dimension'. <code>1000 * 1000 * 8</code> for 1000 columns, 1000 rows and floating point
+double type will be 8Mb.</p>
+<p>There's no control over the output type (always double floating point) and no
+control for the resampling algorithm (uses 'nearest neighbour').</p>
+<p>'wkt' refers to the full Well-Known-Text specification of a coordinate reference
+system. See <code><a href='vapour_srs_wkt.html'>vapour_srs_wkt()</a></code> for conversion from PROJ.4 string to WKT.</p>
+<p>'geotransform' is the six-figure affine transform 'xmin, xres, yskew, ymax, xskew, yres' see <code><a href='vapour_raster_info.html'>vapour_raster_info()</a></code> for more detail.</p>
+<p>'dimension' is the pixel dimensions of the output, x (ncol) then y (nrow).</p>
+<p>Values for missing data are not yet handled, just returned
+as-is. Note that there may be regions of "zero data" in a warped output,
+separate from propagated missing "NODATA" values in the source.</p>
+<p>Argument 'source_wkt' may be used to assign the proejction of the source, this
+is sometimes required especially for NetCDF files (no checking is done). If the
+source has no projection and this is not set GDAL will error.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>vapour_gdal_version</span>()</div><div class='output co'>#&gt; [1] "GDAL 2.4.2, released 2019/06/28"</div><div class='input'>
-<span class='no'>drv</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_all_drivers</span>()
+    <pre class="examples"><div class='input'><span class='no'>gt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>637239.4</span>, <span class='fl'>5030.0</span>, <span class='fl'>0.0</span>, <span class='fl'>261208.7</span>, <span class='fl'>0.0</span>, -<span class='fl'>7760.0</span>)
 
-<span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/sst_c.gpkg"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"vapour"</span>)
-<span class='fu'>vapour_driver</span>(<span class='no'>f</span>)</div><div class='output co'>#&gt; [1] "GPKG"</div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span>(<span class='no'>drv</span>)[<span class='fu'><a href='https://rdrr.io/r/base/match.html'>match</a></span>(<span class='fu'>vapour_driver</span>(<span class='no'>f</span>), <span class='no'>drv</span>$<span class='no'>driver</span>), ]</div><div class='output co'>#&gt;     driver       name vector raster create copy virtual
-#&gt; 162   GPKG GeoPackage   TRUE   TRUE   TRUE TRUE    TRUE</div></pre>
+<span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"sst.tif"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"vapour"</span>)
+<span class='no'>vals</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_warp_raster</span>(<span class='no'>f</span>, <span class='kw'>geotransform</span> <span class='kw'>=</span> <span class='no'>gt</span>,
+                              <span class='kw'>dimension</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>186</span>, <span class='fl'>298</span>),
+                              <span class='kw'>wkt</span> <span class='kw'>=</span> <span class='no'>tas_wkt</span>)</div><div class='output co'>#&gt; <span class='error'>Error in vapour_warp_raster(f, geotransform = gt, dimension = c(186, 298),     wkt = tas_wkt): could not find function "vapour_warp_raster"</span></div><div class='input'>## wkt, dimension, geotransform above created via
+##p <- raster::projectRaster(f,
+## crs = "+proj=laea +lon_0=147 +lat_0=-42 +datum=WGS84")
+##writeRaster(p, "a.tif")
+## vapour::vapour_raster_info("a.tif")
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
       <li><a href="#details">Details</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>

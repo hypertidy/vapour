@@ -313,11 +313,11 @@ rbenchmark::benchmark (
 #> 
 #> manually finding feature count
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.248    3.351     0.248    0.000          0
-#> 2 f_sf2(fname)           10   0.175    2.365     0.174    0.000          0
-#> 3 f_va1(fname)           10   0.074    1.000     0.074    0.000          0
-#> 4 f_va2(fname)           10   0.088    1.189     0.084    0.004          0
-#> 5 f_va3(fname)           10   0.216    2.919     0.212    0.004          0
+#> 1 f_sf1(fname)           10   0.249    3.458     0.249    0.001          0
+#> 2 f_sf2(fname)           10   0.180    2.500     0.176    0.004          0
+#> 3 f_va1(fname)           10   0.072    1.000     0.064    0.008          0
+#> 4 f_va2(fname)           10   0.085    1.181     0.086    0.000          0
+#> 5 f_va3(fname)           10   0.215    2.986     0.203    0.012          0
 #>   sys.child
 #> 1         0
 #> 2         0

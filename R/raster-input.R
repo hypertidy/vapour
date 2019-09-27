@@ -83,7 +83,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 }
 
 
-#' Raster input (warp)
+#' IN-DEV,NOT EXPORTED Raster input (warp)
 #'
 #' Read a window of data from a GDAL raster source through a warp specification.
 #' Only a single band may be read. The warp specification is provided by 'geotransform',
@@ -121,8 +121,6 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #' @param source_wkt optional, override the projection of the source with WKT
 #'
 #' @return list of vectors (only 1 for 'band') of numeric values, in raster order
-#' @export
-#'
 #' @examples
 #' gt <- c(-637239.4, 5030.0, 0.0, 261208.7, 0.0, -7760.0)
 #'

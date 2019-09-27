@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -169,7 +169,8 @@ returned as character, and Integer64 is returned as numeric.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>file</span> <span class='kw'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span>
 <span class='no'>mvfile</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='st'>"extdata/tab"</span>, <span class='no'>file</span>), <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"vapour"</span>)
-<span class='no'>att</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_attributes</span>(<span class='no'>mvfile</span>)</div><div class='output co'>#&gt; manually finding feature count</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='no'>att</span>)</div><div class='output co'>#&gt; List of 11
+<span class='no'>att</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_attributes</span>(<span class='no'>mvfile</span>)</div><div class='output co'>#&gt; manually finding feature count
+#&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='no'>att</span>)</div><div class='output co'>#&gt; List of 11
 #&gt;  $ LOCAL_ID  : num [1:58] 1e+05 1e+05 1e+05 1e+05 1e+05 ...
 #&gt;  $ NAME      : chr [1:58] "Caveside" "Weegena" "Kimberley" "Parkham" ...
 #&gt;  $ POSTCODE  : int [1:58] 7304 7304 7304 7304 7275 7277 7250 7304 7304 7304 ...
@@ -181,7 +182,8 @@ returned as character, and Integer64 is returned as numeric.</p>
 #&gt;  $ LIST_GUID : chr [1:58] "{839edd46-01a7-4a45-9d97-499962fa952b}" "{de35ebd4-0ac0-4299-947d-87d07c69426a}" "{73ced9ad-ee9a-41d5-a5bc-c95c4ab948d9}" "{37f17d1f-d2a0-4b78-ba0d-e5f62f216658}" ...
 #&gt;  $ SHAPE_AREA: num [1:58] -9999 -9999 -9999 -9999 -9999 ...
 #&gt;  $ SHAPE_LEN : num [1:58] 39786 31588 35693 67615 70141 ...</div><div class='input'><span class='no'>sq</span> <span class='kw'>&lt;-</span> <span class='st'>"SELECT * FROM list_locality_postcode_meander_valley WHERE FID &lt; 5"</span>
-(<span class='no'>att</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_attributes</span>(<span class='no'>mvfile</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='no'>sq</span>))</div><div class='output co'>#&gt; manually finding feature count</div><div class='output co'>#&gt; $LOCAL_ID
+(<span class='no'>att</span> <span class='kw'>&lt;-</span> <span class='fu'>vapour_read_attributes</span>(<span class='no'>mvfile</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='no'>sq</span>))</div><div class='output co'>#&gt; manually finding feature count
+#&gt; </div><div class='output co'>#&gt; $LOCAL_ID
 #&gt; [1] 100422 100366 100337 100308
 #&gt; 
 #&gt; $NAME
@@ -223,7 +225,8 @@ returned as character, and Integer64 is returned as numeric.</p>
 #&gt; </div><div class='input'><span class='no'>pfile</span> <span class='kw'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span>
 <span class='no'>dsource</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='st'>"extdata/tab"</span>, <span class='no'>pfile</span>), <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"vapour"</span>)
 <span class='no'>SQL</span> <span class='kw'>&lt;-</span> <span class='st'>"SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE &lt; 7300"</span>
-<span class='fu'>vapour_read_attributes</span>(<span class='no'>dsource</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='no'>SQL</span>)</div><div class='output co'>#&gt; manually finding feature count</div><div class='output co'>#&gt; $NAME
+<span class='fu'>vapour_read_attributes</span>(<span class='no'>dsource</span>, <span class='kw'>sql</span> <span class='kw'>=</span> <span class='no'>SQL</span>)</div><div class='output co'>#&gt; manually finding feature count
+#&gt; </div><div class='output co'>#&gt; $NAME
 #&gt;  [1] "Frankford"          "Bridgenorth"        "Summerhill"        
 #&gt;  [4] "Carrick"            "Rosevale"           "Selbourne"         
 #&gt;  [7] "Blackstone Heights" "Lake St Clair"      "Hagley"            

@@ -2,8 +2,8 @@
 
 ## BREAKING CHANGES
 
-* The function `vapour_read_raster()` now returns a list of (one) numeric vector. This change is so 
- a future version can return more than one band for this function and for `vapour_warp_raster()`. 
+* The function `vapour_read_raster()` now returns a list of (one) numeric vector. This change 
+ is so a future version can return more than one band for this and related functions. 
  
 ## NEW FEATURES
 
@@ -14,13 +14,15 @@
  values from the requested band. In future this may return values from multiple
  bands. The new function `vapour_warp_raster()` uses the same scheme.
 
-* New function `vapour_warp_raster()` to return a warped version from
- a raster source. 
- 
 * Fixed static linking for MacOS build, thanks(!!) to Jeroen Ooms for guidance 
  and thanks to CRAN for reporting the issue. 
  
 * New function `vapour_srs_wkt()` to convert PROJ4 strings to Well-Known Text. 
+
+* New *internal-only* function `vapour_warp_raster()` to return a warped version from
+ a raster source. Please use with caution, it's still flaky for certain cases and will
+ crash your session (setting projection on NetCDF 0,360 is one example but not fleshed
+ out yet - see hypertidy/lazyraster for in-dev usage examples.)
 
 * New internal function `warp_memory_cpp()` to warp small in memory rasters. 
 

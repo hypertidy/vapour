@@ -2,7 +2,7 @@
 % Please edit documentation in R/raster-input.R
 \name{vapour_warp_raster}
 \alias{vapour_warp_raster}
-\title{Raster input (warp)}
+\title{IN-DEV,NOT EXPORTED Raster input (warp)}
 \usage{
 vapour_warp_raster(x, band = 1L, geotransform = NULL,
   dimension = NULL, wkt = "", set_na = TRUE, source_wkt = NULL)

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>vapour — vapour-package • vapour</title>
+<title>Example WKT coordinate reference system — tas_wkt • vapour</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -42,8 +42,9 @@
 
 
 
-<meta property="og:title" content="vapour — vapour-package" />
-<meta property="og:description" content="A lightweight GDAL API package for R." />
+<meta property="og:title" content="Example WKT coordinate reference system — tas_wkt" />
+<meta property="og:description" content="A Lambert Azimuthal Equal Area Well-Known-Text string for a region
+centred on Tasmania." />
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -119,62 +120,22 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>vapour</h1>
+    <h1>Example WKT coordinate reference system</h1>
     <small class="dont-index">Source: <a href='https://github.com/hypertidy/vapour/blob/master/R/vapour-package.R'><code>R/vapour-package.R</code></a></small>
-    <div class="hidden name"><code>vapour-package.Rd</code></div>
+    <div class="hidden name"><code>tas_wkt.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A lightweight GDAL API package for R.</p>
+    <p>A Lambert Azimuthal Equal Area Well-Known-Text string for a region
+centred on Tasmania.</p>
     </div>
 
 
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Provides low-level access to 'GDAL' functionality for R packages. The aim is
-to minimize the level of interpretation put on the 'GDAL' facilities, to
-enable direct use of it for a variety of purposes. 'GDAL' is the 'Geospatial
-Data Abstraction Library' a translator for raster and vector geospatial data
-formats that presents a single raster abstract data model and single vector
-abstract data model to the calling application for all supported formats
-<a href='https://gdal.org/'>https://gdal.org/</a>.</p>
-<p>Lightweight means we access parts of the GDAL API as near as possible to
-their native usage. GDAL is not a lightweight library, but provide a very
-nice abstraction over format details for a very large number of different
-formats.</p>
-<p>Functions for raster and vector sources are included.</p>
-<p>#'</p><table class='table'>
-<tr><td><code><a href='GDAL-library.html'>vapour_all_drivers</a></code></td><td>list of all available drivers, with type and features</td></tr>
-<tr><td><code><a href='GDAL-library.html'>vapour_gdal_version</a></code></td><td>report version of GDAL in use</td></tr>
-</table>
-
-
-<table class='table'>
-<tr><td><code><a href='vapour_raster_gcp.html'>vapour_raster_gcp</a></code></td><td>return internal ground control points, if present</td></tr>
-<tr><td><code><a href='vapour_raster_info.html'>vapour_raster_info</a></code></td><td>structural metadata of a source</td></tr>
-<tr><td><code><a href='vapour_read_raster.html'>vapour_read_raster</a></code></td><td>read data direct from a window of a raster band source</td></tr>
-<tr><td><code><a href='vapour_sds_names.html'>vapour_sds_names</a></code></td><td>list individual raster sources in a source containing subdatasets</td></tr>
-</table>
-
-
-<table class='table'>
-<tr><td><code><a href='GDAL-library.html'>vapour_driver</a></code></td><td>report name of the driver used for a given source</td></tr>
-<tr><td><code><a href='vapour_geom_summary.html'>vapour_geom_summary</a></code></td><td>report simple properties of each feature geometry</td></tr>
-<tr><td><code><a href='vapour_layer_names.html'>vapour_layer_names</a></code></td><td>list names of vector layers in a data source</td></tr>
-<tr><td><code><a href='vapour_read_names.html'>vapour_read_names</a></code></td><td>read the 'names' of features in a layer, the 'FID'</td></tr>
-<tr><td><code><a href='vapour_read_attributes.html'>vapour_read_attributes</a></code></td><td>read attributes of features in a layer, the columnar data associated with each geometry</td></tr>
-<tr><td><code><a href='vapour_read_geometry.html'>vapour_read_extent</a></code></td><td>read the extent, or bounding box, of geometries in a layer</td></tr>
-<tr><td><code><a href='vapour_read_geometry.html'>vapour_read_geometry</a></code></td><td>read geometry in binary (blob, WKB) form</td></tr>
-<tr><td><code><a href='vapour_read_geometry.html'>vapour_read_geometry_text</a></code></td><td>read geometry in text form, various formats</td></tr>
-<tr><td><code><a href='vapour_report_attributes.html'>vapour_report_attributes</a></code></td><td>report internal type of each attribute by name</td></tr>
-</table>
-
-
-<p>As far as possible vapour aims to minimize the level of interpretation
-provided for the functions, so that developers can choose how things are
-implemented. Functions return raw lists or vectors rather than data frames
-or classed types.</p>
+    <p>Created from '+proj=laea +lon_0=147 +lat_0=-42 +datum=WGS84'.
+Use in <code><a href='vapour_warp_raster.html'>vapour_warp_raster()</a></code> example.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
