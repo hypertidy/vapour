@@ -301,7 +301,6 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
 nFeature = -1;
   if (nFeature == -1) {
 
-  Rprintf("manually finding feature count\n\n");
    nFeature = 0;
     // we have to find out first because this driver doesn't support GetFeatureCount
     // https://trac.osgeo.org/gdal/wiki/rfc66_randomlayerreadwrite
