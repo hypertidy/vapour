@@ -1,9 +1,11 @@
 affine
 allData
 AppVeyor
+Azimuthal
 bbox
 behaviour
 centre
+centred
 CMD
 config
 CPP
@@ -62,9 +64,11 @@ json
 JSON
 kml
 KML
+laea
 Lanczos
 lazyraster
 libs
+lon
 longlat
 MacOS
 minmax
@@ -120,6 +124,7 @@ vectorized
 virtualize
 VRT
 vsi
+WGS
 WIP
 WKB
 wkt
