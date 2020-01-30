@@ -49,8 +49,10 @@ test_that("geometry read works", {
   ## Warning 1: No translation from Polar_Stereographic to MapInfo known
   #Warning 6: Unhandled projection method Polar_Stereographic
   #expect_silent(vapour_read_attributes(dsource, layer = "list_locality_postcode_meander_valley"))
-pprj <- "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs "
-expect_warning(expect_equal(vapour_projection_info_cpp(f)$Proj4[1], pprj), "not null")
+pprj <- "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
+pprj2 <- "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
+expect_warning(src0 <- trimws(vapour_projection_info_cpp(f)$Proj4[1]), "not null")
+expect_true(src0 == pprj || src0 == pprj2 )
 
   expect_silent(vapour_geom_summary(f, layer = "sst_c"))
   expect_error(vapour_geom_summary(f, layer = "nolayer"))
