@@ -15,9 +15,13 @@ GDAL 3.0.3
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 2 notes
 
 There is a note about the size of installed directories on Windows because 
  of the GDAL tools process. 
 
-      
+A note about possibly invalid URL in the readme codecov badge (seems ok): 
+
+https://codecov.io/github/hypertidy/vapour?branch=master
+
+
