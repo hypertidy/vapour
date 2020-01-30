@@ -1,4 +1,4 @@
-# vapour (development version)
+# vapour 0.5.0
 
 * Improve tests to be more robust, thanks to CRAN. #77
 
