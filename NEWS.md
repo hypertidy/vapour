@@ -1,8 +1,9 @@
 # vapour (development version)
 
-* Improve test to be more robust, thanks to CRAN. #77
+* Improve tests to be more robust, thanks to CRAN. #77
 
-
+* Removed pesky message and failing tests thanks to Joseph Stachelek (@jsta)
+ https://github.com/hypertidy/vapour/pull/76
 
 # vapour 0.4.0
 

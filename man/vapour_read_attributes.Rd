@@ -4,8 +4,14 @@
 \alias{vapour_read_attributes}
 \title{Read feature attribute data}
 \usage{
-vapour_read_attributes(dsource, layer = 0L, sql = "", limit_n = NULL,
-  skip_n = 0, extent = NA)
+vapour_read_attributes(
+  dsource,
+  layer = 0L,
+  sql = "",
+  limit_n = NULL,
+  skip_n = 0,
+  extent = NA
+)
 }
 \arguments{
 \item{dsource}{data source name (path to file, connection string, URL)}

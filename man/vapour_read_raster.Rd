@@ -4,8 +4,16 @@
 \alias{vapour_read_raster}
 \title{Raster IO (read)}
 \usage{
-vapour_read_raster(x, band = 1, window, resample = "nearestneighbour",
-  ..., sds = NULL, native = FALSE, set_na = TRUE)
+vapour_read_raster(
+  x,
+  band = 1,
+  window,
+  resample = "nearestneighbour",
+  ...,
+  sds = NULL,
+  native = FALSE,
+  set_na = TRUE
+)
 }
 \arguments{
 \item{x}{data source}
@@ -37,7 +45,7 @@ Will be used as the output dimension.
 
 This is analogous to the \code{rgdal} function \code{readGDAL} with its arguments \code{offset},  \code{region.dim}
 and \code{output.dim}.  There's no semantic wrapper for this in vapour, but see
-\code{https://github.com/hypertidy/lazyraster} for one approach.
+\verb{https://github.com/hypertidy/lazyraster} for one approach.
 
 Resampling options will depend on GDAL version,  but currently  'NearestNeighbour' (default),
 'Average', 'Bilinear', 'Cubic', 'CubicSpline',  'Gauss', 'Lanczos', 'Mode' are potentially

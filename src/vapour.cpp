@@ -5,11 +5,47 @@
 #include <Rcpp.h>
 #include "CollectorList.h"
 
+
 using namespace Rcpp;
 
 constexpr int MAX_INT =  std::numeric_limits<int>::max ();
 
 
+
+// static const char* asString(SEXP sxpString, const int i = 0) {
+//
+//     //if (isNull(sxpString)) return NULL;
+//
+//     return(CHAR(STRING_ELT(sxpString, i)));
+//
+//   }
+
+//
+// extern "C" void run_name(GDALDriver *driver) {
+//   driver->GetDescription();
+// }
+// extern "C" SEXP vapour_get_driver(SEXP sxpDriverName) {
+//
+//   GDALAllRegister();
+//
+//     const char *pDriverName = asString(sxpDriverName);
+//
+//     //installErrorHandler();
+//     GDALDriver *pDriver = (GDALDriver *) GDALGetDriverByName(pDriverName);
+//     //uninstallErrorHandlerAndTriggerError();
+//
+//     if (pDriver == NULL) {
+//       Rcpp::stop("aa/n");
+// //      error("No driver registered with name: %s\n", pDriverName);
+//     }
+//     SEXP sxpHandle = R_MakeExternalPtr((void *) pDriver,
+//                                        R_NilValue,
+//                                        R_NilValue);
+//
+//     return(sxpHandle);
+//
+//   }
+//
 
 
 // thk686

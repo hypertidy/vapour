@@ -6,14 +6,33 @@
 \alias{vapour_read_extent}
 \title{Read GDAL feature geometry}
 \usage{
-vapour_read_geometry(dsource, layer = 0L, sql = "", limit_n = NULL,
-  skip_n = 0, extent = NA)
+vapour_read_geometry(
+  dsource,
+  layer = 0L,
+  sql = "",
+  limit_n = NULL,
+  skip_n = 0,
+  extent = NA
+)
 
-vapour_read_geometry_text(dsource, layer = 0L, sql = "",
-  textformat = "json", limit_n = NULL, skip_n = 0, extent = NA)
+vapour_read_geometry_text(
+  dsource,
+  layer = 0L,
+  sql = "",
+  textformat = "json",
+  limit_n = NULL,
+  skip_n = 0,
+  extent = NA
+)
 
-vapour_read_extent(dsource, layer = 0L, sql = "", limit_n = NULL,
-  skip_n = 0, extent = NA)
+vapour_read_extent(
+  dsource,
+  layer = 0L,
+  sql = "",
+  limit_n = NULL,
+  skip_n = 0,
+  extent = NA
+)
 }
 \arguments{
 \item{dsource}{data source name (path to file, connection string, URL)}
@@ -35,7 +54,7 @@ Read GDAL geometry as binary blob, text, or numeric extent.
 }
 \details{
 \code{vapour_read_geometry} will read features as binary WKB, \code{vapour_read_geometry_text} as various text formats (geo-json, wkt, kml, gml),
-\code{vapour_read_extent} a numeric extent which is the native bounding box, the four numbers (in this order) \code{xmin, xmax, ymin, ymax}.
+\code{vapour_read_extent} a numeric extent which is the native bounding box, the four numbers (in this order) \verb{xmin, xmax, ymin, ymax}.
 For each function an optional SQL string will be evaluated against the data source before reading.
 
 \code{vapour_read_geometry_cpp} will read a feature for each of the ways listed above and is used by those functions. It's recommended

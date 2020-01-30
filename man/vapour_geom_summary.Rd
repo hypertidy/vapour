@@ -4,8 +4,14 @@
 \alias{vapour_geom_summary}
 \title{Summary of available geometry}
 \usage{
-vapour_geom_summary(dsource, layer = 0L, sql = "", limit_n = NULL,
-  skip_n = 0, extent = NA)
+vapour_geom_summary(
+  dsource,
+  layer = 0L,
+  sql = "",
+  limit_n = NULL,
+  skip_n = 0,
+  extent = NA
+)
 }
 \arguments{
 \item{dsource}{data source name (path to file, connection string, URL)}
@@ -26,7 +32,7 @@ list containing the following
 \item \code{FID} the feature id value (an integer, usually sequential)
 \item \code{valid_geometry} logical value if a non-empty geometry is available
 \item \code{type} integer value of geometry type from \href{https://gdal.org/doxygen/ogr__core_8h.html#a800236a0d460ef66e687b7b65610f12a}{GDAL enumeration}
-\item \code{xmin, xmax, ymin, ymax} numeric values of the extent (bounding box) of each geometry
+\item \verb{xmin, xmax, ymin, ymax} numeric values of the extent (bounding box) of each geometry
 }
 }
 \description{

@@ -1,6 +1,6 @@
 Package: vapour
 Title: Lightweight Access to the 'Geospatial Data Abstraction Library' ('GDAL')
-Version: 0.4.0.9000
+Version: 0.5.0
 Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-2471-7511")), 
              person("Simon", "Wotherspoon", role = "ctb", comment = "figured out the mechanism for the resampling algorithm"), 
              person("Mark", "Padgham", role = "ctb", comment = "helped get started :)"), 
@@ -9,7 +9,8 @@ Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c(
              person("Jim", "Hester", role = "ctb", comment = "wrote CollectorList.h, copied here from fs package"), 
              person("Timothy", "Keitt", role = c("ctb"), comment = "wrote GetPointsInternal copied here from rgdal2 package"), 
              person("Jeroen", "Ooms", role = c("ctb"), comment = "tweaked build process"), 
-             person("Dale", "Maschette", role = c("ctb"), comment = "created the hex logo"))
+             person("Dale", "Maschette", role = c("ctb"), comment = "created the hex logo"), 
+             person("Joseph", "Stachelek", role = "ctb"))
 Description: Provides low-level access to 'GDAL' functionality for R packages. The aim is to minimize
   the level of interpretation put on the 'GDAL' facilities, to enable direct use of it for a variety of purposes. 
   'GDAL' is the 'Geospatial Data Abstraction Library' a translator for raster and vector geospatial data formats 
@@ -24,7 +25,7 @@ LinkingTo: Rcpp
 Imports:
     Rcpp,
     utils
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Roxygen: list(markdown = TRUE)
 Suggests:
     covr,

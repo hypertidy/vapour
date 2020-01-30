@@ -1,17 +1,8 @@
 
-Hello, 
-
-*Second* submission  of vapour 0.4.0: 
-
-* removed dysfunctional man page
-* fixed lack of support for static-linking on MacOS
-
-Thank you
-
 
 ## Test environments
 
-* Linux Ubuntu 18.04 install, R 3.6.1
+* Linux Ubuntu 18.04 install, R 3.6.2
 * MacOS (travis), R 3.6.1
 * win-builder (devel)
 
