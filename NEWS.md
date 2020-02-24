@@ -1,9 +1,13 @@
+# dev
+
+* Get available overview sizes, wish of #78. 
+
 # vapour 0.5.0
 
 * Improve tests to be more robust, thanks to CRAN. #77
 
 * Removed pesky message and failing tests thanks to Joseph Stachelek (@jsta)
- https://github.com/hypertidy/vapour/pull/76
+ #76. 
 
 # vapour 0.4.0
 

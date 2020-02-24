@@ -76,7 +76,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9001</span>
       </span>
     </div>
 
@@ -122,9 +122,18 @@
       <small>Source: <a href='https://github.com/hypertidy/vapour/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="vapour-0-4-0" class="section level1">
+    <div id="vapour-050" class="section level1">
 <h1 class="page-header">
-<a href="#vapour-0-4-0" class="anchor"></a>vapour 0.4.0<small> Unreleased </small>
+<a href="#vapour-050" class="anchor"></a>vapour 0.5.0<small> 2020-01-30 </small>
+</h1>
+<ul>
+<li><p>Improve tests to be more robust, thanks to CRAN. <a href='https://github.com/hypertidy/vapour/issues/77'>#77</a></p></li>
+<li><p>Removed pesky message and failing tests thanks to Joseph Stachelek (<a href='https://github.com/jsta'>@jsta</a>) <a href='https://github.com/hypertidy/vapour/issues/76'>#76</a>.</p></li>
+</ul>
+</div>
+    <div id="vapour-040" class="section level1">
+<h1 class="page-header">
+<a href="#vapour-040" class="anchor"></a>vapour 0.4.0<small> 2019-09-27 </small>
 </h1>
 <div id="breaking-changes" class="section level2">
 <h2 class="hasAnchor">
@@ -146,9 +155,9 @@
 </ul>
 </div>
 </div>
-    <div id="vapour-0-3-0" class="section level1">
+    <div id="vapour-030" class="section level1">
 <h1 class="page-header">
-<a href="#vapour-0-3-0" class="anchor"></a>vapour 0.3.0<small> 2019-09-18 </small>
+<a href="#vapour-030" class="anchor"></a>vapour 0.3.0<small> 2019-09-18 </small>
 </h1>
 <ul>
 <li><p>Updates to configure to remove deprecated R CMD config CPP (thanks to CRAN).</p></li>
@@ -160,12 +169,12 @@
 <li><p>Fixed failure in <code>limit_n</code>, <code>skip_n</code> behaviour for reading names (FIDs) and attributes, (<a href='https://github.com/hypertidy/vapour/issues/60'>#60</a>).</p></li>
 </ul>
 </div>
-    <div id="vapour-0-2-0" class="section level1">
+    <div id="vapour-020" class="section level1">
 <h1 class="page-header">
-<a href="#vapour-0-2-0" class="anchor"></a>vapour 0.2.0<small> 2019-05-06 </small>
+<a href="#vapour-020" class="anchor"></a>vapour 0.2.0<small> 2019-05-06 </small>
 </h1>
 <ul>
-<li>Fixed incorrect use of C-level <code>printf()</code> and unnecessary tests thanks to CRAN feedback.</li>
+<li><p>Fixed incorrect use of C-level <code>printf()</code> and unnecessary tests thanks to CRAN feedback.</p></li>
 <li><p>Add ‘type’ to output of <code><a href="../reference/vapour_geom_summary.html">vapour_geom_summary()</a></code>, the integer code for each geometry type.</p></li>
 <li><p>Restructured conversion to text geometries to properly free up memory, was causing memory leaks (found with valgrind).</p></li>
 <li><p>Use of <code>sql</code> now correctly uses ‘GDALDataset::ReleaseResultsSet()’ in each applicable function. Query with the ‘sql’ argument was not being executed in <code><a href="../reference/vapour_layer_names.html">vapour_layer_names()</a></code> but now is - only has utility for insert and drop queries, so will be rarely used and probably never had any impact before.</p></li>
@@ -184,18 +193,18 @@
 <li><p>Fix drastic memory leak in <code><a href="../reference/vapour_read_attributes.html">vapour_read_attributes()</a></code>, thanks to Grant Williamson.</p></li>
 </ul>
 </div>
-    <div id="vapour-0-1-0" class="section level1">
+    <div id="vapour-010" class="section level1">
 <h1 class="page-header">
-<a href="#vapour-0-1-0" class="anchor"></a>vapour 0.1.0<small> 2018-08-14 </small>
+<a href="#vapour-010" class="anchor"></a>vapour 0.1.0<small> 2018-08-14 </small>
 </h1>
 <ul>
 <li><p>Functions that include a <code>layer</code> index now accept a layer name which is used to find the (0-based) layer index.</p></li>
 <li><p>This is a breaking release, all old functions have been made defunct or removed entirely.</p></li>
 </ul>
 </div>
-    <div id="vapour-0-0-1" class="section level1">
+    <div id="vapour-001" class="section level1">
 <h1 class="page-header">
-<a href="#vapour-0-0-1" class="anchor"></a>vapour 0.0.1<small> Unreleased </small>
+<a href="#vapour-001" class="anchor"></a>vapour 0.0.1<small> Unreleased </small>
 </h1>
 <ul>
 <li><p>All C++ functions now have explicit R wrappers instead of Rcpp exports.</p></li>
@@ -222,11 +231,12 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#vapour-0-4-0">0.4.0</a></li>
-        <li><a href="#vapour-0-3-0">0.3.0</a></li>
-        <li><a href="#vapour-0-2-0">0.2.0</a></li>
-        <li><a href="#vapour-0-1-0">0.1.0</a></li>
-        <li><a href="#vapour-0-0-1">0.0.1</a></li>
+        <li><a href="#vapour-050">0.5.0</a></li>
+        <li><a href="#vapour-040">0.4.0</a></li>
+        <li><a href="#vapour-030">0.3.0</a></li>
+        <li><a href="#vapour-020">0.2.0</a></li>
+        <li><a href="#vapour-010">0.1.0</a></li>
+        <li><a href="#vapour-001">0.0.1</a></li>
       </ul>
     </div>
   </div>

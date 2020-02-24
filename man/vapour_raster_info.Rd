@@ -31,6 +31,8 @@ The structural metadata are
 \item{projection}{text version of map projection parameter string}
 \item{bands}{number of bands in the dataset}
 \item{proj4}{not implemented}
+\item{nodata_value}{not implemented}
+\item{overviews}{the number and size of any available overviews}
 }
 
 On access vapour functions will report on the existence of subdatasets while
@@ -96,6 +98,14 @@ coefficients.
 
 Calculation of 'minmax' can take a significant amount of time, so it's not done by default. Use
 'minmax = TRUE' to do it. (It does perform well, but may be prohibitive for very large or remote sources.)
+}
+
+\section{Overviews}{
+
+
+If there are no overviews this element will simply be a single-element vector
+of value 0. If there are overviews, the first value will give the number of overviews and
+their dimensions will be listed as pairs of x,y values.
 }
 
 \examples{

@@ -247,77 +247,12 @@ rbenchmark::benchmark (
                        f_va2 (fname),
                        f_va3 (fname),
                        replications = 10)
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
-#> 
-#> manually finding feature count
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.249    3.458     0.249    0.001          0
-#> 2 f_sf2(fname)           10   0.180    2.500     0.176    0.004          0
-#> 3 f_va1(fname)           10   0.072    1.000     0.064    0.008          0
-#> 4 f_va2(fname)           10   0.085    1.181     0.086    0.000          0
-#> 5 f_va3(fname)           10   0.215    2.986     0.203    0.012          0
+#> 1 f_sf1(fname)           10   0.242    3.184     0.241    0.000          0
+#> 2 f_sf2(fname)           10   0.178    2.342     0.177    0.000          0
+#> 3 f_va1(fname)           10   0.076    1.000     0.060    0.016          0
+#> 4 f_va2(fname)           10   0.086    1.132     0.082    0.004          0
+#> 5 f_va3(fname)           10   0.227    2.987     0.214    0.012          0
 #>   sys.child
 #> 1         0
 #> 2         0

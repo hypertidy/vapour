@@ -50,7 +50,7 @@ List raster_info_cpp (CharacterVector filename, LogicalVector min_max)
     GDALComputeRasterMinMax(hBand, TRUE, adfMinMax);
   }
 
-  int nn = 8;
+  int nn = 9;
   Rcpp::List out(nn);
   Rcpp::CharacterVector names(nn);
   out[0] = trans;
@@ -81,6 +81,7 @@ List raster_info_cpp (CharacterVector filename, LogicalVector min_max)
 
   // get band number
   int nBands = GDALGetRasterCount(hDataset);
+
   out[5] = nBands;
   names[5] = "bands";
 
@@ -94,6 +95,41 @@ List raster_info_cpp (CharacterVector filename, LogicalVector min_max)
   int succ;
   out[7] = GDALGetRasterNoDataValue(hBand, &succ);
   names[7] = "nodata_value";
+
+  int ocount = GDALGetOverviewCount(hBand);
+// f <- system.file("extdata/volcano_overview.tif", package = "vapour", mustWork = TRUE)
+  IntegerVector oviews = IntegerVector(ocount * 2 + 1);
+  oviews[0] = ocount;
+  if (ocount > 0) {
+    GDALRasterBandH  oBand;
+    for (int ii = 0; ii < ocount; ii++) {
+      oBand = GDALGetOverview(hBand, ii);
+
+
+      int xsize = GDALGetRasterBandXSize(oBand);
+      int ysize = GDALGetRasterBandYSize(oBand);
+
+      oviews[((ii + 1) * 2) - 1 ] = xsize;
+      oviews[((ii + 1) * 2) + 0 ] = ysize;
+
+
+
+    }
+  }
+  out[8] = oviews;
+  names[8] = "overviews";
+
+  // if (GDALHasArbitraryOverviews(hDataset) > 0) {
+  //   //HasArbitraryOverViews
+  //   //GetOverviewCount
+  //   //GetOverview
+  //
+  //   out[8] = ocount;
+  //
+  // }
+
+
+
   out.attr("names") = names;
 
   //CPLFree(stri);

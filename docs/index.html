@@ -43,7 +43,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9001</span>
       </span>
     </div>
 
@@ -85,9 +85,9 @@
       </header><div class="row">
   <div class="contents col-md-9">
 
-<div id="vapour" class="section level1">
+<div id="vapour-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#vapour" class="anchor"></a>vapour <img src="reference/figures/logo.png" align="right" height="228">
+<a href="#vapour-" class="anchor"></a>vapour <img src="reference/figures/logo.png" align="right" height="228">
 </h1></div>
 
 <div id="overview" class="section level2">
@@ -116,10 +116,10 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>The package can be installed from CRAN.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">## install.packages("remotes")</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">remotes<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_cran.html">install_cran</a></span>(<span class="st">"vapour"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">## install.packages("remotes")</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>remotes<span class="op">::</span><span class="kw"><a href="https://remotes.r-lib.org/reference/install_cran.html">install_cran</a></span>(<span class="st">"vapour"</span>)</span></code></pre></div>
 <p>The development version can be installed from Github.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">remotes<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"hypertidy/vapour"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>remotes<span class="op">::</span><span class="kw"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"hypertidy/vapour"</span>)</span></code></pre></div>
 <p>You will need development tools for building R packages.</p>
 <p>On Linux and MacOS building also requires an available GDAL installation, but on Windows the ROpenSci rwinlib tools are used and the required GDAL will be downloaded and used when building the package. This installation is self-contained and only affects the use of R, it can be used alongside other applications using GDAL.</p>
 </div>
@@ -143,161 +143,96 @@
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
 <p>The package documentation page gives an overview of available functions.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/help.html">help</a></span>(<span class="st">"vapour-package"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/help.html">help</a></span>(<span class="st">"vapour-package"</span>)</span></code></pre></div>
 <p>See the vignettes and documentation for examples WIP.</p>
 <p>The following concrete example illustrates the motivation for <code>vapour</code>, through a timing benchmark for one standard operation: extracting feature geometries from a data set within a user-defined bounding box. The data set is the one used throughout the book <a href="https://geocompr.robinlovelace.net/">Geocomputation in R</a> by Robin Lovelace, Jakub Nowosad, and Jannes Muenchow, and can be obtained with the following code.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">url &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span> (<span class="st">"http://www.naturalearthdata.com/http//www.naturalearthdata.com"</span>,</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">                <span class="st">"download/10m/cultural/ne_10m_parks_and_protected_lands.zip"</span>)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span> (<span class="dt">url =</span> url, <span class="dt">destfile =</span> <span class="st">"USA_parks.zip"</span>)</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/utils/unzip.html">unzip</a></span> (<span class="dt">zipfile =</span> <span class="st">"USA_parks.zip"</span>, <span class="dt">exdir =</span> <span class="st">"usa_parks"</span>)</a>
-<a class="sourceLine" id="cb4-5" data-line-number="5">fname &lt;-<span class="st"> "usa_parks/ne_10m_parks_and_protected_lands_area.shp"</span></a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>url &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span> (<span class="st">"http://www.naturalearthdata.com/http//www.naturalearthdata.com"</span>,</span>
+<span id="cb4-2"><a href="#cb4-2"></a>                <span class="st">"download/10m/cultural/ne_10m_parks_and_protected_lands.zip"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="kw"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span> (<span class="dt">url =</span> url, <span class="dt">destfile =</span> <span class="st">"USA_parks.zip"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="kw"><a href="https://rdrr.io/r/utils/unzip.html">unzip</a></span> (<span class="dt">zipfile =</span> <span class="st">"USA_parks.zip"</span>, <span class="dt">exdir =</span> <span class="st">"usa_parks"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5"></a>fname &lt;-<span class="st"> "usa_parks/ne_10m_parks_and_protected_lands_area.shp"</span></span></code></pre></div>
 <p>That last <code>fname</code> is the file we’re interested in, which contains polygons for all United States parks. We now construct a timing benchmark for three ways of extracting the data within a pre-defined bounding box of:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span> (magrittr)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">bb &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span> (<span class="op">-</span><span class="dv">120</span>, <span class="dv">20</span>, <span class="dv">-100</span>, <span class="dv">40</span>)</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span> (bb) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span> (<span class="st">"xmin"</span>, <span class="st">"ymin"</span>, <span class="st">"xmax"</span>, <span class="st">"ymax"</span>)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">bb_sf &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_bbox.html">st_bbox</a></span> (bb, <span class="dt">crs =</span> sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_crs.html">st_crs</a></span> (<span class="dv">4326</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="st">    </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_as_sfc.html">st_as_sfc</a></span> ()</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span> (magrittr)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>bb &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span> (<span class="op">-</span><span class="dv">120</span>, <span class="dv">20</span>, <span class="dv">-100</span>, <span class="dv">40</span>)</span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span> (bb) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span> (<span class="st">"xmin"</span>, <span class="st">"ymin"</span>, <span class="st">"xmax"</span>, <span class="st">"ymax"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4"></a>bb_sf &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_bbox.html">st_bbox</a></span> (bb, <span class="dt">crs =</span> sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_crs.html">st_crs</a></span> (<span class="dv">4326</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="st">    </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_as_sfc.html">st_as_sfc</a></span> ()</span></code></pre></div>
 <p>First, we define a function to do the desired extraction using the <a href="https://cran.r-project.org/package=sf"><code>sf</code> package</a>, comparing both <code>st_crop</code> and the <code>sf::[</code> sub-selection operator:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">f_sf1 &lt;-<span class="st"> </span><span class="cf">function</span> (fname)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">{</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">    usa_parks &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">st_read</a></span> (fname, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">    <span class="kw"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span> (<span class="kw"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span> (</a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">                    parks2 &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_crop.html">st_crop</a></span> (usa_parks, bb_sf)</a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">                    ))</a>
-<a class="sourceLine" id="cb6-7" data-line-number="7">}</a>
-<a class="sourceLine" id="cb6-8" data-line-number="8">f_sf2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname)</a>
-<a class="sourceLine" id="cb6-9" data-line-number="9">{</a>
-<a class="sourceLine" id="cb6-10" data-line-number="10">    usa_parks &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">st_read</a></span> (fname, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb6-11" data-line-number="11">    <span class="kw"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span> (<span class="kw"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span> (</a>
-<a class="sourceLine" id="cb6-12" data-line-number="12">                    parks2 &lt;-<span class="st"> </span>usa_parks [bb_sf, ]</a>
-<a class="sourceLine" id="cb6-13" data-line-number="13">                    ))</a>
-<a class="sourceLine" id="cb6-14" data-line-number="14">}</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>f_sf1 &lt;-<span class="st"> </span><span class="cf">function</span> (fname)</span>
+<span id="cb6-2"><a href="#cb6-2"></a>{</span>
+<span id="cb6-3"><a href="#cb6-3"></a>    usa_parks &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">st_read</a></span> (fname, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb6-4"><a href="#cb6-4"></a>    <span class="kw"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span> (<span class="kw"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span> (</span>
+<span id="cb6-5"><a href="#cb6-5"></a>                    parks2 &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_crop.html">st_crop</a></span> (usa_parks, bb_sf)</span>
+<span id="cb6-6"><a href="#cb6-6"></a>                    ))</span>
+<span id="cb6-7"><a href="#cb6-7"></a>}</span>
+<span id="cb6-8"><a href="#cb6-8"></a>f_sf2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname)</span>
+<span id="cb6-9"><a href="#cb6-9"></a>{</span>
+<span id="cb6-10"><a href="#cb6-10"></a>    usa_parks &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">st_read</a></span> (fname, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb6-11"><a href="#cb6-11"></a>    <span class="kw"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span> (<span class="kw"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span> (</span>
+<span id="cb6-12"><a href="#cb6-12"></a>                    parks2 &lt;-<span class="st"> </span>usa_parks [bb_sf, ]</span>
+<span id="cb6-13"><a href="#cb6-13"></a>                    ))</span>
+<span id="cb6-14"><a href="#cb6-14"></a>}</span></code></pre></div>
 <p>Then three approaches using <code>vapour</code>, in each case extracting equivalent data to <code>sf</code> - that is, both geometries and attributes - yet simply leaving them separate here. The three approaches are:</p>
 <ol>
 <li>Read geometry as <code>WKB</code>, sub-select after reading, and convert to <code>sfc</code> lists;</li>
 <li>Read geometry as <code>WKB</code> pre-selected via an SQL statement, and convert to <code>sfc</code> lists; and</li>
 <li>Read geometry as <code>json</code> (text), pre-selected via SQL, and convert with the <code>geojsonsf</code> package</li>
 </ol>
-<!-- end list --><div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span> (vapour)</a></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">f_va1 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># read all then sub-select</span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">{</a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">    ext &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">    indx &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span></a>
-<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])</a>
-<a class="sourceLine" id="cb8-6" data-line-number="6">    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry</a></span> (fname) [indx] <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_as_sfc.html">st_as_sfc</a></span> ()</a>
-<a class="sourceLine" id="cb8-8" data-line-number="8">    a &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span> (<span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname), <span class="cf">function</span> (i) i [indx])</a>
-<a class="sourceLine" id="cb8-9" data-line-number="9">}</a>
-<a class="sourceLine" id="cb8-10" data-line-number="10">f_va2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># read selection only via SQL</span></a>
-<a class="sourceLine" id="cb8-11" data-line-number="11">{</a>
-<a class="sourceLine" id="cb8-12" data-line-number="12">    ext &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname))</a>
-<a class="sourceLine" id="cb8-13" data-line-number="13">    indx &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span></a>
-<a class="sourceLine" id="cb8-14" data-line-number="14"><span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])</a>
-<a class="sourceLine" id="cb8-15" data-line-number="15">    n &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span> (<span class="kw"><a href="reference/vapour_read_names.html">vapour_read_names</a></span> (fname) [indx], <span class="dt">collapse =</span> <span class="st">","</span>) <span class="co"># GDAL FIDs</span></a>
-<a class="sourceLine" id="cb8-16" data-line-number="16">    stmt &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span> (<span class="st">"SELECT FID FROM "</span>, <span class="kw"><a href="reference/vapour_layer_names.html">vapour_layer_names</a></span> (fname),</a>
-<a class="sourceLine" id="cb8-17" data-line-number="17">                    <span class="st">" WHERE FID in ("</span>, n, <span class="st">")"</span>)</a>
-<a class="sourceLine" id="cb8-18" data-line-number="18">    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry</a></span> (fname, <span class="dt">sql =</span> stmt) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb8-19" data-line-number="19"><span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_as_sfc.html">st_as_sfc</a></span> ()</a>
-<a class="sourceLine" id="cb8-20" data-line-number="20">    a &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname, <span class="dt">sql =</span> stmt)</a>
-<a class="sourceLine" id="cb8-21" data-line-number="21">}</a>
-<a class="sourceLine" id="cb8-22" data-line-number="22">f_va3 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># convert json text via geojsonsf</span></a>
-<a class="sourceLine" id="cb8-23" data-line-number="23">{</a>
-<a class="sourceLine" id="cb8-24" data-line-number="24">    ext &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span></a>
-<a class="sourceLine" id="cb8-25" data-line-number="25">    indx &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span></a>
-<a class="sourceLine" id="cb8-26" data-line-number="26"><span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])</a>
-<a class="sourceLine" id="cb8-27" data-line-number="27">    n &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span> (<span class="kw"><a href="reference/vapour_read_names.html">vapour_read_names</a></span> (fname) [indx], <span class="dt">collapse =</span> <span class="st">","</span>) <span class="co"># GDAL FIDs</span></a>
-<a class="sourceLine" id="cb8-28" data-line-number="28">    stmt &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span> (<span class="st">"SELECT FID FROM "</span>, <span class="kw"><a href="reference/vapour_layer_names.html">vapour_layer_names</a></span> (fname),</a>
-<a class="sourceLine" id="cb8-29" data-line-number="29">                    <span class="st">" WHERE FID in ("</span>, n, <span class="st">")"</span>)</a>
-<a class="sourceLine" id="cb8-30" data-line-number="30">    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry_text</a></span> (fname, <span class="dt">textformat =</span> <span class="st">"json"</span>, <span class="dt">sql =</span> stmt) </a>
-<a class="sourceLine" id="cb8-31" data-line-number="31">    g &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span> (g, <span class="cf">function</span> (i) geojsonsf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/geojsonsf/man/geojson_sfc.html">geojson_sfc</a></span> (i) [[<span class="dv">1</span>]]) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb8-32" data-line-number="32"><span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/sfc.html">st_sfc</a></span> ()</a>
-<a class="sourceLine" id="cb8-33" data-line-number="33">    a &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname, <span class="dt">sql =</span> stmt)</a>
-<a class="sourceLine" id="cb8-34" data-line-number="34">}</a></code></pre></div>
+<!-- end list --><div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span> (vapour)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>f_va1 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># read all then sub-select</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>{</span>
+<span id="cb8-3"><a href="#cb8-3"></a>    ext &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a>    indx &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])</span>
+<span id="cb8-6"><a href="#cb8-6"></a>    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry</a></span> (fname) [indx] <span class="op">%&gt;%</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_as_sfc.html">st_as_sfc</a></span> ()</span>
+<span id="cb8-8"><a href="#cb8-8"></a>    a &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span> (<span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname), <span class="cf">function</span> (i) i [indx])</span>
+<span id="cb8-9"><a href="#cb8-9"></a>}</span>
+<span id="cb8-10"><a href="#cb8-10"></a>f_va2 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># read selection only via SQL</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a>{</span>
+<span id="cb8-12"><a href="#cb8-12"></a>    ext &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname))</span>
+<span id="cb8-13"><a href="#cb8-13"></a>    indx &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])</span>
+<span id="cb8-15"><a href="#cb8-15"></a>    n &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span> (<span class="kw"><a href="reference/vapour_read_names.html">vapour_read_names</a></span> (fname) [indx], <span class="dt">collapse =</span> <span class="st">","</span>) <span class="co"># GDAL FIDs</span></span>
+<span id="cb8-16"><a href="#cb8-16"></a>    stmt &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span> (<span class="st">"SELECT FID FROM "</span>, <span class="kw"><a href="reference/vapour_layer_names.html">vapour_layer_names</a></span> (fname),</span>
+<span id="cb8-17"><a href="#cb8-17"></a>                    <span class="st">" WHERE FID in ("</span>, n, <span class="st">")"</span>)</span>
+<span id="cb8-18"><a href="#cb8-18"></a>    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry</a></span> (fname, <span class="dt">sql =</span> stmt) <span class="op">%&gt;%</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a><span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_as_sfc.html">st_as_sfc</a></span> ()</span>
+<span id="cb8-20"><a href="#cb8-20"></a>    a &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname, <span class="dt">sql =</span> stmt)</span>
+<span id="cb8-21"><a href="#cb8-21"></a>}</span>
+<span id="cb8-22"><a href="#cb8-22"></a>f_va3 &lt;-<span class="st"> </span><span class="cf">function</span> (fname) <span class="co"># convert json text via geojsonsf</span></span>
+<span id="cb8-23"><a href="#cb8-23"></a>{</span>
+<span id="cb8-24"><a href="#cb8-24"></a>    ext &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span> (rbind, <span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_extent</a></span> (fname)) <span class="co"># bboxes of each feature</span></span>
+<span id="cb8-25"><a href="#cb8-25"></a>    indx &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span> (ext [, <span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">1</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">3</span>] <span class="op">&amp;</span></span>
+<span id="cb8-26"><a href="#cb8-26"></a><span class="st">                   </span>ext [, <span class="dv">3</span>] <span class="op">&gt;</span><span class="st"> </span>bb [<span class="dv">2</span>] <span class="op">&amp;</span><span class="st"> </span>ext [, <span class="dv">4</span>] <span class="op">&lt;</span><span class="st"> </span>bb [<span class="dv">4</span>])</span>
+<span id="cb8-27"><a href="#cb8-27"></a>    n &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span> (<span class="kw"><a href="reference/vapour_read_names.html">vapour_read_names</a></span> (fname) [indx], <span class="dt">collapse =</span> <span class="st">","</span>) <span class="co"># GDAL FIDs</span></span>
+<span id="cb8-28"><a href="#cb8-28"></a>    stmt &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span> (<span class="st">"SELECT FID FROM "</span>, <span class="kw"><a href="reference/vapour_layer_names.html">vapour_layer_names</a></span> (fname),</span>
+<span id="cb8-29"><a href="#cb8-29"></a>                    <span class="st">" WHERE FID in ("</span>, n, <span class="st">")"</span>)</span>
+<span id="cb8-30"><a href="#cb8-30"></a>    g &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_geometry.html">vapour_read_geometry_text</a></span> (fname, <span class="dt">textformat =</span> <span class="st">"json"</span>, <span class="dt">sql =</span> stmt) </span>
+<span id="cb8-31"><a href="#cb8-31"></a>    g &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span> (g, <span class="cf">function</span> (i) geojsonsf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/geojsonsf/man/geojson_sfc.html">geojson_sfc</a></span> (i) [[<span class="dv">1</span>]]) <span class="op">%&gt;%</span></span>
+<span id="cb8-32"><a href="#cb8-32"></a><span class="st">        </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/sfc.html">st_sfc</a></span> ()</span>
+<span id="cb8-33"><a href="#cb8-33"></a>    a &lt;-<span class="st"> </span><span class="kw"><a href="reference/vapour_read_attributes.html">vapour_read_attributes</a></span> (fname, <span class="dt">sql =</span> stmt)</span>
+<span id="cb8-34"><a href="#cb8-34"></a>}</span></code></pre></div>
 <p>The benchmark timings - in particular the “relative” values - then illustrate the advantages of <code>vapour</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">rbenchmark<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/rbenchmark/man/benchmark.html">benchmark</a></span> (</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2">                       <span class="kw">f_sf1</span> (fname),</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3">                       <span class="kw">f_sf2</span> (fname),</a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">                       <span class="kw">f_va1</span> (fname),</a>
-<a class="sourceLine" id="cb9-5" data-line-number="5">                       <span class="kw">f_va2</span> (fname),</a>
-<a class="sourceLine" id="cb9-6" data-line-number="6">                       <span class="kw">f_va3</span> (fname),</a>
-<a class="sourceLine" id="cb9-7" data-line-number="7">                       <span class="dt">replications =</span> <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-17" data-line-number="17"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-18" data-line-number="18"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-19" data-line-number="19"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-20" data-line-number="20"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-21" data-line-number="21"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-22" data-line-number="22"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-23" data-line-number="23"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-24" data-line-number="24"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-25" data-line-number="25"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-26" data-line-number="26"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-27" data-line-number="27"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-28" data-line-number="28"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-29" data-line-number="29"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-30" data-line-number="30"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-31" data-line-number="31"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-32" data-line-number="32"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-33" data-line-number="33"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-34" data-line-number="34"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-35" data-line-number="35"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-36" data-line-number="36"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-37" data-line-number="37"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-38" data-line-number="38"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-39" data-line-number="39"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-40" data-line-number="40"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-41" data-line-number="41"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-42" data-line-number="42"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-43" data-line-number="43"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-44" data-line-number="44"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-45" data-line-number="45"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-46" data-line-number="46"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-47" data-line-number="47"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-48" data-line-number="48"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-49" data-line-number="49"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-50" data-line-number="50"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-51" data-line-number="51"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-52" data-line-number="52"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-53" data-line-number="53"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-54" data-line-number="54"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-55" data-line-number="55"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-56" data-line-number="56"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-57" data-line-number="57"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-58" data-line-number="58"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-59" data-line-number="59"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-60" data-line-number="60"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-61" data-line-number="61"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-62" data-line-number="62"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-63" data-line-number="63"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-64" data-line-number="64"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-65" data-line-number="65"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-66" data-line-number="66"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-67" data-line-number="67"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-68" data-line-number="68"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-69" data-line-number="69"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-70" data-line-number="70"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-71" data-line-number="71"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-72" data-line-number="72"><span class="co">#&gt; manually finding feature count</span></a>
-<a class="sourceLine" id="cb9-73" data-line-number="73"><span class="co">#&gt;           test replications elapsed relative user.self sys.self user.child</span></a>
-<a class="sourceLine" id="cb9-74" data-line-number="74"><span class="co">#&gt; 1 f_sf1(fname)           10   0.249    3.458     0.249    0.001          0</span></a>
-<a class="sourceLine" id="cb9-75" data-line-number="75"><span class="co">#&gt; 2 f_sf2(fname)           10   0.180    2.500     0.176    0.004          0</span></a>
-<a class="sourceLine" id="cb9-76" data-line-number="76"><span class="co">#&gt; 3 f_va1(fname)           10   0.072    1.000     0.064    0.008          0</span></a>
-<a class="sourceLine" id="cb9-77" data-line-number="77"><span class="co">#&gt; 4 f_va2(fname)           10   0.085    1.181     0.086    0.000          0</span></a>
-<a class="sourceLine" id="cb9-78" data-line-number="78"><span class="co">#&gt; 5 f_va3(fname)           10   0.215    2.986     0.203    0.012          0</span></a>
-<a class="sourceLine" id="cb9-79" data-line-number="79"><span class="co">#&gt;   sys.child</span></a>
-<a class="sourceLine" id="cb9-80" data-line-number="80"><span class="co">#&gt; 1         0</span></a>
-<a class="sourceLine" id="cb9-81" data-line-number="81"><span class="co">#&gt; 2         0</span></a>
-<a class="sourceLine" id="cb9-82" data-line-number="82"><span class="co">#&gt; 3         0</span></a>
-<a class="sourceLine" id="cb9-83" data-line-number="83"><span class="co">#&gt; 4         0</span></a>
-<a class="sourceLine" id="cb9-84" data-line-number="84"><span class="co">#&gt; 5         0</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>rbenchmark<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/rbenchmark/man/benchmark.html">benchmark</a></span> (</span>
+<span id="cb9-2"><a href="#cb9-2"></a>                       <span class="kw">f_sf1</span> (fname),</span>
+<span id="cb9-3"><a href="#cb9-3"></a>                       <span class="kw">f_sf2</span> (fname),</span>
+<span id="cb9-4"><a href="#cb9-4"></a>                       <span class="kw">f_va1</span> (fname),</span>
+<span id="cb9-5"><a href="#cb9-5"></a>                       <span class="kw">f_va2</span> (fname),</span>
+<span id="cb9-6"><a href="#cb9-6"></a>                       <span class="kw">f_va3</span> (fname),</span>
+<span id="cb9-7"><a href="#cb9-7"></a>                       <span class="dt">replications =</span> <span class="dv">10</span>)</span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="co">#&gt;           test replications elapsed relative user.self sys.self user.child</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="co">#&gt; 1 f_sf1(fname)           10   0.242    3.184     0.241    0.000          0</span></span>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="co">#&gt; 2 f_sf2(fname)           10   0.178    2.342     0.177    0.000          0</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="co">#&gt; 3 f_va1(fname)           10   0.076    1.000     0.060    0.016          0</span></span>
+<span id="cb9-12"><a href="#cb9-12"></a><span class="co">#&gt; 4 f_va2(fname)           10   0.086    1.132     0.082    0.004          0</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="co">#&gt; 5 f_va3(fname)           10   0.227    2.987     0.214    0.012          0</span></span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="co">#&gt;   sys.child</span></span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="co">#&gt; 1         0</span></span>
+<span id="cb9-16"><a href="#cb9-16"></a><span class="co">#&gt; 2         0</span></span>
+<span id="cb9-17"><a href="#cb9-17"></a><span class="co">#&gt; 3         0</span></span>
+<span id="cb9-18"><a href="#cb9-18"></a><span class="co">#&gt; 4         0</span></span>
+<span id="cb9-19"><a href="#cb9-19"></a><span class="co">#&gt; 5         0</span></span></code></pre></div>
 <p>Reading geometries only, as opposed to the <code>sf</code> reading of all geometries and attributes, affords a speed increase of about 25%, while utilizing the SQL capabilities of <a href="https://gdal.org/user/ogr_sql_dialect.html"><code>ogr_sql</code></a> offers an increase of around 75%.</p>
 </div>
 <div id="context" class="section level2">

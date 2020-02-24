@@ -78,7 +78,7 @@ name and the second is a 6-element window of offset, source dimension, and outpu
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0.9001</span>
       </span>
     </div>
 
@@ -130,8 +130,16 @@ name and the second is a 6-element window of offset, source dimension, and outpu
 name and the second is a 6-element <code>window</code> of offset, source dimension, and output dimension.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vapour_read_raster</span>(<span class='no'>x</span>, <span class='kw'>band</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>window</span>, <span class='kw'>resample</span> <span class='kw'>=</span> <span class='st'>"nearestneighbour"</span>,
-  <span class='no'>...</span>, <span class='kw'>sds</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>native</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>set_na</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>vapour_read_raster</span>(
+  <span class='no'>x</span>,
+  <span class='kw'>band</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='no'>window</span>,
+  <span class='kw'>resample</span> <span class='kw'>=</span> <span class='st'>"nearestneighbour"</span>,
+  <span class='no'>...</span>,
+  <span class='kw'>sds</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>native</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>set_na</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
