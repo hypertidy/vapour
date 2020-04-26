@@ -1,5 +1,7 @@
 # dev
 
+* Now using GDAL 3 on Windows. 
+
 * Get available overview sizes, wish of #78. 
 
 # vapour 0.5.0
