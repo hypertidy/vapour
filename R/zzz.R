@@ -9,7 +9,7 @@
 }
 
 .onUnload = function(libname, pkgname) {
-  #unload_gdal()
+  unload_gdal()
 }
 
 .onAttach = function(libname, pkgname) {
@@ -17,6 +17,7 @@
 }
 
 vapour_load_gdal <- function() {
+  ## only on windows because tools/winlibs.R
   if (file.exists(system.file("proj/nad.lst", package = "vapour")[1L])) {
     #prj = system.file("proj", package = "sf")[1]
     #if (! CPL_set_data_dir(prj)) { # if TRUE, uses C API to set path, leaving PROJ_LIB alone
