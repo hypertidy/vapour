@@ -9,3 +9,4 @@ config.*
 inst/doc
 autom4te.cache
 pkgdown/*
+docs/
