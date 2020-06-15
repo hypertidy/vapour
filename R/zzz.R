@@ -9,7 +9,7 @@
 }
 
 .onUnload = function(libname, pkgname) {
-  unload_gdal()
+  vapour_unload_gdal()
 }
 
 .onAttach = function(libname, pkgname) {
