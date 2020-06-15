@@ -108,6 +108,12 @@ jobs:
         run: rcmdcheck::rcmdcheck(args = c("--no-manual", "${{ matrix.config.args }}"), error_on = "warning", check_dir = "check", build_args = "${{ matrix.config.build_args }}")
         shell: Rscript {0}
 
+     - name: Build binary
+       if: runner.os == 'macOS'
+       run: |
+         devtools::build(path = "..", binary = TRUE)
+       shell: Rscript {0}
+
       - name: Upload check results
         if: always()
         uses: actions/upload-artifact@master
