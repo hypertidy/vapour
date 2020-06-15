@@ -111,8 +111,9 @@ jobs:
       - name: Build binary
         if: runner.os == 'macOS'
         run: |
-          devtools::build(path = "..", binary = TRUE)
-        shell: Rscript {0}
+          cd ..
+          R CMD INSTALL --build vapour
+          cd vapour
 
       - name: Upload check results
         if: always()
