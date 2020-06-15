@@ -621,6 +621,9 @@ ac_includes_default="\
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+GEOS_CONFIG
+PROJ_LIBS
+PROJ_CPPFLAGS
 EGREP
 GREP
 CPP
@@ -679,6 +682,11 @@ enable_option_checking
 with_gdal_config
 with_data_copy
 with_proj_data
+with_proj_include
+with_proj_api
+with_proj_lib
+with_proj_share
+with_geos_config
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1311,6 +1319,15 @@ Optional Packages:
   --with-data-copy=yes/no local copy of data directories in package, default
                           no
   --with-proj-data=DIR    location of PROJ data directory
+  --with-proj-include=DIR location of proj header files
+  --with-proj-api=yes/no  use the deprecated proj_api.h even when PROJ 6 is
+                          available; default no
+  --with-proj-lib=LIB_PATH
+                          the location of proj libraries
+  --with-proj-share=SHARE_PATH
+                          the location of proj metadata files
+  --with-geos-config=GEOS_CONFIG
+                          the location of geos-config
 
 Some influential environment variables:
   CC          C compiler command
@@ -1636,6 +1653,52 @@ $as_echo "$ac_res" >&6; }
   eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
 
 } # ac_fn_c_check_header_compile
+
+# ac_fn_c_try_link LINENO
+# -----------------------
+# Try to link conftest.$ac_ext, and return whether this succeeded.
+ac_fn_c_try_link ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  rm -f conftest.$ac_objext conftest$ac_exeext
+  if { { ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_link") 2>conftest.err
+  ac_status=$?
+  if test -s conftest.err; then
+    grep -v '^ *+' conftest.err >conftest.er1
+    cat conftest.er1 >&5
+    mv -f conftest.er1 conftest.err
+  fi
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 test -x conftest$ac_exeext
+       }; then :
+  ac_retval=0
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_retval=1
+fi
+  # Delete the IPA/IPO (Inter Procedural Analysis/Optimization) information
+  # created by the PGI compiler (conftest_ipa8_conftest.oo), as it would
+  # interfere with the next link command; also delete a directory that is
+  # left behind by Apple's compiler.  We do this before executing the actions.
+  rm -rf conftest.dSYM conftest_ipa8_conftest.oo
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+  as_fn_set_status $ac_retval
+
+} # ac_fn_c_try_link
 cat >config.log <<_ACEOF
 This file contains any messages produced by compilers while
 running configure, to aid debugging if configure makes a mistake.
@@ -1989,6 +2052,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
   echo "could not determine R_HOME"
@@ -2164,7 +2228,7 @@ GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d "." -f1`
 if test ${GDAL_MAJ_VER} -lt 2 ; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-  as_fn_error $? "vapour is not compatible with GDAL versions below 2.0.0" "$LINENO" 5
+  as_fn_error $? "vapour is not compatible with GDAL versions below 2.0.1" "$LINENO" 5
 else
    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
@@ -3518,18 +3582,705 @@ $as_echo "$as_me:   GDAL: ${GDAL_DATADIR}" >&6;}
   fi
 fi
 
+#
+# test whether PROJ is available to gdal:
+#
 
-## missing link thanks J
+gdal_has_proj=no
+cat > gdal_proj.cpp <<_EOCONF
+#include <gdal.h>
+#include <ogr_srs_api.h>
+#include <ogr_spatialref.h>
+int main(int argc, char *argv[]) {
+	OGRSpatialReference *dest = new OGRSpatialReference;
+	OGRSpatialReference *src = new OGRSpatialReference;
+    src->importFromEPSG(4326);
+    dest->importFromEPSG(3857);
+	OGRCoordinateTransformation *ct = OGRCreateCoordinateTransformation(src, dest);
+	return(ct == NULL); // signals PROJ is not available through gdal
+}
+_EOCONF
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: checking whether PROJ is available for linking:" >&5
+$as_echo_n "checking GDAL: checking whether PROJ is available for linking:... " >&6; }
+${CXX} ${CPPFLAGS} -o gdal_proj gdal_proj.cpp ${LIBS} 2> errors.txt
+if test `echo $?` -ne 0 ; then
+gdal_has_proj=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+else
+gdal_has_proj=yes
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+
+if test "${gdal_has_proj}" = no; then
+   cat errors.txt
+   { $as_echo "$as_me:${as_lineno-$LINENO}: Install failure: compilation and/or linkage problems." >&5
+$as_echo "$as_me: Install failure: compilation and/or linkage problems." >&6;}
+   as_fn_error $? "cannot link projection code" "$LINENO" 5
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: checking whether PROJ is available fur running:" >&5
+$as_echo_n "checking GDAL: checking whether PROJ is available fur running:... " >&6; }
+./gdal_proj
+if test `echo $?` -ne 0 ; then
+gdal_has_proj=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+else
+gdal_has_proj=yes
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+if test "${gdal_has_proj}" = no; then
+   as_fn_error $? "OGRCoordinateTransformation() does not return a coord.trans: PROJ not available?" "$LINENO" 5
+fi
+rm -fr errors.txt gdal_proj.cpp gdal_proj
+{ $as_echo "$as_me:${as_lineno-$LINENO}: GDAL: ${GDAL_VERSION}" >&5
+$as_echo "$as_me: GDAL: ${GDAL_VERSION}" >&6;}
+
+
+#
+# PROJ
+#
+
+PROJ_CONFIG="pkg-config proj"
+
+if `$PROJ_CONFIG --exists` ; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: pkg-config proj exists, will use it" >&5
+$as_echo "$as_me: pkg-config proj exists, will use it" >&6;}
+  proj_config_ok=yes
+else
+  proj_config_ok=no
+fi
+
+
+# Check whether --with-proj-include was given.
+if test "${with_proj_include+set}" = set; then :
+  withval=$with_proj_include; proj_include_path=$withval
+fi
+
+if test  -n "$proj_include_path"  ; then
+   PROJ_CPPFLAGS="-I${proj_include_path}"
+
+else
+  if test "${proj_config_ok}" = yes; then
+    PROJ_INCLUDE_PATH=`${PROJ_CONFIG} --cflags`
+    PROJ_CPPFLAGS="${PROJ_INCLUDE_PATH}"
+
+  fi
+fi
+
+# honor PKG_xx overrides
+# for CPPFLAGS we will superfluously double R's flags
+# since we'll set PKG_CPPFLAGS with this, but that shouldn't hurt
+
+
+# Check whether --with-proj-api was given.
+if test "${with_proj_api+set}" = set; then :
+  withval=$with_proj_api; proj_api=$withval
+fi
+
+PROJ6="no"
+PROJH="no"
+if test "${proj_config_ok}" = yes; then
+  PROJ_VERSION=`${PROJ_CONFIG} --modversion`
+  PROJV1=`echo "${PROJ_VERSION}" | cut -c 1`
+  if test "${PROJV1}" -ge 6; then
+    PROJ6="yes"
+    PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DHAVE_PROJ_H"
+    if test "${proj_api}" = yes; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: using proj_api.h even with PROJ 5/6" >&5
+$as_echo "$as_me: using proj_api.h even with PROJ 5/6" >&6;}
+        PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
+    else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: using proj.h." >&5
+$as_echo "$as_me: using proj.h." >&6;}
+        PROJH="yes"
+    fi
+  fi
+else
+  if test "${PROJH}" = no ; then
+    PROJH=yes
+    for ac_header in proj.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "proj.h" "ac_cv_header_proj_h" "$ac_includes_default"
+if test "x$ac_cv_header_proj_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_PROJ_H 1
+_ACEOF
+
+else
+  PROJH=no
+fi
+
+done
+
+    if test "${PROJH}" = yes; then
+      PROJ6="yes"
+      PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DHAVE_PROJ_H"
+    fi
+  fi
+fi
+
+CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS} ${PROJ_CPPFLAGS}"
+
+if test "${PROJH}" = no
+then
+  proj4ok=yes
+  for ac_header in proj_api.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "proj_api.h" "ac_cv_header_proj_api_h" "$ac_includes_default"
+if test "x$ac_cv_header_proj_api_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_PROJ_API_H 1
+_ACEOF
+
+else
+  proj4ok=no
+fi
+
+done
+
+  if test "${proj4ok}" = no; then
+     as_fn_error $? "proj_api.h not found in standard or given locations." "$LINENO" 5
+  fi
+fi
+
+# dnl ditto for a library path
+
+# Check whether --with-proj-lib was given.
+if test "${with_proj_lib+set}" = set; then :
+  withval=$with_proj_lib; proj_lib_path=$withval
+fi
+
+if test  -n "$proj_lib_path"  ; then
+    PROJ_LIBS="-L${proj_lib_path} ${INPKG_LIBS} -lproj"
+
+else
+  if test "${proj_config_ok}" = yes; then
+    PROJ_LIB_PATH=`${PROJ_CONFIG} --libs`
+    PROJ_LIBS="${PROJ_LIB_PATH} ${INPKG_LIBS}"
+
+	proj_version=`${PROJ_CONFIG} --modversion`
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: PROJ: ${proj_version}" >&5
+$as_echo "$as_me: PROJ: ${proj_version}" >&6;}
+  else
+    PROJ_LIBS="${PKG_LIBS} -lproj"
+  fi
+fi
+
+LIBS="${PROJ_LIBS} ${INLIBS} ${PKG_LIBS}"
+
+if test "${PROJH}" = no; then
+  proj4ok=yes
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pj_init_plus in -lproj" >&5
+$as_echo_n "checking for pj_init_plus in -lproj... " >&6; }
+if ${ac_cv_lib_proj_pj_init_plus+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lproj  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char pj_init_plus ();
+int
+main ()
+{
+return pj_init_plus ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_proj_pj_init_plus=yes
+else
+  ac_cv_lib_proj_pj_init_plus=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_proj_pj_init_plus" >&5
+$as_echo "$ac_cv_lib_proj_pj_init_plus" >&6; }
+if test "x$ac_cv_lib_proj_pj_init_plus" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBPROJ 1
+_ACEOF
+
+  LIBS="-lproj $LIBS"
+
+else
+  proj4ok=no
+fi
+
+  if test "${proj4ok}" = no; then
+     as_fn_error $? "libproj not found in standard or given locations." "$LINENO" 5
+  fi
+cat > proj_conf_test.c <<_EOCONF
+#include <stdio.h>
+#include <stdlib.h>
+#include <proj_api.h>
+
+int main() {
+    printf("%d\n", PJ_VERSION);
+    exit(0);
+}
+_EOCONF
+else
+cat > proj_conf_test.cpp <<_EOCONF
+#include <stdio.h>
+#include <stdlib.h>
+#include <proj.h>
+
+int main() {
+	proj_context_create();
+    exit(0);
+}
+_EOCONF
+  #AC_CHECK_LIB(proj,proj_context_create,,proj6ok=no)
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ: checking whether PROJ and sqlite3 are available for linking:" >&5
+$as_echo_n "checking PROJ: checking whether PROJ and sqlite3 are available for linking:... " >&6; }
+  ${CXX} ${CPPFLAGS} -o proj_conf_test proj_conf_test.cpp ${LIBS} -lsqlite3 2> errors.txt
+  if test `echo $?` -ne 0 ; then
+    proj6ok=no
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+  else
+    proj6ok=yes
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+  fi
+  if test "${proj6ok}" = no; then
+     as_fn_error $? "libproj not found in standard or given locations." "$LINENO" 5
+  fi
+
+cat > proj_conf_test.c <<_EOCONF
+#include <stdio.h>
+#include <stdlib.h>
+#include <proj.h>
+
+int main() {
+    printf("%d.%d.%d\n", PROJ_VERSION_MAJOR, PROJ_VERSION_MINOR, PROJ_VERSION_PATCH);
+    exit(0);
+}
+_EOCONF
+fi
+
+#AC_MSG_NOTICE([PKG_LIBS: ${PKG_LIBS}])
+
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+
+proj_version=`./proj_conf_test`
+
+
+# Check whether --with-proj-share was given.
+if test "${with_proj_share+set}" = set; then :
+  withval=$with_proj_share; proj_share_path=$withval
+fi
+
+if test  -n "$proj_share_path"  ; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: PROJ_LIB: ${proj_share_path}" >&5
+$as_echo "$as_me: PROJ_LIB: ${proj_share_path}" >&6;}
+fi
+
+if test ${PROJ6} = "no"; then
+
+cat > proj_conf_test.c <<_EOCONF
+#include <stdio.h>
+#include <proj_api.h>
+#if PJ_VERSION <= 480
+FILE *pj_open_lib(projCtx, const char *, const char *);
+#endif
+
+int main() {
+#if PJ_VERSION <= 480
+    FILE *fp;
+#else
+    PAFile fp;
+#endif
+    projCtx ctx;
+    ctx = pj_get_default_ctx();
+    fp = pj_open_lib(ctx, "epsg", "rb");
+    if (fp == NULL) exit(1);
+#if PJ_VERSION <= 480
+    fclose(fp);
+#else
+    pj_ctx_fclose(ctx, fp);
+#endif
+    exit(0);
+}
+_EOCONF
+
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+if test  -n "$proj_share_path"  ; then
+  PROJ_LIB="${proj_share_path}" ./proj_conf_test
+  proj_share=`echo $?`
+else
+  ./proj_conf_test
+  proj_share=`echo $?`
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ: epsg found and readable" >&5
+$as_echo_n "checking PROJ: epsg found and readable... " >&6; }
+if test ${proj_share} -eq 1 ; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    STOP="stop"
+else
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+
+rm -f proj_conf_test.c proj_conf_test
+
+if test "$STOP" = "stop" ; then
+    echo "Error: proj/epsg not found"
+    echo "Either install missing proj support files, for example"
+    echo "the proj-nad and proj-epsg RPMs on systems using RPMs,"
+    echo "or if installed but not autodetected, set PROJ_LIB to the"
+    echo "correct path, and if need be use the --with-proj-share="
+    echo "configure argument."
+    exit 1
+fi
+
+else # proj >= 6
+
+if test "${PROJH}" = no; then
+
+cat > proj_conf_test.c <<_EOCONF
+#include <stdio.h>
+#include <proj_api.h>
+
+int main() {
+    PAFile fp;
+    projCtx ctx;
+    ctx = pj_get_default_ctx();
+    fp = pj_open_lib(ctx, "proj.db", "rb");
+    if (fp == NULL) exit(1);
+    pj_ctx_fclose(ctx, fp);
+    exit(0);
+}
+_EOCONF
+
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+if test  -n "$proj_share_path"  ; then
+  PROJ_LIB="${proj_share_path}" ./proj_conf_test
+  proj_share=`echo $?`
+else
+  ./proj_conf_test
+  proj_share=`echo $?`
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ: proj.db found and readable" >&5
+$as_echo_n "checking PROJ: proj.db found and readable... " >&6; }
+if test ${proj_share} -eq 1 ; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    STOP="stop"
+else
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+
+rm -f proj_conf_test.c proj_conf_test
+
+if test "$STOP" = "stop" ; then
+    echo "Error: proj/proj.db not found"
+    echo "Either install missing proj support files, set PROJ_LIB to the"
+    echo "correct path, and if need be use the --with-proj-share="
+    echo "configure argument."
+    exit 1
+fi
+
+cat > proj_conf_test.c <<_EOCONF
+#include <stdio.h>
+#include <proj_api.h>
+#if PJ_VERSION <= 480
+FILE *pj_open_lib(projCtx, const char *, const char *);
+#endif
+
+int main() {
+#if PJ_VERSION <= 480
+    FILE *fp;
+#else
+    PAFile fp;
+#endif
+    projCtx ctx;
+    ctx = pj_get_default_ctx();
+    fp = pj_open_lib(ctx, "conus", "rb");
+    if (fp == NULL) exit(1);
+#if PJ_VERSION <= 480
+    fclose(fp);
+#else
+    pj_ctx_fclose(ctx, fp);
+#endif
+    exit(0);
+}
+_EOCONF
+
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+if test  -n "$proj_share_path"  ; then
+  PROJ_LIB="${proj_share_path}" ./proj_conf_test
+  proj_share=`echo $?`
+else
+  ./proj_conf_test
+  proj_share=`echo $?`
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ: conus found and readable" >&5
+$as_echo_n "checking PROJ: conus found and readable... " >&6; }
+if test ${proj_share} -eq 1 ; then
+    WARN="warn"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+else
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+
+rm -f proj_conf_test.c proj_conf_test
+
+if test "$WARN" = "warn" ; then
+    echo "Note: proj/conus not found"
+    echo "No support available in PROJ4 for NAD grid datum transformations"
+    echo "If required, consider re-installing from source with the contents"
+    echo "of proj-datumgrid-1.<latest>.zip from http://download.osgeo.org/proj/ in nad/."
+fi
+
+fi # PROJH = no
+
+fi # proj >= 6
+
+
+
+
+#
+# GEOS:
+#
+GEOS_CONFIG="geos-config"
+
+GEOS_CONFIG_SET="no"
+
+
+# Check whether --with-geos-config was given.
+if test "${with_geos_config+set}" = set; then :
+  withval=$with_geos_config; geos_config=$withval
+fi
+
+if test  -n "$geos_config"  ; then
+    GEOS_CONFIG_SET="yes"
+    GEOS_CONFIG="${geos_config}"
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: geos-config set to $GEOS_CONFIG" >&5
+$as_echo "$as_me: geos-config set to $GEOS_CONFIG" >&6;}
+fi
+
+if test "$GEOS_CONFIG_SET" = "no" ; then
+  # Extract the first word of ""$GEOS_CONFIG"", so it can be a program name with args.
+set dummy "$GEOS_CONFIG"; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_GEOS_CONFIG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $GEOS_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_GEOS_CONFIG="$GEOS_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_GEOS_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_GEOS_CONFIG" && ac_cv_path_GEOS_CONFIG=""no""
+  ;;
+esac
+fi
+GEOS_CONFIG=$ac_cv_path_GEOS_CONFIG
+if test -n "$GEOS_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GEOS_CONFIG" >&5
+$as_echo "$GEOS_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  if test "$GEOS_CONFIG" = "no" ; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    as_fn_error $? "geos-config not found or not executable." "$LINENO" 5
+  fi
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking geos-config exists" >&5
+$as_echo_n "checking geos-config exists... " >&6; }
+  if test -r "${GEOS_CONFIG}"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+  else
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    as_fn_error $? "geos-config not found - configure argument error." "$LINENO" 5
+  fi
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking geos-config executable" >&5
+$as_echo_n "checking geos-config executable... " >&6; }
+  if test -x "${GEOS_CONFIG}"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+  else
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    as_fn_error $? "geos-config not executable." "$LINENO" 5
+  fi
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking geos-config usability" >&5
+$as_echo_n "checking geos-config usability... " >&6; }
+if test `${GEOS_CONFIG} --version`
+then
+  GEOS_CLIBS="`${GEOS_CONFIG} --clibs`"
+  #GEOS_DEP_CLIBS=`geos-config --static-clibs` -- this gives -m instead of -lm, which breaks clang
+  # fixed in 3.7.0 at https://github.com/libgeos/libgeos/pull/73#issuecomment-262208677
+  GEOS_DEP_CLIBS=`${GEOS_CONFIG} --static-clibs | sed 's/-m/-lm/g'`
+  GEOS_CPPFLAGS=`${GEOS_CONFIG} --cflags`
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+  as_fn_error $? "${GEOS_CONFIG} not usable" "$LINENO" 5
+fi
+
+GEOS_VERSION=`${GEOS_CONFIG} --version`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: GEOS: ${GEOS_VERSION}" >&5
+$as_echo "$as_me: GEOS: ${GEOS_VERSION}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GEOS version >= 3.4.0" >&5
+$as_echo_n "checking GEOS version >= 3.4.0... " >&6; } # GDAL 2.0.1 requires GEOS 3.1.0
+GEOS_VER_DOT=`echo $GEOS_VERSION | tr -d ".[:alpha:]"`
+if test ${GEOS_VER_DOT} -lt 340 ; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+  as_fn_error $? "upgrade GEOS to 3.4.0 or later" "$LINENO" 5
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+
+PKG_CPPFLAGS="${INPKG_CPPFLAGS} ${PROJ_CPPFLAGS} ${GDAL_CPPFLAGS} ${GEOS_CPPFLAGS}"
+
+PKG_LIBS="${INPKG_LIBS} ${GDAL_LIBS}"
+
 if test "${NEED_DEPS}" = yes; then
    PKG_LIBS="${PKG_LIBS} ${GDAL_DEP_LIBS}"
 
 fi
 
-#
-# test whether PROJ is available to gdal:
-#
+# honor PKG_xx overrides
+# for CPPFLAGS we will superfluously double R's flags
+# since we'll set PKG_CPPFLAGS with this, but that shouldn't hurt
+CPPFLAGS="${CPPFLAGS} ${PKG_CPPFLAGS}"
+LIBS="${LIBS} ${PKG_LIBS}"
 
-## I don't think we care if GDAL has PROJ for vapour at the moment. MSumner September 2019
+geosok=yes
+for ac_header in geos_c.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "geos_c.h" "ac_cv_header_geos_c_h" "$ac_includes_default"
+if test "x$ac_cv_header_geos_c_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GEOS_C_H 1
+_ACEOF
+
+else
+  geosok=no
+fi
+
+done
+
+if test "${geosok}" = no; then
+   as_fn_error $? "geos_c.h not found in given locations." "$LINENO" 5
+fi
+
+cat > geos_test.cpp <<_EOCONF
+#include <geos_c.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+static void __errorHandler(const char *fmt, ...) {
+    return;
+}
+static void __warningHandler(const char *fmt, ...) {
+    return;
+}
+int main() {
+    GEOSContextHandle_t r = initGEOS_r((GEOSMessageHandler) __warningHandler, (GEOSMessageHandler) __errorHandler);
+    finishGEOS_r(r);
+}
+#ifdef __cplusplus
+}
+#endif
+_EOCONF
+
+#echo "${CXX} ${CPPFLAGS} -o geos_test geos_test.cpp ${LIBS}"
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking geos: linking with ${GEOS_CLIBS}" >&5
+$as_echo_n "checking geos: linking with ${GEOS_CLIBS}... " >&6; }
+${CXX} ${CPPFLAGS} -o geos_test geos_test.cpp ${GEOS_CLIBS} 2> errors.txt
+if test `echo $?` -ne 0 ; then
+ geosok=no
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+else
+ PKG_LIBS="${PKG_LIBS} ${GEOS_CLIBS}"
+
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+
+if test "${geosok}" = no; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking geos: linking with ${GEOS_DEP_CLIBS}" >&5
+$as_echo_n "checking geos: linking with ${GEOS_DEP_CLIBS}... " >&6; }
+  ${CXX} ${CPPFLAGS} -o geos_test geos_test.cpp ${GEOS_DEP_CLIBS} 2> errors.txt
+  if test `echo $?` -ne 0 ; then
+    geosok=no
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    cat errors.txt
+    { $as_echo "$as_me:${as_lineno-$LINENO}: Install failure: compilation and/or linkage problems." >&5
+$as_echo "$as_me: Install failure: compilation and/or linkage problems." >&6;}
+    as_fn_error $? "initGEOS_r not found in libgeos_c." "$LINENO" 5
+  else
+    PKG_LIBS="${PKG_LIBS} ${GEOS_DEP_CLIBS}"
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+  fi
+fi
+
+rm -f geos_test errors.txt geos_test.cpp
+
+#
+# add PROJ_LIBS
+#
+PKG_LIBS="${PROJ_LIBS} ${PKG_LIBS}"
 
 
 #
