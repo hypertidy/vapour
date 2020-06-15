@@ -45,11 +45,19 @@ jobs:
         run: |
           brew install pkg-config
           brew install gdal
+          #curl -O http://mac.R-project.org/libs-4/pkgconfig-0.28-darwin.17-x86_64.tar.gz
+          #sudo tar fvxz pkgconfig-0.28-darwin.17-x86_64.tar.gz -C /
+          #curl -O http://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
+          #sudo tar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /
+          #curl -O http://mac.R-project.org/libs-4/geos-3.7.2-darwin.17-x86_64.tar.gz
+          #sudo tar fvxz geos-3.7.2-darwin.17-x86_64.tar.gz -C /
+          #curl -O http://mac.R-project.org/libs-4/proj-5.2.0-darwin.17-x86_64.tar.gz
+          # sudo tar fvxz proj-5.2.0-darwin.17-x86_64.tar.gz -C /
           cat <<EOT >> .Renviron
-          PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
-          PROJ_LIB=/usr/local/opt/proj/share/proj/
+           PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
+           PROJ_LIB=/usr/local/opt/proj/share/proj/
           # for installing XML package from source
-          XML_CONFIG=/usr/local/opt/libxml2/bin/xml2-config
+           XML_CONFIG=/usr/local/opt/libxml2/bin/xml2-config
           EOT
           cat <<EOT >> .Rprofile
           r <- getOption("repos")
@@ -113,6 +121,7 @@ jobs:
         run: |
           cd ..
           R CMD INSTALL --build vapour
+          mv vapour_*.tgz vapour.Rcheck/
           cd vapour
 
       - name: Upload check results
