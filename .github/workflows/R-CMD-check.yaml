@@ -5,7 +5,7 @@
 ## copied from sf
 ## no trailing slash on PROJ_LIB=/usr/local/opt/proj/share/proj
 ## copied paleolimbot for Build section
-
+## try q with bsdtar ...
 
 on:
   push:
@@ -50,15 +50,15 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           #brew install pkg-config
+          #brew install gdal
           curl -O https://mac.R-project.org/libs-4/pkgconfig-0.28-darwin.17-x86_64.tar.gz
           sudo tar fvxzq pkgconfig-0.28-darwin.17-x86_64.tar.gz -C /
-          brew install gdal
-          #curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
-          #sudo tar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /
-          #curl -O https://mac.R-project.org/libs-4/geos-3.7.2-darwin.17-x86_64.tar.gz
-          #sudo tar fvxz geos-3.7.2-darwin.17-x86_64.tar.gz -C /
-          #curl -O https://mac.R-project.org/libs-4/proj-5.2.0-darwin.17-x86_64.tar.gz
-          # sudo tar fvxz proj-5.2.0-darwin.17-x86_64.tar.gz -C /
+          curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
+          sudo tar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /
+          curl -O https://mac.R-project.org/libs-4/geos-3.7.2-darwin.17-x86_64.tar.gz
+          sudo tar fvxz geos-3.7.2-darwin.17-x86_64.tar.gz -C /
+          curl -O https://mac.R-project.org/libs-4/proj-5.2.0-darwin.17-x86_64.tar.gz
+          sudo tar fvxz proj-5.2.0-darwin.17-x86_64.tar.gz -C /
           cat <<EOT >> .Renviron
            PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
            PROJ_LIB=/usr/local/opt/proj/share/proj
