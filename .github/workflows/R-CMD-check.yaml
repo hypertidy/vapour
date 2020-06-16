@@ -55,7 +55,7 @@ jobs:
           # sudo tar fvxz proj-5.2.0-darwin.17-x86_64.tar.gz -C /
           cat <<EOT >> .Renviron
            PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
-           PROJ_LIB=/usr/local/opt/proj/share/proj/
+           PROJ_LIB=/usr/local/opt/proj/share/proj
           # for installing XML package from source
            XML_CONFIG=/usr/local/opt/libxml2/bin/xml2-config
           EOT
