@@ -121,7 +121,7 @@ jobs:
         run: |
           cd ..
           R CMD INSTALL --build vapour
-          mv vapour_*.tgz vapour.Rcheck/
+          #mv vapour_*.tgz vapour.Rcheck/
           cd vapour
 
       - name: Upload check results
