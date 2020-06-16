@@ -50,14 +50,14 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           #brew install pkg-config
-          curl -O http://mac.R-project.org/libs-4/pkgconfig-0.28-darwin.17-x86_64.tar.gz
+          curl -O https://mac.R-project.org/libs-4/pkgconfig-0.28-darwin.17-x86_64.tar.gz
           sudo tar fvxz pkgconfig-0.28-darwin.17-x86_64.tar.gz -C /
           brew install gdal
-          #curl -O http://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
+          #curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
           #sudo tar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /
-          #curl -O http://mac.R-project.org/libs-4/geos-3.7.2-darwin.17-x86_64.tar.gz
+          #curl -O https://mac.R-project.org/libs-4/geos-3.7.2-darwin.17-x86_64.tar.gz
           #sudo tar fvxz geos-3.7.2-darwin.17-x86_64.tar.gz -C /
-          #curl -O http://mac.R-project.org/libs-4/proj-5.2.0-darwin.17-x86_64.tar.gz
+          #curl -O https://mac.R-project.org/libs-4/proj-5.2.0-darwin.17-x86_64.tar.gz
           # sudo tar fvxz proj-5.2.0-darwin.17-x86_64.tar.gz -C /
           cat <<EOT >> .Renviron
            PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
