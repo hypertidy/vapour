@@ -119,10 +119,11 @@ jobs:
       - name: Build binary
         if: runner.os == 'macOS'
         run: |
+          export A=$PWD
           cd ..
           R CMD INSTALL --build vapour
-          #mv vapour_*.tgz vapour.Rcheck/
-          cd vapour
+          mv vapour_*.tgz $A/
+          cd $A
 
       - name: Upload check results
         if: always()
