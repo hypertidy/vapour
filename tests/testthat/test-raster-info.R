@@ -5,7 +5,7 @@ context("test-raster-info")
 #skip_on_travis()
 #skip_on_cran()
 
-
+skip("don't do it")
 test_that("sds checks work", {
   f <- system.file("extdata/gdal/geos_rad.nc", package = "vapour", mustWork = TRUE)
   f <- normalizePath(f)
