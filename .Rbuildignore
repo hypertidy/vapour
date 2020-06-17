@@ -22,3 +22,4 @@
 ^\.github$
 ^\.ccache$
 ^tic\.R$
+^windows$
