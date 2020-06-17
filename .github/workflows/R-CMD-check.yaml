@@ -51,14 +51,15 @@ jobs:
         run: |
           #brew install pkg-config
           #brew install gdal
+          brew install gnu-tar
           curl -O https://mac.R-project.org/libs-4/pkgconfig-0.28-darwin.17-x86_64.tar.gz
-          sudo tar fvxz pkgconfig-0.28-darwin.17-x86_64.tar.gz -C /
+          sudo gtar fvxz pkgconfig-0.28-darwin.17-x86_64.tar.gz -C /
           curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
-          sudo tar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /
+          sudo gtar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /
           curl -O https://mac.R-project.org/libs-4/geos-3.7.2-darwin.17-x86_64.tar.gz
-          sudo tar fvxz geos-3.7.2-darwin.17-x86_64.tar.gz -C /
+          sudo gtar fvxz geos-3.7.2-darwin.17-x86_64.tar.gz -C /
           curl -O https://mac.R-project.org/libs-4/proj-5.2.0-darwin.17-x86_64.tar.gz
-          sudo tar fvxz proj-5.2.0-darwin.17-x86_64.tar.gz -C /
+          sudo gtar fvxz proj-5.2.0-darwin.17-x86_64.tar.gz -C /
           ls /usr/local/bin
           #sudo chmod +x /usr/local/bin/gdal-config
           ##sudo update_dyld_shared_cache
