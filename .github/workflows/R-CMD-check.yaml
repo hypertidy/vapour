@@ -77,8 +77,12 @@ jobs:
       - name: Query dependencies
         run: |
           install.packages('remotes')
-          print(system("ls /"))
-          print(system("ls /usr"))
+          cat("/usr/local:\n")
+          print(system("ls /usr/local"))
+          cat("/usr/local/bin:\n")
+          print(system("ls /usr/local/bin"))
+          cat("/usr/local/include:\n")
+          print(system("ls /usr/local/include"))
 
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), "depends.Rds", version = 2)
         shell: Rscript {0}
