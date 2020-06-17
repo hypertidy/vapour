@@ -59,6 +59,7 @@ jobs:
           sudo tar fvxzq geos-3.7.2-darwin.17-x86_64.tar.gz -C /
           curl -O https://mac.R-project.org/libs-4/proj-5.2.0-darwin.17-x86_64.tar.gz
           sudo tar fvxzq proj-5.2.0-darwin.17-x86_64.tar.gz -C /
+          sudo chmod +x /usr/local/bin/gdal-config
           ##sudo update_dyld_shared_cache
           cat <<EOT >> .Renviron
            PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
@@ -113,11 +114,11 @@ jobs:
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
 
-      - name: Install rgdal with configure
-        if: runner.os == 'macOS'
-        run: |
-          install.packages("rgdal", type = "source", configure.args = "--with-proj-lib=/usr/local/lib/ --with-proj-include=/usr/local/include/")
-        shell: Rscript {0}
+      # - name: Install rgdal with configure
+      #   if: runner.os == 'macOS'
+      #   run: |
+      #     install.packages("rgdal", type = "source", configure.args = "--with-proj-lib=/usr/local/lib/ --with-proj-include=/usr/local/include/")
+      #   shell: Rscript {0}
 
       - name: Check
         run: rcmdcheck::rcmdcheck(args = c("--no-manual", "${{ matrix.config.args }}"), error_on = "warning", check_dir = "check", build_args = "${{ matrix.config.build_args }}")
