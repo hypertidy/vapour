@@ -59,7 +59,8 @@ jobs:
           sudo tar fvxzq geos-3.7.2-darwin.17-x86_64.tar.gz -C /
           curl -O https://mac.R-project.org/libs-4/proj-5.2.0-darwin.17-x86_64.tar.gz
           sudo tar fvxzq proj-5.2.0-darwin.17-x86_64.tar.gz -C /
-          sudo chmod +x /usr/local/bin/gdal-config
+
+          #sudo chmod +x /usr/local/bin/gdal-config
           ##sudo update_dyld_shared_cache
           cat <<EOT >> .Renviron
            PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
@@ -76,6 +77,9 @@ jobs:
       - name: Query dependencies
         run: |
           install.packages('remotes')
+          print(system("ls /")
+          print(system("ls /usr")
+
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), "depends.Rds", version = 2)
         shell: Rscript {0}
 
