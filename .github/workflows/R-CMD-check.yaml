@@ -54,8 +54,8 @@ jobs:
           curl -O https://mac.R-project.org/libs-4/pkgconfig-0.28-darwin.17-x86_64.tar.gz
           mkdir newd
           sudo tar fvxzq pkgconfig-0.28-darwin.17-x86_64.tar.gz -C newd
-          ls newd
-          ls newd/bin -lh
+          ls newd -lh
+          #ls newd/bin
           curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
           sudo tar fvxzq gdal-2.4.2-darwin.17-x86_64.tar.gz -C /
           curl -O https://mac.R-project.org/libs-4/geos-3.7.2-darwin.17-x86_64.tar.gz
