@@ -52,7 +52,7 @@ jobs:
           #brew install pkg-config
           #brew install gdal
           curl -O https://mac.R-project.org/libs-4/pkgconfig-0.28-darwin.17-x86_64.tar.gz
-          mkdir newd
+          sudo mkdir newd
           sudo tar fvxzq pkgconfig-0.28-darwin.17-x86_64.tar.gz -C newd
           ls newd -lh
           #ls newd/bin
