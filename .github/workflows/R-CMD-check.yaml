@@ -51,8 +51,10 @@ jobs:
         run: |
           #brew install pkg-config
           #brew install gdal
+          ls /
           curl -O https://mac.R-project.org/libs-4/pkgconfig-0.28-darwin.17-x86_64.tar.gz
           sudo tar fvxzq pkgconfig-0.28-darwin.17-x86_64.tar.gz -C /
+          ls /
           curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
           sudo tar fvxzq gdal-2.4.2-darwin.17-x86_64.tar.gz -C /
           curl -O https://mac.R-project.org/libs-4/geos-3.7.2-darwin.17-x86_64.tar.gz
