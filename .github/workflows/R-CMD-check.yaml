@@ -54,13 +54,13 @@ jobs:
           # https://github.com/R-macos/recipes/issues/5
           # https://github.com/R-macos/recipes/issues/2
           curl -O https://mac.R-project.org/libs-4/pkgconfig-0.28-darwin.17-x86_64.tar.gz
-          sudo tar fvxz pkgconfig-0.28-darwin.17-x86_64.tar.gz -C /usr/ --strip 1
+          sudo tar fvxzq pkgconfig-0.28-darwin.17-x86_64.tar.gz -C /usr/ --strip 1
           curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
-          sudo tar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /usr/ --strip 1
+          sudo tar fvxzq gdal-2.4.2-darwin.17-x86_64.tar.gz -C /usr/ --strip 1
           curl -O https://mac.R-project.org/libs-4/geos-3.7.2-darwin.17-x86_64.tar.gz
-          sudo tar fvxz geos-3.7.2-darwin.17-x86_64.tar.gz -C /usr/ --strip 1
+          sudo tar fvxzq geos-3.7.2-darwin.17-x86_64.tar.gz -C /usr/ --strip 1
           curl -O https://mac.R-project.org/libs-4/proj-5.2.0-darwin.17-x86_64.tar.gz
-          sudo tar fvxz proj-5.2.0-darwin.17-x86_64.tar.gz -C /usr/ --strip 1
+          sudo tar fvxzq proj-5.2.0-darwin.17-x86_64.tar.gz -C /usr/ --strip 1
           ls /usr/local/bin
           cat <<EOT >> .Renviron
           PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
