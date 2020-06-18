@@ -1,4 +1,4 @@
-dnl copied from github.com/r-spatial/sf/configure.ac 2020-05-15 Michael Sumner
+dnl adapted from rgdal configure.ac 2020-05-15 Michael Sumner
 dnl
 
 dnl Process this file with autoconf to produce a configure script.
@@ -138,44 +138,19 @@ GDAL_MAJOR=`echo $GDAL_VERSION | cut -f1 -d"."`
 GDAL_MINOR=`echo $GDAL_VERSION | cut -f2 -d"."`
 GDAL_PATCH=`echo $GDAL_VERSION | cut -f3 -d"."`
 
-#if test ${GDAL_MAJOR} = 2 -a test ${GDAL_MINOR} -ge 3 ; then
-if test ${GDAL_MAJOR} = 2 && test ${GDAL_MINOR} -ge 3 ; then
-  AC_MSG_CHECKING([C++11 support for GDAL >= 2.3.0])
-  if test ${HAVE_CXX11} = 1 ; then
+
+AC_MSG_CHECKING([GDAL version >= 2.3.0])
+if test ${GDAL_MAJOR} -gt 2 ; then
+  AC_MSG_RESULT(yes)
+else
+  if test ${GDAL_MAJOR} = 2 && test ${GDAL_MINOR} -ge 3 ; then
     AC_MSG_RESULT(yes)
   else
     AC_MSG_RESULT(no)
-    AC_MSG_ERROR([provide at least CXX11 compiler support for GDAL >= 2.3.0])
+    AC_MSG_ERROR([upgrade GDAL to 2.3.0 or later])
   fi
 fi
 
-AC_MSG_CHECKING([GDAL version >= 1.11.4])
-if test ${GDAL_MAJOR} -gt 1 ; then
-  AC_MSG_RESULT(yes)
-else
-#  if test ${GDAL_MAJOR} = 1 -a test ${GDAL_MINOR} = 11 -a test ${GDAL_PATCH} -ge 4 ; then
-  if test ${GDAL_MAJOR} = 1 && test ${GDAL_MINOR} = 11 && test ${GDAL_PATCH} -ge 4 ; then
-    AC_MSG_RESULT(yes)
-  else
-    AC_MSG_RESULT(no)
-    AC_MSG_ERROR([upgrade GDAL to 1.11.4 or later])
-  fi
-fi
-
-
-AC_MSG_CHECKING([GDAL version <= 2.5 or >= 3.0])
-if test ${GDAL_MAJOR} -lt 2 || test ${GDAL_MAJOR} -gt 2; then
-  AC_MSG_RESULT(yes)
-else
-  if test ${GDAL_MAJOR} = 2; then
-    if test ${GDAL_MINOR} -le 5 ; then
-      AC_MSG_RESULT(yes)
-    else
-      AC_MSG_RESULT(no)
-      AC_MSG_ERROR([GDAL version out of bounds])
-    fi
-  fi
-fi
 
 
 INLIBS="${LIBS}"
@@ -528,11 +503,11 @@ if test -z "${PROJ_VERSION_DOT}"; then
 fi
 NEW_PROJ_WITH_OLD_GDAL="no"
 AC_MSG_CHECKING([Using GDAL < 3 with PROJ >= 6])
-#if test ${GDAL_MAJOR} -lt 3 -a test ${PROJ_VERSION_DOT} -ge 600; then
 if test ${GDAL_MAJOR} -lt 3 && test ${PROJ_VERSION_DOT} -ge 600; then
     AC_MSG_RESULT(yes)
     if test ${PROJ_API} = "proj.h"; then
-        AC_MSG_ERROR([GDAL >= 3 should be used with PROJ >= 6, use --with-proj_api="proj_api.h" for deprecated API])
+        PROJ_API = "proj_api.h"
+        AC_MSG_WARN([GDAL >= 3 should be used with PROJ >= 6, now using --with-proj_api="proj_api.h" for deprecated API])
     else
         NEW_PROJ_WITH_OLD_GDAL="yes"
         AC_MSG_WARN([GDAL >= 3 should be used with PROJ >= 6])

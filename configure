@@ -2243,55 +2243,23 @@ GDAL_MAJOR=`echo $GDAL_VERSION | cut -f1 -d"."`
 GDAL_MINOR=`echo $GDAL_VERSION | cut -f2 -d"."`
 GDAL_PATCH=`echo $GDAL_VERSION | cut -f3 -d"."`
 
-#if test ${GDAL_MAJOR} = 2 -a test ${GDAL_MINOR} -ge 3 ; then
-if test ${GDAL_MAJOR} = 2 && test ${GDAL_MINOR} -ge 3 ; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking C++11 support for GDAL >= 2.3.0" >&5
-$as_echo_n "checking C++11 support for GDAL >= 2.3.0... " >&6; }
-  if test ${HAVE_CXX11} = 1 ; then
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL version >= 2.3.0" >&5
+$as_echo_n "checking GDAL version >= 2.3.0... " >&6; }
+if test ${GDAL_MAJOR} -gt 2 ; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+  if test ${GDAL_MAJOR} = 2 && test ${GDAL_MINOR} -ge 3 ; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
   else
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-    as_fn_error $? "provide at least CXX11 compiler support for GDAL >= 2.3.0" "$LINENO" 5
+    as_fn_error $? "upgrade GDAL to 2.3.0 or later" "$LINENO" 5
   fi
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL version >= 1.11.4" >&5
-$as_echo_n "checking GDAL version >= 1.11.4... " >&6; }
-if test ${GDAL_MAJOR} -gt 1 ; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-#  if test ${GDAL_MAJOR} = 1 -a test ${GDAL_MINOR} = 11 -a test ${GDAL_PATCH} -ge 4 ; then
-  if test ${GDAL_MAJOR} = 1 && test ${GDAL_MINOR} = 11 && test ${GDAL_PATCH} -ge 4 ; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    as_fn_error $? "upgrade GDAL to 1.11.4 or later" "$LINENO" 5
-  fi
-fi
-
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL version <= 2.5 or >= 3.0" >&5
-$as_echo_n "checking GDAL version <= 2.5 or >= 3.0... " >&6; }
-if test ${GDAL_MAJOR} -lt 2 || test ${GDAL_MAJOR} -gt 2; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-  if test ${GDAL_MAJOR} = 2; then
-    if test ${GDAL_MINOR} -le 5 ; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-    else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-      as_fn_error $? "GDAL version out of bounds" "$LINENO" 5
-    fi
-  fi
-fi
 
 
 INLIBS="${LIBS}"
@@ -3655,12 +3623,13 @@ fi
 NEW_PROJ_WITH_OLD_GDAL="no"
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking Using GDAL < 3 with PROJ >= 6" >&5
 $as_echo_n "checking Using GDAL < 3 with PROJ >= 6... " >&6; }
-#if test ${GDAL_MAJOR} -lt 3 -a test ${PROJ_VERSION_DOT} -ge 600; then
 if test ${GDAL_MAJOR} -lt 3 && test ${PROJ_VERSION_DOT} -ge 600; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
     if test ${PROJ_API} = "proj.h"; then
-        as_fn_error $? "GDAL >= 3 should be used with PROJ >= 6, use --with-proj_api=\"proj_api.h\" for deprecated API" "$LINENO" 5
+        PROJ_API = "proj_api.h"
+        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: GDAL >= 3 should be used with PROJ >= 6, now using --with-proj_api=\"proj_api.h\" for deprecated API" >&5
+$as_echo "$as_me: WARNING: GDAL >= 3 should be used with PROJ >= 6, now using --with-proj_api=\"proj_api.h\" for deprecated API" >&2;}
     else
         NEW_PROJ_WITH_OLD_GDAL="yes"
         { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: GDAL >= 3 should be used with PROJ >= 6" >&5

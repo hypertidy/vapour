@@ -36,7 +36,7 @@ Suggests:
     rbenchmark,
     rmarkdown,
     spelling
-SystemRequirements: GDAL (>= 2.0.1), PROJ.4 (>= 4.8.0), C++11
+SystemRequirements: GDAL (>= 2.3.0), PROJ.4 (>= 4.8.0), C++11
 VignetteBuilder: knitr
 URL: https://github.com/hypertidy/vapour
 BugReports: https://github.com/hypertidy/vapour/issues

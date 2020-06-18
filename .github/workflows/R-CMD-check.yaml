@@ -118,7 +118,7 @@ jobs:
 
       - name: Build
         run: |
-          pkg_path <- pkgbuild::build(binary = TRUE, args = c("${{ matrix.config.args }}"))
+          pkg_path <- pkgbuild::build(binary = TRUE)
           dir.create("build")
           file.copy(pkg_path, "build")
         shell: Rscript {0}
