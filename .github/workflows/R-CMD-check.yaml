@@ -49,24 +49,9 @@ jobs:
       - name: Brew and macOS config
         if: runner.os == 'macOS'
         run: |
-          #brew install pkg-config
-          #brew install gdal
-          # https://github.com/R-macos/recipes/issues/5
-          # https://github.com/R-macos/recipes/issues/2
-          curl -O https://mac.R-project.org/libs-4/pkgconfig-0.28-darwin.17-x86_64.tar.gz
-          sudo tar fvxzq pkgconfig-0.28-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
-          curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
-          sudo tar fvxzq gdal-2.4.2-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
-          curl -O https://mac.R-project.org/libs-4/geos-3.7.2-darwin.17-x86_64.tar.gz
-          sudo tar fvxzq geos-3.7.2-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
-          curl -O https://mac.R-project.org/libs-4/proj-5.2.0-darwin.17-x86_64.tar.gz
-          sudo tar fvxzq proj-5.2.0-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
+          curl -sL  https://mac.r-project.org/libs-4/ | sed -n 's/.*href=\([^>]*x86_64.tar.gz\).*/\1/p' | xargs -I % sh -c 'curl https://mac.r-project.org/libs-4/% --output %; sudo tar fvxz % -C /'
           echo "usr/local/bin"
           ls /usr/local/bin
-          echo "usr/local"
-          ls /usr/local
-          echo "usr"
-          ls /usr
           cat <<EOT >> .Renviron
           PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
           PROJ_LIB=/usr/local/opt/proj/share/proj
