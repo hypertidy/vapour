@@ -49,7 +49,7 @@ jobs:
       - name: Brew and macOS config
         if: runner.os == 'macOS'
         run: |
-          curl -sL  https://mac.r-project.org/libs-4/ | sed -n 's/.*href=\([^>]*x86_64.tar.gz\).*/\1/p' | xargs -I % sh -c 'curl https://mac.r-project.org/libs-4/% --output %; sudo tar fvxz % -C /'
+          curl -sL  https://mac.r-project.org/libs-4/ | sed -n 's/.*href=\([^>]*x86_64.tar.gz\).*/\1/p' | xargs -I % sh -c 'curl https://mac.r-project.org/libs-4/% --output %; sudo tar fvxzq % -C /'
           echo "usr/local/bin"
           ls /usr/local/bin
           cat <<EOT >> .Renviron
