@@ -5,7 +5,8 @@
 ## copied from sf
 ## no trailing slash on PROJ_LIB=/usr/local/opt/proj/share/proj
 ## copied paleolimbot for Build section
-## try q with bsdtar ...
+## Using GDAL < 3 with PROJ >= 6 and auto set proj_api.h because WHY NOT
+
 
 on:
   push:
