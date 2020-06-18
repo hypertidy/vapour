@@ -50,15 +50,17 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install gdal
+          gdalinfo --version
+          proj
           cat <<EOT >> .Renviron
           PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
           PROJ_LIB=/usr/local/opt/proj/share/proj
           # for installing XML package from source
-          XML_CONFIG=/usr/local/opt/libxml2/bin/xml2-config
+          #XML_CONFIG=/usr/local/opt/libxml2/bin/xml2-config
           EOT
           cat <<EOT >> .Rprofile
           r <- getOption("repos")
-          r["CRAN"] <- "https://cran.rstudio.com"
+          r["CRAN"] <- "https://cloud.r-project.org"
           options(repos = r)
           EOT
       - name: Query dependencies
