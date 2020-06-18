@@ -49,7 +49,6 @@ jobs:
       - name: Brew and macOS config
         if: runner.os == 'macOS'
         run: |
-          brew install pkg-config
           brew install gdal
           cat <<EOT >> .Renviron
           PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
