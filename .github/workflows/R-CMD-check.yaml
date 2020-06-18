@@ -61,7 +61,12 @@ jobs:
           sudo tar fvxzq geos-3.7.2-darwin.17-x86_64.tar.gz -C /usr/ --strip 1
           curl -O https://mac.R-project.org/libs-4/proj-5.2.0-darwin.17-x86_64.tar.gz
           sudo tar fvxzq proj-5.2.0-darwin.17-x86_64.tar.gz -C /usr/ --strip 1
+          echo "usr/local/bin"
           ls /usr/local/bin
+          echo "usr/local"
+          ls /usr/local
+          echo "usr"
+          ls /usr
           cat <<EOT >> .Renviron
           PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
           PROJ_LIB=/usr/local/opt/proj/share/proj
