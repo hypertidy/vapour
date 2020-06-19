@@ -6,6 +6,7 @@
 ^data-raw$
 ^appveyor\.yml$
 ^\.travis\.yml$
+^\.gitattributes$
 ^codecov\.yml$
 ^docs$
 ^gdal$
