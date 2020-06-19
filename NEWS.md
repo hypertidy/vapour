@@ -1,5 +1,8 @@
 # dev
 
+* Update to configure to ensure data copy of proj/ and gdal/ on MacOS on CRAN, thanks to James 
+ Balamuta for enormous help on github actions and installing the CRAN mac binaries. 
+
 * Now using GDAL 3 on Windows. 
 
 * Get available overview sizes, wish of #78. 
