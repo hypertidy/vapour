@@ -102,7 +102,8 @@ jobs:
         shell: Rscript {0}
 
       - name: Upload check results
-        if: failure()
+        #if: failure()
+        if: runner.os == 'macOS'
         uses: actions/upload-artifact@master
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
