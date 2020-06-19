@@ -66,7 +66,12 @@ test_that("gcps work", {
 
 test_that("band sanity prevails", {
   f1 <- system.file("extdata/gdal/geos_rad.nc", package = "vapour", mustWork = TRUE)
+  ## doesn't work on CRAN mac GDAL 2.4.2 and PROJ 5.2.0
+  tst <- try(vapour_sds_names(f1), silent = TRUE)
+  canopen <- !inherits(tst, "try-error")
+  if (!canopen) skip("unable to open netcdf file on this platform")
   expect_equivalent(unique(vapour_read_raster(f1, native = TRUE, band = 1)[[1]]), 129.0)
+
 
   expect_error(vapour_read_raster(f1))
   expect_silent(vapour_read_raster(f1, native = TRUE, band = 1))
