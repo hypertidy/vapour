@@ -6,6 +6,7 @@
 ## no trailing slash on PROJ_LIB=/usr/local/opt/proj/share/proj
 ## copied paleolimbot for Build section
 ## Using GDAL < 3 with PROJ >= 6 and auto set proj_api.h because WHY NOT
+## C++11 implies GDAL 2.3.0 but we use 2.2.2 as a R_REMOTES_NO_ERRORS_FROM_WARNINGS
 
 
 on:
@@ -27,12 +28,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: windows-latest, r: '3.6'}
-          - {os: macOS-latest, r: '3.6',   args: '--install-args=\"--configure-args=--with-data-copy=yes \"", "--ignore-vignettes', build_args: "--no-build-vignettes"}
-          - {os: macOS-latest, r: 'devel', args: '--install-args=\"--configure-args=--with-data-copy=yes \"", "--ignore-vignettes', build_args: "--no-build-vignettes"}
-          #- {os: ubuntu-16.04, r: '3.5', cran: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
-          - {os: ubuntu-16.04, r: '3.6', cran: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
-          - {os: ubuntu-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: macOS-latest, r: 'release', args: '--install-args=\"--configure-args=--with-data-copy=yes\"', build_args: ""}
+          - {os: macOS-latest, r: 'devel', args: '--install-args=\"--configure-args=--with-data-copy=yes\"', build_args: ""}
+          - {os: ubuntu-16.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -50,22 +49,16 @@ jobs:
       - name: Brew and macOS config
         if: runner.os == 'macOS'
         run: |
-          brew install proj
-          proj
-          brew install gdal
-          #gdalinfo --version
-          #proj
-          cat <<EOT >> .Renviron
-          PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
-          PROJ_LIB=/usr/local/opt/proj/share/proj
-          # for installing XML package from source
-          #XML_CONFIG=/usr/local/opt/libxml2/bin/xml2-config
-          EOT
-          cat <<EOT >> .Rprofile
-          r <- getOption("repos")
-          r["CRAN"] <- "https://cloud.r-project.org"
-          options(repos = r)
-          EOT
+           curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
+           sudo tar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
+           rm gdal-2.4.2-darwin.17-x86_64.tar.gz
+           curl -O https://mac.r-project.org/libs-4/geos-3.7.2-darwin.17-x86_64.tar.gz
+           sudo tar fvxz geos-3.7.2-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
+           rm geos-3.7.2-darwin.17-x86_64.tar.gz
+           curl -O https://mac.r-project.org/libs-4/proj-5.2.0-darwin.17-x86_64.tar.gz
+           sudo tar fvxz proj-5.2.0-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
+           rm proj-5.2.0-darwin.17-x86_64.tar.gz
+
       - name: Query dependencies
         run: |
           install.packages('remotes')
@@ -107,25 +100,12 @@ jobs:
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
 
-      # - name: Install rgdal with configure
-      #   if: runner.os == 'macOS'
-      #   run: |
-      #     install.packages("rgdal", type = "source", configure.args = "--with-proj-lib=/usr/local/lib/ --with-proj-include=/usr/local/include/")
-      #   shell: Rscript {0}
-
       - name: Check
         run: rcmdcheck::rcmdcheck(args = c("--no-manual", "${{ matrix.config.args }}"), error_on = "warning", check_dir = "check", build_args = "${{ matrix.config.build_args }}")
         shell: Rscript {0}
 
-      - name: Build
-        run: |
-          pkg_path <- pkgbuild::build(binary = TRUE)
-          dir.create("build")
-          file.copy(pkg_path, "build")
-        shell: Rscript {0}
-
       - name: Upload check results
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@master
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
