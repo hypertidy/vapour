@@ -61,6 +61,13 @@ jobs:
            sudo tar fvxz proj-5.2.0-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
            rm proj-5.2.0-darwin.17-x86_64.tar.gz
 
+
+      - name: Query R package dependencies
+        run: |
+          install.packages('remotes')
+          saveRDS(remotes::dev_package_deps(dependencies = TRUE), "depends.Rds", version = 2)
+        shell: Rscript {0}
+
       - name: Linux system dependencies
         if: runner.os == 'Linux'
         env:
@@ -72,12 +79,6 @@ jobs:
           sudo apt update
           ## 2020-06-19 resolves to export DEBIAN_FRONTEND=noninteractive; apt-get -y update && apt-get install -y gdal-bin libproj-dev libgdal-dev libssl-dev pandoc pandoc-citeproc make libxml2-dev libcurl4-openssl
           sudo -s eval "$sysreqs"
-
-      - name: Query R package dependencies
-        run: |
-          install.packages('remotes')
-          saveRDS(remotes::dev_package_deps(dependencies = TRUE), "depends.Rds", version = 2)
-        shell: Rscript {0}
 
       - name: Cache R package dependencies
         if: runner.os != 'Windows'
