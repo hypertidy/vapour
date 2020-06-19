@@ -99,13 +99,13 @@ jobs:
 
       - name: R CMD check windows
         if: runner.os == 'Windows'
-         run: rcmdcheck::rcmdcheck(args = c("--no-manual"), error_on = "warning", check_dir = "check")
-         shell: Rscript {0}
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual"), error_on = "warning", check_dir = "check")
+        shell: Rscript {0}
 
       - name: R CMD check (not Windows)
         if: runner.os != 'Windows'
-         run: rcmdcheck::rcmdcheck(args = c("--no-manual", "${{ matrix.config.args }}"), error_on = "warning", check_dir = "check", build_args = "${{ matrix.config.build_args }}")
-         shell: Rscript {0}
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "${{ matrix.config.args }}"), error_on = "warning", check_dir = "check", build_args = "${{ matrix.config.build_args }}")
+        shell: Rscript {0}
 
       - name: Upload check results
         if: failure()
