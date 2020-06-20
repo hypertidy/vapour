@@ -29,8 +29,8 @@ jobs:
       matrix:
         config:
           - {os: windows-latest, r: 'release'}
-          - {os: macOS-latest, r: 'release', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
-          - {os: macOS-latest, r: 'devel',   args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
+          - {os: macOS-latest, r: 'release', binary: 'CRAN', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
+          - {os: macOS-latest, r: 'devel',   binary: 'brew', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
           - {os: ubuntu-16.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
           - {os: ubuntu-18.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
 
@@ -48,8 +48,8 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@master
 
-      - name: MacOS system dependencies
-        if: runner.os == 'macOS'
+      - name: MacOS CRAN-binary system dependencies
+        if: runner.os == 'macOS' & runner.binary == 'CRAN'
         run: |
            curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
            sudo tar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
@@ -61,6 +61,13 @@ jobs:
            sudo tar fvxz proj-5.2.0-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
            rm proj-5.2.0-darwin.17-x86_64.tar.gz
 
+
+  - name: MacOS brew system dependencies
+        if: runner.os == 'macOS' & runner.binary == 'brew'
+        run: |
+           brew install proj
+           brew install geos
+           brew install gdal
 
       - name: Query R package dependencies
         run: |
