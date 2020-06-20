@@ -19,10 +19,10 @@ name: R-CMD-check-macos-brew
 
 jobs:
   R-CMD-check:
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.os }}
 
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: ${{ matrix.os }} (${{ matrix.r }})
 
 # fix like here: https://github.community/t/create-matrix-with-multiple-os-and-env-for-each-one/16895/2
     strategy:
@@ -41,14 +41,14 @@ jobs:
           build_args: ""
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      CRAN: ${{ matrix.config.cran }}
+      CRAN: ${{ matrix.cran }}
 
     steps:
       - uses: actions/checkout@v1
 
       - uses: r-lib/actions/setup-r@master
         with:
-          r-version: ${{ matrix.config.r }}
+          r-version: ${{ matrix.r }}
 
       - uses: r-lib/actions/setup-pandoc@master
 
@@ -77,12 +77,12 @@ jobs:
 
       - name: R CMD check (not Windows)
         if: runner.os != 'Windows'
-        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "${{ matrix.config.args }}"), error_on = "warning", check_dir = "check", build_args = "${{ matrix.config.build_args }}")
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "${{ matrix.args }}"), error_on = "warning", check_dir = "check", build_args = "${{ matrix.build_args }}")
         shell: Rscript {0}
 
       - name: Upload check results
         if: failure()
         uses: actions/upload-artifact@master
         with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+          name: ${{ runner.os }}-r${{ matrix.r }}-results
           path: check
