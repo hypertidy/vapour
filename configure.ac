@@ -129,11 +129,8 @@ else
 	exit 1
 fi
 
-#AC_MSG_NOTICE([GDAL_LIBS is: ${GDAL_LIBS}])
-#AC_MSG_NOTICE([GDAL_DEP_LIBS is: ${GDAL_DEP_LIBS}])
 
 AC_MSG_NOTICE([GDAL: ${GDAL_VERSION}])
-#GDAL_VER_DOT=`echo $GDAL_VERSION | tr -d "."`
 GDAL_MAJOR=`echo $GDAL_VERSION | cut -f1 -d"."`
 GDAL_MINOR=`echo $GDAL_VERSION | cut -f2 -d"."`
 GDAL_PATCH=`echo $GDAL_VERSION | cut -f3 -d"."`
