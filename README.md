@@ -3,6 +3,8 @@
 
 # vapour <img src="man/figures/logo.png" align="right" height="228" />
 
+<!-- badges: start --> [![R build
+status](https://github.com/hypertidy/vapour/workflows/R-CMD-check/badge.svg)](https://github.com/hypertidy/vapour/actions)
 [![Travis-CI Build
 Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_release&label=linux)](https://travis-ci.org/hypertidy/vapour)
 [![OSX Build
@@ -11,6 +13,7 @@ Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BU
 status](https://ci.appveyor.com/api/projects/status/github/hypertidy/vapour?branch=master&svg=true)](https://ci.appveyor.com/project/mdsumner/vapour)[![Coverage\_Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
 [![CRAN\_Download\_Badge](http://cranlogs.r-pkg.org/badges/vapour)](https://cran.r-project.org/package=vapour)
+<!-- badges: end -->
 
 ## Overview
 
@@ -248,11 +251,11 @@ rbenchmark::benchmark (
                        f_va3 (fname),
                        replications = 10)
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.242    3.184     0.241    0.000          0
-#> 2 f_sf2(fname)           10   0.178    2.342     0.177    0.000          0
-#> 3 f_va1(fname)           10   0.076    1.000     0.060    0.016          0
-#> 4 f_va2(fname)           10   0.086    1.132     0.082    0.004          0
-#> 5 f_va3(fname)           10   0.227    2.987     0.214    0.012          0
+#> 1 f_sf1(fname)           10   0.300    2.128     0.301    0.000          0
+#> 2 f_sf2(fname)           10   0.247    1.752     0.247    0.000          0
+#> 3 f_va1(fname)           10   0.141    1.000     0.141    0.000          0
+#> 4 f_va2(fname)           10   0.176    1.248     0.168    0.008          0
+#> 5 f_va3(fname)           10   0.330    2.340     0.323    0.008          0
 #>   sys.child
 #> 1         0
 #> 2         0
