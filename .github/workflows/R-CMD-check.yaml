@@ -62,7 +62,7 @@ jobs:
            rm proj-5.2.0-darwin.17-x86_64.tar.gz
 
 
-  - name: MacOS brew system dependencies
+      - name: MacOS brew system dependencies
         if: runner.os == 'macOS' & runner.binary == 'brew'
         run: |
            brew install proj
