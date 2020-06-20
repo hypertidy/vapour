@@ -91,7 +91,6 @@ jobs:
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
           sudo apt update
-          ## 2020-06-19 resolves to export DEBIAN_FRONTEND=noninteractive; apt-get -y update && apt-get install -y gdal-bin libproj-dev libgdal-dev libssl-dev pandoc pandoc-citeproc make libxml2-dev libcurl4-openssl
           sudo -s eval "$sysreqs"
 
       - name: Cache R package dependencies
