@@ -24,13 +24,21 @@ jobs:
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
+# fix like here: https://github.community/t/create-matrix-with-multiple-os-and-env-for-each-one/16895/2
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - {os: macOS-latest, r: 'release', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
-          - {os: macOS-latest, r: 'devel',   args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
+        os: [macOS-latest, macOS-latest]
+        include:
+        - os: macOS-latest
+          r: 'release'
+          args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"'
+          build_args: ""
 
+        - os: macOS-latest
+          r: 'devel'
+          args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"'
+          build_args: ""
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       CRAN: ${{ matrix.config.cran }}
