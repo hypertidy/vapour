@@ -3,8 +3,8 @@
 
 # vapour <img src="man/figures/logo.png" align="right" height="228" />
 
-<!-- badges: start --> [![R build
-status](https://github.com/hypertidy/vapour/workflows/R-CMD-check/badge.svg)](https://github.com/hypertidy/vapour/actions)
+<!-- badges: start -->
+[![R\_build\_status](https://github.com/hypertidy/vapour/workflows/R-CMD-check/badge.svg)](https://github.com/hypertidy/vapour/actions)
 [![Travis-CI Build
 Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_release&label=linux)](https://travis-ci.org/hypertidy/vapour)
 [![OSX Build
@@ -251,11 +251,11 @@ rbenchmark::benchmark (
                        f_va3 (fname),
                        replications = 10)
 #>           test replications elapsed relative user.self sys.self user.child
-#> 1 f_sf1(fname)           10   0.300    2.128     0.301    0.000          0
-#> 2 f_sf2(fname)           10   0.247    1.752     0.247    0.000          0
-#> 3 f_va1(fname)           10   0.141    1.000     0.141    0.000          0
-#> 4 f_va2(fname)           10   0.176    1.248     0.168    0.008          0
-#> 5 f_va3(fname)           10   0.330    2.340     0.323    0.008          0
+#> 1 f_sf1(fname)           10   0.301    2.090     0.297    0.004          0
+#> 2 f_sf2(fname)           10   0.246    1.708     0.242    0.004          0
+#> 3 f_va1(fname)           10   0.144    1.000     0.139    0.004          0
+#> 4 f_va2(fname)           10   0.176    1.222     0.165    0.012          0
+#> 5 f_va3(fname)           10   0.334    2.319     0.325    0.008          0
 #>   sys.child
 #> 1         0
 #> 2         0
