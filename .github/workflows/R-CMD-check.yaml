@@ -51,7 +51,7 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@master
 
       - name: MacOS CRAN-binary system dependencies
-        if: runner.os == 'macOS' && runner.binary == 'CRAN'
+        if: runner.os == 'macOS' && matrix.config.binary == 'CRAN'
         run: |
            curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
            sudo tar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
@@ -65,7 +65,7 @@ jobs:
 
 
       - name: MacOS brew system dependencies
-        if: runner.os == 'macOS' && runner.binary == 'brew'
+        if: runner.os == 'macOS' && matrix.config.binary == 'brew'
         run: |
            brew install proj
            brew install geos
