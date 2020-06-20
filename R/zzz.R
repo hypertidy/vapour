@@ -17,7 +17,9 @@
 }
 
 vapour_load_gdal <- function() {
-  ## only on windows because tools/winlibs.R
+  ## gdal-data only on
+  ## - windows because tools/winlibs.R
+  ## - macos because   CRAN mac binary libs, and configure --with-data-copy=yes --with-proj-data=/usr/local/share/proj
   if (file.exists(system.file("proj/nad.lst", package = "vapour")[1L])) {
     #prj = system.file("proj", package = "sf")[1]
     #if (! CPL_set_data_dir(prj)) { # if TRUE, uses C API to set path, leaving PROJ_LIB alone
