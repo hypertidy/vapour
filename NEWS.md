@@ -1,6 +1,6 @@
-# dev
+# vapour 0.5.1
 
-* Update to configure to ensure data copy of proj/ and gdal/ on MacOS on CRAN, thanks to James 
+* Update to configure to ensure data copy of proj/ and gdal/ on MacOS on CRAN, thanks to CRAN, Roger Bivand, and to James 
  Balamuta for enormous help on github actions and installing the CRAN mac binaries. 
 
 * Now using GDAL 3 on Windows. 

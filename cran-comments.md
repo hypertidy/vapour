@@ -1,27 +1,21 @@
+## vapour 0.5.1
 
+Release to fix error on CRAN results (unsupported NetCDF by GDAL lib), and to ensure proj/ and gdal/ files are 
+able to be copied to the MacOS tarball by CRAN request. 
 
 ## Test environments
 
-GDAL 2.0 
-
-* Linux Ubuntu 18.04 install, R 3.6.2
-* MacOS (travis), R 3.6.1
+* Linux Ubuntu 18.04 R 4.0.0
+* MacOS (gh actions), R 4.0.0
 * win-builder (devel)
-
-GDAL 3.0.3
-
-* Linux Ubuntu 18.04 install, R 3.6.1
 
 
 ## R CMD check results
 
-0 errors | 0 warnings | 2 notes
+0 errors | 0 warnings | 1 note
 
 There is a note about the size of installed directories on Windows because 
  of the GDAL tools process. 
 
-A note about possibly invalid URL in the readme codecov badge (seems ok): 
-
-https://codecov.io/github/hypertidy/vapour?branch=master
 
 
