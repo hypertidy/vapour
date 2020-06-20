@@ -120,16 +120,16 @@ jobs:
         run: rcmdcheck::rcmdcheck(args = c("--no-manual", "${{ matrix.config.args }}"), error_on = "warning", check_dir = "check", build_args = "${{ matrix.config.build_args }}")
         shell: Rscript {0}
 
-      - name: Build
-        run: |
-          pkg_path <- pkgbuild::build(binary = TRUE)
-          dir.create("build")
-          file.copy(pkg_path, "build")
-        shell: Rscript {0}
+#      - name: Build
+#        run: |
+#          pkg_path <- pkgbuild::build(binary = TRUE)
+#          dir.create("build")
+#          file.copy(pkg_path, "build")
+#        shell: Rscript {0}
 
 
       - name: Upload check results
-        if: success()
+        if: failure() #success()
         uses: actions/upload-artifact@master
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
