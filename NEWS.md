@@ -1,5 +1,7 @@
 # vapour 0.5.1
 
+* Deleted compile tests from configure, we can add proper tests if this is needed. 
+
 * Update to configure to ensure data copy of proj/ and gdal/ on MacOS on CRAN, thanks to CRAN, Roger Bivand, and to James 
  Balamuta for enormous help on github actions and installing the CRAN mac binaries. 
 

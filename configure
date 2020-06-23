@@ -681,7 +681,6 @@ with_gdal_config
 with_proj_include
 with_proj_lib
 with_proj_api
-with_proj_share
 with_data_copy
 with_proj_data
 '
@@ -1318,8 +1317,6 @@ Optional Packages:
   --with-proj-lib=LIB_PATH
                           the location of proj libraries
   --with-proj_api=ARG        legacy proj_api.h while still available, or current proj.h (ARG="proj_api.h", "proj.h"(default))
-  --with-proj-share=SHARE_PATH
-                          the location of proj metadata files
   --with-data-copy=yes/no local copy of data directories in package, default
                           no
   --with-proj-data=DIR    location of PROJ.4 data directory
@@ -3665,170 +3662,9 @@ if test ${PROJ_VERSION_DOT} = 480 ; then
   CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS}"
 fi
 
-#AC_MSG_NOTICE([${CFLAGS} ${PKG_CPPFLAGS}])
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking projects.h presence and usability" >&5
-$as_echo_n "checking projects.h presence and usability... " >&6; }
-# FIXME re-using names
-cat > proj_conf_test1a.c <<_EOCONF
-#include <stdio.h>
-#include <projects.h>
-
-int main() {
-    exit(0);
-}
-_EOCONF
-
-if test `${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test1a proj_conf_test1a.c ${PKG_LIBS} 2> /dev/null; echo $?` = 0; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-  STOP="stop"
-fi
-rm -f proj_conf_test1a.c proj_conf_test1a
-
-if test "$STOP" = "stop" ; then
-    echo "projects.h not found in standard or given locations."
-    echo "PROJ 4.8.0 was bundled wrongly, and did not provide"
-    echo "the file. A copy is provided in init/include in the source"
-    echo "package for the users to place in the same directory"
-    echo "as proj_api.h manually."
-    exit 1
 fi
 
-fi # < 493 test for projects.h
 
-#AC_MSG_NOTICE([CPP FLAGS: ${PKG_CPPFLAGS}])
-
-
-#AC_SUBST([PKG_CPPFLAGS],["-DP4CTX=1 ${PKG_CPPFLAGS}"])
-#AC_MSG_NOTICE([CPP FLAGS: ${PKG_CPPFLAGS}])
-
-
-# Check whether --with-proj-share was given.
-if test "${with_proj_share+set}" = set; then :
-  withval=$with_proj_share; proj_share_path=$withval
-fi
-
-if test  -n "$proj_share_path"  ; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: PROJ_LIB: ${proj_share_path}" >&5
-$as_echo "$as_me: PROJ_LIB: ${proj_share_path}" >&6;}
-fi
-
-if test ${PROJ6} = "no"; then
-
-#AC_MSG_CHECKING(PROJ.6: )
-#AC_MSG_RESULT(no)
-
-cat > proj_conf_test2.c <<_EOCONF
-#include <stdio.h>
-#include <proj_api.h>
-#if PJ_VERSION == 480
-FILE *pj_open_lib(projCtx, const char *, const char *);
-#endif
-
-int main() {
-#if PJ_VERSION == 480
-    FILE *fp;
-#else
-    PAFile fp;
-#endif
-    projCtx ctx;
-    ctx = pj_get_default_ctx();
-    fp = pj_open_lib(ctx, "epsg", "rb");
-    if (fp == NULL) exit(1);
-#if PJ_VERSION == 480
-    fclose(fp);
-#else
-    pj_ctx_fclose(ctx, fp);
-#endif
-    exit(0);
-}
-_EOCONF
-
-${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test2 proj_conf_test2.c ${PKG_LIBS}
-if test  -n "$proj_share_path"  ; then
-  PROJ_LIB="${proj_share_path}" ./proj_conf_test2
-  proj_share=`echo $?`
-else
-  ./proj_conf_test2
-  proj_share=`echo $?`
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ.4: epsg found and readable" >&5
-$as_echo_n "checking PROJ.4: epsg found and readable... " >&6; }
-if test ${proj_share} -eq 1 ; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    STOP="stop"
-else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-fi
-
-rm -f proj_conf_test2.c proj_conf_test2
-
-if test "$STOP" = "stop" ; then
-    echo "Error: proj/epsg not found"
-    echo "Either install missing proj support files, for example"
-    echo "the proj-nad and proj-epsg RPMs on systems using RPMs,"
-    echo "or if installed but not autodetected, set PROJ_LIB to the"
-    echo "correct path, and if need be use the --with-proj-share="
-    echo "configure argument."
-    exit 1
-fi
-
-else # test for new files if PROJ6
-
-cat > proj_conf_test2.cpp <<_EOCONF
-#include <stdio.h>
-#include <stdlib.h>
-#include <proj.h>
-
-int main() {
-    PJ_CONTEXT *ctx = proj_context_create();
-    if (proj_context_get_database_path(ctx) == NULL) {
-        proj_context_destroy(ctx);
-        exit(1);
-    }
-    proj_context_destroy(ctx);
-    exit(0);
-}
-_EOCONF
-
-${CXX} ${CPPFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test2 proj_conf_test2.cpp ${PKG_LIBS} -lproj -lsqlite3
-if test  -n "$proj_share_path"  ; then
-  PROJ_LIB="${proj_share_path}" ./proj_conf_test2
-  proj_share=`echo $?`
-else
-  ./proj_conf_test2
-  proj_share=`echo $?`
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ: proj.db found and readable" >&5
-$as_echo_n "checking PROJ: proj.db found and readable... " >&6; }
-if test ${proj_share} -eq 1 ; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    STOP="stop"
-else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-fi
-
-rm -f proj_conf_test2.cpp proj_conf_test2
-
-if test "$STOP" = "stop" ; then
-    echo "Error: proj/proj.db not found"
-    echo "Either install missing proj support files, set PROJ_LIB to the"
-    echo "correct path, and if need be use the --with-proj-share="
-    echo "configure argument."
-    exit 1
-fi
-
-fi
 # Optional local copy of GDAL datadir and PROJ_LIB
 
 data_copy=no
