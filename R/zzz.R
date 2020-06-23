@@ -1,6 +1,5 @@
 ## 2020-05-08 GDAL up/down stuff cribbed from sf
-## TODO: GDALAllRegister, OGRRegisterAll, OSRRegisterAll
-## do here once as neede
+## TODO: see mdsumner/dirigible, we'll have a gdalheaders package
 .vapour_cache <- new.env(FALSE, parent=globalenv())
 
 
@@ -17,31 +16,30 @@
 }
 
 vapour_load_gdal <- function() {
-  ## gdal-data only on
+  ## data only on
   ## - windows because tools/winlibs.R
   ## - macos because   CRAN mac binary libs, and configure --with-data-copy=yes --with-proj-data=/usr/local/share/proj
-  if (file.exists(system.file("proj/nad.lst", package = "vapour")[1L])) {
-    #prj = system.file("proj", package = "sf")[1]
-    #if (! CPL_set_data_dir(prj)) { # if TRUE, uses C API to set path, leaving PROJ_LIB alone
-    #  assign(".vapour.PROJ_LIB", Sys.getenv("PROJ_LIB"), envir=.vapour_cache)
-    #  Sys.setenv("PROJ_LIB" = prj)
-    #}
-    #CPL_use_proj4_init_rules(1L)
+
+  ##PROJ  data, only if the files are in package (will fix in gdalheaders)
+  if (file.exists(system.file("proj/alaska", package = "vapour"))) {
+     prj = system.file("proj", package = "vapour")[1L]
+     assign(".vapour.PROJ_LIB", Sys.getenv("PROJ_LIB"), envir=.vapour_cache)
+     Sys.setenv("PROJ_LIB" = prj)
+  }
+  if (file.exists(system.file("gdal/epsg.wkt", package = "vapour"))) {
     assign(".vapour.GDAL_DATA", Sys.getenv("GDAL_DATA"), envir=.vapour_cache)
     gdl = system.file("gdal", package = "vapour")[1]
     Sys.setenv("GDAL_DATA" = gdl)
-    # nocov end
   }
-  #.gdal_init()
-  #register_all_s3_methods() # dynamically registers non-imported pkgs (tidyverse)
 }
 # todo
 vapour_unload_gdal <- function() {
-  #CPL_gdal_cleanup_all()
-  if (file.exists(system.file("proj/nad.lst", package = "vapour")[1L])) {
-    #if (! CPL_set_data_dir(system.file("proj", package = "sf")[1])) # set back:
-    #  Sys.setenv("PROJ_LIB"=get(".sf.PROJ_LIB", envir=.sf_cache))
-    #
+  ## PROJ data, only if the files are in package (will fix in gdalheaders)
+
+  if (file.exists(system.file("proj/alaska", package = "vapour")[1L])) {
+    Sys.setenv("PROJ_LIB"=get(".vapour.PROJ_LIB", envir=.vapour_cache))
+  }
+  if (file.exists(system.file("gdal/epsg.wkt", package = "vapour"))) {
     Sys.setenv("GDAL_DATA"=get(".vapour.GDAL_DATA", envir=.vapour_cache))
  }
 }
