@@ -129,6 +129,7 @@ jobs:
           print(sprintf("GDAL_DATA: %s", gd))
           pd <- Sys.getenv("PROJ_LIB")
           print(sprintf("PROJ_LIB: %s", pd))
+          print(list.files(system.file(package = "vapour")))
         shell: Rscript {0}
 
 #      - name: Build
