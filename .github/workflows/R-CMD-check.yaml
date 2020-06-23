@@ -28,13 +28,13 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: windows-latest, r: 'release'}
+         # - {os: windows-latest, r: 'release'}
           - {os: macOS-latest, r: 'release', binary: 'CRAN', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
-          - {os: macOS-latest, r: 'devel',   binary: 'CRAN', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
-          - {os: macOS-latest, r: 'release', binary: 'brew', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
-          - {os: macOS-latest, r: 'devel',   binary: 'brew', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
-          - {os: ubuntu-16.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
-          - {os: ubuntu-18.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
+        #  - {os: macOS-latest, r: 'devel',   binary: 'CRAN', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
+        #  - {os: macOS-latest, r: 'release', binary: 'brew', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
+        #  - {os: macOS-latest, r: 'devel',   binary: 'brew', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
+        #  - {os: ubuntu-16.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
+        #  - {os: ubuntu-18.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
 
 
     env:
@@ -123,7 +123,7 @@ jobs:
       - name: Configuration diagnostics (GDAL and PROJ data dirs)
         if: runner.os == 'macOS'
         run: |
-          remotes::install_local(".", configure.args = "--with-data-copy=yes --with-proj-data=/usr/share/proj", force = TRUE)
+          remotes::install_local(".", configure.args = "--with-data-copy=yes --with-proj-data=/usr/local/share/proj", force = TRUE)
           library(vapour)
           gd <- Sys.getenv("GDAL_DATA")
           print(sprintf("GDAL_DATA: %s", gd))
