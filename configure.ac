@@ -690,63 +690,7 @@ if test "$STOP" = "stop" ; then
     exit 1
 fi
 
-fi # don't test for old files if PROJ6
-
-
-[cat > proj_conf_test3.c <<_EOCONF
-#include <stdio.h>
-#include <proj_api.h>
-#if PJ_VERSION == 480
-FILE *pj_open_lib(projCtx, const char *, const char *);
-#endif
-
-int main() {
-#if PJ_VERSION == 480
-    FILE *fp;
-#else
-    PAFile fp;
-#endif
-    projCtx ctx;
-    ctx = pj_get_default_ctx();
-    fp = pj_open_lib(ctx, "conus", "rb");
-    if (fp == NULL) exit(1);
-#if PJ_VERSION == 480
-    fclose(fp);
-#else
-    pj_ctx_fclose(ctx, fp);
-#endif
-    exit(0);
-}
-_EOCONF]
-
-if test ${PROJ6} = "no"; then
- ${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test3 proj_conf_test3.c ${PKG_LIBS}
- if test [ -n "$proj_share_path" ] ; then
-   PROJ_LIB="${proj_share_path}" ./proj_conf_test3
-   proj_share=`echo $?`
- else
-   ./proj_conf_test3
-   proj_share=`echo $?`
- fi
-
- AC_MSG_CHECKING(PROJ.4: conus found and readable)
- if test ${proj_share} -eq 1 ; then
-     WARN="warn"
-     AC_MSG_RESULT(no)
- else
-     AC_MSG_RESULT(yes)
- fi
-
- if test "$WARN" = "warn" ; then
-     echo "Note: proj/conus not found"
-     echo "No support available in PROJ4 for NAD grid datum transformations"
-     echo "If required, consider re-installing from source with the contents"
-     echo "of proj-datumgrid-1.<latest>.zip from http://download.osgeo.org/proj/ in nad/."
- fi
 fi
-
-rm -f proj_conf_test3.c proj_conf_test3
-
 # Optional local copy of GDAL datadir and PROJ_LIB
 
 data_copy=no
