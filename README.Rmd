@@ -87,6 +87,10 @@ downloaded and used when building the package. This installation is
 self-contained and only affects the use of R, it can be used alongside other
 applications using GDAL.
 
+For MacOS the package build is controlled by an internal CRAN process including configure arguments for the
+gdal and proj data directories. 
+
+
 ## Purpose 
 
 The goal of vapour is to provide a basic **GDAL API** package for R. The key functions provide vector geometry or attributes and raster data and raster metadata. 

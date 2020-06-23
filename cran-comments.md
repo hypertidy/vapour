@@ -1,7 +1,9 @@
 ## vapour 0.5.5
 
-Release to fix error on CRAN results (unsupported NetCDF by GDAL lib), and to ensure proj/ and gdal/ files are 
-able to be copied to the MacOS tarball by CRAN request. 
+Release to 
+
+* fix error on CRAN results (unsupported NetCDF by GDAL lib). 
+* to ensure proj/ and gdal/ files are able to be copied to the MacOS tarball by configure argument. 
 
 ## Test environments
 
