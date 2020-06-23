@@ -121,7 +121,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Configuration diagnostics (GDAL and PROJ data dirs)
-        if: runner.os = 'macOS'
+        if: runner.os == 'macOS'
         run: |
           remotes::install_local(".", configure.args = "--with-data-copy=yes --with-proj-data=/usr/share/proj", force = TRUE)
           library(vapour)
