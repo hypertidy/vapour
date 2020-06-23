@@ -1,0 +1,10 @@
+* installing *source* package ‘lazyraster’ ...
+** package ‘lazyraster’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+Error: package ‘R6’ was installed before R 4.0.0: please re-install it
+Execution halted
+ERROR: lazy loading failed for package ‘lazyraster’
+* removing ‘/perm_storage/home/mdsumner/Git/vapour/revdep/checks/lazyraster/new/lazyraster.Rcheck/lazyraster’

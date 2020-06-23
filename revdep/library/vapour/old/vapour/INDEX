@@ -1,0 +1,18 @@
+sst_c                   SST contours
+tas_wkt                 Example WKT coordinate reference system
+vapour-package          vapour
+vapour_gdal_version     GDAL version and drivers.
+vapour_geom_summary     Summary of available geometry
+vapour_layer_names      Read GDAL layer names
+vapour_raster_gcp       Raster ground control points
+vapour_raster_info      Raster information
+vapour_read_attributes
+                        Read feature attribute data
+vapour_read_geometry    Read GDAL feature geometry
+vapour_read_names       Read feature names
+vapour_read_raster      Raster IO (read)
+vapour_report_attributes
+                        Read feature field attributes types.
+vapour_sds_names        GDAL raster subdatasets (variables)
+vapour_srs_wkt          PROJ4 string to WKT
+vapour_vsi_list         Read GDAL virtual source contents

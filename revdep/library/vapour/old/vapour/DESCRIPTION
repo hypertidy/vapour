@@ -1,0 +1,52 @@
+Package: vapour
+Title: Lightweight Access to the 'Geospatial Data Abstraction Library'
+        ('GDAL')
+Version: 0.5.0
+Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-2471-7511")), 
+             person("Simon", "Wotherspoon", role = "ctb", comment = "figured out the mechanism for the resampling algorithm"), 
+             person("Mark", "Padgham", role = "ctb", comment = "helped get started :)"), 
+             person("Edzer", "Pebesma", role = "ctb", comment = "wrote allocate_attribute, copied here from sf"),
+             person("Roger", "Bivand", role = "ctb", comment = "wrote configure.ac, copied here from rgdal"),
+             person("Jim", "Hester", role = "ctb", comment = "wrote CollectorList.h, copied here from fs package"), 
+             person("Timothy", "Keitt", role = c("ctb"), comment = "wrote GetPointsInternal copied here from rgdal2 package"), 
+             person("Jeroen", "Ooms", role = c("ctb"), comment = "tweaked build process"), 
+             person("Dale", "Maschette", role = c("ctb"), comment = "created the hex logo"), 
+             person("Joseph", "Stachelek", role = "ctb"))
+Description: Provides low-level access to 'GDAL' functionality for R packages. The aim is to minimize
+  the level of interpretation put on the 'GDAL' facilities, to enable direct use of it for a variety of purposes. 
+  'GDAL' is the 'Geospatial Data Abstraction Library' a translator for raster and vector geospatial data formats 
+  that presents a single raster abstract data model and single vector abstract data model to the calling application 
+  for all supported formats <http://gdal.org/>. Other available packages 'rgdal' and 'sf' also provide access to 
+  the 'GDAL' library, but neither can be used for these lower level tasks, and both do many other tasks. 
+Depends: R (>= 3.3.0)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+LinkingTo: Rcpp
+Imports: Rcpp, utils
+RoxygenNote: 7.0.2
+Suggests: covr, dplyr, geojsonsf, testthat, knitr, rbenchmark,
+        rmarkdown, spelling
+SystemRequirements: GDAL (>= 2.0.0), PROJ.4 (>= 4.8.0)
+VignetteBuilder: knitr
+URL: https://github.com/hypertidy/vapour
+BugReports: https://github.com/hypertidy/vapour/issues
+Language: en-US
+NeedsCompilation: yes
+Packaged: 2020-01-30 02:28:47 UTC; mdsumner
+Author: Michael Sumner [aut, cre] (<https://orcid.org/0000-0002-2471-7511>),
+  Simon Wotherspoon [ctb] (figured out the mechanism for the resampling
+    algorithm),
+  Mark Padgham [ctb] (helped get started :)),
+  Edzer Pebesma [ctb] (wrote allocate_attribute, copied here from sf),
+  Roger Bivand [ctb] (wrote configure.ac, copied here from rgdal),
+  Jim Hester [ctb] (wrote CollectorList.h, copied here from fs package),
+  Timothy Keitt [ctb] (wrote GetPointsInternal copied here from rgdal2
+    package),
+  Jeroen Ooms [ctb] (tweaked build process),
+  Dale Maschette [ctb] (created the hex logo),
+  Joseph Stachelek [ctb]
+Maintainer: Michael Sumner <mdsumner@gmail.com>
+Repository: CRAN
+Date/Publication: 2020-01-30 09:20:02 UTC
+Built: R 4.0.1; x86_64-pc-linux-gnu; 2020-06-23 05:45:22 UTC; unix

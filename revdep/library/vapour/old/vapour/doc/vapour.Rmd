@@ -1,0 +1,201 @@
+---
+title: "Vapour - lightweight GDAL"
+author: "Michael D. Sumner"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vapour}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+There's a function `vapour_read_attributes` that returns the attributes as  list of vectors. 
+
+
+```{r}
+pfile <- system.file("extdata", "point.shp", package = "vapour")
+library(vapour)
+vapour_read_attributes(pfile)
+```
+
+
+```{r}
+mvfile <- system.file("extdata", "tab", "list_locality_postcode_meander_valley.tab", package="vapour")
+
+dat <- as.data.frame(vapour_read_attributes(mvfile),  stringsAsFactors = FALSE)
+
+dim(dat)
+
+head(dat)
+```
+
+
+A low-level function will return a character vector of JSON, GML, KML or WKT. 
+
+```{r}
+vapour_read_geometry(pfile)[5:6]  ## format = "WKB"
+
+vapour_read_geometry_text(pfile)[5:6]  ## format = "json"
+
+vapour_read_geometry_text(pfile, textformat = "gml")[2]
+
+## don't do this with a non-longlat data set like cfile
+vapour_read_geometry_text(pfile, textformat = "kml")[1:2]
+
+cfile <- system.file("extdata/sst_c.gpkg", package = "vapour")
+str(vapour_read_geometry_text(cfile, textformat = "wkt")[1:2])
+
+```
+
+
+Combine these together to get a custom data set. 
+
+```{r}
+library(dplyr)
+dat <- as.data.frame(vapour_read_attributes(cfile),  stringsAsFactors = FALSE) %>%
+    dplyr::mutate(wkt = vapour_read_geometry_text(cfile, textformat = "wkt"))
+glimpse(dat)
+```
+
+
+There is a function `vapour_read_extent` to return a straightforward bounding box vector for every feature, so that
+we can flexibly build an index of a data set for later use. 
+
+```{r}
+mvfile <- system.file("extdata", "tab", "list_locality_postcode_meander_valley.tab", package="vapour")
+str(head(vapour_read_extent(mvfile)))
+
+```
+
+This makes for a very lightweight summary data set that will scale to hundreds of large inputs. 
+
+There is a `vapour_geom_summary()` function to read only the information about each geometry. 
+
+```{r}
+
+vapour_geom_summary(mvfile)
+```
+
+
+Each function that relates to geometry includes arguments `skip_n` and `limit_n` to first specify the number of features to ignore, and second to set a maximum number of features visited. These interact, and so can be used to scan through a source. Both are applied after the `sql` argument. 
+
+```{r skip-limit}
+vapour_geom_summary(mvfile, limit_n = 4)$FID
+
+vapour_geom_summary(mvfile, skip_n = 2, limit_n = 6)$FID
+
+vapour_geom_summary(mvfile, skip_n = 6)$FID
+
+```
+
+Each geometry function also includes an `extent` argument, which takes a simple vector of four values `xmin, xmax, ymin, ymax` or sp bbox, sf bbox, or raster extent. This is only applied if the sql argument is non empty, and corresponds to the [SpatialFilter argument of ExecuteSQL](https://gdal.org/user/ogr_sql_dialect.html#executesql). 
+
+## Raster data
+
+Find raster info. 
+
+
+```{r raster}
+f <- system.file("extdata", "sst.tif", package = "vapour")
+vapour_raster_info(f)
+
+```
+
+Read raster data (requires explicit setting of `window` argument, and is not useful
+without being used in the context of the raster dimensions).
+
+```{r raster-read} 
+vapour_read_raster(f, window = c(0, 0, 6, 5))
+
+## the final two arguments specify up- or down-sampling
+## controlled by resample argument
+vapour_read_raster(f, window = c(0, 0, 6, 5, 8, 9))
+
+## if window is not included, and native TRUE then we get the entire window
+str(vapour_read_raster(f, native = TRUE))
+
+## notice this is the length of the dimXY above
+prod(vapour_raster_info(f)$dimXY)
+
+```
+
+By chaining together what we know about how raster data works we can get exactly what we want from GDAL. 
+
+(Note that `vapour_read_raster()` returns a list of one band, new behaviour since version 0.4.0). 
+
+```{r gdal-flex}
+mm <- matrix(vapour_read_raster(f, native = TRUE)[[1]], 
+      vapour_raster_info(f)$dimXY)
+mm[mm < -1e6] <- NA
+image(mm[,ncol(mm):1], asp = 2)
+```
+
+An example of using this facility interactively is in [lazyraster](https://github.com/hypertidy/lazyraster). 
+
+
+## OGRSQL
+
+SQL is available for general GDAL vector data. 
+
+Note that each lower-level function accepts a `sql` argument, 
+which sends a query to the GDAL library to be executed against
+the data source, this can create custom layers and so is independent of and ignores the `layer` argument. Note that the same sql statement can be passed to the geometry readers, so we get the matching sets of information. `vapour_read_geometry` will return NULL for each missing geometry if the statement doesn't include geometry explicitly or implicitly, but `vapour_read_geometry`, `vapour_read_geometry_text` and `vapour_read_extent` all explicitly modify the statement "SELECT *". (We are also assuming the data source hasn't changed between accesses ... let me know if this causes you problems!). 
+
+```{r}
+vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7291")
+
+
+vapour_read_attributes(mvfile, sql = "SELECT NAME, PLAN_REF, FID FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7306")
+
+```
+
+Also note that FID is a special row number value, to be used a as general facility for selecting by structural row. This FID is driver-dependent, it can be 0- or 1-based, or completely arbitrary. 
+
+Variously, drivers (GDAL's formats) are 0- or 1- based with the FID. Others (such as OSM) are arbitrary, and have non-sequential (and presumably persientent) FID values. 
+
+```{r}
+library(vapour)
+file0 <- "list_locality_postcode_meander_valley.tab"
+mvfile <- system.file("extdata/tab", file0, package="vapour")
+layer <- gsub(".tab$", "", basename(mvfile))
+## get the number of features by FID (DISTINCT should be redundant here)
+vapour_read_attributes(mvfile, sql = sprintf("SELECT COUNT(DISTINCT FID) AS nfeatures FROM %s", layer))
+
+## note how TAB is 1-based 
+vapour_read_attributes(mvfile, sql = sprintf("SELECT COUNT(*) AS n FROM %s WHERE FID < 2", layer))
+
+## but SHP is 0-based
+shp <- system.file("extdata/point.shp", package="vapour")
+vapour_read_attributes(shp, sql = sprintf("SELECT COUNT(*) AS n FROM %s WHERE FID < 2", "point"))
+```
+See https://gdal.org/user/ogr_sql_dialect.html
+
+
+There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables. 
+
+
+# GDAL information
+
+Find the GDAL version and drivers available. 
+
+```{r GDAL-info}
+vapour_gdal_version()
+
+str(vapour_all_drivers())
+
+```
+
+Find the driver that will be used for a given data source. 
+
+```{r GDAL-driver}
+vapour_driver(mvfile)
+```
