@@ -2,6 +2,7 @@
 
 * Deleted compile tests from configure, we can add proper tests if this is needed. 
 
+* Now set env vars GDAL_DATA and PROJ_LIB to vapour/gdal/ and vapour/proj/ when present (i.e. Windows generally, MacOS on CRAN). 
 * Update to configure to ensure data copy of proj/ and gdal/ on MacOS on CRAN, thanks to CRAN, Roger Bivand, and to James 
  Balamuta for enormous help on github actions and installing the CRAN mac binaries. 
 
