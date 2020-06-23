@@ -1,4 +1,4 @@
-# vapour 0.5.1
+# vapour 0.5.5
 
 * Deleted compile tests from configure, we can add proper tests if this is needed. 
 
