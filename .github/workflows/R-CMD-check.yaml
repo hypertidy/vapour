@@ -1,12 +1,19 @@
-## Github Actions script, this triggers R CMD check testing on each commit.
+## Github Actions script, this triggers R CMD check testing on each commit on Windows, Linux, MacOS.
+##
+## This was created primarily to CI test MacOS to compare brew and CRAN installs.
+##
 ## @mdsumner
 ## substantial assistance was provided by @coatless
-
+##
+## see https://github.com/r-spatial/discuss/wiki/R-packages-that-use-the-OSGEO-stack-in-System-Requirements: for packages
+## that might need this kind of github actions for gdal, geos, proj, netcdf, hdf4/5, etc.
+##
 ## NOTES
 ##
 ## 'matrix' specifies a set of operating system configurations, these can be turned on or off with with the comment,
 ##    it takes time to run so if you are churning a lot turn some off
 ##   each carries configuration details to pass to the runner (os: and r: at a minimum)
+##
 ##  the options used below allow 'brew install' or 'CRAN install' of the *underlying spatial libs* (gdal, proj, geos at minimum), and
 ##   the args provide CRAN-specific configuration to *copy the proj/ and gdal/ data directories into the package itself
 ##  with GDAL 3.1.1 (a jump up from 2.4.2 for MacOS on CRAN) this script added hdf4, hdf5, netcdf, sqlite and szip from
@@ -21,11 +28,14 @@
 ## sudo tar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
 ## rm gdal-2.4.2-darwin.17-x86_64.tar.gz
 ##
-## There are two branches for "CRAN" vs. "brew" with if: runner.os == 'macOS' && matrix.config.binary == 'CRAN', this
+## There are two branches for "CRAN" vs. "brew" with if: runner.os == 'macOS' && matrix.config.binary == CRAN/brew, this
 ## means our os matrix above will run different code for each case (get the CRAN binaries, or install with brew). Using brew is
 ## not supported or recommended, but is very common - it just could be any old version of things depending on when and who is doing it.
 ##
-##
+## Below this stuff is a testing section (I was ensuring that the artefacts in proj/ and gdal/ directories were copied in), and
+##  finally you can get the pkgbuld() to build the arch-specific package (.zip, .tgz) to see if the files are copied in as expected.
+## Windows does this using the tools/ process, it copies the libs from rwinlibs/ on github at package-build.
+
 on:
   push:
   pull_request:
