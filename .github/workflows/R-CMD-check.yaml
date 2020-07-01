@@ -1,14 +1,31 @@
-# Action script of tests conducted for all platforms. The complete suite
-# of tests is described in .github/workflows/R-CMD-check-with-db.yaml
+## Github Actions script, this triggers R CMD check testing on each commit.
+## @mdsumner
+## substantial assistance was provided by @coatless
 
-## MDSumner:
-## configure.ac substantially modified, copied from rgdal/sf originally
-## no trailing slash on PROJ_LIB=/usr/local/opt/proj/share/proj
-## when using GDAL < 3 with PROJ >= 6 and auto set proj_api.h because WHY NOT
-## C++11 implies GDAL 2.3.0 but we use 2.2.2 as a min
-## with-data-copy seems to require also setting proj-data even if it's standard
-
-
+## NOTES
+##
+## 'matrix' specifies a set of operating system configurations, these can be turned on or off with with the comment,
+##    it takes time to run so if you are churning a lot turn some off
+##   each carries configuration details to pass to the runner (os: and r: at a minimum)
+##  the options used below allow 'brew install' or 'CRAN install' of the *underlying spatial libs* (gdal, proj, geos at minimum), and
+##   the args provide CRAN-specific configuration to *copy the proj/ and gdal/ data directories into the package itself
+##  with GDAL 3.1.1 (a jump up from 2.4.2 for MacOS on CRAN) this script added hdf4, hdf5, netcdf, sqlite and szip from
+##    https://mac.r-project.org/libs-4/ - see discussion https://github.com/r-spatial/discuss/issues/40
+##
+## under 'run' the args list provides a pattern for each of the pre-built CRAN MacOS binaries, these are system libraries that were
+##  specially built for the MacOS R package version on CRAN, we need enough of the unique file name from the list at
+##  https://mac.r-project.org/libs-4/, to find the file, download it, unpack it *into the system*, and clean up.
+##  Commands to do this for just one file would look like this, but our shell loop and list allows more compactness here:
+##
+## curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
+## sudo tar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
+## rm gdal-2.4.2-darwin.17-x86_64.tar.gz
+##
+## There are two branches for "CRAN" vs. "brew" with if: runner.os == 'macOS' && matrix.config.binary == 'CRAN', this
+## means our os matrix above will run different code for each case (get the CRAN binaries, or install with brew). Using brew is
+## not supported or recommended, but is very common - it just could be any old version of things depending on when and who is doing it.
+##
+##
 on:
   push:
   pull_request:
@@ -59,9 +76,6 @@ jobs:
              sed -n 's/.*href=\([^>]*x86_64.tar.gz\).*/\1/p' |
              grep -E "$pat" |
              xargs -I % sh -c 'curl https://mac.r-project.org/libs-4/% --output %; sudo tar fvxz % -C /usr/local --strip 2'
-           #curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
-           #sudo tar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
-           #rm gdal-2.4.2-darwin.17-x86_64.tar.gz
 
       - name: MacOS brew system dependencies
         if: runner.os == 'macOS' && matrix.config.binary == 'brew'
