@@ -53,7 +53,7 @@ jobs:
       - name: MacOS CRAN-binary system dependencies
         if: runner.os == 'macOS' && matrix.config.binary == 'CRAN'
         run: |
-           args=("gdal" "geos" "proj")
+           args=("gdal-3.1.1-darwin.17" "geos-3.8.1-darwin.17" "proj-6.3.1-darwin.17")
            pat=$(echo ${args[@]}|tr " " "|")
            curl -sL  https://mac.r-project.org/libs-4/ |
              sed -n 's/.*href=\([^>]*x86_64.tar.gz\).*/\1/p' |
@@ -62,12 +62,6 @@ jobs:
            #curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
            #sudo tar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
            #rm gdal-2.4.2-darwin.17-x86_64.tar.gz
-           #curl -O https://mac.r-project.org/libs-4/geos-3.7.2-darwin.17-x86_64.tar.gz
-           #sudo tar fvxz geos-3.7.2-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
-           #rm geos-3.7.2-darwin.17-x86_64.tar.gz
-           #curl -O https://mac.r-project.org/libs-4/proj-5.2.0-darwin.17-x86_64.tar.gz
-           #sudo tar fvxz proj-5.2.0-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
-           #rm proj-5.2.0-darwin.17-x86_64.tar.gz
 
       - name: MacOS brew system dependencies
         if: runner.os == 'macOS' && matrix.config.binary == 'brew'
