@@ -24,3 +24,5 @@
 ^\.ccache$
 ^tic\.R$
 ^windows$
+^Makefile$
+^Jenkinsfile$
