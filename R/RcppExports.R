@@ -41,6 +41,10 @@ vapour_driver_cpp <- function(dsource) {
     .Call('_vapour_vapour_driver_cpp', PACKAGE = 'vapour', dsource)
 }
 
+vapour_geom_name_cpp <- function(dsource, sql = "") {
+    .Call('_vapour_vapour_geom_name_cpp', PACKAGE = 'vapour', dsource, sql)
+}
+
 vapour_layer_names_cpp <- function(dsource, sql = "") {
     .Call('_vapour_vapour_layer_names_cpp', PACKAGE = 'vapour', dsource, sql)
 }

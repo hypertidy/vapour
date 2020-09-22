@@ -1,3 +1,11 @@
+# vapour dev
+
+* New function `vapour_geom_name()` to get a data source geometry "column name". Non-database sources return 
+an empty string *unless* `ExecuteSQL()` was called, and then it is "_ogr_geometry_". 
+
+Typical names are 'geom' in GPKG, 'SHAPE' in GDB. 
+
+
 # vapour 0.5.5
 
 * Deleted compile tests from configure, we can add proper tests if this is needed. 

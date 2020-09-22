@@ -155,7 +155,42 @@ Rcpp::CharacterVector vapour_driver_cpp(Rcpp::CharacterVector dsource)
   return(dname);
 }
 
+// [[Rcpp::export]]
+Rcpp::CharacterVector vapour_geom_name_cpp(CharacterVector dsource,
+                                        Rcpp::CharacterVector sql = "") {
+  GDALAllRegister();
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer  *poLayer;
+  if (sql[0] != "") {
+    poLayer =  poDS->ExecuteSQL(sql[0],
+                                NULL,
+                                NULL);
+    if (poLayer == NULL) {
+      Rcpp::stop("SQL execution failed.\n");
+    }
+  } else {
+    poLayer = poDS->GetLayer(0);
+    if (poLayer == NULL) {
+      Rcpp::stop("failed to open layer.\n");
+    }
 
+  }
+  OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+  Rcpp::CharacterVector onames = Rcpp::CharacterVector(1);
+
+  onames[0] = poLayer->GetGeometryColumn();
+  if (sql[0] != "") {
+    // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+    poDS->ReleaseResultSet(poLayer);
+  }
+  GDALClose(poDS);
+  return onames;
+}
 // [[Rcpp::export]]
 Rcpp::CharacterVector vapour_layer_names_cpp(Rcpp::CharacterVector dsource,
                                              Rcpp::CharacterVector sql = "")
@@ -283,8 +318,10 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
                                 Rcpp::CharacterVector sql = "",
                                 Rcpp::IntegerVector limit_n = 0,
                                 Rcpp::IntegerVector skip_n = 0,
-                                Rcpp::NumericVector ex = 0)
+                                Rcpp::NumericVector ex = 0
+                                )
 {
+  Rcpp::CharacterVector dialect = "INDIRECT_SQLITE";
   GDALAllRegister();
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -317,7 +354,7 @@ List vapour_read_attributes_cpp(Rcpp::CharacterVector dsource,
     } else {
       poLayer =  poDS->ExecuteSQL(sql[0],
                                   NULL,
-                                  NULL );
+                                  dialect[0] );
     }
 
     if (poLayer == NULL) {

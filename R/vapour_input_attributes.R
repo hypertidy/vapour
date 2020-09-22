@@ -66,6 +66,27 @@ vapour_layer_names <- function(dsource, sql = "") {
   vapour_layer_names_cpp(dsource = dsource, sql = sql)
 }
 
+#' Read geometry column name
+#'
+#' If it exists the first geometry column name is returned.
+#'
+#' It might be "", or "geom", or "_ogr_geometry_" - the last is a default name
+#' given when SQL is executed by GDAL but there was no geometry name, aand 'SELECT * ' or
+#' equivalent was used.
+#'
+#' This feature is required by the DBI backend work in RGDALSQL, so that when `SELECT * ` is used
+#' we can give a reasonable name to the geometry column which is obtained separately.
+#'
+#' @inheritParams vapour_read_geometry
+#' @export
+#' @return character vector of geometry column name
+#' @examples
+#' file <- "list_locality_postcode_meander_valley.tab"
+#' vapour_geom_name(file)
+vapour_geom_name <- function(dsource, sql = "") {
+  vapour_geom_name_cpp(dsource = dsource, sql = sql)
+}
+
 #' Read feature names
 #'
 #' Obtains the internal 'Feature ID (FID)' for a data source.
