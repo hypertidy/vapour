@@ -1,2 +1,0 @@
-## moved to hypertidy/discrete
-
