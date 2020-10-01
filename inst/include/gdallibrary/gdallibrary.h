@@ -26,15 +26,20 @@ inline void osr_cleanup() {
   OSRCleanup();
 }
 
-inline CharacterVector gdal_layer_has_geometry(OGRLayer *poLayer) {
-  CharacterVector out(1);
+inline CharacterVector gdal_layer_geometry_name(OGRLayer *poLayer) {
+
   poLayer->ResetReading();
 
   //OGRFeature *poFeature = poLayer->GetNextFeature();
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-  OGRGeomFieldDefn *poGFDefn = poFDefn->GetGeomFieldDefn(0);
-  const char *geom_name =    poGFDefn->GetNameRef();
-  out[0] = geom_name;
+  int gfields = poFDefn->GetGeomFieldCount();
+  CharacterVector out(gfields);
+  const char *geom_name;
+  for (int ig = 0; ig < gfields; ig++) {
+      OGRGeomFieldDefn *poGFDefn = poFDefn->GetGeomFieldDefn(ig);
+      geom_name =    poGFDefn->GetNameRef();
+      out[ig] = geom_name;
+  }
   //OGRFeature::DestroyFeature( poFeature );
   return out;
 }

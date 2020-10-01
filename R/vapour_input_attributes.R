@@ -68,7 +68,7 @@ vapour_layer_names <- function(dsource, sql = "") {
 
 #' Read geometry column name
 #'
-#' If it exists the first geometry column name is returned.
+#' There might be one or more geometry column names, or it might be an empty string.
 #'
 #' It might be "", or "geom", or "_ogr_geometry_" - the last is a default name
 #' given when SQL is executed by GDAL but there was no geometry name, aand 'SELECT * ' or
@@ -79,12 +79,12 @@ vapour_layer_names <- function(dsource, sql = "") {
 #'
 #' @inheritParams vapour_read_geometry
 #' @export
-#' @return character vector of geometry column name
+#' @return character vector of geometry column name/s
 #' @examples
-#' file <- "list_locality_postcode_meander_valley.tab"
-#' vapour_geom_name(file)
-vapour_geom_name <- function(dsource, sql = "") {
-  vapour_geom_name_cpp(dsource = dsource, sql = sql)
+#' file <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package = "vapour")
+#' vapour_geom_name(file)  ## empty string
+vapour_geom_name <- function(dsource, layer = 0L, sql = "") {
+  vapour_geom_name_cpp(dsource = dsource, layer = layer, sql = sql, ex = 0)
 }
 
 #' Read feature names
