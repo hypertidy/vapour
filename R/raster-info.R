@@ -126,7 +126,7 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
   datasourcename <- sds_boilerplate_checks(x, sds = sds)
   sdsnames <- vapour_sds_names(x)
 
-  raster_info_cpp(filename = datasourcename, min_max = min_max)
+  raster_info_gdal_cpp(dsn = x, min_max = min_max)
 }
 
 #' Raster ground control points
@@ -156,9 +156,14 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
 #' ## they are rare, and tend to be in large files
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' vapour_raster_gcp(f)
+#'
+#' ## a very made-up example with no real use
+#' f1 <- system.file("extdata/gcps", "volcano_gcp.tif", package = "vapour")
+#' vapour_raster_gcp(f1)
+#'
 vapour_raster_gcp <- function(x, ...) {
   if (file.exists(x)) x <- normalizePath(x)
-  raster_gcp_cpp(x)
+  raster_gcp_gdal_cpp(x)
 }
 #' GDAL raster subdatasets (variables)
 #'

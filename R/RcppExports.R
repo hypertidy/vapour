@@ -137,22 +137,6 @@ VSI_list <- function(urlpath) {
     .Call('_vapour_VSI_list', PACKAGE = 'vapour', urlpath)
 }
 
-vapour_gdal_version_cpp <- function() {
-    .Call('_vapour_vapour_gdal_version_cpp', PACKAGE = 'vapour')
-}
-
-vapour_all_drivers_cpp <- function() {
-    .Call('_vapour_vapour_all_drivers_cpp', PACKAGE = 'vapour')
-}
-
-raster_info_cpp <- function(filename, min_max) {
-    .Call('_vapour_raster_info_cpp', PACKAGE = 'vapour', filename, min_max)
-}
-
-raster_gcp_cpp <- function(filename) {
-    .Call('_vapour_raster_gcp_cpp', PACKAGE = 'vapour', filename)
-}
-
 raster_io_cpp <- function(filename, window, band = 1L, resample = "nearestneighbour") {
     .Call('_vapour_raster_io_cpp', PACKAGE = 'vapour', filename, window, band, resample)
 }

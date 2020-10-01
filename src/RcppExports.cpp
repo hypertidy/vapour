@@ -472,49 +472,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// vapour_gdal_version_cpp
-Rcpp::CharacterVector vapour_gdal_version_cpp();
-RcppExport SEXP _vapour_vapour_gdal_version_cpp() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(vapour_gdal_version_cpp());
-    return rcpp_result_gen;
-END_RCPP
-}
-// vapour_all_drivers_cpp
-Rcpp::List vapour_all_drivers_cpp();
-RcppExport SEXP _vapour_vapour_all_drivers_cpp() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(vapour_all_drivers_cpp());
-    return rcpp_result_gen;
-END_RCPP
-}
-// raster_info_cpp
-List raster_info_cpp(CharacterVector filename, LogicalVector min_max);
-RcppExport SEXP _vapour_raster_info_cpp(SEXP filenameSEXP, SEXP min_maxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type filename(filenameSEXP);
-    Rcpp::traits::input_parameter< LogicalVector >::type min_max(min_maxSEXP);
-    rcpp_result_gen = Rcpp::wrap(raster_info_cpp(filename, min_max));
-    return rcpp_result_gen;
-END_RCPP
-}
-// raster_gcp_cpp
-List raster_gcp_cpp(CharacterVector filename);
-RcppExport SEXP _vapour_raster_gcp_cpp(SEXP filenameSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type filename(filenameSEXP);
-    rcpp_result_gen = Rcpp::wrap(raster_gcp_cpp(filename));
-    return rcpp_result_gen;
-END_RCPP
-}
 // raster_io_cpp
 List raster_io_cpp(CharacterVector filename, IntegerVector window, IntegerVector band, CharacterVector resample);
 RcppExport SEXP _vapour_raster_io_cpp(SEXP filenameSEXP, SEXP windowSEXP, SEXP bandSEXP, SEXP resampleSEXP) {
@@ -699,10 +656,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_gdal_dsn_read_fields_ia", (DL_FUNC) &_vapour_gdal_dsn_read_fields_ia, 6},
     {"_vapour_gdal_dsn_read_fields_fa", (DL_FUNC) &_vapour_gdal_dsn_read_fields_fa, 6},
     {"_vapour_VSI_list", (DL_FUNC) &_vapour_VSI_list, 1},
-    {"_vapour_vapour_gdal_version_cpp", (DL_FUNC) &_vapour_vapour_gdal_version_cpp, 0},
-    {"_vapour_vapour_all_drivers_cpp", (DL_FUNC) &_vapour_vapour_all_drivers_cpp, 0},
-    {"_vapour_raster_info_cpp", (DL_FUNC) &_vapour_raster_info_cpp, 2},
-    {"_vapour_raster_gcp_cpp", (DL_FUNC) &_vapour_raster_gcp_cpp, 1},
     {"_vapour_raster_io_cpp", (DL_FUNC) &_vapour_raster_io_cpp, 4},
     {"_vapour_sds_info_cpp", (DL_FUNC) &_vapour_sds_info_cpp, 1},
     {"_vapour_proj_to_wkt_cpp", (DL_FUNC) &_vapour_proj_to_wkt_cpp, 1},
