@@ -236,7 +236,7 @@ inline List gdal_read_fields(CharacterVector dsn,
   OGRFeature *poFeature;
 
   double  nFeature = force_layer_feature_count(poLayer);
-
+Rprintf("%i\n", nFeature);
   if (nFeature > MAX_INT) {
     Rcpp::warning("Number of features exceeds maximal number able to be read");
    nFeature = MAX_INT;
@@ -558,17 +558,17 @@ inline List gdal_read_names(CharacterVector dsn,
 {
 
   GDALDataset       *poDS;
-  Rprintf("0\n");
+
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR | GDAL_OF_READONLY, NULL, NULL, NULL );
-  Rprintf("open\n");
+
   if( poDS == NULL )
   {
     Rcpp::stop("Open failed.\n");
   }
 
-  Rprintf("0\n");
+
   OGRLayer *poLayer = gdal_layer(poDS, layer, sql = sql, ex =  ex);
-  Rprintf("layer\n");
+
   OGRFeature *poFeature;
   poLayer->ResetReading();
 
@@ -601,7 +601,7 @@ inline List gdal_read_names(CharacterVector dsn,
 
   double aFID;
   Rcpp::NumericVector rFID(1);
-  Rprintf("0\n");
+
   while( (poFeature = poLayer->GetNextFeature()) != NULL )
   {
 
@@ -616,7 +616,7 @@ inline List gdal_read_names(CharacterVector dsn,
     if (limit_n[0] > 0 && lFeature >= limit_n[0]) {
       break;  // short-circuit for limit_n
     }
-    Rprintf("%i\n", iFeature);
+
   }
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {

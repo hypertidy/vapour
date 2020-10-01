@@ -26,6 +26,8 @@ Returns a list of \code{datasource} and \code{subdataset}. In the case of a norm
 source, with no subdatasets the value of both entries is the \code{datasource}.
 }
 \examples{
-f <- system.file("extdata", "sst.tif", package = "vapour")
+f <- system.file("extdata/gdal", "sds.nc", package = "vapour")
 vapour_sds_names(f)
+
+vapour_sds_names(system.file("extdata", "sst.tif", package = "vapour"))
 }

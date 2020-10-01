@@ -137,10 +137,6 @@ VSI_list <- function(urlpath) {
     .Call('_vapour_VSI_list', PACKAGE = 'vapour', urlpath)
 }
 
-sds_info_cpp <- function(pszFilename) {
-    .Call('_vapour_sds_info_cpp', PACKAGE = 'vapour', pszFilename)
-}
-
 proj_to_wkt_cpp <- function(proj_str) {
     .Call('_vapour_proj_to_wkt_cpp', PACKAGE = 'vapour', proj_str)
 }
@@ -149,31 +145,11 @@ vapour_driver_cpp <- function(dsource) {
     .Call('_vapour_vapour_driver_cpp', PACKAGE = 'vapour', dsource)
 }
 
-vapour_layer_names_cpp <- function(dsource, sql = "") {
-    .Call('_vapour_vapour_layer_names_cpp', PACKAGE = 'vapour', dsource, sql)
-}
-
 find_feature_count_cpp <- function(dsource, layer = 0L, iterate = TRUE) {
     .Call('_vapour_find_feature_count_cpp', PACKAGE = 'vapour', dsource, layer, iterate)
 }
 
-vapour_read_attributes_cpp <- function(dsource, layer = 0L, sql = "", limit_n = 0L, skip_n = 0L, ex = 0L) {
-    .Call('_vapour_vapour_read_attributes_cpp', PACKAGE = 'vapour', dsource, layer, sql, limit_n, skip_n, ex)
-}
-
-vapour_read_geometry_cpp <- function(dsource, layer = 0L, sql = "", what = "geometry", textformat = "json", limit_n = 0L, skip_n = 0L, ex = 0L) {
-    .Call('_vapour_vapour_read_geometry_cpp', PACKAGE = 'vapour', dsource, layer, sql, what, textformat, limit_n, skip_n, ex)
-}
-
 vapour_projection_info_cpp <- function(dsource, layer = 0L, sql = "") {
     .Call('_vapour_vapour_projection_info_cpp', PACKAGE = 'vapour', dsource, layer, sql)
-}
-
-vapour_read_names_cpp <- function(dsource, layer = 0L, sql = "", limit_n = 0L, skip_n = 0L, ex = 0L) {
-    .Call('_vapour_vapour_read_names_cpp', PACKAGE = 'vapour', dsource, layer, sql, limit_n, skip_n, ex)
-}
-
-vapour_report_attributes_cpp <- function(dsource, layer = 0L, sql = "") {
-    .Call('_vapour_vapour_report_attributes_cpp', PACKAGE = 'vapour', dsource, layer, sql)
 }
 

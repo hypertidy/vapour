@@ -62,8 +62,11 @@ validate_extent <- function(extent, sql, warn = TRUE) {
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' vapour_layer_names(mvfile)
 #' @export
-vapour_layer_names <- function(dsource, sql = "") {
-  vapour_layer_names_cpp(dsource = dsource, sql = sql)
+vapour_layer_names <- function(dsource, ...) {
+  if ("sql" %in% names(list(...))) {
+    message("old 'sql' argument is unused")
+  }
+  layer_names_gdal_cpp(dsn = dsource)
 }
 
 #' Read geometry column name
@@ -111,7 +114,7 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, ski
   skip_n <- skip_n[1L]
   if (skip_n < 0) stop("skip_n must be 0, or higher")
   extent <- validate_extent(extent, sql)
-  fids <- vapour_read_names_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent)
+  fids <- read_names_gdal_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent)
   unlist(lapply(fids, function(x) if (is.null(x)) NA_real_ else x))
 }
 
@@ -136,7 +139,7 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, ski
 #'   sql = "SELECT POSTCODE, NAME FROM list_locality_postcode_meander_valley")
 vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
-  vapour_report_attributes_cpp(dsource, layer, sql = sql)
+  report_fields_gdal_cpp(dsource, layer, sql = sql)
 }
 
 
@@ -165,6 +168,11 @@ vapour_read_attributes <- function(dsource, layer = 0L, sql = "", limit_n = NULL
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
-  vapour_read_attributes_cpp(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent)
+
+  read_fields_gdal_cpp(dsn = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n,
+                       ex = extent,
+                       fid_column_name = character(0))
 }
+
+
 

@@ -52,7 +52,7 @@ vapour_read_geometry <- function(dsource, layer = 0L, sql = "", limit_n = NULL, 
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
-  vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "geometry", textformat = "", limit_n = limit_n, skip_n = skip_n, ex = extent)
+  read_geometry_gdal_cpp( dsn = dsource, layer = layer, sql = sql, what = "geometry", textformat = "", limit_n = limit_n, skip_n = skip_n, ex = extent)
 }
 
 #' @export
@@ -62,7 +62,7 @@ vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat 
   textformat = match.arg (tolower (textformat), c ("json", "gml", "kml", "wkt"))
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
-  vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, what = "text",
+  read_geometry_gdal_cpp(dsn = dsource, layer = layer, sql = sql, what = "text",
                            textformat = textformat, limit_n = limit_n, skip_n = skip_n, ex = extent)
 }
 
@@ -73,7 +73,7 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL, sk
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
-  out <- vapour_read_geometry_cpp(dsource = dsource,
+  out <- read_geometry_gdal_cpp(dsn = dsource,
                                   layer = layer, sql = sql,
                                   what = "extent", textformat = "",
                                   limit_n = limit_n, skip_n = skip_n, ex = extent)

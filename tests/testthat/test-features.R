@@ -9,14 +9,14 @@ dsource <- system.file(file.path("extdata/tab", pfile), package="vapour")
 
 test_that("geometry read works", {
 
-  gbin <- vapour_read_geometry_cpp(f, what = "geometry")
-  gpt <- vapour_read_geometry_cpp(f, what = "point")
-  gpt1 <- vapour_read_geometry_cpp(f, what = "point", skip_n = 3, limit_n = 1)
+  gbin <- read_geometry_gdal_cpp(f, what = "geometry")
+  gpt <- read_geometry_gdal_cpp(f, what = "point")
+  gpt1 <- read_geometry_gdal_cpp(f, what = "point", skip_n = 3, limit_n = 1)
 
-  gjsn <- vapour_read_geometry_cpp(f, what = "text", textformat = "json")
-  ggml <- vapour_read_geometry_cpp(f, what = "text", textformat = "gml")
- gwkt <- vapour_read_geometry_cpp(f, what = "text", textformat = "wkt")
-  gext <- vapour_read_geometry_cpp(f, what = "extent")
+  gjsn <- read_geometry_gdal_cpp(f, what = "text", textformat = "json")
+  ggml <- read_geometry_gdal_cpp(f, what = "text", textformat = "gml")
+ gwkt <- read_geometry_gdal_cpp(f, what = "text", textformat = "wkt")
+  gext <- read_geometry_gdal_cpp(f, what = "extent")
 
   gbin %>% expect_length(7L)
   gjsn %>% expect_length(7L)
@@ -62,7 +62,7 @@ expect_true(src0 == pprj || src0 == pprj2 )
 
   p3d <- system.file("extdata/point3d.gpkg", package = "vapour")
   ## attachPoints
-  expect_equal(vapour_read_geometry_cpp(p3d, what = "point")[[1]],
+  expect_equal(read_geometry_gdal_cpp(p3d, what = "point")[[1]],
                list(x = 0, y = 0, z = 0))
 
   expect_warning(vapour_read_attributes(f, layer = factor("sst_c")), "layer is a factor, converting to character")
@@ -77,13 +77,13 @@ test_that("OSM read works", {
   skip_on_os("windows")
   ## can't usse sst gpkg because
   ## kml can't be in a projection
-  expect_silent(gkml <- vapour_read_geometry_cpp(f2, what = "text", textformat = "kml"))
+  expect_silent(gkml <- read_geometry_gdal_cpp(f2, what = "text", textformat = "kml"))
   gkml %>% expect_length(1L)
   gkml[[1]] %>% expect_type("character")  %>% grepl("<Point><coordinates>", .) %>% expect_true()
 
   expect_identical(gkml, vapour_read_geometry_text(f2, textformat = "kml"))
 
-  #gkml <- vapour_read_geometry_cpp(system.file("extdata", "point.shp", package = "vapour"),
+  #gkml <- read_geometry_gdal_cpp(system.file("extdata", "point.shp", package = "vapour"),
   # what = "text", textformat = "kml")
 
 })

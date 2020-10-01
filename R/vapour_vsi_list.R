@@ -27,5 +27,5 @@
 #' }}
 #' @export
 vapour_vsi_list <- function(dsource, ...) {
-  VSI_list(dsource)
+  vsi_list_gdal_cpp(dsource)
 }
