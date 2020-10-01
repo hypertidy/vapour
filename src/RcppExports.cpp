@@ -461,17 +461,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// VSI_list
-CharacterVector VSI_list(CharacterVector urlpath);
-RcppExport SEXP _vapour_VSI_list(SEXP urlpathSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type urlpath(urlpathSEXP);
-    rcpp_result_gen = Rcpp::wrap(VSI_list(urlpath));
-    return rcpp_result_gen;
-END_RCPP
-}
 // proj_to_wkt_cpp
 CharacterVector proj_to_wkt_cpp(CharacterVector proj_str);
 RcppExport SEXP _vapour_proj_to_wkt_cpp(SEXP proj_strSEXP) {
@@ -491,32 +480,6 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
     rcpp_result_gen = Rcpp::wrap(vapour_driver_cpp(dsource));
-    return rcpp_result_gen;
-END_RCPP
-}
-// find_feature_count_cpp
-DoubleVector find_feature_count_cpp(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::LogicalVector iterate);
-RcppExport SEXP _vapour_find_feature_count_cpp(SEXP dsourceSEXP, SEXP layerSEXP, SEXP iterateSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
-    Rcpp::traits::input_parameter< Rcpp::LogicalVector >::type iterate(iterateSEXP);
-    rcpp_result_gen = Rcpp::wrap(find_feature_count_cpp(dsource, layer, iterate));
-    return rcpp_result_gen;
-END_RCPP
-}
-// vapour_projection_info_cpp
-List vapour_projection_info_cpp(Rcpp::CharacterVector dsource, Rcpp::IntegerVector layer, Rcpp::CharacterVector sql);
-RcppExport SEXP _vapour_vapour_projection_info_cpp(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type layer(layerSEXP);
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type sql(sqlSEXP);
-    rcpp_result_gen = Rcpp::wrap(vapour_projection_info_cpp(dsource, layer, sql));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -555,11 +518,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_gdal_dsn_read_fields_ij", (DL_FUNC) &_vapour_gdal_dsn_read_fields_ij, 6},
     {"_vapour_gdal_dsn_read_fields_ia", (DL_FUNC) &_vapour_gdal_dsn_read_fields_ia, 6},
     {"_vapour_gdal_dsn_read_fields_fa", (DL_FUNC) &_vapour_gdal_dsn_read_fields_fa, 6},
-    {"_vapour_VSI_list", (DL_FUNC) &_vapour_VSI_list, 1},
     {"_vapour_proj_to_wkt_cpp", (DL_FUNC) &_vapour_proj_to_wkt_cpp, 1},
     {"_vapour_vapour_driver_cpp", (DL_FUNC) &_vapour_vapour_driver_cpp, 1},
-    {"_vapour_find_feature_count_cpp", (DL_FUNC) &_vapour_find_feature_count_cpp, 3},
-    {"_vapour_vapour_projection_info_cpp", (DL_FUNC) &_vapour_vapour_projection_info_cpp, 3},
     {NULL, NULL, 0}
 };
 

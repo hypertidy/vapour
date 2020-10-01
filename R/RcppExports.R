@@ -133,23 +133,11 @@ gdal_dsn_read_fields_fa <- function(dsn, layer, sql, ex, fid_column_name, fa) {
     .Call('_vapour_gdal_dsn_read_fields_fa', PACKAGE = 'vapour', dsn, layer, sql, ex, fid_column_name, fa)
 }
 
-VSI_list <- function(urlpath) {
-    .Call('_vapour_VSI_list', PACKAGE = 'vapour', urlpath)
-}
-
 proj_to_wkt_cpp <- function(proj_str) {
     .Call('_vapour_proj_to_wkt_cpp', PACKAGE = 'vapour', proj_str)
 }
 
 vapour_driver_cpp <- function(dsource) {
     .Call('_vapour_vapour_driver_cpp', PACKAGE = 'vapour', dsource)
-}
-
-find_feature_count_cpp <- function(dsource, layer = 0L, iterate = TRUE) {
-    .Call('_vapour_find_feature_count_cpp', PACKAGE = 'vapour', dsource, layer, iterate)
-}
-
-vapour_projection_info_cpp <- function(dsource, layer = 0L, sql = "") {
-    .Call('_vapour_vapour_projection_info_cpp', PACKAGE = 'vapour', dsource, layer, sql)
 }
 

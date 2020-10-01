@@ -1,5 +1,10 @@
 # vapour dev
 
+* Major refactor to use C++ headers, so other packages can access the API without using R functions. There's a more
+ comprehensive set of identifier, names, fields, extent, and geometry readers, and an addition of the GDALwarp() facility
+ which is a generalization of RasterIO. This will now work on a much greater range of sources than the older RasterIO (still WIP). 
+ 
+ 
 * New function `vapour_geom_name()` to get a data source geometry "column name". Non-database sources return 
 an empty string *unless* `ExecuteSQL()` was called, and then it is "_ogr_geometry_". 
 

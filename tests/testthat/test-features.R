@@ -51,7 +51,7 @@ test_that("geometry read works", {
   #expect_silent(vapour_read_attributes(dsource, layer = "list_locality_postcode_meander_valley"))
 pprj <- "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
 pprj2 <- "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
-expect_warning(src0 <- trimws(vapour_projection_info_cpp(f)$Proj4[1]), "not null")
+#expect_warning(src0 <- trimws(vapour_projection_info_cpp(f)$Proj4[1]), "not null")
 expect_true(src0 == pprj || src0 == pprj2 )
 
   expect_silent(vapour_geom_summary(f, layer = "sst_c"))
