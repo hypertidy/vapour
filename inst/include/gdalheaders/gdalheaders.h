@@ -26,6 +26,18 @@ inline void osr_cleanup() {
   OSRCleanup();
 }
 
+inline CharacterVector gdal_layer_has_geometry(OGRLayer *poLayer) {
+  CharacterVector out(1);
+  poLayer->ResetReading();
+
+  //OGRFeature *poFeature = poLayer->GetNextFeature();
+  OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+  OGRGeomFieldDefn *poGFDefn = poFDefn->GetGeomFieldDefn(0);
+  const char *geom_name =    poGFDefn->GetNameRef();
+  out[0] = geom_name;
+  //OGRFeature::DestroyFeature( poFeature );
+  return out;
+}
 // this force function takes cheap count, checks, then more expensive, checks,
 // then iterates and resets reading
 inline double force_layer_feature_count(OGRLayer *poLayer) {
@@ -36,11 +48,11 @@ inline double force_layer_feature_count(OGRLayer *poLayer) {
   }
   if (out == -1) {
     out = 0;
-    poLayer->ResetReading();
-    while(poLayer->GetNextFeature() != NULL) {
-      out++;
-    }
-    poLayer->ResetReading();
+   poLayer->ResetReading();
+   while(poLayer->GetNextFeature() != NULL) {
+     out++;
+   }
+   poLayer->ResetReading();
   }
   return out;
 }
@@ -201,12 +213,12 @@ inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, int n_features, 
 
 
 inline List gdal_read_fields(CharacterVector dsn,
-                             IntegerVector layer,
-                             CharacterVector sql,
-                             IntegerVector limit_n,
-                             IntegerVector skip_n,
-                             NumericVector ex,
-                             CharacterVector fid_column_name)
+                      IntegerVector layer,
+                      CharacterVector sql,
+                      IntegerVector limit_n,
+                      IntegerVector skip_n,
+                      NumericVector ex,
+                      CharacterVector fid_column_name)
 {
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -222,7 +234,7 @@ inline List gdal_read_fields(CharacterVector dsn,
 
   if (nFeature > MAX_INT) {
     Rcpp::warning("Number of features exceeds maximal number able to be read");
-    nFeature = MAX_INT;
+   nFeature = MAX_INT;
   }
   // this is poorly laid out but works, check twice to avoid
   // over allocating as per #60
@@ -368,13 +380,13 @@ inline CharacterVector gdal_layer_names(CharacterVector dsn)
 
 
 inline List gdal_read_geometry(CharacterVector dsn,
-                               IntegerVector layer,
-                               CharacterVector sql,
-                               CharacterVector what,
-                               CharacterVector textformat,
-                               IntegerVector limit_n,
-                               IntegerVector skip_n,
-                               NumericVector ex)
+                                     IntegerVector layer,
+                                     CharacterVector sql,
+                                     CharacterVector what,
+                                     CharacterVector textformat,
+                                     IntegerVector limit_n,
+                                     IntegerVector skip_n,
+                                     NumericVector ex)
 {
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -504,6 +516,7 @@ inline List gdal_read_geometry(CharacterVector dsn,
           feature_xx.push_back(r_gtyp);
         }
       }
+
       OGRFeature::DestroyFeature( poFeature );
       lFeature = lFeature + 1;
     }  //    if (iFeature >= skip_n[0]) {  // we are at skip_n
@@ -532,22 +545,25 @@ inline List gdal_read_geometry(CharacterVector dsn,
 
 
 inline List gdal_read_names(CharacterVector dsn,
-                            IntegerVector layer,
-                            CharacterVector sql,
-                            IntegerVector limit_n,
-                            IntegerVector skip_n,
-                            NumericVector ex)
+                           IntegerVector layer,
+                           CharacterVector sql,
+                           IntegerVector limit_n,
+                           IntegerVector skip_n,
+                           NumericVector ex)
 {
 
   GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  Rprintf("0\n");
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR | GDAL_OF_READONLY, NULL, NULL, NULL );
+  Rprintf("open\n");
   if( poDS == NULL )
   {
     Rcpp::stop("Open failed.\n");
   }
 
+  Rprintf("0\n");
   OGRLayer *poLayer = gdal_layer(poDS, layer, sql = sql, ex =  ex);
-
+  Rprintf("layer\n");
   OGRFeature *poFeature;
   poLayer->ResetReading();
 
@@ -560,7 +576,7 @@ inline List gdal_read_names(CharacterVector dsn,
 
   if (nFeature > MAX_INT) {
     Rcpp::warning("Number of features exceeds maximal number able to be read");
-    nFeature = MAX_INT;
+   nFeature = MAX_INT;
   }
 
   if (limit_n[0] > 0) {
@@ -580,6 +596,7 @@ inline List gdal_read_names(CharacterVector dsn,
 
   double aFID;
   Rcpp::NumericVector rFID(1);
+  Rprintf("0\n");
   while( (poFeature = poLayer->GetNextFeature()) != NULL )
   {
 
@@ -594,6 +611,7 @@ inline List gdal_read_names(CharacterVector dsn,
     if (limit_n[0] > 0 && lFeature >= limit_n[0]) {
       break;  // short-circuit for limit_n
     }
+    Rprintf("%i\n", iFeature);
   }
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -624,8 +642,8 @@ inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
 }
 
 inline List gdal_projection_info(CharacterVector dsn,
-                                 IntegerVector layer,
-                                 CharacterVector sql)
+                                IntegerVector layer,
+                                CharacterVector sql)
 {
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -656,7 +674,7 @@ inline List gdal_projection_info(CharacterVector dsn,
     // do nothing, or warn
     // e.g. .shp with no .prj
   } else {
-    // Rcpp::warning("not null");
+   // Rcpp::warning("not null");
     // SRS is not NULL, so explore validation
     //  OGRErr err = SRS->Validate();
     SRS->exportToProj4(&proj);
@@ -695,8 +713,8 @@ inline List gdal_projection_info(CharacterVector dsn,
 
 
 inline CharacterVector gdal_report_fields(Rcpp::CharacterVector dsource,
-                                          Rcpp::IntegerVector layer = 0,
-                                          Rcpp::CharacterVector sql = "")
+                                             Rcpp::IntegerVector layer = 0,
+                                             Rcpp::CharacterVector sql = "")
 {
 
   GDALDataset       *poDS;
@@ -1065,9 +1083,9 @@ inline List gdal_raster_gcp(CharacterVector dsn) {
 
 
 inline List gdal_raster_io(CharacterVector dsn,
-                           IntegerVector window,
-                           IntegerVector band,
-                           CharacterVector resample)
+                   IntegerVector window,
+                   IntegerVector band,
+                   CharacterVector resample)
 {
 
   int Xoffset = window[0];
