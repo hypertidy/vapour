@@ -87,12 +87,12 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, s
 #'
 #' as.data.frame(drv)[match(vapour_driver(f), drv$driver), ]
 vapour_gdal_version <- function() {
-  drivers_list_gdal_cpp
+  version_gdal_cpp()
 }
 #' @rdname GDAL-library
 #' @export
 vapour_all_drivers <- function() {
-  vapour_all_drivers_cpp()
+  drivers_list_gdal_cpp()
 }
 
 
