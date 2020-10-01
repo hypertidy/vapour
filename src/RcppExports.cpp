@@ -472,20 +472,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// raster_io_cpp
-List raster_io_cpp(CharacterVector filename, IntegerVector window, IntegerVector band, CharacterVector resample);
-RcppExport SEXP _vapour_raster_io_cpp(SEXP filenameSEXP, SEXP windowSEXP, SEXP bandSEXP, SEXP resampleSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type filename(filenameSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type window(windowSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type resample(resampleSEXP);
-    rcpp_result_gen = Rcpp::wrap(raster_io_cpp(filename, window, band, resample));
-    return rcpp_result_gen;
-END_RCPP
-}
 // sds_info_cpp
 CharacterVector sds_info_cpp(const char* pszFilename);
 RcppExport SEXP _vapour_sds_info_cpp(SEXP pszFilenameSEXP) {
@@ -656,7 +642,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_gdal_dsn_read_fields_ia", (DL_FUNC) &_vapour_gdal_dsn_read_fields_ia, 6},
     {"_vapour_gdal_dsn_read_fields_fa", (DL_FUNC) &_vapour_gdal_dsn_read_fields_fa, 6},
     {"_vapour_VSI_list", (DL_FUNC) &_vapour_VSI_list, 1},
-    {"_vapour_raster_io_cpp", (DL_FUNC) &_vapour_raster_io_cpp, 4},
     {"_vapour_sds_info_cpp", (DL_FUNC) &_vapour_sds_info_cpp, 1},
     {"_vapour_proj_to_wkt_cpp", (DL_FUNC) &_vapour_proj_to_wkt_cpp, 1},
     {"_vapour_vapour_driver_cpp", (DL_FUNC) &_vapour_vapour_driver_cpp, 1},

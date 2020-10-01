@@ -137,10 +137,6 @@ VSI_list <- function(urlpath) {
     .Call('_vapour_VSI_list', PACKAGE = 'vapour', urlpath)
 }
 
-raster_io_cpp <- function(filename, window, band = 1L, resample = "nearestneighbour") {
-    .Call('_vapour_raster_io_cpp', PACKAGE = 'vapour', filename, window, band, resample)
-}
-
 sds_info_cpp <- function(pszFilename) {
     .Call('_vapour_sds_info_cpp', PACKAGE = 'vapour', pszFilename)
 }

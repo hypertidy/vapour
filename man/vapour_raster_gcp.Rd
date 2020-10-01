@@ -36,4 +36,9 @@ The coordinate system of the GCPs is currently not read.
 ## they are rare, and tend to be in large files
 f <- system.file("extdata", "sst.tif", package = "vapour")
 vapour_raster_gcp(f)
+
+## a very made-up example with no real use
+f1 <- system.file("extdata/gcps", "volcano_gcp.tif", package = "vapour")
+vapour_raster_gcp(f1)
+
 }
