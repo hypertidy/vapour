@@ -35,5 +35,7 @@ u <- sprintf("/vsizip//vsicurl/\%s", file.path(url, file))
 vapour_vsi_list(u)
 #[1] "radmap_v3_2015_filtered_dose"     "radmap_v3_2015_filtered_dose.ers"
 #[3] "radmap_v3_2015_filtered_dose.isi" "radmap_v3_2015_filtered_dose.txt"
+#gdalinfo /vsitar//home/ubuntu/LT05_L1GS_027026_20060116_20160911_01_T2.tar.gz
+vapour_vsi_list("/vsitar//home/ubuntu/LT05_L1GS_027026_20060116_20160911_01_T2.tar.gz")
 }}
 }
