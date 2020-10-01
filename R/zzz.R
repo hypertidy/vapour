@@ -31,6 +31,9 @@ vapour_load_gdal <- function() {
     gdl = system.file("gdal", package = "vapour")[1]
     Sys.setenv("GDAL_DATA" = gdl)
   }
+
+  # now done globally, prior vapour did this per library call
+  register_gdal_cpp()
 }
 # todo
 vapour_unload_gdal <- function() {
