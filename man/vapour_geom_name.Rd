@@ -4,18 +4,20 @@
 \alias{vapour_geom_name}
 \title{Read geometry column name}
 \usage{
-vapour_geom_name(dsource, sql = "")
+vapour_geom_name(dsource, layer = 0L, sql = "")
 }
 \arguments{
 \item{dsource}{data source name (path to file, connection string, URL)}
 
+\item{layer}{integer of layer to work with, defaults to the first (0) or the name of the layer}
+
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
 }
 \value{
-character vector of geometry column name
+character vector of geometry column name/s
 }
 \description{
-If it exists the first geometry column name is returned.
+There might be one or more geometry column names, or it might be an empty string.
 }
 \details{
 It might be "", or "geom", or "\emph{ogr_geometry}" - the last is a default name
@@ -26,6 +28,6 @@ This feature is required by the DBI backend work in RGDALSQL, so that when \verb
 we can give a reasonable name to the geometry column which is obtained separately.
 }
 \examples{
-file <- "list_locality_postcode_meander_valley.tab"
-vapour_geom_name(file)
+file <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package = "vapour")
+vapour_geom_name(file)  ## empty string
 }

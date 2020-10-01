@@ -5,20 +5,6 @@
 
 using namespace Rcpp;
 
-// gdal_geom_has
-CharacterVector gdal_geom_has(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex);
-RcppExport SEXP _vapour_gdal_geom_has(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type ex(exSEXP);
-    rcpp_result_gen = Rcpp::wrap(gdal_geom_has(dsn, layer, sql, ex));
-    return rcpp_result_gen;
-END_RCPP
-}
 // geometry_cpp_limit_skip
 List geometry_cpp_limit_skip(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex, CharacterVector format, IntegerVector limit_n, IntegerVector skip_n);
 RcppExport SEXP _vapour_geometry_cpp_limit_skip(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP, SEXP formatSEXP, SEXP limit_nSEXP, SEXP skip_nSEXP) {
@@ -291,6 +277,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vapour_geom_name_cpp
+Rcpp::CharacterVector vapour_geom_name_cpp(CharacterVector dsource, IntegerVector layer, Rcpp::CharacterVector sql, NumericVector ex);
+RcppExport SEXP _vapour_vapour_geom_name_cpp(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type sql(sqlSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type ex(exSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_geom_name_cpp(dsource, layer, sql, ex));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gdal_read_fids_all
 NumericVector gdal_read_fids_all(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex);
 RcppExport SEXP _vapour_gdal_read_fids_all(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP) {
@@ -492,22 +492,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// warp_memory_cpp
-List warp_memory_cpp(CharacterVector source_filename, CharacterVector source_WKT, CharacterVector target_WKT, NumericVector target_geotransform, IntegerVector target_dim, IntegerVector band);
-RcppExport SEXP _vapour_warp_memory_cpp(SEXP source_filenameSEXP, SEXP source_WKTSEXP, SEXP target_WKTSEXP, SEXP target_geotransformSEXP, SEXP target_dimSEXP, SEXP bandSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type source_filename(source_filenameSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type source_WKT(source_WKTSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type target_WKT(target_WKTSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type target_geotransform(target_geotransformSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type target_dim(target_dimSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
-    rcpp_result_gen = Rcpp::wrap(warp_memory_cpp(source_filename, source_WKT, target_WKT, target_geotransform, target_dim, band));
-    return rcpp_result_gen;
-END_RCPP
-}
 // raster_info_cpp
 List raster_info_cpp(CharacterVector filename, LogicalVector min_max);
 RcppExport SEXP _vapour_raster_info_cpp(SEXP filenameSEXP, SEXP min_maxSEXP) {
@@ -575,18 +559,6 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type dsource(dsourceSEXP);
     rcpp_result_gen = Rcpp::wrap(vapour_driver_cpp(dsource));
-    return rcpp_result_gen;
-END_RCPP
-}
-// vapour_geom_name_cpp
-Rcpp::CharacterVector vapour_geom_name_cpp(CharacterVector dsource, Rcpp::CharacterVector sql);
-RcppExport SEXP _vapour_vapour_geom_name_cpp(SEXP dsourceSEXP, SEXP sqlSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type sql(sqlSEXP);
-    rcpp_result_gen = Rcpp::wrap(vapour_geom_name_cpp(dsource, sql));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -693,7 +665,6 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_vapour_gdal_geom_has", (DL_FUNC) &_vapour_gdal_geom_has, 4},
     {"_vapour_geometry_cpp_limit_skip", (DL_FUNC) &_vapour_geometry_cpp_limit_skip, 7},
     {"_vapour_geometry_cpp", (DL_FUNC) &_vapour_geometry_cpp, 6},
     {"_vapour_register_gdal_cpp", (DL_FUNC) &_vapour_register_gdal_cpp, 0},
@@ -715,6 +686,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_raster_info_gdal_cpp", (DL_FUNC) &_vapour_raster_info_gdal_cpp, 2},
     {"_vapour_raster_gcp_gdal_cpp", (DL_FUNC) &_vapour_raster_gcp_gdal_cpp, 1},
     {"_vapour_raster_io_gdal_cpp", (DL_FUNC) &_vapour_raster_io_gdal_cpp, 4},
+    {"_vapour_vapour_geom_name_cpp", (DL_FUNC) &_vapour_vapour_geom_name_cpp, 4},
     {"_vapour_gdal_read_fids_all", (DL_FUNC) &_vapour_gdal_read_fids_all, 4},
     {"_vapour_gdal_read_fids_ij", (DL_FUNC) &_vapour_gdal_read_fids_ij, 5},
     {"_vapour_gdal_read_fids_ia", (DL_FUNC) &_vapour_gdal_read_fids_ia, 5},
@@ -729,14 +701,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_VSI_list", (DL_FUNC) &_vapour_VSI_list, 1},
     {"_vapour_vapour_gdal_version_cpp", (DL_FUNC) &_vapour_vapour_gdal_version_cpp, 0},
     {"_vapour_vapour_all_drivers_cpp", (DL_FUNC) &_vapour_vapour_all_drivers_cpp, 0},
-    {"_vapour_warp_memory_cpp", (DL_FUNC) &_vapour_warp_memory_cpp, 6},
     {"_vapour_raster_info_cpp", (DL_FUNC) &_vapour_raster_info_cpp, 2},
     {"_vapour_raster_gcp_cpp", (DL_FUNC) &_vapour_raster_gcp_cpp, 1},
     {"_vapour_raster_io_cpp", (DL_FUNC) &_vapour_raster_io_cpp, 4},
     {"_vapour_sds_info_cpp", (DL_FUNC) &_vapour_sds_info_cpp, 1},
     {"_vapour_proj_to_wkt_cpp", (DL_FUNC) &_vapour_proj_to_wkt_cpp, 1},
     {"_vapour_vapour_driver_cpp", (DL_FUNC) &_vapour_vapour_driver_cpp, 1},
-    {"_vapour_vapour_geom_name_cpp", (DL_FUNC) &_vapour_vapour_geom_name_cpp, 2},
     {"_vapour_vapour_layer_names_cpp", (DL_FUNC) &_vapour_vapour_layer_names_cpp, 2},
     {"_vapour_find_feature_count_cpp", (DL_FUNC) &_vapour_find_feature_count_cpp, 3},
     {"_vapour_vapour_read_attributes_cpp", (DL_FUNC) &_vapour_vapour_read_attributes_cpp, 6},

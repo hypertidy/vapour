@@ -6,27 +6,6 @@
 using namespace Rcpp;
 
 
-
-
-// FIXME: where does this belong
-// [[Rcpp::export]]
-CharacterVector gdal_geom_has(CharacterVector dsn, IntegerVector layer,
-                             CharacterVector sql, NumericVector ex) {
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  OGRLayer *p_layer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-
-  CharacterVector out(1);
-
-  out = gdallibrary::gdal_layer_has_geometry(p_layer);
-  GDALClose(poDS);
-  return out;
-}
-
 // [[Rcpp::export]]
 List geometry_cpp_limit_skip(CharacterVector dsn, IntegerVector layer,
                   CharacterVector sql, NumericVector ex, CharacterVector format,

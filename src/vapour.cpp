@@ -12,42 +12,6 @@ constexpr int MAX_INT =  std::numeric_limits<int>::max ();
 
 
 
-// static const char* asString(SEXP sxpString, const int i = 0) {
-//
-//     //if (isNull(sxpString)) return NULL;
-//
-//     return(CHAR(STRING_ELT(sxpString, i)));
-//
-//   }
-
-//
-// extern "C" void run_name(GDALDriver *driver) {
-//   driver->GetDescription();
-// }
-// extern "C" SEXP vapour_get_driver(SEXP sxpDriverName) {
-//
-//   GDALAllRegister();
-//
-//     const char *pDriverName = asString(sxpDriverName);
-//
-//     //installErrorHandler();
-//     GDALDriver *pDriver = (GDALDriver *) GDALGetDriverByName(pDriverName);
-//     //uninstallErrorHandlerAndTriggerError();
-//
-//     if (pDriver == NULL) {
-//       Rcpp::stop("aa/n");
-// //      error("No driver registered with name: %s\n", pDriverName);
-//     }
-//     SEXP sxpHandle = R_MakeExternalPtr((void *) pDriver,
-//                                        R_NilValue,
-//                                        R_NilValue);
-//
-//     return(sxpHandle);
-//
-//   }
-//
-
-
 // thk686
 static void attachPoints(SEXP res, OGRGeometryH hG)
 {
@@ -155,42 +119,7 @@ Rcpp::CharacterVector vapour_driver_cpp(Rcpp::CharacterVector dsource)
   return(dname);
 }
 
-// [[Rcpp::export]]
-Rcpp::CharacterVector vapour_geom_name_cpp(CharacterVector dsource,
-                                        Rcpp::CharacterVector sql = "") {
-  GDALAllRegister();
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  OGRLayer  *poLayer;
-  if (sql[0] != "") {
-    poLayer =  poDS->ExecuteSQL(sql[0],
-                                NULL,
-                                NULL);
-    if (poLayer == NULL) {
-      Rcpp::stop("SQL execution failed.\n");
-    }
-  } else {
-    poLayer = poDS->GetLayer(0);
-    if (poLayer == NULL) {
-      Rcpp::stop("failed to open layer.\n");
-    }
 
-  }
-  OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-  Rcpp::CharacterVector onames = Rcpp::CharacterVector(1);
-
-  onames[0] = poLayer->GetGeometryColumn();
-  if (sql[0] != "") {
-    // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-    poDS->ReleaseResultSet(poLayer);
-  }
-  GDALClose(poDS);
-  return onames;
-}
 // [[Rcpp::export]]
 Rcpp::CharacterVector vapour_layer_names_cpp(Rcpp::CharacterVector dsource,
                                              Rcpp::CharacterVector sql = "")
