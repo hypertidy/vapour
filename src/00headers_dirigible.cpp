@@ -7,6 +7,32 @@ using namespace Rcpp;
 
 
 // [[Rcpp::export]]
+Rcpp::CharacterVector vapour_geom_name_cpp(CharacterVector dsource,
+                                           IntegerVector layer,
+                                           Rcpp::CharacterVector sql,
+                                           NumericVector ex) {
+
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer *p_layer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+
+  CharacterVector out = gdallibrary::gdal_layer_geometry_name(p_layer);
+
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(p_layer);
+  }
+  GDALClose(poDS);
+
+  return out;
+}
+
+
+// [[Rcpp::export]]
 List geometry_cpp_limit_skip(CharacterVector dsn, IntegerVector layer,
                   CharacterVector sql, NumericVector ex, CharacterVector format,
                   IntegerVector limit_n, IntegerVector skip_n) {
@@ -70,6 +96,11 @@ LogicalVector cleanup_gdal_cpp() {
 CharacterVector version_gdal_cpp() {
   return gdallibrary::gdal_version();
 }
+// [[Rcpp::export]]
+CharacterVector driver_id_gdal_cpp(CharacterVector dsn) {
+  return gdallibrary::gdal_driver(dsn);
+}
+
 // [[Rcpp::export]]
 List drivers_list_gdal_cpp() {
   return gdallibrary::gdal_list_drivers();

@@ -1,9 +1,8 @@
 #include <limits>
 
-#include "ogrsf_frmts.h"
+
 #include "ogr_api.h"
 #include <Rcpp.h>
-#include "CollectorList.h"
 
 
 using namespace Rcpp;
@@ -102,22 +101,6 @@ static SEXP GetPointsInternal(OGRGeometryH hG, int nested)
 }
 
 
-// [[Rcpp::export]]
-Rcpp::CharacterVector vapour_driver_cpp(Rcpp::CharacterVector dsource)
-{
-
-  GDALAllRegister();
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  Rcpp::CharacterVector dname(1);
-  dname[0] = poDS->GetDriverName();
-  GDALClose(poDS);
-  return(dname);
-}
 
 
 

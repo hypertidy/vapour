@@ -9,7 +9,7 @@
 #' @examples
 #' vapour_srs_wkt("+proj=laea +datum=WGS84")
 vapour_srs_wkt <- function(crs) {
-  unlist(lapply(crs, proj_to_wkt_cpp))
+  unlist(lapply(crs, proj_to_wkt_gdal_cpp))
 }
 
 
@@ -74,6 +74,10 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, s
 #' * `create` driver can create (note vapour provides no write capacity)
 #' * `copy`   driver can copy (note vapour provides no write capacity)
 #' * `virtual` driver has virtual capabilities ('vsi')
+#'
+#' `vapour_driver()` returns the short name of the driver, e.g. 'GPKG' or 'GTiff', to get the
+#' long name and other properties use `vapour_all_drivers()` and match on 'driver'.
+#'
 #' @export
 #' @aliases vapour_all_drivers vapour_driver
 #' @rdname GDAL-library
@@ -96,12 +100,13 @@ vapour_all_drivers <- function() {
 }
 
 
+
 #' @rdname GDAL-library
 #' @export
 #' @param dsource data source string (i.e. file name or URL or database connection string)
 vapour_driver <- function(dsource) {
-  stopifnot(is.character(dsource))
-  stopifnot(nchar(dsource) > 0)
-  vapour_driver_cpp(dsource)
+  if (!is.character(dsource)) stop("'dsource' must be a character vector")
+  if (!nchar(dsource) > 0) stop("'dsource' is an empty string")
+  driver_id_gdal_cpp(dsource);
 }
 

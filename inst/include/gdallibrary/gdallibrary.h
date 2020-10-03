@@ -114,6 +114,11 @@ inline OGRLayer *gdal_layer(GDALDataset *poDS, IntegerVector layer, CharacterVec
   return poLayer;
 }
 
+
+
+
+
+
 inline List gdal_list_drivers()
 {
   int n = GetGDALDriverManager()->GetDriverCount();
@@ -823,7 +828,18 @@ inline CharacterVector gdal_report_fields(Rcpp::CharacterVector dsource,
 
 inline CharacterVector  gdal_vsi_list(CharacterVector urlpath)
 {
-  char **VSI_paths = VSIReadDir(urlpath[0]);
+
+  // char** VSI_paths;
+  // if ( STARTS_WITH(urlpath[0], "/vsizip/") ||
+  //      STARTS_WITH(urlpath[0], "/vsitar/") )
+  // {
+  //   VSI_paths = VSIReadDirRecursive(urlpath[0]);
+  // } else
+  // {
+  //   VSI_paths = VSIReadDirRecursive(urlpath[0]);
+  // }
+  //
+  char** VSI_paths  = VSIReadDirRecursive(urlpath[0]);
   int ipath = 0; // iterate though MetadataDomainList
   while (VSI_paths && VSI_paths[ipath] != NULL) {
     ipath++;
@@ -831,6 +847,7 @@ inline CharacterVector  gdal_vsi_list(CharacterVector urlpath)
 
   Rcpp::CharacterVector names(ipath);
   for (int i = 0; i < ipath; i++) {
+    Rprintf("%i", i);
     names[i] = VSI_paths[i];
   }
   CSLDestroy(VSI_paths);
