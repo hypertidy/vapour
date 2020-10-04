@@ -2062,6 +2062,7 @@ RBIN="${R_HOME}/bin/R"
 : ${CXX=`"${RBIN}" CMD config CXX`}
 : ${CFLAGS=`"${RBIN}" CMD config CFLAGS`}
 : ${CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`}
+: ${CXXFLAGS=`"${RBIN}" CMD config CXXFLAGS`}
 : ${LDFLAGS=`"${RBIN}" CMD config LDFLAGS`}
 { $as_echo "$as_me:${as_lineno-$LINENO}: CC: ${CC}" >&5
 $as_echo "$as_me: CC: ${CC}" >&6;}
