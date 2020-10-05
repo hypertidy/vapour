@@ -82,7 +82,13 @@ inline NumericVector gdal_geometry_extent(OGRFeature *poFeature) {
 
 /// READ FIDS ----------------------------------------------------------------------------
 inline NumericVector layer_read_fids_all(OGRLayer *poLayer) {
-  double   nFeature = gdallibrary::force_layer_feature_count(poLayer);
+  //double   nFeature = gdallibrary::force_layer_feature_count(poLayer);
+  // trying to fix SQL problem 2020-10-05
+  double nFeature = poLayer->GetFeatureCount();
+  if (nFeature < 1) {
+    Rprintf("force count\n");
+    nFeature = gdallibrary::force_layer_feature_count(poLayer);
+  }
 
   NumericVector out(nFeature);
   std::fill( out.begin(), out.end(), NumericVector::get_na() );
@@ -208,7 +214,13 @@ inline NumericVector dsn_read_fids_ia(CharacterVector dsn, IntegerVector layer,
 inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
   OGRFeature *poFeature;
   poLayer->ResetReading();
-  int nFeature = gdallibrary::force_layer_feature_count(poLayer);
+  //int nFeature = gdallibrary::force_layer_feature_count(poLayer);
+  // trying to fix SQL problem 2020-10-05
+  double nFeature = poLayer->GetFeatureCount();
+  if (nFeature < 1) {
+    Rprintf("force count\n");
+    nFeature = gdallibrary::force_layer_feature_count(poLayer);
+  }
 
   List out(nFeature);
   double ii = 0;
@@ -445,7 +457,13 @@ inline List dsn_read_geom_fa(CharacterVector dsn, IntegerVector layer,
 
 /// READ FIELDS ----------------------------------------------------------------------------
 inline List layer_read_fields_all(OGRLayer *poLayer, CharacterVector fid_column_name) {
-  double   nFeature = gdallibrary::force_layer_feature_count(poLayer);
+  //double   nFeature = gdallibrary::force_layer_feature_count(poLayer);
+  // trying to fix SQL problem 2020-10-05
+  double nFeature = poLayer->GetFeatureCount();
+  if (nFeature < 0) {
+    Rprintf("force count\n");
+    nFeature = gdallibrary::force_layer_feature_count(poLayer);
+  }
 
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = false;

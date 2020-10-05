@@ -240,7 +240,14 @@ inline List gdal_read_fields(CharacterVector dsn,
 
   OGRFeature *poFeature;
 
-  double  nFeature = force_layer_feature_count(poLayer);
+  //double  nFeature = force_layer_feature_count(poLayer);
+  // trying to fix SQL problem 2020-10-05
+  double nFeature = poLayer->GetFeatureCount();
+if (nFeature < 1) {
+  Rprintf("force count\n");
+  nFeature = force_layer_feature_count(poLayer);
+}
+
 //Rprintf("%i\n", nFeature);
   if (nFeature > MAX_INT) {
     Rcpp::warning("Number of features exceeds maximal number able to be read");
@@ -336,8 +343,15 @@ inline DoubleVector gdal_feature_count(CharacterVector dsn,
   OGRLayer *poLayer = gdal_layer(poDS, layer, sql = sql, ex =  ex);
 
   poLayer->ResetReading();
-  double nFeature = force_layer_feature_count(poLayer);
+  //  double nFeature = force_layer_feature_count(poLayer);
+  // trying to fix SQL problem 2020-10-05
+  double nFeature = poLayer->GetFeatureCount();
+  if (nFeature < 1) {
+    Rprintf("force count\n");
+    nFeature = force_layer_feature_count(poLayer);
+  }
 
+//Rprintf("%i\n", nFeature);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
     poDS->ReleaseResultSet(poLayer);
@@ -413,7 +427,13 @@ inline List gdal_read_geometry(CharacterVector dsn,
   CollectorList feature_xx;
   int iFeature = 0;
   int lFeature = 0;
-  int   nFeature = force_layer_feature_count(poLayer);
+  //int   nFeature = force_layer_feature_count(poLayer);
+  // trying to fix SQL problem 2020-10-05
+  double nFeature = poLayer->GetFeatureCount();
+  if (nFeature < 1) {
+    Rprintf("force count\n");
+    nFeature = force_layer_feature_count(poLayer);
+  }
 
   if (nFeature > MAX_INT) {
     nFeature = MAX_INT;
@@ -581,7 +601,13 @@ inline List gdal_read_names(CharacterVector dsn,
   CollectorList feature_xx;
   int iFeature = 0;
   int lFeature = 0;
-  double   nFeature = force_layer_feature_count(poLayer);
+ // double   nFeature = force_layer_feature_count(poLayer);
+  // trying to fix SQL problem 2020-10-05
+  double nFeature = poLayer->GetFeatureCount();
+  if (nFeature < 1) {
+    Rprintf("force count\n");
+    nFeature = force_layer_feature_count(poLayer);
+  }
 
 
   if (nFeature > MAX_INT) {
