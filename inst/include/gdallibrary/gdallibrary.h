@@ -241,7 +241,7 @@ inline List gdal_read_fields(CharacterVector dsn,
   OGRFeature *poFeature;
 
   double  nFeature = force_layer_feature_count(poLayer);
-Rprintf("%i\n", nFeature);
+//Rprintf("%i\n", nFeature);
   if (nFeature > MAX_INT) {
     Rcpp::warning("Number of features exceeds maximal number able to be read");
    nFeature = MAX_INT;
@@ -847,7 +847,7 @@ inline CharacterVector  gdal_vsi_list(CharacterVector urlpath)
 
   Rcpp::CharacterVector names(ipath);
   for (int i = 0; i < ipath; i++) {
-    Rprintf("%i", i);
+
     names[i] = VSI_paths[i];
   }
   CSLDestroy(VSI_paths);

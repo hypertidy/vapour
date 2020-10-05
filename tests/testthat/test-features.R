@@ -9,14 +9,13 @@ dsource <- system.file(file.path("extdata/tab", pfile), package="vapour")
 
 test_that("geometry read works", {
 
-  gbin <- read_geometry_gdal_cpp(f, what = "geometry")
-  gpt <- read_geometry_gdal_cpp(f, what = "point")
-  gpt1 <- read_geometry_gdal_cpp(f, what = "point", skip_n = 3, limit_n = 1)
+  gbin <- vapour_read_geometry(f)
 
-  gjsn <- read_geometry_gdal_cpp(f, what = "text", textformat = "json")
-  ggml <- read_geometry_gdal_cpp(f, what = "text", textformat = "gml")
- gwkt <- read_geometry_gdal_cpp(f, what = "text", textformat = "wkt")
-  gext <- read_geometry_gdal_cpp(f, what = "extent")
+
+  gjsn <- vapour_read_geometry_text(f, textformat = "json")
+  ggml <- vapour_read_geometry_text(f, textformat = "gml")
+ gwkt <- vapour_read_geometry_text(f, textformat = "wkt")
+  gext <- vapour_read_extent(f)
 
   gbin %>% expect_length(7L)
   gjsn %>% expect_length(7L)
@@ -24,11 +23,6 @@ test_that("geometry read works", {
 
   gwkt %>% expect_length(7L)
   gext %>% expect_length(7L)
-  gpt %>% expect_length(7L)
-  gpt1 %>% expect_length(1L)
-
-  expect_equivalent(round(gpt1[[1]][[2]][[1]], digits = 2),
-                    c(-305926.42, -306449.2, -306959.29, -306557.76, -305926.42))
 
 
   gbin[[1]] %>% expect_type("raw")
@@ -41,8 +35,7 @@ test_that("geometry read works", {
   expect_identical(ggml, vapour_read_geometry_text(f, textformat = "gml"))
   expect_silent(expect_identical(gwkt, vapour_read_geometry_text(f, textformat = "wkt")))
   expect_identical(gext, vapour_read_extent(f))
-  expect_identical(vapour_layer_names(dsource,
-                   sql = "SELECT 1 FROM list_locality_postcode_meander_valley"),
+  expect_identical(vapour_layer_names(dsource),
                    "list_locality_postcode_meander_valley")
   expect_error(vapour_read_extent(dsource, layer = "list_locality_postcode_meander_val"), "layer index not found for")
   ## no longer silent
@@ -51,8 +44,6 @@ test_that("geometry read works", {
   #expect_silent(vapour_read_attributes(dsource, layer = "list_locality_postcode_meander_valley"))
 pprj <- "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
 pprj2 <- "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
-#expect_warning(src0 <- trimws(vapour_projection_info_cpp(f)$Proj4[1]), "not null")
-expect_true(src0 == pprj || src0 == pprj2 )
 
   expect_silent(vapour_geom_summary(f, layer = "sst_c"))
   expect_error(vapour_geom_summary(f, layer = "nolayer"))
@@ -61,9 +52,6 @@ expect_true(src0 == pprj || src0 == pprj2 )
   expect_silent(vapour_geom_summary(dsource, layer = "list_locality_postcode_meander_valley"))
 
   p3d <- system.file("extdata/point3d.gpkg", package = "vapour")
-  ## attachPoints
-  expect_equal(read_geometry_gdal_cpp(p3d, what = "point")[[1]],
-               list(x = 0, y = 0, z = 0))
 
   expect_warning(vapour_read_attributes(f, layer = factor("sst_c")), "layer is a factor, converting to character")
 
@@ -77,11 +65,10 @@ test_that("OSM read works", {
   skip_on_os("windows")
   ## can't usse sst gpkg because
   ## kml can't be in a projection
-  expect_silent(gkml <- read_geometry_gdal_cpp(f2, what = "text", textformat = "kml"))
+  expect_silent(gkml <- vapour_read_geometry_text(f2, textformat = "kml"))
   gkml %>% expect_length(1L)
   gkml[[1]] %>% expect_type("character")  %>% grepl("<Point><coordinates>", .) %>% expect_true()
 
-  expect_identical(gkml, vapour_read_geometry_text(f2, textformat = "kml"))
 
   #gkml <- read_geometry_gdal_cpp(system.file("extdata", "point.shp", package = "vapour"),
   # what = "text", textformat = "kml")

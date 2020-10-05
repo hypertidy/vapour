@@ -52,6 +52,12 @@ inline CharacterVector gdal_geometry_txt(OGRFeature *poFeature, CharacterVector 
   CPLFree(export_txt);
   return txt;
 }
+inline IntegerVector gdal_geometry_type(OGRFeature*poFeature) {
+    OGRwkbGeometryType gtyp = OGR_G_GetGeometryType( poFeature->GetGeometryRef());
+    Rcpp::IntegerVector r_gtyp = Rcpp::IntegerVector(1);
+     r_gtyp[0] = (int)gtyp;
+    return r_gtyp;
+}
 inline NumericVector gdal_geometry_extent(OGRFeature *poFeature) {
   OGREnvelope env;
   OGR_G_GetEnvelope(poFeature->GetGeometryRef(), &env);
@@ -223,6 +229,9 @@ inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
     if (format[0] == "gml" | format[0] == "json" | format[0] == "kml") {
       out[ii] = gdal_geometry_txt(poFeature, format);
     }
+    if (format[0] == "type") {
+      out[ii] = gdal_geometry_type(poFeature);
+    }
 
     OGRFeature::DestroyFeature(poFeature);
     ii++;
@@ -280,6 +289,9 @@ inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, Numeri
       // these are all just text variants (wkt uses a different mech)
       if (format[0] == "gml" | format[0] == "json" | format[0] == "kml") {
         out[cnt] = gdal_geometry_txt(poFeature, format);
+      }
+      if (format[0] == "type") {
+        out[ii] = gdal_geometry_type(poFeature);
       }
       cnt++;
 
@@ -341,6 +353,9 @@ inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, Numeri
       if (format[0] == "gml" | format[0] == "json" | format[0] == "kml") {
         out[cnt] = gdal_geometry_txt(poFeature, format);
       }
+      if (format[0] == "type") {
+        out[ii] = gdal_geometry_type(poFeature);
+      }
       cnt++;
 
     }
@@ -397,7 +412,9 @@ inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, Numeri
     if (format[0] == "gml" | format[0] == "json" | format[0] == "kml") {
       out[ii] = gdal_geometry_txt(poFeature, format);
     }
-
+    if (format[0] == "type") {
+      out[ii] = gdal_geometry_type(poFeature);
+    }
     OGRFeature::DestroyFeature(poFeature);
   }
   return out;

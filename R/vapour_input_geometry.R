@@ -10,6 +10,11 @@
 #' `vapour_read_geometry_cpp` will read a feature for each of the ways listed above and is used by those functions. It's recommended
 #' to use the more specialist functions rather than this more general one.
 #'
+#' `vapour_read_type` will read the (wkb) type of the geometry as an integer. These are
+#' `0` unknown, `1` Point, `2` LineString, `3` Polygon, `4` MultiPoint, `5` MultiLineString,
+#' `6` MultiPolygon, `7` GeometryCollection, and the other more exotic types listed in "api/vector_c_api.html" from the
+#' GDAL home page (as at October 2020).
+#'
 #' Note that `limit_n` and `skip_n` interact with the affect of `sql`, first the query is executed on the data source, then
 #' while looping through available features `skip_n` features are ignored, and then a feature-count begins and the loop
 #' is stopped if `limit_n` is reached.
@@ -80,4 +85,21 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL, sk
   nulls <- unlist(lapply(out, is.null))
   if (any(nulls)) out[nulls] <- replicate(sum(nulls), rep(NA_real_, 4L), simplify = FALSE)
   out
+
+}
+
+#' @rdname vapour_read_geometry
+#' @export
+vapour_read_type <- function(dsource, layer = 0L,  sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
+  limit_n <- validate_limit_n(limit_n)
+  extent <- validate_extent(extent, sql)
+  out <- read_geometry_gdal_cpp(dsn = dsource,
+                                layer = layer, sql = sql,
+                                what = "type", textformat = "",
+                                limit_n = limit_n, skip_n = skip_n, ex = extent)
+
+  nulls <- unlist(lapply(out, is.null))
+  if (any(nulls)) out[nulls] <- list(NA_integer_)
+  unlist( out)
 }

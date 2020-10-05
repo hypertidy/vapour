@@ -4,6 +4,7 @@
 \alias{vapour_read_geometry}
 \alias{vapour_read_geometry_text}
 \alias{vapour_read_extent}
+\alias{vapour_read_type}
 \title{Read GDAL feature geometry}
 \usage{
 vapour_read_geometry(
@@ -26,6 +27,15 @@ vapour_read_geometry_text(
 )
 
 vapour_read_extent(
+  dsource,
+  layer = 0L,
+  sql = "",
+  limit_n = NULL,
+  skip_n = 0,
+  extent = NA
+)
+
+vapour_read_type(
   dsource,
   layer = 0L,
   sql = "",
@@ -59,6 +69,11 @@ For each function an optional SQL string will be evaluated against the data sour
 
 \code{vapour_read_geometry_cpp} will read a feature for each of the ways listed above and is used by those functions. It's recommended
 to use the more specialist functions rather than this more general one.
+
+\code{vapour_read_type} will read the (wkb) type of the geometry as an integer. These are
+\code{0} unknown, \code{1} Point, \code{2} LineString, \code{3} Polygon, \code{4} MultiPoint, \code{5} MultiLineString,
+\code{6} MultiPolygon, \code{7} GeometryCollection, and the other more exotic types listed in "api/vector_c_api.html" from the
+GDAL home page (as at October 2020).
 
 Note that \code{limit_n} and \code{skip_n} interact with the affect of \code{sql}, first the query is executed on the data source, then
 while looping through available features \code{skip_n} features are ignored, and then a feature-count begins and the loop

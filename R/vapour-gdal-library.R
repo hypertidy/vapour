@@ -46,9 +46,9 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, s
   extents <- vapour_read_extent(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
   fids <- vapour_read_names(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
   ## FIXME the other funs deal with these args
-  limit_n <- validate_limit_n(limit_n)
+  #limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
-   types <- unlist(vapour_read_geometry_cpp(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent, what = "type"))
+  types <- vapour_read_type(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent)
   na_geoms <- unlist(lapply(extents, anyNA))
   list(FID = fids,
        valid_geometry = !na_geoms,

@@ -1,5 +1,9 @@
 # vapour dev
 
+* New function `vapour_read_type()` to return the integer geometry type (GDAL's wkb enum code). 
+
+* `vapour_read_geometry(what = "point")` is now defunct
+
 * Major refactor to use C++ headers, so other packages can access the API without using R functions. There's a more
  comprehensive set of identifier, names, fields, extent, and geometry readers, and an addition of the GDALwarp() facility
  which is a generalization of RasterIO. This will now work on a much greater range of sources than the older RasterIO (still WIP). 
