@@ -406,6 +406,7 @@ rm -f proj_conf_test_proj.c proj_conf_test_proj
   else
 [cat > proj_conf_test_proj_api.c <<_EOCONF
 #include <stdio.h>
+#include <stdlib.h>
 #include <proj_api.h>
 
 int main() {
@@ -455,6 +456,7 @@ LIBS="${INLIBS} ${PKG_LIBS}"
 AC_MSG_CHECKING(proj_api.h presence and usability)
 [cat > proj_conf_test1.c <<_EOCONF
 #include <stdio.h>
+#include <stdlib.h>
 #include <proj_api.h>
 
 int main() {
