@@ -75,7 +75,7 @@ vapour_layer_names <- function(dsource, ...) {
 #' There might be one or more geometry column names, or it might be an empty string.
 #'
 #' It might be "", or "geom", or "_ogr_geometry_" - the last is a default name
-#' given when SQL is executed by GDAL but there was no geometry name, aand 'SELECT * ' or
+#' given when SQL is executed by GDAL but there was no geometry name, and 'SELECT * ' or
 #' equivalent was used.
 #'
 #' This feature is required by the DBI backend work in RGDALSQL, so that when `SELECT * ` is used

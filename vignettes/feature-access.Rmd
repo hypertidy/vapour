@@ -1,0 +1,87 @@
+---
+title: "feature-access"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{feature-access}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+The gdalheaders API uses the following (pseudo-code) schemes for feature access. 
+
+The different feature loops, see https://github.com/mdsumner/dirigible/issues/5
+
+
+### ALL
+
+Get all the feature thingys. 
+
+```C++
+  double   nFeature = gdalheaders::force_layer_feature_count(poLayer);
+  List/Vector out (nFeature);
+
+  double ii = 0;
+  while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+   out[ii] = poFeature-><something>; 
+   OGRFeature::DestroyFeature(poFeature);
+   ii++;
+  }
+```
+
+### IJ
+
+Get a subset of feature thingys i:j - their positional index
+
+```C++
+
+  ListVector out(ij[1] - ij[0] + 1);
+  double cnt = 0;
+  double ii = 0;
+  while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+    if (ii == ij[0] || (ii > ij[0] && ii <= ij[1])) {
+      out[cnt] = poFeature-><something>; 
+      cnt++;
+    }
+    ii++;
+    OGRFeature::DestroyFeature(poFeature);
+  }
+```
+
+### IA
+
+Get a subset of feature things, *arbitrary i* (in order) - their positional index
+
+```C++
+  ListVector out(ia.length());
+  double ii = 0;
+  double cnt = 0;
+  while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+    if (ii == ia[cnt]) {
+      out[cnt] = poFeature-><something>; 
+      cnt++;
+    }
+    ii++;
+    OGRFeature::DestroyFeature(poFeature);
+  }
+ ```
+
+## FA
+
+Get a subset of feature thingys *arbitrary FID* (order irrelevant) - their FID *unique names*
+
+```C++
+  List out(fa.length());
+
+  for (double ii = 0; ii < fa.length(); ii++) {
+    GIntBig feature_id = (GIntBig)fa[ii];
+      poFeature = poLayer->GetFeature(feature_id);
+    
+```
