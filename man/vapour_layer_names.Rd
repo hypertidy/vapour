@@ -8,6 +8,8 @@ vapour_layer_names(dsource, ...)
 }
 \arguments{
 \item{dsource}{data source name (path to file, connection string, URL)}
+
+\item{...}{arguments ignore for deprecated compatibility (no 'sql' argument any longer)}
 }
 \value{
 character vector of layer names

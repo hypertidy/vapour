@@ -55,6 +55,7 @@ validate_extent <- function(extent, sql, warn = TRUE) {
 #' See [vapour_sds_names] for more on the multiple topic.
 #'
 #' @inheritParams vapour_read_geometry
+#' @param ... arguments ignore for deprecated compatibility (no 'sql' argument any longer)
 #' @return character vector of layer names
 #'
 #' @examples
