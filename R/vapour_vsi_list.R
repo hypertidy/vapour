@@ -15,6 +15,8 @@
 #' @return character vector listing of items
 #'
 #' @examples
+#' pointzipfile <- system.file("extdata/vsi/point_shp.zip", package = "vapour", mustWork = TRUE)
+#' vapour_vsi_list(sprintf("/vsizip/%s", pointzipfile))
 #' \donttest{
 #' \dontrun{
 #' ## example from https://github.com/hypertidy/vapour/issues/55

@@ -1,5 +1,7 @@
 # vapour dev
 
+* Added vsi example with zipped shapefile. 
+
 * Fixed missing stdlib.h declaration for exit() in configure tests, thanks to CRAN. #88
 
 * New function `vapour_read_type()` to return the integer geometry type (GDAL's
