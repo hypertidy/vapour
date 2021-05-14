@@ -23,10 +23,12 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                      CharacterVector target_WKT,
                      NumericVector target_geotransform,
                      IntegerVector target_dim,
-                     IntegerVector band) {
+                     IntegerVector band,
+                     NumericVector source_geotransform) {
 
 
   // TODO
+  // need input override for source geotransform
   // resample algorithm (options)
   // data type (see paleolimbot/pkd ?)
   // options options options
@@ -61,6 +63,22 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
 
     GDALSetProjection( po_SrcDS[i], source_WKT[0] );
    }
+
+
+    if (source_geotransform.length() == 1) {
+      // do nothing
+    } else {
+      if (i == 0) {
+        Rprintf("setting geotransform");
+      }
+      double SourceGeoTransform[6];
+      for (int ii = 0; ii < 6; ii++) SourceGeoTransform[i] = source_geotransform[ii];
+      Rprintf("doing");
+      GDALSetGeoTransform( po_SrcDS[i], SourceGeoTransform );
+      Rprintf("done");
+    }
+
+
     //Rprintf("%i\n", i);
   }
 

@@ -250,8 +250,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // warp_in_memory_gdal_cpp
-List warp_in_memory_gdal_cpp(CharacterVector dsn, CharacterVector source_WKT, CharacterVector target_WKT, NumericVector target_geotransform, IntegerVector target_dim, IntegerVector band);
-RcppExport SEXP _vapour_warp_in_memory_gdal_cpp(SEXP dsnSEXP, SEXP source_WKTSEXP, SEXP target_WKTSEXP, SEXP target_geotransformSEXP, SEXP target_dimSEXP, SEXP bandSEXP) {
+List warp_in_memory_gdal_cpp(CharacterVector dsn, CharacterVector source_WKT, CharacterVector target_WKT, NumericVector target_geotransform, IntegerVector target_dim, IntegerVector band, NumericVector source_geotransform);
+RcppExport SEXP _vapour_warp_in_memory_gdal_cpp(SEXP dsnSEXP, SEXP source_WKTSEXP, SEXP target_WKTSEXP, SEXP target_geotransformSEXP, SEXP target_dimSEXP, SEXP bandSEXP, SEXP source_geotransformSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -261,7 +261,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type target_geotransform(target_geotransformSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type target_dim(target_dimSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
-    rcpp_result_gen = Rcpp::wrap(warp_in_memory_gdal_cpp(dsn, source_WKT, target_WKT, target_geotransform, target_dim, band));
+    Rcpp::traits::input_parameter< NumericVector >::type source_geotransform(source_geotransformSEXP);
+    rcpp_result_gen = Rcpp::wrap(warp_in_memory_gdal_cpp(dsn, source_WKT, target_WKT, target_geotransform, target_dim, band, source_geotransform));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -493,7 +494,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_report_fields_gdal_cpp", (DL_FUNC) &_vapour_report_fields_gdal_cpp, 3},
     {"_vapour_vsi_list_gdal_cpp", (DL_FUNC) &_vapour_vsi_list_gdal_cpp, 1},
     {"_vapour_sds_list_gdal_cpp", (DL_FUNC) &_vapour_sds_list_gdal_cpp, 1},
-    {"_vapour_warp_in_memory_gdal_cpp", (DL_FUNC) &_vapour_warp_in_memory_gdal_cpp, 6},
+    {"_vapour_warp_in_memory_gdal_cpp", (DL_FUNC) &_vapour_warp_in_memory_gdal_cpp, 7},
     {"_vapour_raster_info_gdal_cpp", (DL_FUNC) &_vapour_raster_info_gdal_cpp, 2},
     {"_vapour_raster_gcp_gdal_cpp", (DL_FUNC) &_vapour_raster_gcp_gdal_cpp, 1},
     {"_vapour_raster_io_gdal_cpp", (DL_FUNC) &_vapour_raster_io_gdal_cpp, 4},

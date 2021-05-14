@@ -138,7 +138,8 @@ vapour_warp_raster <- function(x, band = 1L,
                                dimension = NULL,
                                wkt = "",
                                set_na = TRUE,
-                               source_wkt = NULL) {
+                               source_wkt = NULL,
+                               source_geotransform = 0.0) {
   stopifnot(is.numeric(band))
   stopifnot(is.numeric(geotransform))
   stopifnot(length(geotransform) == 6L)
@@ -158,7 +159,8 @@ vapour_warp_raster <- function(x, band = 1L,
   vals <- warp_in_memory_gdal_cpp(x, source_WKT = source_wkt,
                                    target_WKT = wkt,
                                    target_geotransform = geotransform,
-                                   target_dim = dimension, band = band)
+                                   target_dim = dimension, band = band,
+                                  source_geotransform = source_geotransform)
   #ri <- vapour_raster_info(x)
   #if (set_na) {
    # vals[vals == ri$nodata_value] <- NA
