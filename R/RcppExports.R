@@ -77,8 +77,8 @@ sds_list_gdal_cpp <- function(dsn) {
     .Call('_vapour_sds_list_gdal_cpp', PACKAGE = 'vapour', dsn)
 }
 
-warp_in_memory_gdal_cpp <- function(dsn, source_WKT, target_WKT, target_geotransform, target_dim, band, source_geotransform) {
-    .Call('_vapour_warp_in_memory_gdal_cpp', PACKAGE = 'vapour', dsn, source_WKT, target_WKT, target_geotransform, target_dim, band, source_geotransform)
+warp_in_memory_gdal_cpp <- function(dsn, source_WKT, target_WKT, target_geotransform, target_dim, band, source_geotransform, resample) {
+    .Call('_vapour_warp_in_memory_gdal_cpp', PACKAGE = 'vapour', dsn, source_WKT, target_WKT, target_geotransform, target_dim, band, source_geotransform, resample)
 }
 
 raster_info_gdal_cpp <- function(dsn, min_max) {

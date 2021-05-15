@@ -118,7 +118,10 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #' @param dimension dimensions in pixels of the warped raster (x, y)
 #' @param wkt projection of warped raster in Well-Known-Text
 #' @param set_na NOT IMPLEMENTED logical, should 'NODATA' values be set to `NA`
+#' @param source_geotransform
+#' @param resample resampling method used (see details in [vapour_read_raster])
 #' @param source_wkt optional, override the projection of the source with WKT
+#'
 #' @noRd
 #' @return list of vectors (only 1 for 'band') of numeric values, in raster order
 #' @examples
@@ -139,7 +142,8 @@ vapour_warp_raster <- function(x, band = 1L,
                                wkt = "",
                                set_na = TRUE,
                                source_wkt = NULL,
-                               source_geotransform = 0.0) {
+                               source_geotransform = 0.0,
+                               resample = "nearestneighbour") {
   stopifnot(is.numeric(band))
   stopifnot(is.numeric(geotransform))
   stopifnot(length(geotransform) == 6L)
@@ -157,12 +161,27 @@ vapour_warp_raster <- function(x, band = 1L,
   if (is.null(source_wkt)) source_wkt <-  ""
   if (band < 1) stop("band must be 1 or higher")
 
+  resample <- tolower(resample[1L])
+  if (resample == "gauss") {
+    warning("Gauss resampling not available for warper, using NearestNeighbour")
+    resample <- "nearestneighbour"
+  }
+  rso <- c("near", "bilinear", "cubic", "cubicspline", "lanczos", "average",
+           "mode", "max", "min", "med", "q1", "q3") ## "sum", "rms")
+
+  if (!resample %in% rso) {
+    warning(sprintf("%s resampling not available for warper, using NearestNeighbour", resample))
+    resample <- "near"
+
+  }
+
   vals <- warp_in_memory_gdal_cpp(x, source_WKT = source_wkt,
                                    target_WKT = wkt,
                                    target_geotransform = geotransform,
                                    target_dim = dimension,
                                   band = band,
-                                  source_geotransform = source_geotransform)
+                                  source_geotransform = source_geotransform,
+                                  resample = resample)
   #ri <- vapour_raster_info(x)
   #if (set_na) {
    # vals[vals == ri$nodata_value] <- NA

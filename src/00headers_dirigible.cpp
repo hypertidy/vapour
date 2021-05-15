@@ -189,14 +189,16 @@ List warp_in_memory_gdal_cpp(CharacterVector dsn,
                              NumericVector target_geotransform,
                              IntegerVector target_dim,
                              IntegerVector band,
-                             NumericVector source_geotransform) {
+                             NumericVector source_geotransform,
+                             CharacterVector resample) {
 return gdalwarpmem::gdal_warp_in_memory(dsn,
                     source_WKT,
                     target_WKT,
                     target_geotransform,
                     target_dim,
                     band,
-                    source_geotransform);
+                    source_geotransform,
+                    resample);
 }
 // [[Rcpp::export]]
 List raster_info_gdal_cpp(CharacterVector dsn, LogicalVector min_max) {

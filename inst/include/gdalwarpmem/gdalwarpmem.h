@@ -10,6 +10,7 @@
 //#include "gdal_version.h"
 
 #include "cpl_conv.h" // for CPLMalloc()
+#include "cpl_string.h" // for CSLAddString
 
 
 namespace gdalwarpmem{
@@ -24,7 +25,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                      NumericVector target_geotransform,
                      IntegerVector target_dim,
                      IntegerVector band,
-                     NumericVector source_geotransform) {
+                     NumericVector source_geotransform,
+                     CharacterVector resample) {
 
 
   // TODO
@@ -100,12 +102,23 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
 
   Rcpp::CharacterVector options;
   std::vector <char *> options_char; //create_options(options, true);
-  GDALWarpAppOptions* psOptions = GDALWarpAppOptionsNew(options_char.data(), NULL);
+//  GDALWarpAppOptions* psOptions = GDALWarpAppOptionsNew(options_char.data(), NULL);
 
+  char** papszArg = nullptr;
+
+//c("nearestneighbour", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode",
+//"max", "min", "med", "q1", "q3", "sum", "rms")
+
+
+  papszArg = CSLAddString(papszArg, "-r");
+  papszArg = CSLAddString(papszArg, resample[0]);
+
+  GDALWarpAppOptions* psOptions = GDALWarpAppOptionsNew(papszArg, NULL);
+
+    //psWarpOptions->eResampleAlg = (GDALResampleAlg) resample[0];
   int err_0 = 0;
 
   GDALDatasetH hOutDS = GDALWarp(NULL, hDstDS, 1, po_SrcDS, psOptions, &err_0);
-
 
    double *double_scanline;
    double_scanline = (double *) CPLMalloc(sizeof(double)*
@@ -134,7 +147,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
    GDALClose( po_SrcDS[i] );
   }
   CPLFree(double_scanline);
-
+  GDALWarpAppOptionsFree(psOptions);
   return outlist;
 }
 
