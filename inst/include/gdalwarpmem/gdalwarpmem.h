@@ -54,7 +54,6 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   //  for (int i = 0; i < source_filename.size(); i++) {
 
   po_SrcDS[0] = GDALOpenEx((const char *) source_filename[0], GA_ReadOnly, NULL, oo_char.data(), NULL);
-  Rprintf("open\n");
   CPLAssert( po_SrcDS[0] != NULL );
   if (source_WKT[0].empty()) {
     //      When a projection definition is not available an empty (but not NULL) string is returned.

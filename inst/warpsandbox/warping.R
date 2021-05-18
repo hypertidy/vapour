@@ -27,23 +27,23 @@ available_sources()
 #> [3] "wms_googlemaps_tms"       "wms_openstreetmap_tms"
 #> [5] "wms_virtualearth"
 
-srcfile <- server_file("wms_virtualearth")
+srcfile <- server_file("wms_bluemarble_s3_tms")
 system.time({
-dm <- c(587L, 555L)
-ex <- raster::extent(-3e5, 3e5, -3e5, 3e5)
-prj <- "+proj=laea +lon_0=117 +lat_0=-32"
-v <- purrr::map(1:3, ~vapour:::vapour_warp_raster(srcfile, band = .x,
+dm <- c(1024L, 1024L)
+ex <- raster::extent(-4e6, 4e6, -4e6, 4e6)
+prj <- "+proj=laea +lon_0=147 +lat_0=-42"
+v <- vapour:::vapour_warp_raster(srcfile, band = 1:3,
                                  geotransform = affinity::extent_dim_to_gt(ex, dm),
                                  dimension = dm,
                                  wkt = vapour:::proj_to_wkt_gdal_cpp(prj),
-                                 resample = "bilinear")[[1]])
+                                 resample = "bilinear")
 
+})
 
 
 library(raster)
 rr <- raster(ex, nrows = dm[2L], ncols = dm[1L])
 plotRGB(setValues(brick(rr, rr, rr), matrix(unlist(v), prod(dm))))
-})
 
 
 

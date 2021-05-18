@@ -157,11 +157,11 @@ vapour_warp_raster <- function(x, band = 1L,
   stopifnot(nchar(wkt)> 0)
   ## TODO: validate geotransform, source_wkt, dimension
   if (length(band) != 1) {
-    warning("more than one band requested, using first only")
-    band <- band[1L]
+    #warning("more than one band requested, using first only")
+    #band <- band[1L]
   }
   if (is.null(source_wkt)) source_wkt <-  ""
-  if (band < 1) stop("band must be 1 or higher")
+  if (any(band < 1)) stop("band must be 1 or higher")
 
   resample <- tolower(resample[1L])
   if (resample == "gauss") {
