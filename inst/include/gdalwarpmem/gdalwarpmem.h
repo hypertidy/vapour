@@ -57,6 +57,18 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     po_SrcDS[i] = GDALOpenEx((const char *) source_filename[i], GA_ReadOnly, NULL, oo_char.data(), NULL);
     CPLAssert( po_SrcDS[i] != NULL );
     if (source_WKT[0].empty()) {
+
+//      When a projection definition is not available an empty (but not NULL) string is returned.
+     const char* srcproj = nullptr;
+
+      srcproj = GDALGetProjectionRef(po_SrcDS[i]);
+      if ((srcproj != NULL) && (srcproj[0] == '\0')) {
+        // close up any we opened
+        for (int ii = 0; ii <= i; ii++) {
+            GDALClose(po_SrcDS[ii]);
+          }
+        Rcpp::stop("no valid source projection in source\n");
+      }
       // do nothing
       Rprintf("do nothingd projection\n");
 
@@ -88,6 +100,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   //double no_data = GDALGetRasterNoDataValue(poBand, &serr);
   // Create output with same datatype as first input band.
   poBand = GDALGetRasterBand(po_SrcDS[0], 1);
+//  Rprintf("%i\n", GDALGetRasterCount(poBand));
+
   eDT = GDALGetRasterDataType(poBand);
   // Get output driver
   hDriver = GDALGetDriverByName( "MEM" );

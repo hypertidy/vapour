@@ -120,9 +120,9 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #' @param set_na NOT IMPLEMENTED logical, should 'NODATA' values be set to `NA`
 #' @param source_geotransform
 #' @param resample resampling method used (see details in [vapour_read_raster])
-#' @param source_wkt optional, override the projection of the source with WKT
+#' @param source_wkt optional, override or augment the projection of the source with WKT
 #'
-#' @noRd
+#' @export
 #' @return list of vectors (only 1 for 'band') of numeric values, in raster order
 #' @examples
 #' #gt <- c(-637239.4, 5030.0, 0.0, 261208.7, 0.0, -7760.0)
@@ -150,6 +150,7 @@ vapour_warp_raster <- function(x, band = 1L,
   stopifnot(is.numeric(dimension))
   stopifnot(length(dimension) == 2L)
   stopifnot(all(dimension > 0))
+  stopifnot(all(is.finite(dimension)))
   stopifnot(is.numeric(source_geotransform))
   if (!is.null(source_wkt)) stopifnot(is.character(source_wkt))
   stopifnot(nchar(source_wkt) > 10)
@@ -157,6 +158,7 @@ vapour_warp_raster <- function(x, band = 1L,
   ## TODO: validate geotransform, source_wkt, dimension
   if (length(band) != 1) {
     warning("more than one band requested, using first only")
+    band <- band[1L]
   }
   if (is.null(source_wkt)) source_wkt <-  ""
   if (band < 1) stop("band must be 1 or higher")
@@ -184,11 +186,6 @@ vapour_warp_raster <- function(x, band = 1L,
                                   band = band,
                                   source_geotransform = source_geotransform,
                                   resample = resample)
-  #ri <- vapour_raster_info(x)
-  #if (set_na) {
-   # vals[vals == ri$nodata_value] <- NA
-   # x[abs(x - ri$nodata_value) < sqrt(.Machine$double.eps)] <- NA
-  #}
   names(vals) <- sprintf("Band%i",band)
   vals
 }
