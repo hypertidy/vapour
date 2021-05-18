@@ -118,7 +118,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #' @param dimension dimensions in pixels of the warped raster (x, y)
 #' @param wkt projection of warped raster in Well-Known-Text
 #' @param set_na NOT IMPLEMENTED logical, should 'NODATA' values be set to `NA`
-#' @param source_geotransform
+#' @param source_geotransform override the native geotransform of the source
 #' @param resample resampling method used (see details in [vapour_read_raster])
 #' @param source_wkt optional, override or augment the projection of the source with WKT
 #'
