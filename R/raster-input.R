@@ -175,6 +175,8 @@ vapour_warp_raster <- function(x, band = 1L,
 
   }
 
+
+
   vals <- warp_in_memory_gdal_cpp(x, source_WKT = source_wkt,
                                    target_WKT = wkt,
                                    target_geotransform = geotransform,

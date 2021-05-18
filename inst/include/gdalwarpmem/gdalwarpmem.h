@@ -58,16 +58,20 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     CPLAssert( po_SrcDS[i] != NULL );
     if (source_WKT[0].empty()) {
       // do nothing
+      Rprintf("do nothingd projection\n");
+
     } else {
      if (i == 0) {
        Rprintf("setting projection");
      }
 
-    GDALSetProjection( po_SrcDS[i], source_WKT[0] );
+     GDALSetProjection( po_SrcDS[i], source_WKT[0] );
+     Rprintf("setted it\n");
    }
 
     if (source_geotransform.length() == 1) {
       // do nothing
+      Rprintf("do nothingd transform\n");
     } else {
 
       double SourceGeoTransform[6];
