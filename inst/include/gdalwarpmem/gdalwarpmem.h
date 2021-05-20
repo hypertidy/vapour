@@ -103,7 +103,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   GDALSetGeoTransform( hDstDS, GeoTransform );
 
   Rcpp::CharacterVector options;
-  std::vector <char *> options_char; //create_options(options, true);
+ // std::vector <char *> options_char; //create_options(options, true);
 
   char** papszArg = nullptr;
   //c("nearestneighbour", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode",
@@ -111,16 +111,37 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   papszArg = CSLAddString(papszArg, "-r");
   papszArg = CSLAddString(papszArg, resample[0]);
 
+  papszArg = CSLAddString(papszArg, "-wo");
+  papszArg = CSLAddString(papszArg, "INIT_DEST=NODATA");
+  papszArg = CSLAddString(papszArg, "-wo");
+  papszArg = CSLAddString(papszArg, "WRITE_FLUSH=YES");
+
+  papszArg = CSLAddString(papszArg, "-wo");
+  papszArg = CSLAddString(papszArg, "UNIFIED_SRC_NODATA=YES");
+
+
   GDALWarpAppOptions* psOptions = GDALWarpAppOptionsNew(papszArg, NULL);
   int err_0 = 0;
-  GDALDatasetH hOutDS = GDALWarp(NULL, hDstDS, 1, po_SrcDS, psOptions, &err_0);
+  int hasNA;
+
+  double naflag = GDALGetRasterNoDataValue(poBand, &hasNA);
+  GDALRasterBandH aBand = GDALGetRasterBand(hDstDS, band[0]);
+  GDALSetRasterNoDataValue(aBand, naflag);
+  //GDALFillRaster(aBand, -1000, 0);
+  hDstDS = GDALWarp(NULL, hDstDS, 1, po_SrcDS, psOptions, &err_0);
+  // aBand = GDALGetRasterBand(hDstDS, band[0]);
+  // GDALSetRasterNoDataValue(aBand, NAN);
+  GDALSetRasterNoDataValue(aBand, naflag);
+
+
   double *double_scanline;
   double_scanline = (double *) CPLMalloc(sizeof(double)*static_cast<unsigned long>(target_dim[0]) * static_cast<unsigned long>(target_dim[1]));
 
   CPLErr err;
   Rcpp::List outlist(band.size());
   for (int iband = 0; iband < band.size(); iband++) {
-    dstBand = GDALGetRasterBand(hOutDS, band[iband]);
+    dstBand = GDALGetRasterBand(hDstDS, band[iband]);
+    GDALSetRasterNoDataValue(dstBand, naflag);
     err = GDALRasterIO(dstBand,  GF_Read, 0, 0, target_dim[0], target_dim[1],
                        double_scanline, target_dim[0], target_dim[1], GDT_Float64,
                        0, 0);

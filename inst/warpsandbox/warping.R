@@ -1,36 +1,33 @@
 
-f <- vapour::vapour_sds_names( raadtools::sstfiles()$fullname[1])$subdataset[1]
+#f <- vapour::vapour_sds_names( raadtools::sstfiles()$fullname[1])$subdataset[1]
 f <- "NETCDF:\"/rdsi/PUBLIC/raad/data/www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr/198109/oisst-avhrr-v02r01.19810901.nc\":sst"
-#f <- system.file("extdata/sst.tif", package = "vapour", mustWork = TRUE)
+f <- system.file("extdata/sst.tif", package = "vapour", mustWork = TRUE)
 
 
-library(raadtools)
-f <- topofile("ibcso")
-ex <- extent(0, 1e6, 0, 1e6)
-eg <- crop(raster::raster(f), ex)
+# library(raadtools)
+# f <- topofile("ibcso")
+# ex <- extent(0, 1e6, 0, 1e6)
+# eg <- crop(raster::raster(f), ex)
 
-#dm <- as.integer(c(1024L, 1024L)/10)
-dm <- dim(eg)[2:1]
+dm <- as.integer(c(1024L, 1024L)/3)
+#dm <- dim(eg)[2:1]
 
 b <- 3e6
-#ex <- raster::extent(-b, b, -b, b)
-#prj <- "+proj=lcc +lon_0=145 +lat_0=-47 +lat_1=-42 +lat_2=-48"
+ex <- raster::extent(-b, b, -b, b)
+prj <- "+proj=laea"
+prj <- "+proj=lcc +lon_0=145 +lat_0=-47 +lat_1=-42 +lat_2=-48"
 
-system.time({
 v <- vapour:::vapour_warp_raster(f, band = 1,
                                  geotransform = affinity::extent_dim_to_gt(ex, dm),
                                  dimension = dm,
-                                 wkt = comment(eg@crs),
-                                 source_wkt = ,
-                                 resample = "near")
+                                 wkt = vapour_srs_wkt(prj),
+                                 source_wkt = vapour_srs_wkt("+proj=longlat"),
+                                 resample = "bilinear")
 
-})
-system.time({
-st_as_stars(sf::st_crop(stars::read_stars(f),  sf::st_bbox(ex, crs = sf::st_crs(comment(eg@crs)))))
-})
+
 
 library(raster)
-rr <- raster(ex, nrows = dm[2L], ncols = dm[1L])
+rr <- raster(ex, nrows = dm[2L], ncols = dm[1L], crs = prj)
 #d0 <- function(x) {x[!x > 0] <- NA; x}
 plot(setValues(rr, unlist(v)), col = hcl.colors(256))
 
