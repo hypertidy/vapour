@@ -27,17 +27,23 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 IntegerVector target_dim,
                                 IntegerVector band,
                                 NumericVector source_geotransform,
-                                CharacterVector resample) {
+                                CharacterVector resample,
+                                LogicalVector silent) {
+
+  Rcpp::List outlist(band.size());
+
+  GDALAllRegister();
+  GDALDatasetH poSrcDS;
+  //poSrcDS = static_cast<GDALDataset *>(CPLRealloc(poSrcDS, sizeof(GDALDataset) * 1)); //source_filename.size()));
+  poSrcDS = GDALOpen((const char *) source_filename[0], GA_ReadOnly);
 
 
   char** papszArg = nullptr;
   // https://github.com/OSGeo/gdal/blob/fec15b146f8a750c23c5e765cac12ed5fc9c2b85/gdal/frmts/gtiff/cogdriver.cpp#L512
   papszArg = CSLAddString(papszArg, "-of");
   papszArg = CSLAddString(papszArg, "MEM");
-  papszArg = CSLAddString(papszArg, "-co");
-  papszArg = CSLAddString(papszArg, "TILED=NO");
-  papszArg = CSLAddString(papszArg, "-co");
-  papszArg = CSLAddString(papszArg, "SPARSE_OK=NO");
+  // papszArg = CSLAddString(papszArg, "-wo");
+  // papszArg = CSLAddString(papszArg, "INIT_DEST=NODATA");
 
   papszArg = CSLAddString(papszArg, "-t_srs");
   papszArg = CSLAddString(papszArg, target_WKT[0]);
@@ -51,13 +57,20 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     //   Rcpp::stop("no valid source projection in source\n");
     // }
   } else {
-    Rprintf("setting projection");
+    if (silent[0] != true) Rprintf("setting projection");
     papszArg = CSLAddString(papszArg, "-s_srs");
     papszArg = CSLAddString(papszArg, source_WKT[0]);
 
   }
 
 
+  double dfMinX = target_geotransform[0];
+  double dfMaxY = target_geotransform[3];
+  double dfMaxX = target_geotransform[0] + target_dim[0] * target_geotransform[1];
+  double dfMinY = target_geotransform[3] + target_dim[1] * target_geotransform[5];
+
+  int nXSize = target_dim[0];
+  int nYSize = target_dim[1];
   papszArg = CSLAddString(papszArg, "-te");
   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
@@ -67,117 +80,110 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
   papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
   int bHasNoData = FALSE;
-  poSrcDS->GetRasterBand(1)->GetNoDataValue(&bHasNoData);
-  if( !bHasNoData && CPLTestBool(CSLFetchNameValueDef(
-      papszOptions, "ADD_ALPHA", "YES")) )
-  {
-    papszArg = CSLAddString(papszArg, "-dstalpha");
-  }
+
+  //  const auto poFirstBand = poSrcDS->GetRasterBand(1);
+  const auto poFirstBand = GDALGetRasterBand(poSrcDS, 1);
+
+
+  //  poSrcDS->GetRasterBand(1)->GetNoDataValue(&bHasNoData);
+  int aerr;
+  bHasNoData =  GDALGetRasterNoDataValue(poFirstBand, &aerr);
+
+
+  // if( !bHasNoData && CPLTestBool(CSLFetchNameValueDef(
+  //     papszOptions, "ADD_ALPHA", "YES")) )
+  // {
+  //   papszArg = CSLAddString(papszArg, "-dstalpha");
+  // }
   papszArg = CSLAddString(papszArg, "-r");
-  papszArg = CSLAddString(papszArg, osResampling);
+  papszArg = CSLAddString(papszArg, resample[0]);
   papszArg = CSLAddString(papszArg, "-wo");
   papszArg = CSLAddString(papszArg, "SAMPLE_GRID=YES");
-  const char* pszNumThreads = CSLFetchNameValue(papszOptions, "NUM_THREADS");
-  if( pszNumThreads )
-  {
-    papszArg = CSLAddString(papszArg, "-wo");
-    papszArg = CSLAddString(papszArg, (CPLString("NUM_THREADS=") + pszNumThreads).c_str());
-  }
 
-  const auto poFirstBand = poSrcDS->GetRasterBand(1);
-  const bool bHasMask = poFirstBand->GetMaskFlags() == GMF_PER_DATASET;
 
-  const int nBands = poSrcDS->GetRasterCount();
-  const char* pszOverviews = CSLFetchNameValueDef(
-    papszOptions, "OVERVIEWS", "AUTO");
-  const bool bRecreateOvr = EQUAL(pszOverviews, "FORCE_USE_EXISTING") ||
-    EQUAL(pszOverviews, "NONE");
-  dfTotalPixelsToProcess =
-    double(nXSize) * nYSize * (nBands + (bHasMask ? 1 : 0)) +
-    ((bHasMask && !bRecreateOvr) ? double(nXSize) * nYSize / 3 : 0) +
-    (!bRecreateOvr ? double(nXSize) * nYSize * nBands / 3: 0) +
-    double(nXSize) * nYSize * (nBands + (bHasMask ? 1 : 0)) * 4. / 3;
+  const bool bHasMask = GDALGetMaskFlags(poFirstBand);
+
+  const int nBands = GDALGetRasterCount(poSrcDS);
 
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
-  if( psOptions == nullptr )
-    return nullptr;
 
-  const double dfNextPixels =
-    double(nXSize) * nYSize * (nBands + (bHasMask ? 1 : 0));
-  void* pScaledProgress = GDALCreateScaledProgress(
-    dfCurPixels / dfTotalPixelsToProcess,
-    dfNextPixels / dfTotalPixelsToProcess,
-    pfnProgress, pProgressData );
-  dfCurPixels = dfNextPixels;
 
-  CPLDebug("COG", "Reprojecting source dataset: start");
-  GDALWarpAppOptionsSetProgress(psOptions, GDALScaledProgress, pScaledProgress );
-  CPLString osTmpFile(GetTmpFilename(pszDstFilename, "warped.tif.tmp"));
-  auto hSrcDS = GDALDataset::ToHandle(poSrcDS);
-  auto hRet = GDALWarp( osTmpFile, nullptr,
-                        1, &hSrcDS,
+ // CPLDebug("MEM", "Reprojecting source dataset: start");
+  GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
+  // CPLString osTmpFile(GetTmpFilename(pszDstFilename, "warped.tif.tmp"));
+  // auto hSrcDS = GDALDataset::ToHandle(&poSrcDS);
+
+
+  auto hRet = GDALWarp( "", nullptr,
+                        1, &poSrcDS,
                         psOptions, nullptr);
+
+  CPLAssert( hRet != NULL );
+
+
   GDALWarpAppOptionsFree(psOptions);
-  CPLDebug("COG", "Reprojecting source dataset: end");
+  CPLDebug("MEM", "Reprojecting source dataset: end");
 
-  GDALDestroyScaledProgress(pScaledProgress);
+  //  GDALDestroyScaledProgress(pScaledProgress);
 
-  double naflag = GDALGetRasterNoDataValue(poBand, &hasNA);
-  Rprintf("%f\n", naflag);
+  double naflag;
+  int hasNA;
   int hasScale, hasOffset;
   double scale, offset;
-  // if (hasNA && naflag < -3.4e+37) {  // hack from terra
-  //   naflag = -3.4e+37;
-  // }
- //GDALFillRaster(aBand, naflag, 0);
-  hDstDS = GDALWarp(NULL, hDstDS, 1, po_SrcDS, psOptions, &err_0);
- // GDALRasterBandH aBand = GDALGetRasterBand(hDstDS, band[0]);
-//  GDALSetRasterNoDataValue(aBand, naflag);
 
-
-  double *double_scanline;
-  double_scanline = (double *) CPLMalloc(sizeof(double)*static_cast<unsigned long>(target_dim[0]) * static_cast<unsigned long>(target_dim[1]));
-
+  // double *double_scanline;
+  // double_scanline = (double *) CPLMalloc(sizeof(double)*static_cast<unsigned long>(target_dim[0]) * static_cast<unsigned long>(target_dim[1]));
+  std::vector<double> double_scanline( target_dim[0] * target_dim[1] );
   CPLErr err;
-  Rcpp::List outlist(band.size());
+  GDALRasterBandH dstBand, poBand;
 
   for (int iband = 0; iband < band.size(); iband++) {
-    dstBand = GDALGetRasterBand(hDstDS, band[iband]);
-    naflag = GDALGetRasterNoDataValue(poBand, &hasNA);
+    poBand = GDALGetRasterBand(poSrcDS, band[iband]);
+    dstBand = GDALGetRasterBand(hRet, band[iband]);
+    naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
 
-    if (hasScale) scale = GDALGetRasterScale(poBand, &hasScale);
-    if (hasOffset) offset = GDALGetRasterOffset(poBand, &hasOffset);
-    Rprintf("%f\n", naflag);
-    Rprintf("%f\n", scale);
-    Rprintf("%f\n", offset);
+
+    scale = GDALGetRasterScale(poBand, &hasScale);
+    offset = GDALGetRasterOffset(poBand, &hasOffset);
+
 
     err = GDALRasterIO(dstBand,  GF_Read, 0, 0, target_dim[0], target_dim[1],
-                       double_scanline, target_dim[0], target_dim[1], GDT_Float64,
+                       &double_scanline[0], target_dim[0], target_dim[1], GDT_Float64,
                        0, 0);
     NumericVector res(target_dim[0] * target_dim[1]);
 
-    // all this bs should be done at the R level, at least for MEM
-    for (int i = 0; i < (target_dim[0] * target_dim[1]); i++) {
-      double dval = double_scanline[i];
-      if (dval == naflag) {
-        //Rprintf("%f/n", DBL_EPSILON);
-        res[i] = NA_REAL;
-      } else {
-        if (hasScale) dval = dval * scale;
-        if (hasOffset) dval = dval + offset;
+    // consider doing at R level, at least for MEM
+    double dval;
+    if (hasNA && (!std::isnan(naflag))) {
+      if (naflag < -3.4e+37) {
+       naflag = -3.4e+37;
 
-        res[i] = dval;
+        for (size_t i=0; i< double_scanline.size(); i++) {
+          if (double_scanline[i] <= naflag) {
+            double_scanline[i] = NAN;
+          }
+        }
+      } else {
+
+        std::replace(double_scanline.begin(), double_scanline.end(), naflag, (double) NAN);
       }
     }
+    for (int i = 0; i < (target_dim[0] * target_dim[1]); i++) {
+      dval = double_scanline[i];
+      if (hasScale) dval = dval * scale;
+      if (hasOffset) dval = dval + offset;
+      res[i] = dval;
+    }
+
     outlist[iband] = res;
   }
-  GDALClose( hDstDS );
-  //  for (int i = 0; i < source_filename.size(); i++) {
-  GDALClose( po_SrcDS[0] );
-  //  }
-  CPLFree(double_scanline);
-  GDALWarpAppOptionsFree(psOptions);
+  GDALClose( hRet );
+  GDALClose( poSrcDS );
+
+
+  // CPLFree(double_scanline);
+
   return outlist;
 }
 

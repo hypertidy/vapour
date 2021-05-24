@@ -143,7 +143,8 @@ vapour_warp_raster <- function(x, band = 1L,
                                set_na = TRUE,
                                source_wkt = NULL,
                                source_geotransform = 0.0,
-                               resample = "nearestneighbour") {
+                               resample = "nearestneighbour",
+                               silent = TRUE) {
   stopifnot(is.numeric(band))
   stopifnot(is.numeric(geotransform))
   stopifnot(length(geotransform) == 6L)
@@ -185,7 +186,8 @@ vapour_warp_raster <- function(x, band = 1L,
                                    target_dim = dimension,
                                   band = band,
                                   source_geotransform = source_geotransform,
-                                  resample = resample)
+                                  resample = resample,
+                                  silent = silent)
   names(vals) <- sprintf("Band%i",band)
   vals
 }

@@ -2,37 +2,67 @@
 #f <- vapour::vapour_sds_names( raadtools::sstfiles()$fullname[1])$subdataset[1]
 f <- "NETCDF:\"/rdsi/PUBLIC/raad/data/www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr/198109/oisst-avhrr-v02r01.19810901.nc\":sst"
 #f <- system.file("extdata/sst.tif", package = "vapour", mustWork = TRUE)
-
+#f <- raadtools::topofile("ibcso")
 
 # library(raadtools)
 # f <- topofile("ibcso")
 # ex <- extent(0, 1e6, 0, 1e6)
 # eg <- crop(raster::raster(f), ex)
 
-dm <- as.integer(c(1024L, 1024L)/3)
+dm <- as.integer(c(512, 512))
 #dm <- dim(eg)[2:1]
 
-b <- 3e6
-ex <- raster::extent(-b, b, -b, b)
+b <- 20e6
+fac <- 1e5
 prj <- "+proj=laea"
-prj <- "+proj=lcc +lon_0=145 +lat_0=-47 +lat_1=-42 +lat_2=-48"
+library(raster)
+#d0 <- function(x) {x[!x > 0] <- NA; x}
+library(animation)
+tfile <- raadtools::topofile("etopo2")
+saveGIF({
 
-v <- vapour:::vapour_warp_raster(f, band = 1,
+par(mar = rep(0, 4))
+for (lon in seq(-180, 180, by = 3)) {
+  longitude <- ((lon + 180) %% 360) - 180
+  prj <- glue::glue("+proj=lcc +lon_0={longitude} +lat_0=-42 +lat_1=-35 +lat_2=-55")
+  ex <- raster::extent(-b, b, -b, b)
+
+  v <- vapour_warp_raster(f, band = 1,
                                  geotransform = affinity::extent_dim_to_gt(ex, dm),
                                  dimension = dm,
                                  wkt = vapour_srs_wkt(prj),
-                                 source_wkt = vapour_srs_wkt("+proj=longlat"),
-                                 resample = "bilinear")
+                                source_wkt = vapour_srs_wkt("+proj=longlat"),
+                                 #source_wkt = NULL,
+                                resample = "bilinear")
+
+  tt  <- vapour_warp_raster("out.tif", band = 1,
+                               geotransform = affinity::extent_dim_to_gt(ex, dm),
+                               dimension = dm,
+                               wkt = vapour_srs_wkt(prj),
+
+                               source_wkt = NULL,
+                               resample = "bilinear")
 
 
 
-library(raster)
-rr <- raster(ex, nrows = dm[2L], ncols = dm[1L], crs = prj)
-#d0 <- function(x) {x[!x > 0] <- NA; x}
-plot(setValues(rr, unlist(v)), col = hcl.colors(256))
+print(lon)
+  rr <- raster(ex, nrows = dm[2L], ncols = dm[1L], crs = prj)
+  image(setValues(rr, unlist(v)), col = hcl.colors(256), xlab = "", ylab = "", axes = FALSE, asp = 1, zlim = c(-1.8, 34))
+  tt[[1]][tt[[1]] < -1] <- NA
+  image(setValues(rr, unlist(tt)), col = grey.colors(256), add = TRUE, zlim = c(0, 6000))
+
+}
+
+
+}, interval = 0.1)
 
 
 
+
+
+
+# library(terra)
+# r <- terra::project(terra::rast(f), terra::rast(rr))
 
 
 

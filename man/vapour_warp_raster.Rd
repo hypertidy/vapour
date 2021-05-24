@@ -13,7 +13,8 @@ vapour_warp_raster(
   set_na = TRUE,
   source_wkt = NULL,
   source_geotransform = 0,
-  resample = "nearestneighbour"
+  resample = "nearestneighbour",
+  silent = TRUE
 )
 }
 \arguments{
