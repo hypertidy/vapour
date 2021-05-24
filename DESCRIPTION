@@ -11,6 +11,7 @@ Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c(
              person("Jeroen", "Ooms", role = c("ctb"), comment = "tweaked build process, provided Windows build tools"), 
              person("Dale", "Maschette", role = c("ctb"), comment = "created the hex logo"), 
              person("Joseph", "Stachelek", role = "ctb"), 
+             person("Even", "Rouault", role = "ctb", comment = "primary author of the COG format and its use of the GDALwarp app-library, example code used by the warper function here"), 
              person("Robert", "Hijmans", role = "ctb", comment = "wrote some source in the warper, terra package used as example/inspiration"))
 Description: Provides low-level access to 'GDAL' functionality for R packages. The aim is to minimize
   the level of interpretation put on the 'GDAL' facilities, to enable direct use of it for a variety of purposes. 
