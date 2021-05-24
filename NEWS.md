@@ -1,5 +1,10 @@
 # vapour dev
 
+* Function `vapour_warp_raster()` now exported, properly handles input-replacement geotransform or projection
+ for sources that have insufficient metadata. This works with a variety of input data source names (files, URLs, 
+ image servers, etc.) Overviews are automatically dealt with (by choosing the right level of detail) by using
+ the gdalwarp app library functionality. (This warp function may be refactored to use extent rather than geotransform). 
+
 * Added vsi example with zipped shapefile. 
 
 * Fixed missing stdlib.h declaration for exit() in configure tests, thanks to CRAN. #88
