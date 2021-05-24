@@ -11,20 +11,23 @@ f <- "/vsizip/vsicurl/https://hs.pangaea.de/Maps/bathy/IBCSO_v1/IBCSO_v1_bed_PS6
 library(vapour)
 vsiurl <- file.path(f, vapour_vsi_list(f)[2])
 
+f <- raadtools::topofile("etopo2")
 dm <- as.integer(c(512, 512))
 b <- 4e6
 
 
 
 
-prj <- "+proj=eqc"
-ex <- c(-180 * 60 * 1852, 180 * 60 * 1852, -90 * 60 * 1852, -55 * 60 * 1852)
+prj <- "+proj=laea +lon_0=180"
+ex <- c(-180 * 60 * 1852, 180 * 60 * 1852, -90 * 60 * 1852, 90 * 60 * 1852)
+
 dm <- c(1024, 512)
-v <- vapour_warp_raster(vsiurl, band = 1,
+v <- vapour_warp_raster(f, band = 1,
                                  extent = ex,
                                  dimension = dm,
                                  wkt = vapour_srs_wkt(prj),
-                              resample = "near")
+                        source_wkt = vapour_srs_wkt("+proj=longlat"),
+                              resample = "bilinear")
 
 image(
   list(x = seq(-b, b, length.out = dm[1] + 1), y = seq(-b, b, length.out = dm[2] + 1),
