@@ -30,117 +30,98 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 CharacterVector resample) {
 
 
-  // TODO
-  // need input override for source geotransform
-  // resample algorithm (options)
-  // data type (see paleolimbot/pkd ?)
-  // options options options
-  // correct treatment of multiple input source_filename
-  // set NODATA
-  // allow choice of driver, output file
-  // DONE multiple bands
-  // DONE band selection
-  //std::vector<GDALDatasetH> po_SrcDS(source_filename.size());
-  GDALDatasetH *po_SrcDS;
-  po_SrcDS = static_cast<GDALDatasetH *>(CPLRealloc(po_SrcDS, sizeof(GDALDatasetH) * 1)); //source_filename.size()));
-
-  GDALDatasetH hDstDS;
-  GDALRasterBandH poBand, dstBand;
-  GDALDriverH hDriver;
-  GDALDataType eDT;
-
-  // Open input and output files.
-  GDALAllRegister();
-  Rcpp::CharacterVector oo;
-  std::vector <char *> oo_char; // = create_options(oo, true); // open options
-
-  //  for (int i = 0; i < source_filename.size(); i++) {
-
-  po_SrcDS[0] = GDALOpenEx((const char *) source_filename[0], GA_ReadOnly, NULL, oo_char.data(), NULL);
-  CPLAssert( po_SrcDS[0] != NULL );
-  if (source_WKT[0].empty()) {
-    //      When a projection definition is not available an empty (but not NULL) string is returned.
-    const char* srcproj = nullptr;
-    srcproj = GDALGetProjectionRef(po_SrcDS[0]);
-    if ((srcproj != NULL) && (srcproj[0] == '\0')) {
-      // close up any we opened
-      //for (int ii = 0; ii <= i; ii++) {
-      GDALClose(po_SrcDS[0]);
-      //  }
-      Rcpp::stop("no valid source projection in source\n");
-    }
-  } else {
-    //     if (i == 0) {
-    Rprintf("setting projection\n");
-    //     }
-    GDALSetProjection( po_SrcDS[0], source_WKT[0] );
-  }
-
-  if (source_geotransform.length() == 1) {
-  } else {
-    double SourceGeoTransform[6];
-    for (int ii = 0; ii < 6; ii++) SourceGeoTransform[ii] = source_geotransform[ii];
-    GDALSetGeoTransform( po_SrcDS[0], SourceGeoTransform );
-  }
-
-  //TODO need type handling for nodata
-  //int serr;
-  //double no_data = GDALGetRasterNoDataValue(poBand, &serr);
-  // Create output with same datatype as first input band.
-  poBand = GDALGetRasterBand(po_SrcDS[0], 1);
-
-  eDT = GDALGetRasterDataType(poBand);
-  // Get output driver
-  hDriver = GDALGetDriverByName( "MEM" );
-
-  // Create the output data set.
-  hDstDS = GDALCreate( hDriver, "", target_dim[0], target_dim[1],
-                       GDALGetRasterCount(po_SrcDS[0]), eDT, NULL );
-
-  //CPLAssert( hDstDS != NULL );
-  // Write out the projection definition.
-  //GDALSetProjection( hDstDS, target_WKT[0] );
-  // and the extent
-  //double GeoTransform[6];
-  //for (int i = 0; i < 6; i++) GeoTransform[i] = target_geotransform[i];
-  //GDALSetGeoTransform( hDstDS, GeoTransform );
-
-  Rcpp::CharacterVector options;
- // std::vector <char *> options_char; //create_options(options, true);
-
   char** papszArg = nullptr;
-  //c("nearestneighbour", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode",
-  //"max", "min", "med", "q1", "q3", "sum", "rms")
-  papszArg = CSLAddString(papszArg, "-r");
-  papszArg = CSLAddString(papszArg, resample[0]);
-
-  papszArg = CSLAddString(papszArg, "-wo");
-  papszArg = CSLAddString(papszArg, "INIT_DEST=NODATA");  // oisst make this -999 and it works
-  papszArg = CSLAddString(papszArg, "-wo");
-  papszArg = CSLAddString(papszArg, "WRITE_FLUSH=YES");
-
-  papszArg = CSLAddString(papszArg, "-wo");
-  papszArg = CSLAddString(papszArg, "UNIFIED_SRC_NODATA=YES");
-
-  double dfMinX = target_geotransform[0];
-  double dfMinY = target_geotransform[3];
-  double dfMaxX = target_geotransform[0] + target_dim[0] * target_geotransform[1];
-  double dfMaxY = target_geotransform[3] + target_dim[1] * target_geotransform[5];
+  // https://github.com/OSGeo/gdal/blob/fec15b146f8a750c23c5e765cac12ed5fc9c2b85/gdal/frmts/gtiff/cogdriver.cpp#L512
+  papszArg = CSLAddString(papszArg, "-of");
+  papszArg = CSLAddString(papszArg, "MEM");
+  papszArg = CSLAddString(papszArg, "-co");
+  papszArg = CSLAddString(papszArg, "TILED=NO");
+  papszArg = CSLAddString(papszArg, "-co");
+  papszArg = CSLAddString(papszArg, "SPARSE_OK=NO");
 
   papszArg = CSLAddString(papszArg, "-t_srs");
   papszArg = CSLAddString(papszArg, target_WKT[0]);
+
+  if (source_WKT[0].empty()) {
+    // TODO check source projection is valid
+    // const char* srcproj = nullptr;
+    // srcproj = GDALGetProjectionRef(po_SrcDS[0]);
+    // if ((srcproj != NULL) && (srcproj[0] == '\0')) {
+    //   GDALClose(po_SrcDS[0]);
+    //   Rcpp::stop("no valid source projection in source\n");
+    // }
+  } else {
+    Rprintf("setting projection");
+    papszArg = CSLAddString(papszArg, "-s_srs");
+    papszArg = CSLAddString(papszArg, source_WKT[0]);
+
+  }
+
+
   papszArg = CSLAddString(papszArg, "-te");
   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
   papszArg = CSLAddString(papszArg, "-ts");
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%d", target_dim[0]));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%d", target_dim[1]));
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
+  int bHasNoData = FALSE;
+  poSrcDS->GetRasterBand(1)->GetNoDataValue(&bHasNoData);
+  if( !bHasNoData && CPLTestBool(CSLFetchNameValueDef(
+      papszOptions, "ADD_ALPHA", "YES")) )
+  {
+    papszArg = CSLAddString(papszArg, "-dstalpha");
+  }
+  papszArg = CSLAddString(papszArg, "-r");
+  papszArg = CSLAddString(papszArg, osResampling);
+  papszArg = CSLAddString(papszArg, "-wo");
+  papszArg = CSLAddString(papszArg, "SAMPLE_GRID=YES");
+  const char* pszNumThreads = CSLFetchNameValue(papszOptions, "NUM_THREADS");
+  if( pszNumThreads )
+  {
+    papszArg = CSLAddString(papszArg, "-wo");
+    papszArg = CSLAddString(papszArg, (CPLString("NUM_THREADS=") + pszNumThreads).c_str());
+  }
 
-  GDALWarpAppOptions* psOptions = GDALWarpAppOptionsNew(papszArg, NULL);
-  int err_0 = 0;
-  int hasNA;
+  const auto poFirstBand = poSrcDS->GetRasterBand(1);
+  const bool bHasMask = poFirstBand->GetMaskFlags() == GMF_PER_DATASET;
+
+  const int nBands = poSrcDS->GetRasterCount();
+  const char* pszOverviews = CSLFetchNameValueDef(
+    papszOptions, "OVERVIEWS", "AUTO");
+  const bool bRecreateOvr = EQUAL(pszOverviews, "FORCE_USE_EXISTING") ||
+    EQUAL(pszOverviews, "NONE");
+  dfTotalPixelsToProcess =
+    double(nXSize) * nYSize * (nBands + (bHasMask ? 1 : 0)) +
+    ((bHasMask && !bRecreateOvr) ? double(nXSize) * nYSize / 3 : 0) +
+    (!bRecreateOvr ? double(nXSize) * nYSize * nBands / 3: 0) +
+    double(nXSize) * nYSize * (nBands + (bHasMask ? 1 : 0)) * 4. / 3;
+
+  auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
+  CSLDestroy(papszArg);
+  if( psOptions == nullptr )
+    return nullptr;
+
+  const double dfNextPixels =
+    double(nXSize) * nYSize * (nBands + (bHasMask ? 1 : 0));
+  void* pScaledProgress = GDALCreateScaledProgress(
+    dfCurPixels / dfTotalPixelsToProcess,
+    dfNextPixels / dfTotalPixelsToProcess,
+    pfnProgress, pProgressData );
+  dfCurPixels = dfNextPixels;
+
+  CPLDebug("COG", "Reprojecting source dataset: start");
+  GDALWarpAppOptionsSetProgress(psOptions, GDALScaledProgress, pScaledProgress );
+  CPLString osTmpFile(GetTmpFilename(pszDstFilename, "warped.tif.tmp"));
+  auto hSrcDS = GDALDataset::ToHandle(poSrcDS);
+  auto hRet = GDALWarp( osTmpFile, nullptr,
+                        1, &hSrcDS,
+                        psOptions, nullptr);
+  GDALWarpAppOptionsFree(psOptions);
+  CPLDebug("COG", "Reprojecting source dataset: end");
+
+  GDALDestroyScaledProgress(pScaledProgress);
 
   double naflag = GDALGetRasterNoDataValue(poBand, &hasNA);
   Rprintf("%f\n", naflag);
