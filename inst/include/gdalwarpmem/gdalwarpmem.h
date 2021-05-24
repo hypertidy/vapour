@@ -23,10 +23,10 @@ using namespace Rcpp;
 inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 CharacterVector source_WKT,
                                 CharacterVector target_WKT,
-                                NumericVector target_geotransform,
+                                NumericVector target_extent,
                                 IntegerVector target_dim,
                                 IntegerVector band,
-                                NumericVector source_geotransform,
+                                NumericVector source_extent,
                                 CharacterVector resample,
                                 LogicalVector silent) {
 
@@ -38,6 +38,25 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   poSrcDS = GDALOpen((const char *) source_filename[0], GA_ReadOnly);
 
 
+  if (poSrcDS == NULL) {
+    Rprintf("cannot open %s", source_filename[0]);
+    Rcpp::stop("\n");
+  }
+  if (source_extent.length() == 1) {
+    // do nothing
+  } else {
+    int XSize = GDALGetRasterXSize(poSrcDS);
+    int YSize = GDALGetRasterYSize(poSrcDS);
+
+    double SourceGeoTransform[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    SourceGeoTransform[0] = source_extent[0];
+    SourceGeoTransform[1] = (source_extent[1] - source_extent[0])/XSize;
+
+    SourceGeoTransform[3] = source_extent[3];
+    SourceGeoTransform[5] = -(source_extent[3] - source_extent[2])/YSize;
+
+    GDALSetGeoTransform( poSrcDS, SourceGeoTransform );
+  }
   char** papszArg = nullptr;
   // https://github.com/OSGeo/gdal/blob/fec15b146f8a750c23c5e765cac12ed5fc9c2b85/gdal/frmts/gtiff/cogdriver.cpp#L512
   papszArg = CSLAddString(papszArg, "-of");
@@ -64,10 +83,10 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   }
 
 
-  double dfMinX = target_geotransform[0];
-  double dfMaxY = target_geotransform[3];
-  double dfMaxX = target_geotransform[0] + target_dim[0] * target_geotransform[1];
-  double dfMinY = target_geotransform[3] + target_dim[1] * target_geotransform[5];
+  double dfMinX = target_extent[0];
+  double dfMaxX = target_extent[1];
+  double dfMinY = target_extent[2];
+  double dfMaxY = target_extent[3];
 
   int nXSize = target_dim[0];
   int nYSize = target_dim[1];

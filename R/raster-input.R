@@ -83,10 +83,10 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 }
 
 
-#' IN-DEV,NOT EXPORTED Raster input (warp)
+#' Raster warper (reprojection)
 #'
 #' Read a window of data from a GDAL raster source through a warp specification.
-#' Only a single band may be read. The warp specification is provided by 'geotransform',
+#' Only a single band may be read. The warp specification is provided by 'extent',
 #' 'dimension', and 'wkt' properties of the transformed output.
 #'
 #' This function is not memory safe, the source is left on disk but the output
@@ -94,13 +94,12 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #' for 'dimension'. `1000 * 1000 * 8` for 1000 columns, 1000 rows and floating point
 #' double type will be 8Mb.
 #'
-#' There's no control over the output type (always double floating point) and no
-#' control for the resampling algorithm (uses 'nearest neighbour').
-#'
+#' There's no control over the output type (always double floating point).
+#' #'
 #' 'wkt' refers to the full Well-Known-Text specification of a coordinate reference
 #' system. See [vapour_srs_wkt()] for conversion from PROJ.4 string to WKT.
 #'
-#' 'geotransform' is the six-figure affine transform 'xmin, xres, yskew, ymax, xskew, yres' see [vapour_raster_info()] for more detail.
+#' 'extent' is the four-figure xmin,xmax,ymin,ymax outer corners of corner pixels
 #'
 #' 'dimension' is the pixel dimensions of the output, x (ncol) then y (nrow).
 #'
@@ -108,84 +107,108 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #' as-is. Note that there may be regions of "zero data" in a warped output,
 #' separate from propagated missing "NODATA" values in the source.
 #'
-#' Argument 'source_wkt' may be used to assign the proejction of the source, this
-#' is sometimes required especially for NetCDF files (no checking is done). If the
-#' source has no projection and this is not set GDAL will error.
+#' Argument 'source_wkt' may be used to assign the proejction of the source, 'source_extent'
+#' to assign the extent of the source. Sometimes both are required. Wild combinations of
+#' 'source_extent' and/or 'extent' may be used for arbitrary flip orientations, scale and offset. For
+#' expert usage only. Old versions allowed transform input for target and source but this is now disabled (maybe we'll write
+#'  a new wrapper for that).
 #'
 #' @param x data source string (file name or URL or database connection string)
 #' @param band index of band to read (1-based)
-#' @param geotransform the affine geotransform of the warped raster
+#' @param extent extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'
+#' @param source_extent extent of the source raster, used to override/augment incorrect source metadata
+#' @param geotransform DEPRECATED use 'extent' the affine geotransform of the warped raster
 #' @param dimension dimensions in pixels of the warped raster (x, y)
 #' @param wkt projection of warped raster in Well-Known-Text
 #' @param set_na NOT IMPLEMENTED logical, should 'NODATA' values be set to `NA`
-#' @param source_geotransform override the native geotransform of the source
+#' @param source_geotransform DEPRECATED use 'source_extent' (override the native geotransform of the source)
 #' @param resample resampling method used (see details in [vapour_read_raster])
 #' @param source_wkt optional, override or augment the projection of the source with WKT
 #'
 #' @export
 #' @return list of vectors (only 1 for 'band') of numeric values, in raster order
 #' @examples
-#' #gt <- c(-637239.4, 5030.0, 0.0, 261208.7, 0.0, -7760.0)
-#'
-#' #f <- system.file("extdata", "sst.tif", package = "vapour")
-#' #vals <- vapour_warp_raster(f, geotransform = gt,
-#' #                             dimension = c(186, 298),
-#' #                             wkt = tas_wkt)
-#' ## wkt, dimension, geotransform above created via
-#' ##p <- raster::projectRaster(f,
-#' ## crs = "+proj=laea +lon_0=147 +lat_0=-42 +datum=WGS84")
-#' ##writeRaster(p, "a.tif")
-#' ## vapour::vapour_raster_info("a.tif")
+#' b <- 4e5
+#' f <- system.file("extdata", "sst.tif", package = "vapour")
+#' prj <- "+proj=aeqd +lon_0=147 +lat_0=-42"
+#' vals <- vapour_warp_raster(f, extent = c(-b, b, -b, b),
+#'                              dimension = c(186, 298),
+#'                              wkt = vapour_srs_wkt(prj))
+#' image(list(x = seq(-b, b, length.out = 187), y = seq(-b, b, length.out = 298),
+#'     z = matrix(unlist(vals), 186)[,298:1]), asp = 1)
 vapour_warp_raster <- function(x, band = 1L,
-                               geotransform = NULL,
+                               extent = NULL,
                                dimension = NULL,
                                wkt = "",
                                set_na = TRUE,
                                source_wkt = NULL,
-                               source_geotransform = 0.0,
-                               resample = "nearestneighbour",
-                               silent = TRUE) {
-  stopifnot(is.numeric(band))
-  stopifnot(is.numeric(geotransform))
-  stopifnot(length(geotransform) == 6L)
-  stopifnot(is.numeric(dimension))
-  stopifnot(length(dimension) == 2L)
-  stopifnot(all(dimension > 0))
-  stopifnot(all(is.finite(dimension)))
-  stopifnot(is.numeric(source_geotransform))
-  if (!is.null(source_wkt)) stopifnot(is.character(source_wkt))
-  stopifnot(nchar(source_wkt) > 10)
-  stopifnot(nchar(wkt)> 0)
-  ## TODO: validate geotransform, source_wkt, dimension
-  if (length(band) != 1) {
-    #warning("more than one band requested, using first only")
-    #band <- band[1L]
+                               source_extent = 0.0,
+                               resample = "near",
+                               silent = TRUE, ...,
+                               source_geotransform = 0.0, geotransform = NULL) {
+  if(!is.numeric(band)) stop("'band' must be numeric (integer), start at 1")
+  if(!is.numeric(extent)) {
+    if (isS4(extent)) {
+      extent <- c(extent@xmin, extent@xmax, extent@ymin, extent@ymax)
+    } else if (is.matrix(extent)) {
+        extent <- extent[c(1, 3, 2, 4)]
+    } else {
+    stop("'extent' must be numeric 'c(xmin, xmax, ymin, ymax)'")
+    }
   }
+  if(!length(extent) == 4L) stop("'extent' must be of length 4")
+
+  if (any(diff(extent)[c(1, 3)] == 0)) stop("'extent' expected to be 'c(xmin, xmax, ymin, ymax)', zero x or y range not permitted")
+  if (length(source_extent) > 1 && any(diff(source_extent)[c(1, 3)] == 0)) stop("'extent' expected to be 'c(xmin, xmax, ymin, ymax)', zero x or y range not permitted")
+
+  if (!all(diff(extent)[c(1, 3)] > 0)) message("'extent' expected to be 'c(xmin, xmax, ymin, ymax)', negative values detected (ok for expert use)")
+  if (length(source_extent) > 1 && !all(diff(source_extent)[c(1, 3)] > 0)) message("'extent' expected to be 'c(xmin, xmax, ymin, ymax)', negative values detected (ok for expert use)")
+
+
+
+  if(!is.numeric(dimension)) stop("'dimension' must be numeric")
+  if(!length(dimension) == 2L) stop("'dimension must be of length 2'")
+  if(!all(dimension > 0)) stop("'dimension' values must be greater than 0")
+  if(!all(is.finite(dimension))) stop("'dimension' values must be finite and non-missing")
+  if(!(length(source_geotransform) == 1 && source_geotransform == 0.0)) message("'source geotransform' is deprecated and now ignored, please use 'extent'")
+  if (length(source_extent) > 1) {
+    if (!is.numeric(source_extent)) {
+      stop("'source_extent' must be numeric, of length 4 c(xmin, xmax, ymin, ymax)")
+    }
+    if (!all(is.finite(source_extent))) stop("'source_extent' values must be finite and non missing")
+  }
+  if (!is.null(geotransform)) message("'geotransform' is deprecated and now ignored, used 'extent'")
+  if(!is.null(source_wkt)) {
+    if (!is.character(source_wkt)) stop("source_wkt must be character")
+    if(!nchar(source_wkt) > 10) message("short 'source_wkt' seems invalid")
+  }
+  if(!nchar(wkt) > 0) message("short 'wkt' seems invalid")
+  ## TODO: validate geotransform, source_wkt, dimension
+
   if (is.null(source_wkt)) source_wkt <-  ""
   if (any(band < 1)) stop("band must be 1 or higher")
 
   resample <- tolower(resample[1L])
   if (resample == "gauss") {
     warning("Gauss resampling not available for warper, using NearestNeighbour")
-    resample <- "nearestneighbour"
+    resample <- "near"
   }
   rso <- c("near", "bilinear", "cubic", "cubicspline", "lanczos", "average",
            "mode", "max", "min", "med", "q1", "q3") ## "sum", "rms")
 
   if (!resample %in% rso) {
-    warning(sprintf("%s resampling not available for warper, using NearestNeighbour", resample))
+    warning(sprintf("%s resampling not available for warper, using near", resample))
     resample <- "near"
 
   }
 
 
-
   vals <- warp_in_memory_gdal_cpp(x, source_WKT = source_wkt,
                                    target_WKT = wkt,
-                                   target_geotransform = geotransform,
+                                   target_extent = extent,
                                    target_dim = dimension,
                                   band = band,
-                                  source_geotransform = source_geotransform,
+                                  source_extent = source_extent,
                                   resample = resample,
                                   silent = silent)
   names(vals) <- sprintf("Band%i",band)

@@ -1,5 +1,8 @@
 # vapour dev
 
+* User interface for `vapour_warp_raster()' now changed to use 'extent' and 'source_extent' in place of
+ 'geotransform' and 'source_geotransform', which are now deprecated. 
+ 
 * Function `vapour_warp_raster()` now exported, properly handles input-replacement geotransform or projection
  for sources that have insufficient metadata. This works with a variety of input data source names (files, URLs, 
  image servers, etc.) Overviews are automatically dealt with (by choosing the right level of detail) by using

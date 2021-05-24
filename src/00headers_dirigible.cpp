@@ -186,19 +186,19 @@ CharacterVector sds_list_gdal_cpp(CharacterVector dsn) {
 List warp_in_memory_gdal_cpp(CharacterVector dsn,
                              CharacterVector source_WKT,
                              CharacterVector target_WKT,
-                             NumericVector target_geotransform,
+                             NumericVector target_extent,
                              IntegerVector target_dim,
                              IntegerVector band,
-                             NumericVector source_geotransform,
+                             NumericVector source_extent,
                              CharacterVector resample,
                              LogicalVector silent) {
 return gdalwarpmem::gdal_warp_in_memory(dsn,
                     source_WKT,
                     target_WKT,
-                    target_geotransform,
+                    target_extent,
                     target_dim,
                     band,
-                    source_geotransform,
+                    source_extent,
                     resample,
                     silent);
 }

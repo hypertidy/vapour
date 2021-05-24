@@ -1,147 +1,32 @@
 
-#f <- vapour::vapour_sds_names( raadtools::sstfiles()$fullname[1])$subdataset[1]
-f <- "NETCDF:\"/rdsi/PUBLIC/raad/data/www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr/198109/oisst-avhrr-v02r01.19810901.nc\":sst"
-#f <- system.file("extdata/sst.tif", package = "vapour", mustWork = TRUE)
-#f <- raadtools::topofile("ibcso")
 
-# library(raadtools)
-# f <- topofile("ibcso")
-# ex <- extent(0, 1e6, 0, 1e6)
-# eg <- crop(raster::raster(f), ex)
+
+
+## IBCSO GeoTIFF  hs.pangaea.de/Maps/bathy/IBCSO_v1/ibcso_v1_is.tif
+f <- "/vsizip/vsicurl/https://hs.pangaea.de/Maps/bathy/IBCSO_v1/IBCSO_v1_bed_PS65_500m_tif.zip"
+# vapour_vsi_list(f)
+# [1] "ibcso_v1_bed.tfw"         "ibcso_v1_bed.tif"         "ibcso_v1_bed.tif.aux.xml" "ibcso_v1_bed.tif.ovr"
+# [5] "ibcso_v1_bed.tif.xml"
+
+library(vapour)
+vsiurl <- file.path(f, vapour_vsi_list(f)[2])
 
 dm <- as.integer(c(512, 512))
-#dm <- dim(eg)[2:1]
+b <- 4e6
 
-b <- 20e6
-fac <- 1e5
-prj <- "+proj=laea"
-library(raster)
-#d0 <- function(x) {x[!x > 0] <- NA; x}
-library(animation)
-tfile <- raadtools::topofile("etopo2")
-saveGIF({
 
-par(mar = rep(0, 4))
-for (lon in seq(-180, 180, by = 3)) {
-  longitude <- ((lon + 180) %% 360) - 180
-  prj <- glue::glue("+proj=lcc +lon_0={longitude} +lat_0=-42 +lat_1=-35 +lat_2=-55")
-  ex <- raster::extent(-b, b, -b, b)
 
-  v <- vapour_warp_raster(f, band = 1,
-                                 geotransform = affinity::extent_dim_to_gt(ex, dm),
+
+prj <- "+proj=eqc"
+ex <- c(-180 * 60 * 1852, 180 * 60 * 1852, -90 * 60 * 1852, -55 * 60 * 1852)
+dm <- c(1024, 512)
+v <- vapour_warp_raster(vsiurl, band = 1,
+                                 extent = ex,
                                  dimension = dm,
                                  wkt = vapour_srs_wkt(prj),
-                                source_wkt = vapour_srs_wkt("+proj=longlat"),
-                                 #source_wkt = NULL,
-                                resample = "bilinear")
+                              resample = "near")
 
-  tt  <- vapour_warp_raster("out.tif", band = 1,
-                               geotransform = affinity::extent_dim_to_gt(ex, dm),
-                               dimension = dm,
-                               wkt = vapour_srs_wkt(prj),
-
-                               source_wkt = NULL,
-                               resample = "bilinear")
-
-
-
-print(lon)
-  rr <- raster(ex, nrows = dm[2L], ncols = dm[1L], crs = prj)
-  image(setValues(rr, unlist(v)), col = hcl.colors(256), xlab = "", ylab = "", axes = FALSE, asp = 1, zlim = c(-1.8, 34))
-  tt[[1]][tt[[1]] < -1] <- NA
-  image(setValues(rr, unlist(tt)), col = grey.colors(256), add = TRUE, zlim = c(0, 6000))
-
-}
-
-
-}, interval = 0.1)
-
-
-
-
-
-
-# library(terra)
-# r <- terra::project(terra::rast(f), terra::rast(rr))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-library(gdalwebsrv)
-
-available_sources()
-#> [1] "wms_arcgis_mapserver_tms" "wms_bluemarble_s3_tms"
-#> [3] "wms_googlemaps_tms"       "wms_openstreetmap_tms"
-#> [5] "wms_virtualearth"
-
-srcfile <- server_file("wms_bluemarble_s3_tms")
-system.time({
-dm <- c(1024L, 1024L)
-ex <- raster::extent(-4e6, 4e6, -4e6, 4e6)
-prj <- "+proj=laea +lon_0=147 +lat_0=-42"
-v <- vapour:::vapour_warp_raster(srcfile, band = 1:3,
-                                 geotransform = affinity::extent_dim_to_gt(ex, dm),
-                                 dimension = dm,
-                                 wkt = vapour:::proj_to_wkt_gdal_cpp(prj),
-                                 resample = "bilinear")
-
-})
-
-
-library(raster)
-rr <- raster(ex, nrows = dm[2L], ncols = dm[1L])
-plotRGB(setValues(brick(rr, rr, rr), matrix(unlist(v), prod(dm))))
-
-
-
-
-
-
-
-#gdalwarp -te -4e6 -4e6 4e6 4e6 -tr 25000 25000 -t_srs "+proj=laea +lon_0=147 +lat_0=-42" -s_srs "+proj=longlat"  $sst out.tif
-
-
-f <- "NETCDF:/rdsi/PUBLIC/raad/data/www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr/200901/oisst-avhrr-v02r01.20090116.nc:sst"
-#f <- "/rdsi/PUBLIC/raad/data/www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr/200901/oisst-avhrr-v02r01.20090116.nc"
-#f <- normalizePath("out.vrt")
-#f <- raadtools::topofile("ibcso")
-f <- "/rdsi/PUBLIC/raad/data/hs.pangaea.de/Maps/bathy/IBCSO_v1/ibcso_v1_is.tif"
-src_geotransform <- vapour_raster_info(f)$geotransform
-dm <- c(320L, 320L)
-prj <- "+proj=laea +lon_0=147 +lat_0=-90"
-
-v <- vapour_warp_raster(f, band = 1L,
-                        geotransform = affinity::extent_dim_to_gt(raster::extent(-4e6, 4e6, -4e6, 4e6), dm),
-                        dimension = dm, wkt = vapour:::proj_to_wkt_gdal_cpp(prj),
-                        #source_wkt = vapour:::proj_to_wkt_gdal_cpp("+proj=longlat"),
-                        #source_geotransform = src_geotransform* c(1, 1, 1, 1, 1, 1),
-                        resample = "bilinear")
-
-
-
-library(raster)
-plot(setValues(raster(extent(-4e6, 4e6, -4e6, 4e6), nrows = 320, ncols = 320), v[[1]]))
-
-
-
-
-
-
-gt <- c(-4000000 ,   25000,        0,  4000000  ,      0,   -25000 )
-
-f <- system.file("extdata", "sst.tif", package = "vapour")
-vals <- vapour:::vapour_warp_raster(f, geotransform = gt,
-                             dimension = c(186, 298),
-                             wkt = vapour:::proj_to_wkt_gdal_cpp(prj))
-
+image(
+  list(x = seq(-b, b, length.out = dm[1] + 1), y = seq(-b, b, length.out = dm[2] + 1),
+       z = matrix(unlist(v), dm[1])[,dm[2]:1]),
+  asp = 1, col = hcl.colors(256))
