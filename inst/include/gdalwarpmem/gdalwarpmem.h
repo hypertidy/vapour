@@ -1,5 +1,8 @@
 #ifndef GDALWARPMEM_H
 #define GDALWARPMEM_H
+
+//#define DBL_EPSILON 2.2204460492503131e-16
+
 #include <Rcpp.h>
 #include "gdal.h"
 #include "gdal_alg.h"
@@ -68,7 +71,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     }
   } else {
     //     if (i == 0) {
-    Rprintf("setting projection");
+    Rprintf("setting projection\n");
     //     }
     GDALSetProjection( po_SrcDS[0], source_WKT[0] );
   }
@@ -94,13 +97,13 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   hDstDS = GDALCreate( hDriver, "", target_dim[0], target_dim[1],
                        GDALGetRasterCount(po_SrcDS[0]), eDT, NULL );
 
-  CPLAssert( hDstDS != NULL );
+  //CPLAssert( hDstDS != NULL );
   // Write out the projection definition.
-  GDALSetProjection( hDstDS, target_WKT[0] );
+  //GDALSetProjection( hDstDS, target_WKT[0] );
   // and the extent
-  double GeoTransform[6];
-  for (int i = 0; i < 6; i++) GeoTransform[i] = target_geotransform[i];
-  GDALSetGeoTransform( hDstDS, GeoTransform );
+  //double GeoTransform[6];
+  //for (int i = 0; i < 6; i++) GeoTransform[i] = target_geotransform[i];
+  //GDALSetGeoTransform( hDstDS, GeoTransform );
 
   Rcpp::CharacterVector options;
  // std::vector <char *> options_char; //create_options(options, true);
@@ -112,26 +115,44 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   papszArg = CSLAddString(papszArg, resample[0]);
 
   papszArg = CSLAddString(papszArg, "-wo");
-  papszArg = CSLAddString(papszArg, "INIT_DEST=NODATA");
+  papszArg = CSLAddString(papszArg, "INIT_DEST=NODATA");  // oisst make this -999 and it works
   papszArg = CSLAddString(papszArg, "-wo");
   papszArg = CSLAddString(papszArg, "WRITE_FLUSH=YES");
 
   papszArg = CSLAddString(papszArg, "-wo");
   papszArg = CSLAddString(papszArg, "UNIFIED_SRC_NODATA=YES");
 
+  double dfMinX = target_geotransform[0];
+  double dfMinY = target_geotransform[3];
+  double dfMaxX = target_geotransform[0] + target_dim[0] * target_geotransform[1];
+  double dfMaxY = target_geotransform[3] + target_dim[1] * target_geotransform[5];
+
+  papszArg = CSLAddString(papszArg, "-t_srs");
+  papszArg = CSLAddString(papszArg, target_WKT[0]);
+  papszArg = CSLAddString(papszArg, "-te");
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
+  papszArg = CSLAddString(papszArg, "-ts");
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%d", target_dim[0]));
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%d", target_dim[1]));
 
   GDALWarpAppOptions* psOptions = GDALWarpAppOptionsNew(papszArg, NULL);
   int err_0 = 0;
   int hasNA;
 
   double naflag = GDALGetRasterNoDataValue(poBand, &hasNA);
-  GDALRasterBandH aBand = GDALGetRasterBand(hDstDS, band[0]);
-  GDALSetRasterNoDataValue(aBand, naflag);
-  //GDALFillRaster(aBand, -1000, 0);
+  Rprintf("%f\n", naflag);
+  int hasScale, hasOffset;
+  double scale, offset;
+  // if (hasNA && naflag < -3.4e+37) {  // hack from terra
+  //   naflag = -3.4e+37;
+  // }
+ //GDALFillRaster(aBand, naflag, 0);
   hDstDS = GDALWarp(NULL, hDstDS, 1, po_SrcDS, psOptions, &err_0);
-  // aBand = GDALGetRasterBand(hDstDS, band[0]);
-  // GDALSetRasterNoDataValue(aBand, NAN);
-  GDALSetRasterNoDataValue(aBand, naflag);
+ // GDALRasterBandH aBand = GDALGetRasterBand(hDstDS, band[0]);
+//  GDALSetRasterNoDataValue(aBand, naflag);
 
 
   double *double_scanline;
@@ -139,15 +160,34 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
 
   CPLErr err;
   Rcpp::List outlist(band.size());
+
   for (int iband = 0; iband < band.size(); iband++) {
     dstBand = GDALGetRasterBand(hDstDS, band[iband]);
-    GDALSetRasterNoDataValue(dstBand, naflag);
+    naflag = GDALGetRasterNoDataValue(poBand, &hasNA);
+
+    if (hasScale) scale = GDALGetRasterScale(poBand, &hasScale);
+    if (hasOffset) offset = GDALGetRasterOffset(poBand, &hasOffset);
+    Rprintf("%f\n", naflag);
+    Rprintf("%f\n", scale);
+    Rprintf("%f\n", offset);
+
     err = GDALRasterIO(dstBand,  GF_Read, 0, 0, target_dim[0], target_dim[1],
                        double_scanline, target_dim[0], target_dim[1], GDT_Float64,
                        0, 0);
     NumericVector res(target_dim[0] * target_dim[1]);
+
+    // all this bs should be done at the R level, at least for MEM
     for (int i = 0; i < (target_dim[0] * target_dim[1]); i++) {
-      res[i] = double_scanline[i];
+      double dval = double_scanline[i];
+      if (dval == naflag) {
+        //Rprintf("%f/n", DBL_EPSILON);
+        res[i] = NA_REAL;
+      } else {
+        if (hasScale) dval = dval * scale;
+        if (hasOffset) dval = dval + offset;
+
+        res[i] = dval;
+      }
     }
     outlist[iband] = res;
   }

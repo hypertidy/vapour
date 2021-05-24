@@ -1,7 +1,7 @@
 
 #f <- vapour::vapour_sds_names( raadtools::sstfiles()$fullname[1])$subdataset[1]
 f <- "NETCDF:\"/rdsi/PUBLIC/raad/data/www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr/198109/oisst-avhrr-v02r01.19810901.nc\":sst"
-f <- system.file("extdata/sst.tif", package = "vapour", mustWork = TRUE)
+#f <- system.file("extdata/sst.tif", package = "vapour", mustWork = TRUE)
 
 
 # library(raadtools)
