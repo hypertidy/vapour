@@ -2,19 +2,22 @@
 % Please edit documentation in R/raster-input.R
 \name{vapour_warp_raster}
 \alias{vapour_warp_raster}
-\title{IN-DEV,NOT EXPORTED Raster input (warp)}
+\title{Raster warper (reprojection)}
 \usage{
 vapour_warp_raster(
   x,
   band = 1L,
-  geotransform = NULL,
+  extent = NULL,
   dimension = NULL,
   wkt = "",
   set_na = TRUE,
   source_wkt = NULL,
+  source_extent = 0,
+  resample = "near",
+  silent = TRUE,
+  ...,
   source_geotransform = 0,
-  resample = "nearestneighbour",
-  silent = TRUE
+  geotransform = NULL
 )
 }
 \arguments{
@@ -22,7 +25,7 @@ vapour_warp_raster(
 
 \item{band}{index of band to read (1-based)}
 
-\item{geotransform}{the affine geotransform of the warped raster}
+\item{extent}{extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'}
 
 \item{dimension}{dimensions in pixels of the warped raster (x, y)}
 
@@ -32,16 +35,20 @@ vapour_warp_raster(
 
 \item{source_wkt}{optional, override or augment the projection of the source with WKT}
 
-\item{source_geotransform}{override the native geotransform of the source}
+\item{source_extent}{extent of the source raster, used to override/augment incorrect source metadata}
 
 \item{resample}{resampling method used (see details in \link{vapour_read_raster})}
+
+\item{source_geotransform}{DEPRECATED use 'source_extent' (override the native geotransform of the source)}
+
+\item{geotransform}{DEPRECATED use 'extent' the affine geotransform of the warped raster}
 }
 \value{
 list of vectors (only 1 for 'band') of numeric values, in raster order
 }
 \description{
 Read a window of data from a GDAL raster source through a warp specification.
-Only a single band may be read. The warp specification is provided by 'geotransform',
+Only a single band may be read. The warp specification is provided by 'extent',
 'dimension', and 'wkt' properties of the transformed output.
 }
 \details{
@@ -50,13 +57,12 @@ raster is all computed in memory so please be careful with very large values
 for 'dimension'. \code{1000 * 1000 * 8} for 1000 columns, 1000 rows and floating point
 double type will be 8Mb.
 
-There's no control over the output type (always double floating point) and no
-control for the resampling algorithm (uses 'nearest neighbour').
-
+There's no control over the output type (always double floating point).
+#'
 'wkt' refers to the full Well-Known-Text specification of a coordinate reference
 system. See \code{\link[=vapour_srs_wkt]{vapour_srs_wkt()}} for conversion from PROJ.4 string to WKT.
 
-'geotransform' is the six-figure affine transform 'xmin, xres, yskew, ymax, xskew, yres' see \code{\link[=vapour_raster_info]{vapour_raster_info()}} for more detail.
+'extent' is the four-figure xmin,xmax,ymin,ymax outer corners of corner pixels
 
 'dimension' is the pixel dimensions of the output, x (ncol) then y (nrow).
 
@@ -64,20 +70,19 @@ Values for missing data are not yet handled, just returned
 as-is. Note that there may be regions of "zero data" in a warped output,
 separate from propagated missing "NODATA" values in the source.
 
-Argument 'source_wkt' may be used to assign the proejction of the source, this
-is sometimes required especially for NetCDF files (no checking is done). If the
-source has no projection and this is not set GDAL will error.
+Argument 'source_wkt' may be used to assign the proejction of the source, 'source_extent'
+to assign the extent of the source. Sometimes both are required. Wild combinations of
+'source_extent' and/or 'extent' may be used for arbitrary flip orientations, scale and offset. For
+expert usage only. Old versions allowed transform input for target and source but this is now disabled (maybe we'll write
+a new wrapper for that).
 }
 \examples{
-#gt <- c(-637239.4, 5030.0, 0.0, 261208.7, 0.0, -7760.0)
-
-#f <- system.file("extdata", "sst.tif", package = "vapour")
-#vals <- vapour_warp_raster(f, geotransform = gt,
-#                             dimension = c(186, 298),
-#                             wkt = tas_wkt)
-## wkt, dimension, geotransform above created via
-##p <- raster::projectRaster(f,
-## crs = "+proj=laea +lon_0=147 +lat_0=-42 +datum=WGS84")
-##writeRaster(p, "a.tif")
-## vapour::vapour_raster_info("a.tif")
+b <- 4e5
+f <- system.file("extdata", "sst.tif", package = "vapour")
+prj <- "+proj=aeqd +lon_0=147 +lat_0=-42"
+vals <- vapour_warp_raster(f, extent = c(-b, b, -b, b),
+                             dimension = c(186, 298),
+                             wkt = vapour_srs_wkt(prj))
+image(list(x = seq(-b, b, length.out = 187), y = seq(-b, b, length.out = 298),
+    z = matrix(unlist(vals), 186)[,298:1]), asp = 1)
 }
