@@ -124,6 +124,8 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #' @param source_geotransform DEPRECATED use 'source_extent' (override the native geotransform of the source)
 #' @param resample resampling method used (see details in [vapour_read_raster])
 #' @param source_wkt optional, override or augment the projection of the source with WKT
+#' @param silent `TRUE` by default, set to `FALSE` to report messages
+#' @param ... unused
 #'
 #' @export
 #' @return list of vectors (only 1 for 'band') of numeric values, in raster order

@@ -39,6 +39,10 @@ vapour_warp_raster(
 
 \item{resample}{resampling method used (see details in \link{vapour_read_raster})}
 
+\item{silent}{\code{TRUE} by default, set to \code{FALSE} to report messages}
+
+\item{...}{unused}
+
 \item{source_geotransform}{DEPRECATED use 'source_extent' (override the native geotransform of the source)}
 
 \item{geotransform}{DEPRECATED use 'extent' the affine geotransform of the warped raster}
