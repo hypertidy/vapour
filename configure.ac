@@ -245,6 +245,51 @@ else
   fi
 fi
 
+
+# Optional local copy of GDAL datadir and PROJ_LIB
+
+data_copy=no
+if test "${PROJ_GDAL_DATA_COPY}" ; then
+    data_copy=yes
+    AC_MSG_NOTICE([PROJ_GDAL_DATA_COPY used.])
+else
+    AC_ARG_WITH([data-copy],
+        AC_HELP_STRING([--with-data-copy=yes/no],
+               [local copy of data directories in package, default no]),
+               [data_copy=$withval])
+fi
+if test "${data_copy}" = "yes" ; then
+AC_MSG_NOTICE([Copy data for:])
+  proj_lib0="${PROJ_LIB}"
+  AC_ARG_WITH([proj-data],
+    AC_HELP_STRING([--with-proj-data=DIR],
+                   [location of PROJ data directory]),
+    [proj_lib1=$withval])
+  if test -n "${proj_lib0}" ; then
+    proj_lib="${proj_lib0}"
+  else
+    proj_lib="${proj_lib1}"
+  fi
+  if test -n "${proj_lib}" ; then
+    if test -d "${proj_lib}" ; then
+      cp -r "${proj_lib}" "${R_PACKAGE_DIR}"
+      AC_MSG_NOTICE([  PROJ: ${proj_lib}])
+    else
+      AC_MSG_ERROR([PROJ data files not found; set environment variable PROJ_LIB=DIR or --with-proj-data=DIR.])
+    fi
+  else
+      AC_MSG_ERROR([PROJ data files not found; set environment variable PROJ_LIB=DIR or --with-proj-data=DIR.])
+  fi
+
+  if test -d "${GDAL_DATADIR}" ; then
+    cp -r "${GDAL_DATADIR}" "${R_PACKAGE_DIR}"
+    AC_MSG_NOTICE([  GDAL: ${GDAL_DATADIR}])
+  else
+    AC_MSG_ERROR([GDAL data files not found.])
+  fi
+fi
+
+
 GDAL_DATA_TEST_FILE="${GDAL_DATADIR}/stateplane.csv"
 AC_MSG_CHECKING(GDAL: ${GDAL_DATADIR}/stateplane.csv readable)
 if test -r "${GDAL_DATA_TEST_FILE}" ; then
