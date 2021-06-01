@@ -111,7 +111,7 @@ inline NumericVector dsn_read_fids_all(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
   NumericVector out = layer_read_fids_all(poLayer);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -153,7 +153,7 @@ inline NumericVector dsn_read_fids_ij(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
   NumericVector out = layer_read_fids_ij(poLayer, ij);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -195,7 +195,7 @@ inline NumericVector dsn_read_fids_ia(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
   NumericVector out = layer_read_fids_ia(poLayer, ia);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -261,7 +261,7 @@ inline List dsn_read_geom_all(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
   List out = layer_read_geom_all(poLayer, format);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -324,7 +324,7 @@ inline List dsn_read_geom_ij(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
   List out = layer_read_geom_ij(poLayer, format, ij);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -387,7 +387,7 @@ inline List dsn_read_geom_ia(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
   List out = layer_read_geom_ia(poLayer, format, ia);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -442,7 +442,7 @@ inline List dsn_read_geom_fa(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
   List out = layer_read_geom_fa(poLayer, format, fa);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -515,7 +515,7 @@ inline List dsn_read_fields_all(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
   List out = layer_read_fields_all(poLayer, fid_column_name);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -587,7 +587,7 @@ inline List dsn_read_fields_ij(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
   List out = layer_read_fields_ij(poLayer, fid_column_name, ij);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -660,7 +660,7 @@ inline List dsn_read_fields_ia(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
   List out = layer_read_fields_ia(poLayer, fid_column_name, ia);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -731,7 +731,7 @@ inline List dsn_read_fields_fa(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
   List out = layer_read_fields_fa(poLayer, fid_column_name, fa);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {

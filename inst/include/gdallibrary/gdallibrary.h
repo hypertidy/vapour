@@ -236,7 +236,7 @@ inline List gdal_read_fields(CharacterVector dsn,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
 
   OGRFeature *poFeature;
 
@@ -340,7 +340,7 @@ inline DoubleVector gdal_feature_count(CharacterVector dsn,
     Rcpp::stop("Open failed.\n");
   }
 
-  OGRLayer *poLayer = gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
 
   poLayer->ResetReading();
   //  double nFeature = force_layer_feature_count(poLayer);
@@ -418,7 +418,7 @@ inline List gdal_read_geometry(CharacterVector dsn,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
 
   OGRFeature *poFeature;
   poLayer->ResetReading();
@@ -592,7 +592,7 @@ inline List gdal_read_names(CharacterVector dsn,
   }
 
 
-  OGRLayer *poLayer = gdal_layer(poDS, layer, sql = sql, ex =  ex);
+  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
 
   OGRFeature *poFeature;
   poLayer->ResetReading();
