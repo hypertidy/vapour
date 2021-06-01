@@ -38,6 +38,7 @@ gdalheaders
 gdalmin
 GDALVersionInfo
 GDALwarp
+gdalwarp
 GDB
 GDS
 geo
@@ -50,6 +51,7 @@ georeferenced
 geospatial
 Geospatial
 GeoTIFF
+geotransform
 GetFeatureCount
 ghrsst
 GHRSST
@@ -91,11 +93,13 @@ MultiPolygon
 MUR
 nasa
 nc
+ncol
 ncols
 NearestNeighbour
 NetCDF
 NODATA
 Nowosad
+nrow
 nrows
 NULLs
 OFTInteger
@@ -112,6 +116,7 @@ PROJ
 RasterIO
 rasters
 Rcpp
+reprojection
 ReleaseResultsSet
 rgdal
 RGDALSQL
@@ -140,6 +145,7 @@ vectorized
 virtualize
 VRT
 vsi
+warper
 WGS
 WIP
 wkb

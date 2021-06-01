@@ -74,7 +74,7 @@ Values for missing data are not yet handled, just returned
 as-is. Note that there may be regions of "zero data" in a warped output,
 separate from propagated missing "NODATA" values in the source.
 
-Argument 'source_wkt' may be used to assign the proejction of the source, 'source_extent'
+Argument 'source_wkt' may be used to assign the projection of the source, 'source_extent'
 to assign the extent of the source. Sometimes both are required. Wild combinations of
 'source_extent' and/or 'extent' may be used for arbitrary flip orientations, scale and offset. For
 expert usage only. Old versions allowed transform input for target and source but this is now disabled (maybe we'll write
