@@ -39,7 +39,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
 
 
   if (poSrcDS == NULL) {
-    Rprintf("cannot open %s", source_filename[0]);
+    //Rprintf("cannot open %s\n", source_filename[0]);
+    Rprintf("failed to open\n");
     Rcpp::stop("\n");
   }
   if (source_extent.length() == 1) {
