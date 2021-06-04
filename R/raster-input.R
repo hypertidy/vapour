@@ -114,7 +114,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #'  a new wrapper for that).
 #'
 #' @param x data source string (file name or URL or database connection string)
-#' @param band index of band to read (1-based), may be new order or replicated, or NULL (all bands used)
+#' @param bands index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used)
 #' @param extent extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'
 #' @param source_extent extent of the source raster, used to override/augment incorrect source metadata
 #' @param geotransform DEPRECATED use 'extent' the affine geotransform of the warped raster
@@ -138,7 +138,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #'                              wkt = vapour_srs_wkt(prj))
 #' image(list(x = seq(-b, b, length.out = 187), y = seq(-b, b, length.out = 298),
 #'     z = matrix(unlist(vals), 186)[,298:1]), asp = 1)
-vapour_warp_raster <- function(x, band = 1L,
+vapour_warp_raster <- function(x, bands = 1L,
                                extent = NULL,
                                dimension = NULL,
                                wkt = "",
@@ -150,10 +150,10 @@ vapour_warp_raster <- function(x, band = 1L,
                                source_geotransform = 0.0, geotransform = NULL) {
 
   ## bands
-  if (is.numeric(band) && any(band < 1)) stop("all band index must be >= 1")
-  if (is.null(band)) band <- 0
-  if(!is.numeric(band)) stop("'band' must be numeric (integer), start at 1")
-  band <- as.integer(band)
+  if (is.numeric(bands) && any(bands < 1)) stop("all 'bands' index must be >= 1")
+  if (is.null(bands)) bands <- 0
+  if(!is.numeric(bands)) stop("'bands' must be numeric (integer), start at 1")
+  bands <- as.integer(bands)
 
 
   if(!is.numeric(extent)) {
@@ -220,15 +220,15 @@ vapour_warp_raster <- function(x, band = 1L,
                                    target_WKT = wkt,
                                    target_extent = extent,
                                    target_dim = dimension,
-                                  band = band,
+                                  band = bands,
                                   source_extent = source_extent,
                                   resample = resample,
                                   silent = silent)
-  if (length(band) == 1 && band == 0) {
+  if (length(bands) == 1 && band == 0) {
     ## we got all bands by index
-    band <- seq_along(vals)
+    bands <- seq_along(vals)
   }
-  names(vals) <- make.names(sprintf("Band%i",band), unique = TRUE)
+  names(vals) <- make.names(sprintf("Band%i",bands), unique = TRUE)
   vals
 }
 
