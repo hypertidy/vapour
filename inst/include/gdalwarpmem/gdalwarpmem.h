@@ -30,7 +30,6 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 CharacterVector resample,
                                 LogicalVector silent) {
 
-  Rcpp::List outlist(band.size());
 
   GDALAllRegister();
   GDALDatasetH poSrcDS;
@@ -65,9 +64,11 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   // papszArg = CSLAddString(papszArg, "-wo");
   // papszArg = CSLAddString(papszArg, "INIT_DEST=NODATA");
 
-  papszArg = CSLAddString(papszArg, "-t_srs");
-  papszArg = CSLAddString(papszArg, target_WKT[0]);
-
+  // if we don't supply it don't try to set it!
+  if (!target_WKT[0].empty()){
+    papszArg = CSLAddString(papszArg, "-t_srs");
+    papszArg = CSLAddString(papszArg, target_WKT[0]);
+  }
   if (source_WKT[0].empty()) {
     // TODO check source projection is valid
     // const char* srcproj = nullptr;
@@ -120,10 +121,29 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   papszArg = CSLAddString(papszArg, "-wo");
   papszArg = CSLAddString(papszArg, "SAMPLE_GRID=YES");
 
+  papszArg = CSLAddString(papszArg, "-wo");
+  papszArg = CSLAddString(papszArg, "SOURCE_EXTRA=64");
+
+  //  papszArg = CSLAddString(papszArg, "-wo");
+  // papszArg = CSLAddString(papszArg, "NUM_THREADS=ALL_CPUS");
 
   const bool bHasMask = GDALGetMaskFlags(poFirstBand);
 
   const int nBands = GDALGetRasterCount(poSrcDS);
+  int band_length = band.size();
+  if (band.size() == 1 && band[0] == 0) {
+    band_length = nBands;
+  }
+
+  std::vector<int> bands_to_read(band_length);
+  if (band.size() == 1 && band[0] == 0) {
+    for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
+   // Rprintf("index bands\n");
+  } else {
+    for (int i = 0; i < band.size(); i++) bands_to_read[i] = band[i];
+    // Rprintf("input bands\n");
+  }
+  Rcpp::List outlist(bands_to_read.size());
 
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
@@ -157,10 +177,15 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   std::vector<double> double_scanline( target_dim[0] * target_dim[1] );
   CPLErr err;
   GDALRasterBandH dstBand, poBand;
-
-  for (int iband = 0; iband < band.size(); iband++) {
-    poBand = GDALGetRasterBand(poSrcDS, band[iband]);
-    dstBand = GDALGetRasterBand(hRet, band[iband]);
+  for (int iband = 0; iband < bands_to_read.size(); iband++) {
+    if (bands_to_read[iband] > nBands) {
+      GDALClose( hRet );
+      GDALClose( poSrcDS );
+      Rcpp::stop("band requested exceeds bound count: %i (source has %i band/s)", band[iband], nBands);
+    }
+    //Rprintf("bands_to_read[i] %i\n", bands_to_read[iband]);
+    poBand = GDALGetRasterBand(poSrcDS, bands_to_read[iband]);
+    dstBand = GDALGetRasterBand(hRet, bands_to_read[iband]);
     naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
 
 

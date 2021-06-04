@@ -1,0 +1,53 @@
+f <- system.file("extdata", "sst.tif", package = "vapour")
+
+raster::raster(f)
+# class      : RasterLayer
+# dimensions : 286, 143, 40898  (nrow, ncol, ncell)
+# resolution : 0.07, 0.07000389  (x, y)
+# extent     : 140, 150.01, -60.01833, -39.99722  (xmin, xmax, ymin, ymax)
+# crs        : +proj=longlat +datum=WGS84 +no_defs
+# source     : sst.tif
+# names      : sst
+# values     : 271.35, 289.859  (min, max)
+
+
+## cases
+# 1. source is valid, proper geotransform and crs
+# 2. source has no crs
+# 3. source has no crs and no proper geotransform (no proper geotransform occurs when xres/yres == 0)
+## don't think we can have valid crs and no proper transform ...
+
+# 1. but we override geotransform
+# 1. but we override crs
+# 1. but we override crs and geotransform
+
+# 2. we supply crs
+# 2. we supply crs and geotransform
+
+## auto failures
+# - no valid source crs, we can't do anything   DONE, detect empty string, close up and stop
+# - no valid target crs, doesn't fail unless "", we just get zero values and a cryptic ERROR 1: missing [
+# - no valid target geotransform, NA values give so seems ok
+## ERROR 1: Too many points (529 out of 529) failed to transform, unable to compute output bounds.
+## Warning 1: Unable to compute source region for output window 0,0,320,320, skipping.
+
+# - no valid target dimension, DONE
+# - need to see what raster does with floating point dims vs. gdal
+
+# source meta is fine (or we augment it)
+# - no wkt provided (doesn't need to be specified, input is assumed)
+# -  no dim provided (I think it has to be, but native would be good)
+# - no extent provided
+
+
+test_that("warper no transformation works", {
+ vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2))
+})
+
+test_that("warper band repetition works", {
+  vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2))
+})
+
+test_that("warper ", {
+
+})

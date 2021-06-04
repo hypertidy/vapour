@@ -114,7 +114,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #'  a new wrapper for that).
 #'
 #' @param x data source string (file name or URL or database connection string)
-#' @param band index of band to read (1-based)
+#' @param band index of band to read (1-based), may be new order or replicated, or NULL (all bands used)
 #' @param extent extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'
 #' @param source_extent extent of the source raster, used to override/augment incorrect source metadata
 #' @param geotransform DEPRECATED use 'extent' the affine geotransform of the warped raster
@@ -148,7 +148,14 @@ vapour_warp_raster <- function(x, band = 1L,
                                resample = "near",
                                silent = TRUE, ...,
                                source_geotransform = 0.0, geotransform = NULL) {
+
+  ## bands
+  if (is.numeric(band) && any(band < 1)) stop("all band index must be >= 1")
+  if (is.null(band)) band <- 0
   if(!is.numeric(band)) stop("'band' must be numeric (integer), start at 1")
+  band <- as.integer(band)
+
+
   if(!is.numeric(extent)) {
     if (isS4(extent)) {
       extent <- c(extent@xmin, extent@xmax, extent@ymin, extent@ymax)
@@ -182,13 +189,17 @@ vapour_warp_raster <- function(x, band = 1L,
   if (!is.null(geotransform)) message("'geotransform' is deprecated and now ignored, used 'extent'")
   if(!is.null(source_wkt)) {
     if (!is.character(source_wkt)) stop("source_wkt must be character")
-    if(!nchar(source_wkt) > 10) message("short 'source_wkt' seems invalid")
+    if(!silent) {
+      if(!nchar(source_wkt) > 10) message("short 'source_wkt', possibly invalid?")
+    }
   }
-  if(!nchar(wkt) > 0) message("short 'wkt' seems invalid")
+
+  if (!silent) {
+    if(!nchar(wkt) > 0) message("target 'wkt' not provided, read will occur from from source in native projection")
+  }
   ## TODO: validate geotransform, source_wkt, dimension
 
   if (is.null(source_wkt)) source_wkt <-  ""
-  if (any(band < 1)) stop("band must be 1 or higher")
 
   resample <- tolower(resample[1L])
   if (resample == "gauss") {
@@ -213,7 +224,11 @@ vapour_warp_raster <- function(x, band = 1L,
                                   source_extent = source_extent,
                                   resample = resample,
                                   silent = silent)
-  names(vals) <- sprintf("Band%i",band)
+  if (length(band) == 1 && band == 0) {
+    ## we got all bands by index
+    band <- seq_along(vals)
+  }
+  names(vals) <- make.names(sprintf("Band%i",band), unique = TRUE)
   vals
 }
 
