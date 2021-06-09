@@ -6,7 +6,7 @@
 \usage{
 vapour_warp_raster(
   x,
-  band = 1L,
+  bands = 1L,
   extent = NULL,
   dimension = NULL,
   wkt = "",
@@ -23,7 +23,7 @@ vapour_warp_raster(
 \arguments{
 \item{x}{data source string (file name or URL or database connection string)}
 
-\item{band}{index of band to read (1-based), may be new order or replicated, or NULL (all bands used)}
+\item{bands}{index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used)}
 
 \item{extent}{extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'}
 

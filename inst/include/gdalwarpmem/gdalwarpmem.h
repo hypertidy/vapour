@@ -25,7 +25,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 CharacterVector target_WKT,
                                 NumericVector target_extent,
                                 IntegerVector target_dim,
-                                IntegerVector band,
+                                IntegerVector bands,
                                 NumericVector source_extent,
                                 CharacterVector resample,
                                 LogicalVector silent) {
@@ -85,18 +85,20 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   }
 
 
-  double dfMinX = target_extent[0];
-  double dfMaxX = target_extent[1];
-  double dfMinY = target_extent[2];
-  double dfMaxY = target_extent[3];
+  // we always provide extent and dimension, crs is optional and just means subset/decimate
+   double dfMinX = target_extent[0];
+   double dfMaxX = target_extent[1];
+   double dfMinY = target_extent[2];
+   double dfMaxY = target_extent[3];
+
+   papszArg = CSLAddString(papszArg, "-te");
+   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
+   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
+   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
+   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
 
   int nXSize = target_dim[0];
   int nYSize = target_dim[1];
-  papszArg = CSLAddString(papszArg, "-te");
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
   papszArg = CSLAddString(papszArg, "-ts");
   papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
   papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
@@ -130,17 +132,17 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   const bool bHasMask = GDALGetMaskFlags(poFirstBand);
 
   const int nBands = GDALGetRasterCount(poSrcDS);
-  int band_length = band.size();
-  if (band.size() == 1 && band[0] == 0) {
+  int band_length = bands.size();
+  if (bands.size() == 1 && bands[0] == 0) {
     band_length = nBands;
   }
 
   std::vector<int> bands_to_read(band_length);
-  if (band.size() == 1 && band[0] == 0) {
+  if (bands.size() == 1 && bands[0] == 0) {
     for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
    // Rprintf("index bands\n");
   } else {
-    for (int i = 0; i < band.size(); i++) bands_to_read[i] = band[i];
+    for (int i = 0; i < bands.size(); i++) bands_to_read[i] = bands[i];
     // Rprintf("input bands\n");
   }
   Rcpp::List outlist(bands_to_read.size());
@@ -181,7 +183,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     if (bands_to_read[iband] > nBands) {
       GDALClose( hRet );
       GDALClose( poSrcDS );
-      Rcpp::stop("band requested exceeds bound count: %i (source has %i band/s)", band[iband], nBands);
+      Rcpp::stop("band requested exceeds bound count: %i (source has %i band/s)", bands[iband], nBands);
     }
     //Rprintf("bands_to_read[i] %i\n", bands_to_read[iband]);
     poBand = GDALGetRasterBand(poSrcDS, bands_to_read[iband]);

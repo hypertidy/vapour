@@ -1,6 +1,6 @@
 f <- system.file("extdata", "sst.tif", package = "vapour")
 
-raster::raster(f)
+#raster::raster(f)
 # class      : RasterLayer
 # dimensions : 286, 143, 40898  (nrow, ncol, ncell)
 # resolution : 0.07, 0.07000389  (x, y)
@@ -41,13 +41,21 @@ raster::raster(f)
 
 
 test_that("warper no transformation works", {
- vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2))
+ expect_that(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2)), is_a("list"))
+})
+test_that("warper bad transformation fails", {
+  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), wkt = "aabbcc"), "does not look like valid WKT projection string")
 })
 
 test_that("warper band repetition works", {
-  vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2))
+  expect_length(vapour_warp_raster(f, bands = c(1, 1), extent = c(145, 146, -50, -48), dimension = c(2, 2)), 2L)
 })
 
-test_that("warper ", {
+
+test_that("warper gives the right number of values", {
+  expect_length(vapour_warp_raster(f, bands = 1, extent = c(145, 146, -50, -48), dimension = c(2L, 2L))[[1L]], 4L)
+  expect_length(vapour_warp_raster(f, bands = 1, extent = c(145, 146, -50, -48), dimension = c(2L, 12L))[[1L]], 24L)
+  expect_length(vapour_warp_raster(f, bands = 1, extent = c(145, 146, -50, -48), dimension = c(1L, 1200L))[[1L]], 1200L)
+  expect_message(vapour_warp_raster(f, bands = 1, extent = c(145, 146, 90, -48), dimension = c(300L, 301L))[[1L]], "expert use")
 
 })

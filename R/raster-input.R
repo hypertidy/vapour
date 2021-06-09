@@ -155,13 +155,19 @@ vapour_warp_raster <- function(x, bands = 1L,
   if(!is.numeric(bands)) stop("'bands' must be numeric (integer), start at 1")
   bands <- as.integer(bands)
 
-
+  # dud_extent <- FALSE
+  # if (is.null(extent)) {
+  #   ## set a dummy and then pass in dud after following tests
+  #   extent <- c(0, 1, 0, 1)
+  #   dud_extent <- TRUE
+  # }
   if(!is.numeric(extent)) {
     if (isS4(extent)) {
       extent <- c(extent@xmin, extent@xmax, extent@ymin, extent@ymax)
     } else if (is.matrix(extent)) {
         extent <- extent[c(1, 3, 2, 4)]
     } else {
+
     stop("'extent' must be numeric 'c(xmin, xmax, ymin, ymax)'")
     }
   }
@@ -173,8 +179,23 @@ vapour_warp_raster <- function(x, bands = 1L,
   if (!all(diff(extent)[c(1, 3)] > 0)) message("'extent' expected to be 'c(xmin, xmax, ymin, ymax)', negative values detected (ok for expert use)")
   if (length(source_extent) > 1 && !all(diff(source_extent)[c(1, 3)] > 0)) message("'extent' expected to be 'c(xmin, xmax, ymin, ymax)', negative values detected (ok for expert use)")
 
+  ## if (dud_extent) extent <- 0.0
+  ## hmm, we can't rely on gdalwarp to give a sensibleish dimension if not specified, it goes for the native-res
+  if (is.null(dimension)) {
+    ## NO. We can't heuristic dimension or extent because we don't have a format to return those values with
+    ##  we make a simple raster, the image() thing and go with that
 
+    ## FIXME: move this hardcode to C, and override with min(native_dimension, dimension)
+    #dimension <- c(512, 512)
 
+    ## we could
+    ##  ## hardcode a default options(vapour.warp.default.dimension = c(512, 512))
+    ##  ## modify hardcode based on extent aspect ratio (not lat corrected)
+    ## ## modify harcode to not exceed the native (I think I like this the best, because it reduces logic churn and delays when
+    ## ##  that has to be set in the C++, but we need to send down a message that the default is used (so do it all in C is the summ))
+    ## set it to native with a max
+    ## set it to native with a warn/override
+  }
   if(!is.numeric(dimension)) stop("'dimension' must be numeric")
   if(!length(dimension) == 2L) stop("'dimension must be of length 2'")
   if(!all(dimension > 0)) stop("'dimension' values must be greater than 0")
@@ -196,6 +217,12 @@ vapour_warp_raster <- function(x, bands = 1L,
 
   if (!silent) {
     if(!nchar(wkt) > 0) message("target 'wkt' not provided, read will occur from from source in native projection")
+  }
+  if (nchar(wkt) > 0) {
+    chk1 <- grepl("^GEOGCS\\[", wkt)
+    chk2 <- grepl("^PROJCS\\[", wkt)
+    chk3 <- grepl("]$", wkt)
+    if (sum(c(chk1, chk2, chk3)) < 2) stop("'wkt' does not look like valid WKT projection string")
   }
   ## TODO: validate geotransform, source_wkt, dimension
 
@@ -220,11 +247,11 @@ vapour_warp_raster <- function(x, bands = 1L,
                                    target_WKT = wkt,
                                    target_extent = extent,
                                    target_dim = dimension,
-                                  band = bands,
+                                  bands = bands,
                                   source_extent = source_extent,
                                   resample = resample,
                                   silent = silent)
-  if (length(bands) == 1 && band == 0) {
+  if (length(bands) == 1 && bands == 0) {
     ## we got all bands by index
     bands <- seq_along(vals)
   }

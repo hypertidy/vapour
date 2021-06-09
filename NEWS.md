@@ -1,6 +1,8 @@
 # vapour dev
 
-* The warper function now correctly handles repeated band numbers in `bands` and can be set to `NULL`, to return all bands. 
+* The function `vapour_warp_raster()` now uses argument 'bands' rather than 'band' at the R level. The warper function 
+ correctly handles repeated band numbers in `bands` and can be set to `NULL`, to return all bands. (Note that `vapour_read_raster()`
+ still uses 'band'). 
 
 * User interface for `vapour_warp_raster()' now changed to use 'extent' and 'source_extent' in place of
  'geotransform' and 'source_geotransform', which are now deprecated. 

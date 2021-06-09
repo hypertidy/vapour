@@ -250,8 +250,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // warp_in_memory_gdal_cpp
-List warp_in_memory_gdal_cpp(CharacterVector dsn, CharacterVector source_WKT, CharacterVector target_WKT, NumericVector target_extent, IntegerVector target_dim, IntegerVector band, NumericVector source_extent, CharacterVector resample, LogicalVector silent);
-RcppExport SEXP _vapour_warp_in_memory_gdal_cpp(SEXP dsnSEXP, SEXP source_WKTSEXP, SEXP target_WKTSEXP, SEXP target_extentSEXP, SEXP target_dimSEXP, SEXP bandSEXP, SEXP source_extentSEXP, SEXP resampleSEXP, SEXP silentSEXP) {
+List warp_in_memory_gdal_cpp(CharacterVector dsn, CharacterVector source_WKT, CharacterVector target_WKT, NumericVector target_extent, IntegerVector target_dim, IntegerVector bands, NumericVector source_extent, CharacterVector resample, LogicalVector silent);
+RcppExport SEXP _vapour_warp_in_memory_gdal_cpp(SEXP dsnSEXP, SEXP source_WKTSEXP, SEXP target_WKTSEXP, SEXP target_extentSEXP, SEXP target_dimSEXP, SEXP bandsSEXP, SEXP source_extentSEXP, SEXP resampleSEXP, SEXP silentSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -260,11 +260,11 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type target_WKT(target_WKTSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type target_extent(target_extentSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type target_dim(target_dimSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type bands(bandsSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type source_extent(source_extentSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type resample(resampleSEXP);
     Rcpp::traits::input_parameter< LogicalVector >::type silent(silentSEXP);
-    rcpp_result_gen = Rcpp::wrap(warp_in_memory_gdal_cpp(dsn, source_WKT, target_WKT, target_extent, target_dim, band, source_extent, resample, silent));
+    rcpp_result_gen = Rcpp::wrap(warp_in_memory_gdal_cpp(dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent));
     return rcpp_result_gen;
 END_RCPP
 }
