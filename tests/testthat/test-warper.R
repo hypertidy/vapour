@@ -44,11 +44,11 @@ test_that("warper no transformation works", {
  expect_that(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2)), is_a("list"))
 })
 test_that("warper bad transformation fails", {
-  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), wkt = "aabbcc"), "does not look like valid WKT projection string")
+  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), wkt = "aabbcc"), "cannot initialize target projection")
 
   ## this should get checked by GDAL itself, else crashy
-  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), wkt = "PROJala[kakakaka]"))
-
+  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), wkt = "PROJala[kakakaka]"), "cannot initialize target projection")
+  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), source_wkt =   "PROJala[kakakaka]"), "cannot initialize source projection")
 
 })
 

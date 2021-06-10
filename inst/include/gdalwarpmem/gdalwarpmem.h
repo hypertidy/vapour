@@ -84,6 +84,12 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     // }
   } else {
     if (silent[0] != true) Rprintf("setting projection");
+
+    // if supplied check that it's valid
+    OGRSpatialReference oSourceSRS;
+    OGRErr source_chk =  oSourceSRS.SetFromUserInput(source_WKT[0]);
+    if (source_chk != OGRERR_NONE) Rcpp::stop("cannot initialize source projection");
+
     papszArg = CSLAddString(papszArg, "-s_srs");
     papszArg = CSLAddString(papszArg, source_WKT[0]);
 
@@ -107,6 +113,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   papszArg = CSLAddString(papszArg, "-ts");
   papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
   papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
+
   int bHasNoData = FALSE;
 
   //  const auto poFirstBand = poSrcDS->GetRasterBand(1);

@@ -1,5 +1,8 @@
 # vapour dev
 
+* Input projection strings for `wkt` or `source_wkt` in `vapour_warp_raster` may be anything acceptable by GDAL itself. These 
+ include WKT variants, PROJ strings, EPSG strings, and file names. 
+
 * The function `vapour_warp_raster()` now uses argument 'bands' rather than 'band' at the R level. The warper function 
  correctly handles repeated band numbers in `bands` and can be set to `NULL`, to return all bands. (Note that `vapour_read_raster()`
  still uses 'band'). 

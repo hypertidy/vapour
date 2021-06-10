@@ -97,7 +97,9 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #' There's no control over the output type (always double floating point).
 #' #'
 #' 'wkt' refers to the full Well-Known-Text specification of a coordinate reference
-#' system. See [vapour_srs_wkt()] for conversion from PROJ.4 string to WKT.
+#' system. See [vapour_srs_wkt()] for conversion from PROJ.4 string to WKT. Any string
+#' accepted by GDAL may be used for 'wkt' or 'source_wkt', including EPSG strings, PROJ4 strings, and
+#' file names.
 #'
 #' 'extent' is the four-figure xmin,xmax,ymin,ymax outer corners of corner pixels
 #'
@@ -119,11 +121,11 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #' @param source_extent extent of the source raster, used to override/augment incorrect source metadata
 #' @param geotransform DEPRECATED use 'extent' the affine geotransform of the warped raster
 #' @param dimension dimensions in pixels of the warped raster (x, y)
-#' @param wkt projection of warped raster in Well-Known-Text
+#' @param wkt projection of warped raster (in Well-Known-Text, or any projection string accepted by GDAL)
 #' @param set_na NOT IMPLEMENTED logical, should 'NODATA' values be set to `NA`
 #' @param source_geotransform DEPRECATED use 'source_extent' (override the native geotransform of the source)
 #' @param resample resampling method used (see details in [vapour_read_raster])
-#' @param source_wkt optional, override or augment the projection of the source with WKT
+#' @param source_wkt optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)
 #' @param silent `TRUE` by default, set to `FALSE` to report messages
 #' @param ... unused
 #'
@@ -218,12 +220,13 @@ vapour_warp_raster <- function(x, bands = 1L,
   if (!silent) {
     if(!nchar(wkt) > 0) message("target 'wkt' not provided, read will occur from from source in native projection")
   }
-  if (nchar(wkt) > 0) {
-    chk1 <- grepl("^GEOG.*\\[", wkt)
-    chk2 <- grepl("^PROJ.*\\[", wkt)
-    chk3 <- grepl("]$", wkt)
-    if (sum(c(chk1, chk2, chk3)) < 2) stop("'wkt' does not look like valid WKT projection string")
-  }
+  ## now checked at C++ level so we can input *anything*
+  # if (nchar(wkt) > 0) {
+  #   chk1 <- grepl("^GEOG.*\\[", wkt)
+  #   chk2 <- grepl("^PROJ.*\\[", wkt)
+  #   chk3 <- grepl("]$", wkt)
+  #   if (sum(c(chk1, chk2, chk3)) < 2) stop("'wkt' does not look like valid WKT projection string")
+  # }
   ## TODO: validate geotransform, source_wkt, dimension
 
   if (is.null(source_wkt)) source_wkt <-  ""

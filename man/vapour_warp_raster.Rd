@@ -29,11 +29,11 @@ vapour_warp_raster(
 
 \item{dimension}{dimensions in pixels of the warped raster (x, y)}
 
-\item{wkt}{projection of warped raster in Well-Known-Text}
+\item{wkt}{projection of warped raster (in Well-Known-Text, or any projection string accepted by GDAL)}
 
 \item{set_na}{NOT IMPLEMENTED logical, should 'NODATA' values be set to \code{NA}}
 
-\item{source_wkt}{optional, override or augment the projection of the source with WKT}
+\item{source_wkt}{optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)}
 
 \item{source_extent}{extent of the source raster, used to override/augment incorrect source metadata}
 
@@ -64,7 +64,9 @@ double type will be 8Mb.
 There's no control over the output type (always double floating point).
 #'
 'wkt' refers to the full Well-Known-Text specification of a coordinate reference
-system. See \code{\link[=vapour_srs_wkt]{vapour_srs_wkt()}} for conversion from PROJ.4 string to WKT.
+system. See \code{\link[=vapour_srs_wkt]{vapour_srs_wkt()}} for conversion from PROJ.4 string to WKT. Any string
+accepted by GDAL may be used for 'wkt' or 'source_wkt', including EPSG strings, PROJ4 strings, and
+file names.
 
 'extent' is the four-figure xmin,xmax,ymin,ymax outer corners of corner pixels
 
