@@ -219,8 +219,8 @@ vapour_warp_raster <- function(x, bands = 1L,
     if(!nchar(wkt) > 0) message("target 'wkt' not provided, read will occur from from source in native projection")
   }
   if (nchar(wkt) > 0) {
-    chk1 <- grepl("^GEOGCS\\[", wkt)
-    chk2 <- grepl("^PROJCS\\[", wkt)
+    chk1 <- grepl("^GEOG.*\\[", wkt)
+    chk2 <- grepl("^PROJ.*\\[", wkt)
     chk3 <- grepl("]$", wkt)
     if (sum(c(chk1, chk2, chk3)) < 2) stop("'wkt' does not look like valid WKT projection string")
   }

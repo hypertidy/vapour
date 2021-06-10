@@ -45,6 +45,11 @@ test_that("warper no transformation works", {
 })
 test_that("warper bad transformation fails", {
   expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), wkt = "aabbcc"), "does not look like valid WKT projection string")
+
+  ## this should get checked by GDAL itself, else crashy
+  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), wkt = "PROJala[kakakaka]"))
+
+
 })
 
 test_that("warper band repetition works", {

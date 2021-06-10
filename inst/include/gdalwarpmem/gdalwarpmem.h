@@ -66,6 +66,11 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
 
   // if we don't supply it don't try to set it!
   if (!target_WKT[0].empty()){
+    // if supplied check that it's valid
+    OGRSpatialReference oTargetSRS;
+    OGRErr target_chk =  oTargetSRS.SetFromUserInput(target_WKT[0]);
+    if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
+
     papszArg = CSLAddString(papszArg, "-t_srs");
     papszArg = CSLAddString(papszArg, target_WKT[0]);
   }
