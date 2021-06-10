@@ -108,12 +108,14 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
 
-  int nXSize = target_dim[0];
-  int nYSize = target_dim[1];
-  papszArg = CSLAddString(papszArg, "-ts");
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
-
+   // we otherwise set a dud dimension, the user didn't set it (so they get native for the extent)
+   if (target_dim.size() > 1) {
+    int nXSize = target_dim[0];
+    int nYSize = target_dim[1];
+    papszArg = CSLAddString(papszArg, "-ts");
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
+   }
   int bHasNoData = FALSE;
 
   //  const auto poFirstBand = poSrcDS->GetRasterBand(1);
@@ -186,9 +188,6 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   int hasScale, hasOffset;
   double scale, offset;
 
-  // double *double_scanline;
-  // double_scanline = (double *) CPLMalloc(sizeof(double)*static_cast<unsigned long>(target_dim[0]) * static_cast<unsigned long>(target_dim[1]));
-  std::vector<double> double_scanline( target_dim[0] * target_dim[1] );
   CPLErr err;
   GDALRasterBandH dstBand, poBand;
   for (int iband = 0; iband < bands_to_read.size(); iband++) {
@@ -206,11 +205,13 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     scale = GDALGetRasterScale(poBand, &hasScale);
     offset = GDALGetRasterOffset(poBand, &hasOffset);
 
-
-    err = GDALRasterIO(dstBand,  GF_Read, 0, 0, target_dim[0], target_dim[1],
-                       &double_scanline[0], target_dim[0], target_dim[1], GDT_Float64,
+    int actual_XSize = GDALGetRasterBandXSize(dstBand);
+    int actual_YSize = GDALGetRasterBandYSize(dstBand);
+    std::vector<double> double_scanline( actual_XSize * actual_YSize );
+    err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,
+                       &double_scanline[0], actual_XSize, actual_YSize, GDT_Float64,
                        0, 0);
-    NumericVector res(target_dim[0] * target_dim[1]);
+    NumericVector res(actual_XSize * actual_YSize );
 
     // consider doing at R level, at least for MEM
     double dval;
@@ -228,7 +229,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
         std::replace(double_scanline.begin(), double_scanline.end(), naflag, (double) NAN);
       }
     }
-    for (int i = 0; i < (target_dim[0] * target_dim[1]); i++) {
+    for (int i = 0; i < (double_scanline.size()); i++) {
       dval = double_scanline[i];
       if (hasScale) dval = dval * scale;
       if (hasOffset) dval = dval + offset;

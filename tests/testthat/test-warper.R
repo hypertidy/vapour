@@ -43,6 +43,13 @@ f <- system.file("extdata", "sst.tif", package = "vapour")
 test_that("warper no transformation works", {
  expect_that(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2)), is_a("list"))
 })
+
+test_that("warper no transformation and no dimension works", {
+  expect_that(vapour_warp_raster(f, extent = c(145, 146, -50, -48)), is_a("list"))
+  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), wkt = "+proj=laea"), "'dimension' must be numeric")
+
+})
+
 test_that("warper bad transformation fails", {
   expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), wkt = "aabbcc"), "cannot initialize target projection")
 

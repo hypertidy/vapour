@@ -183,7 +183,9 @@ vapour_warp_raster <- function(x, bands = 1L,
 
   ## if (dud_extent) extent <- 0.0
   ## hmm, we can't rely on gdalwarp to give a sensibleish dimension if not specified, it goes for the native-res
-  if (is.null(dimension)) {
+  dud_dimension <- FALSE
+  ## we dud it if no target projection is set, so you get native from the extent
+  if (is.null(dimension) && nchar(wkt) < 1) {
     ## NO. We can't heuristic dimension or extent because we don't have a format to return those values with
     ##  we make a simple raster, the image() thing and go with that
 
@@ -197,11 +199,16 @@ vapour_warp_raster <- function(x, bands = 1L,
     ## ##  that has to be set in the C++, but we need to send down a message that the default is used (so do it all in C is the summ))
     ## set it to native with a max
     ## set it to native with a warn/override
+    dud_dimension <- TRUE
+    dimension <- c(2, 2)
   }
   if(!is.numeric(dimension)) stop("'dimension' must be numeric")
   if(!length(dimension) == 2L) stop("'dimension must be of length 2'")
   if(!all(dimension > 0)) stop("'dimension' values must be greater than 0")
   if(!all(is.finite(dimension))) stop("'dimension' values must be finite and non-missing")
+  if (dud_dimension) dimension <- 0
+
+
   if(!(length(source_geotransform) == 1 && source_geotransform == 0.0)) message("'source geotransform' is deprecated and now ignored, please use 'extent'")
   if (length(source_extent) > 1) {
     if (!is.numeric(source_extent)) {

@@ -1,5 +1,9 @@
 # vapour dev
 
+* `vapour_warp_raster()` now accepts an extent for the extraction with giving a dimension, it returns native pixels found within
+ that extent. This is a special case for when you have control over the input window extent and now the dimensions implicitly. (We
+  might formalize around storing the dimensions, extent, and crs as an attribute but that's been unnecessary so far.)
+ 
 * Input projection strings for `wkt` or `source_wkt` in `vapour_warp_raster` may be anything acceptable by GDAL itself. These 
  include WKT variants, PROJ strings, EPSG strings, and file names. 
 
