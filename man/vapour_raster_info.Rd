@@ -15,6 +15,10 @@ vapour_raster_info(x, ..., sds = NULL, min_max = FALSE)
 
 \item{min_max}{logical, control computing min and max values in source ('FALSE' by default)}
 }
+\value{
+list with vectors 'geotransform', 'dimXY', 'minmax', 'tilesXY', 'projection', 'bands', 'proj4', 'nodata_value',
+'overviews', 'filelist' see sections in Details for more on each element
+}
 \description{
 Return the basic structural metadata of a raster source understood by GDAL.
 Subdatasets may be specified by number, starting at 1. See

@@ -9,6 +9,9 @@ vapour_srs_wkt(crs)
 \arguments{
 \item{crs}{PROJ4 string}
 }
+\value{
+WKT2 projection string
+}
 \description{
 Convert a PROJ4 string to Well Known Text.
 }

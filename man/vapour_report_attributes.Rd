@@ -13,6 +13,9 @@ vapour_report_attributes(dsource, layer = 0L, sql = "")
 
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
 }
+\value{
+named character vector of the GDAL types for each attribute
+}
 \description{
 Obtains the internal type-constant name for the data attributes in a source.
 Use this to compare the interpreted versions converted into R types by

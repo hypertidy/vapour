@@ -119,7 +119,7 @@ else
 	echo "Error: gdal-config not found"
 	echo "The gdal-config script distributed with GDAL could not be found."
 	echo "If you have not installed the GDAL libraries, you can"
-	echo "download the source from  http://www.gdal.org/"
+	echo "download the source from  https://gdal.org/"
 	echo "If you have installed the GDAL libraries, then make sure that"
 	echo "gdal-config is in your path. Try typing gdal-config at a"
 	echo "shell prompt and see if it runs. If not, use:"

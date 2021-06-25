@@ -26,6 +26,9 @@ vapour_read_names(
 
 \item{extent}{apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin, xmax, ymin, ymax)' but sp bbox, sf bbox, and raster extent also accepted)}
 }
+\value{
+character vector of geometry id 'names'
+}
 \description{
 Obtains the internal 'Feature ID (FID)' for a data source.
 }

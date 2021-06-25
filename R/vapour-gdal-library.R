@@ -6,6 +6,7 @@
 #' used on single element vectors of character strings.
 #' @param crs PROJ4 string
 #' @export
+#' @return WKT2 projection string
 #' @examples
 #' vapour_srs_wkt("+proj=laea +datum=WGS84")
 vapour_srs_wkt <- function(crs) {
@@ -64,7 +65,7 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, s
 #' Return information about the GDAL library in use.
 #'
 #' `vapour_gdal_version` returns the version of GDAL as a string. This corresponds to the "--version"
-#' as described for "GDALVersionInfo". [GDAL documentation](https://www.gdal.org/).
+#' as described for "GDALVersionInfo". [GDAL documentation](https://gdal.org/).
 #'
 #' `vapour_all_drivers` returns the names and capabilities of all available drivers, in a list. This contains:
 #' * `driver` the driver (short) name
@@ -81,6 +82,7 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, s
 #' @export
 #' @aliases vapour_all_drivers vapour_driver
 #' @rdname GDAL-library
+#' @return please see Details, character vectors or lists of character vectors
 #' @examples
 #' vapour_gdal_version()
 #'

@@ -104,6 +104,7 @@ vapour_geom_name <- function(dsource, layer = 0L, sql = "") {
 #' drivers and also clashed with independent use of the `sql` argument.
 #' @inheritParams vapour_read_geometry
 #' @export
+#' @return character vector of geometry id 'names'
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
@@ -130,6 +131,7 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, ski
 #'
 #' @inheritParams vapour_read_geometry
 #' @export
+#' @return named character vector of the GDAL types for each attribute
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")

@@ -38,7 +38,7 @@ library(dplyr)
 
 ## Overview
 
-The vapour package provides access to the basic *read* functions available in [GDAL](https://www.gdal.org/) for both [raster](https://gdal.org/user/raster_data_model.html) and [vector](https://gdal.org/user/vector_data_model.html) data sources. 
+The vapour package provides access to the basic *read* functions available in [GDAL](https://gdal.org/) for both [raster](https://gdal.org/user/raster_data_model.html) and [vector](https://gdal.org/user/vector_data_model.html) data sources. 
 
 The functions are deliberately *lower-level* than these data models and provide access to the
 component entities independently. 
@@ -286,7 +286,7 @@ https://github.com/diminutive/gdalmin
 
 Before those I had worked on getting sp and dplyr to at least work together https://github.com/dis-organization/sp_dplyrexpt and recently rgdal was updated to allow tibbles to be used, something that spbabel and spdplyr really needed to avoid friction. 
 
-Early exploration of allow non-geometry read with rgdal was tried here: https://github.com/r-gris/gladr
+Early exploration of allow non-geometry read with rgdal was tried here: https://github.com/hypertidy/gladr
 
 
 Thanks to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib

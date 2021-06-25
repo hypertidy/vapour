@@ -118,6 +118,8 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' @param min_max logical, control computing min and max values in source ('FALSE' by default)
 #' @param ... currently unused
 #'
+#' @return list with vectors 'geotransform', 'dimXY', 'minmax', 'tilesXY', 'projection', 'bands', 'proj4', 'nodata_value',
+#'  'overviews', 'filelist' see sections in Details for more on each element
 #' @export
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")

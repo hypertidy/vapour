@@ -15,12 +15,15 @@ vapour_driver(dsource)
 \arguments{
 \item{dsource}{data source string (i.e. file name or URL or database connection string)}
 }
+\value{
+please see Details, character vectors or lists of character vectors
+}
 \description{
 Return information about the GDAL library in use.
 }
 \details{
 \code{vapour_gdal_version} returns the version of GDAL as a string. This corresponds to the "--version"
-as described for "GDALVersionInfo". \href{https://www.gdal.org/}{GDAL documentation}.
+as described for "GDALVersionInfo". \href{https://gdal.org/}{GDAL documentation}.
 
 \code{vapour_all_drivers} returns the names and capabilities of all available drivers, in a list. This contains:
 \itemize{
