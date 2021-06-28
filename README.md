@@ -58,8 +58,9 @@ for use. We simplify the approach taken in `vapour_read_raster()` by
 allowing specifying an *extent* and *dimensions* as a minimum, and this
 works for data sources that contain *overviews* (or pyramid
 levels-of-detail) as it automatically chooses an appropriate level for
-the request made. This works for files, urls, database connections, and
-all the various ways of specifying GDAL data sources.
+the request made. This works for files, urls, database connections,
+online tiled image servers, and all the various ways of specifying GDAL
+data sources.
 
 The workflows available are intended to support development of
 applications in R for these vector and [raster
@@ -76,7 +77,7 @@ remotes::install_cran("vapour")
 ```
 
 The development version can be installed from Github, easiest is via the
-hypertidy universe:
+[hypertidy universe](https://hypertidy.r-universe.dev/ui#builds):
 
 ``` r
 options(repos = c(
@@ -121,18 +122,112 @@ features* and *affine-based regular rasters composed of 2D slices*.
 will always be value in having modularity in an ecosystem of tools.)
 
 GDAL’s dynamic resampling of arbitrary raster windows is also very
-useful for interactive tools on local data, and seems under-utilized in
-favour of less accessible online image services.
+useful for interactive tools on local data, and is radically
+under-utilized. A quick example, topography data is available from
+Amazon compute servers, first we need a config file for the source:
+
+``` r
+elevation.tiles.prod <- tempfile(fileext = ".xml")
+writeLines('<GDAL_WMS>
+  <Service name="TMS">
+    <ServerUrl>https://s3.amazonaws.com/elevation-tiles-prod/geotiff/${z}/${x}/${y}.tif</ServerUrl>
+  </Service>
+  <DataWindow>
+    <UpperLeftX>-20037508.34</UpperLeftX>
+    <UpperLeftY>20037508.34</UpperLeftY>
+    <LowerRightX>20037508.34</LowerRightX>
+    <LowerRightY>-20037508.34</LowerRightY>
+    <TileLevel>14</TileLevel>
+    <TileCountX>1</TileCountX>
+    <TileCountY>1</TileCountY>
+    <YOrigin>top</YOrigin>
+  </DataWindow>
+  <Projection>EPSG:3857</Projection>
+  <BlockSizeX>512</BlockSizeX>
+  <BlockSizeY>512</BlockSizeY>
+  <BandsCount>1</BandsCount>
+  <DataType>Int16</DataType>
+  <ZeroBlockHttpCodes>403,404</ZeroBlockHttpCodes>
+  <DataValues>
+    <NoData>-32768</NoData>
+  </DataValues>
+  <Cache/>
+</GDAL_WMS>', elevation.tiles.prod)
+```
+
+``` r
+## we want an extent
+ex <- c(-1, 1, -1, 1) * 5000  ## 10km wide/high region
+## Madrid is at this location
+pt <- cbind(-3.716667, 40.416667)
+crs <- sprintf("+proj=laea +lon_0=%f +lat_0=%f +datum=WGS84", pt[1,1,drop = TRUE], pt[1,2, drop = TRUE])
+dm <- c(256, 256)
+
+
+vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, wkt = crs)
+## now we can use this in a matrix
+image(m <- matrix(vals[[1]], nrow = dm[2], ncol = dm[1])[,dm[2]:1 ])
+```
+
+<img src="README-topo-example-1.png" width="100%" />
+
+``` r
+## using the image list format
+x <- list(x = seq(ex[1], ex[2], length.out = dm[1] + 1), y = seq(ex[3] ,ex[4], length.out = dm[1] + 1), z = m)
+image(x)
+
+## or as a spatial object
+library(raster)
+#> Loading required package: sp
+#> 
+#> Attaching package: 'raster'
+#> The following object is masked from 'package:dplyr':
+#> 
+#>     select
+r <- setValues(raster(extent(ex), nrows = dm[2], ncols = dm[1], crs = crs), vals[[1]])
+contour(r, add = TRUE)
+```
+
+<img src="README-topo-example-2.png" width="100%" />
+
+If we want more detail, go ahead:
+
+``` r
+dm <- c(512, 512)
+vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, wkt = crs)
+(r <- setValues(raster(extent(ex), nrows = dm[2], ncols = dm[1], crs = crs), vals[[1]]))
+#> class      : RasterLayer 
+#> dimensions : 512, 512, 262144  (nrow, ncol, ncell)
+#> resolution : 19.53125, 19.53125  (x, y)
+#> extent     : -5000, 5000, -5000, 5000  (xmin, xmax, ymin, ymax)
+#> crs        : +proj=laea +lat_0=40.416667 +lon_0=-3.716667 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs 
+#> source     : memory
+#> names      : layer 
+#> values     : 562, 742  (min, max)
+plot(r, col = hcl.colors(24))
+```
+
+<img src="README-lod-1.png" width="100%" />
+
+GDAL is obstinately *format agnostic*, the A stands for *Abstraction*
+and we like that in R too, just gives us the data. Here we created a
+base matrix image object, and a raster package *RasterLayer*, but we
+could use the spatstat im, or objects in stars or terra packages, it
+makes no difference to the read-through-warp process.
 
 This partly draws on work done in [the sf
-package](https://github.com/r-spatial/sf) and in packages `rgdal` and
+package](https://github.com/r-spatial/sf) and [the terra
+package](https://github.com/rspatial/terra) and in packages `rgdal` and
 `rgdal2`. I’m amazed that something as powerful and general as GDAL is
-still only available through these lenses, but recent improvements make
-things much easier to use and share. Specifically `Rcpp` means that
-access to external libs is simplified, easier to learn and easier to get
-started and make progress. The other part is that cross-platform support
-is now much better, with more consistency on the libraries available on
-the CRAN machines and in other contexts.
+still only available through these lenses, but maybe more folks will get
+interested over time.
+
+Tecent improvements make things much easier to use and share.
+Specifically `Rcpp` means that access to external libs is simplified,
+easier to learn and easier to get started and make progress. The other
+part is that cross-platform support is now much better, with more
+consistency on the libraries available on the CRAN machines and in other
+contexts.
 
 ## Warnings
 
