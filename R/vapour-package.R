@@ -20,7 +20,11 @@
 #'
 #'#' \tabular{ll}{
 #'  \code{\link{vapour_all_drivers}}         \tab list of all available drivers, with type and features \cr
+#'  \code{\link{vapour_driver}}        \tab report short name of driver that will be used for a data source \cr
 #'  \code{\link{vapour_gdal_version}}        \tab report version of GDAL in use \cr
+#'  \code{\link{vapour_srs_wkt}}        \tab produce WKT projection string from various projection string inputs \cr
+#' \code{\link{vapour_vsi_list}}        \tab report contents of VSI sources \cr
+#'
 #' }
 #'
 #' \tabular{ll}{
@@ -28,17 +32,20 @@
 #'  \code{\link{vapour_raster_info}}        \tab structural metadata of a source \cr
 #'  \code{\link{vapour_read_raster}}        \tab read data direct from a window of a raster band source \cr
 #'  \code{\link{vapour_sds_names}}          \tab list individual raster sources in a source containing subdatasets \cr
+#'  \code{\link{vapour_warp_raster}}  \tab read data direct from a raster source into a specific window \cr
 #' }
 #'
 #' \tabular{ll}{
 #'  \code{\link{vapour_driver}}             \tab report name of the driver used for a given source \cr
+#'  \code{\link{vapour_geom_name}}       \tab report attribute name of geometry \cr
 #'  \code{\link{vapour_geom_summary}}       \tab report simple properties of each feature geometry \cr
 #'  \code{\link{vapour_layer_names}}        \tab list names of vector layers in a data source \cr
-#'  \code{\link{vapour_read_names}}         \tab read the 'names' of features in a layer, the 'FID' \cr
 #'  \code{\link{vapour_read_attributes}}    \tab read attributes of features in a layer, the columnar data associated with each geometry \cr
 #'  \code{\link{vapour_read_extent}}        \tab read the extent, or bounding box, of geometries in a layer \cr
 #'  \code{\link{vapour_read_geometry}}      \tab read geometry in binary (blob, WKB) form \cr
 #'  \code{\link{vapour_read_geometry_text}} \tab read geometry in text form, various formats \cr
+#'  \code{\link{vapour_read_names}}         \tab read the 'names' of features in a layer, the 'FID' \cr
+#'  \code{\link{vapour_read_type}}         \tab read the GDAL types of attributes \cr
 #'  \code{\link{vapour_report_attributes}}  \tab report internal type of each attribute by name \cr
 #' }
 #'
