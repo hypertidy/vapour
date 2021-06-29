@@ -1,3 +1,26 @@
+#' Read GDAL layer info
+#'
+#' Read GDAL layer infor for a vector data source.
+#'
+#' Currently we only return `$projection` which is a list of various formats of the projection metadata.
+#' Use `$projection$Wkt` as most authoritative, but we don't enter into the discussion or limit what
+#' might be done with this (that's up to you). Currently we see
+#' `c("Proj4", "MICoordSys", "PrettyWkt", "Wkt", "EPSG", "XML")` as names of this `$projection` element.
+#'
+#' Future versions might also include the attribute field types, the feature count, the file list, what else?
+#' @inheritParams vapour_read_geometry
+#' @return list with a list of character vectors of projection metadata, see details
+#' @export
+#'
+#' @examples
+#' file <- "list_locality_postcode_meander_valley.tab"
+#' ## A MapInfo TAB file with polygons
+#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+#' names(vapour_layer_info(mvfile)$projection)
+vapour_layer_info <- function(dsource, layer = 0L, sql = "", ...) {
+  list(projection = projection_info_gdal_cpp(dsource, layer = layer, sql = sql))
+}
+
 
 #' Read GDAL feature geometry
 #'

@@ -1,3 +1,8 @@
+# vapour dev
+
+* New function `vapour_layer_info()` to return the previous internal projection string info for a vector   
+ layer. 
+
 # vapour 0.6.5
 
 * Fix to configure for Fedora thanks to Inaki Ucar (@Enchufa2) https://github.com/hypertidy/vapour/issues/95
