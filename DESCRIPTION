@@ -1,6 +1,6 @@
 Package: vapour
 Title: Lightweight Access to the 'Geospatial Data Abstraction Library' ('GDAL')
-Version: 0.6.5.9002
+Version: 0.6.5.9003
 Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-2471-7511")), 
              person("Simon", "Wotherspoon", role = "ctb", comment = "figured out the mechanism for the resampling algorithm"), 
              person("Mark", "Padgham", role = "ctb", comment = "helped get started :)"), 

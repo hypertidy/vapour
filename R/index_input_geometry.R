@@ -1,0 +1,42 @@
+validate_limit_ia <- function(x) {
+  if (is.null(x)) stop("invalid ia, is NULL")
+  if (anyNA(x)) stop("missing values ij")
+  if (!all(x >= 0)) stop("ia values < 0")
+
+  x
+}
+validate_limit_ij <- function(x) {
+  if (is.null(x)) stop("invalid ij, is NULL")
+  if (!length(x) == 2) stop("ij values not of length 2")
+  if (anyNA(x)) stop("missing values ij")
+  if (!all(x >= 0)) stop("ij values < 0")
+  x
+}
+
+validate_limit_fa <- function(x) {
+  if (is.null(x)) stop("invalid fa, is NULL")
+  if (length(x) < 1) stop("no valid fa value")
+  if (anyNA(x) | any(!is.finite(x))) stop("missing values fa")
+  x
+}
+
+vapour_read_geometry_ia <- function(dsource, layer = 0L, sql = "", extent = NA, ia = NULL) {
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
+  ia <- validate_limit_ia(ia)
+  extent <- validate_extent(extent, sql)
+  gdal_dsn_read_geom_ia( dsn = dsource, layer = layer, sql = sql, ex = extent, format = "wkb",  ia = ia)
+}
+vapour_read_geometry_ij <- function(dsource, layer = 0L, sql = "", extent = NA, ij = NULL) {
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
+  ij <- validate_limit_ij(ij)
+  extent <- validate_extent(extent, sql)
+  gdal_dsn_read_geom_ij( dsn = dsource, layer = layer, sql = sql, ex = extent, format = "wkb",  ij = ij)
+}
+
+## this one will crash if fa not in 1:length(nfeatures) - these are 1-based (or arbitrary)
+# vapour_read_geometry_fa <- function(dsource, layer = 0L, sql = "", extent = NA, fa = NULL) {
+#   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
+#   fa <- validate_limit_fa(fa)
+#   extent <- validate_extent(extent, sql)
+#   gdal_dsn_read_geom_fa( dsn = dsource, layer = layer, sql = sql, ex = extent, format = "wkb",  fa = fa)
+# }

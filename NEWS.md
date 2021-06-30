@@ -1,5 +1,8 @@
 # vapour dev
 
+* New *internal* functions `vapour_read_geometry_ia()` and `vapour_read_geometry_ij()` to read by feature id arbitrary
+and range - not sure if will make export ... `_fa()` counterpart is problematic. 
+
 * New function `vapour_layer_info()` to return the previous internal projection string info for a vector   
  layer. 
 

@@ -374,6 +374,14 @@ inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, Numeri
     ii++;
     OGRFeature::DestroyFeature(poFeature);
   }
+  // should we do this? normalize output to avoid idx greater than available?
+  // if (cnt < ia.length()) {
+  //   List out2(cnt);
+  //   for (int ii = 0; ii < cnt; ii++) {
+  //     out2[ii] = out[ii];
+  //   }
+  //   return out2;
+  // }
   return out;
 }
 
