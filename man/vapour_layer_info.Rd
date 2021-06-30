@@ -12,6 +12,8 @@ vapour_layer_info(dsource, layer = 0L, sql = "", ...)
 \item{layer}{integer of layer to work with, defaults to the first (0) or the name of the layer}
 
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
+
+\item{...}{unused, reserved for future use}
 }
 \value{
 list with a list of character vectors of projection metadata, see details

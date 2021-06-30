@@ -9,6 +9,7 @@
 #'
 #' Future versions might also include the attribute field types, the feature count, the file list, what else?
 #' @inheritParams vapour_read_geometry
+#' @param ... unused, reserved for future use
 #' @return list with a list of character vectors of projection metadata, see details
 #' @export
 #'
