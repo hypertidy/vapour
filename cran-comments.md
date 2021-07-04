@@ -1,4 +1,6 @@
-## vapour 0.6.5
+## vapour 0.7.0
+
+Fix for CRAN errors, with NetCDF variant unsupported on windows. Thank you. 
 
 
 ## Test environments

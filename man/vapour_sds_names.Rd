@@ -27,7 +27,10 @@ source, with no subdatasets the value of both entries is the \code{datasource}.
 }
 \examples{
 f <- system.file("extdata/gdal", "sds.nc", package = "vapour")
-vapour_sds_names(f)
-
+## protect from error with netcdf problems
+result <- try(vapour_sds_names(f), silent = TRUE)
+if (!inherits(result, "try-error")) {
+  print(result)
+}
 vapour_sds_names(system.file("extdata", "sst.tif", package = "vapour"))
 }
