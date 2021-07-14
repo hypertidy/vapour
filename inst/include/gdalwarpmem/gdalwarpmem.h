@@ -104,7 +104,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       }
     }
 
-     Rprintf("%i\n", si);
+
   }//si
 
 
