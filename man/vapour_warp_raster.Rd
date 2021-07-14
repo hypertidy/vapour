@@ -21,7 +21,7 @@ vapour_warp_raster(
 )
 }
 \arguments{
-\item{x}{data source string (file name or URL or database connection string)}
+\item{x}{vector of data source names (file name or URL or database connection string)}
 
 \item{bands}{index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used)}
 
@@ -77,7 +77,13 @@ as-is. Note that there may be regions of "zero data" in a warped output,
 separate from propagated missing "NODATA" values in the source.
 
 Argument 'source_wkt' may be used to assign the projection of the source, 'source_extent'
-to assign the extent of the source. Sometimes both are required. Wild combinations of
+to assign the extent of the source. Sometimes both are required.
+
+If multiple sources are specified via 'x' and either 'source_wkt' or 'source_extent' are provided, these
+are applied to every source even if they have valid values already. If this is not sensilble please use VRT
+to wrap the multiple sources first (see the gdalio package for some in-dev ideas).
+
+Wild combinations of
 'source_extent' and/or 'extent' may be used for arbitrary flip orientations, scale and offset. For
 expert usage only. Old versions allowed transform input for target and source but this is now disabled (maybe we'll write
 a new wrapper for that).
