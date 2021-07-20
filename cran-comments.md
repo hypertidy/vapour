@@ -1,6 +1,8 @@
-## vapour 0.7.0
+## vapour 0.7.5
 
-Fix for CRAN errors, with NetCDF variant unsupported on windows. Thank you. 
+Fix for CRAN errors, with unsantized type input (integer input for extent in warper). 
+
+Thank you. 
 
 
 ## Test environments

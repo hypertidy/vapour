@@ -1,4 +1,11 @@
-# vapour dev
+# vapour 0.7.5
+
+* Fixed input type problems found on CRAN, see https://github.com/hypertidy/vapour/issues/110
+
+* Warper input can now include multiple sources. 
+
+
+# vapour 0.7.0
 
 * Fixed CRAN windows problem with NetCDF. 
 
