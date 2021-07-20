@@ -250,7 +250,7 @@ vapour_warp_raster <- function(x, bands = 1L,
     resample <- "near"
   }
   rso <- c("near", "bilinear", "cubic", "cubicspline", "lanczos", "average",
-           "mode", "max", "min", "med", "q1", "q3") ## "sum", "rms")
+           "mode", "max", "min", "med", "q1", "q3", "sum") #, "rms")
 
   if (!resample %in% rso) {
     warning(sprintf("%s resampling not available for warper, using near", resample))
