@@ -20,5 +20,9 @@ Thank you, especially for the extra explanation.
 There is a note about the size of installed directories on Windows and MacOS because 
  of the GDAL and PROJ folders. 
 
+## Reverse dependencies
+
+lazyraster passes check with this version
+
 
 
