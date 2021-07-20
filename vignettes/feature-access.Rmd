@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 The gdalheaders API uses the following (pseudo-code) schemes for feature access. 
 
-The different feature loops, see https://github.com/mdsumner/dirigible/issues/5
+The different feature loops, see https://github.com/dis-organization/dirigible/issues/5
 
 
 ### ALL

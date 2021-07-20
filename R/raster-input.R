@@ -261,10 +261,10 @@ vapour_warp_raster <- function(x, bands = 1L,
 
   vals <- warp_in_memory_gdal_cpp(x, source_WKT = source_wkt,
                                    target_WKT = wkt,
-                                   target_extent = extent,
-                                   target_dim = dimension,
-                                  bands = bands,
-                                  source_extent = source_extent,
+                                   target_extent = as.numeric(extent),
+                                   target_dim = as.integer(dimension),
+                                  bands = as.integer(bands),
+                                  source_extent = as.numeric(source_extent),
                                   resample = resample,
                                   silent = silent)
   if (length(bands) == 1 && bands == 0) {
