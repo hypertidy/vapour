@@ -5,12 +5,6 @@
 
 <!-- badges: start -->
 [![R\_build\_status](https://github.com/hypertidy/vapour/workflows/R-CMD-check/badge.svg)](https://github.com/hypertidy/vapour/actions)
-[![Travis-CI Build
-Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=trusty_release&label=linux)](https://travis-ci.org/hypertidy/vapour)
-[![OSX Build
-Status](http://badges.herokuapp.com/travis/hypertidy/vapour?branch=master&env=BUILD_NAME=osx_release&label=osx)](https://travis-ci.org/hypertidy/vapour)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/hypertidy/vapour?branch=master&svg=true)](https://ci.appveyor.com/project/mdsumner/vapour)[![Coverage\_Status](https://img.shields.io/codecov/c/github/hypertidy/vapour/master.svg)](https://codecov.io/github/hypertidy/vapour?branch=master)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
 [![CRAN\_Download\_Badge](http://cranlogs.r-pkg.org/badges/vapour)](https://cran.r-project.org/package=vapour)
 <!-- badges: end -->
@@ -222,13 +216,6 @@ package](https://github.com/rspatial/terra) and in packages `rgdal` and
 still only available through these lenses, but maybe more folks will get
 interested over time.
 
-Tecent improvements make things much easier to use and share.
-Specifically `Rcpp` means that access to external libs is simplified,
-easier to learn and easier to get started and make progress. The other
-part is that cross-platform support is now much better, with more
-consistency on the libraries available on the CRAN machines and in other
-contexts.
-
 ## Warnings
 
 It’s possible to give problematic “SELECT” statements via the `sql`
@@ -239,10 +226,6 @@ that the geometry is accessible, though the attributes are ignored. This
 means we can allow the user or `dplyr` to create any `SELECT` statement.
 The function `vapour_read_geometry` will return a list of NULLs, in this
 case.
-
-I haven’t tried this against a real database, I’m not sure if we need
-`AsBinary()` around EWKB geoms, for example - but at any rate these can
-be ingested by `sf`.
 
 ## Examples
 

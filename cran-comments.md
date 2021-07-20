@@ -3,7 +3,8 @@
 Fix for CRAN errors, with unsanitized type input (integer input for extent in warper, found on 
  clang-UBSAN tests and reported by CRAN 2021-07-04 and 2021-07-18). 
 
-Thank you. 
+
+Thank you, especially for the extra explanation.  
 
 
 ## Test environments

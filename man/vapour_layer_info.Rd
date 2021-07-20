@@ -19,7 +19,7 @@ vapour_layer_info(dsource, layer = 0L, sql = "", ...)
 list with a list of character vectors of projection metadata, see details
 }
 \description{
-Read GDAL layer infor for a vector data source.
+Read GDAL layer information for a vector data source.
 }
 \details{
 Currently we only return \verb{$projection} which is a list of various formats of the projection metadata.

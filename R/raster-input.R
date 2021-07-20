@@ -113,7 +113,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #' to assign the extent of the source. Sometimes both are required.
 #'
 #' If multiple sources are specified via 'x' and either 'source_wkt' or 'source_extent' are provided, these
-#' are applied to every source even if they have valid values already. If this is not sensilble please use VRT
+#' are applied to every source even if they have valid values already. If this is not sensible please use VRT
 #' to wrap the multiple sources first (see the gdalio package for some in-dev ideas).
 #'
 #' Wild combinations of

@@ -1,6 +1,6 @@
 #' Read GDAL layer info
 #'
-#' Read GDAL layer infor for a vector data source.
+#' Read GDAL layer information for a vector data source.
 #'
 #' Currently we only return `$projection` which is a list of various formats of the projection metadata.
 #' Use `$projection$Wkt` as most authoritative, but we don't enter into the discussion or limit what

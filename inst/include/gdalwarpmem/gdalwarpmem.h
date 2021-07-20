@@ -186,7 +186,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
 
   CPLErr err;
   GDALRasterBandH dstBand, poBand;
-  for (int iband = 0; iband < bands_to_read.size(); iband++) {
+  int sbands = (int)bands_to_read.size();
+  for (int iband = 0; iband < sbands; iband++) {
     if (bands_to_read[iband] > nBands) {
       GDALClose( hRet );
 
