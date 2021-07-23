@@ -1,3 +1,8 @@
+# vapour dev
+
+* Fixed a serious bug caused by 'vapour_raster_info()' attempting to create a character vector from a null pointer
+ when no file list exists for a source (such as an image server). 
+ 
 # vapour 0.7.5
 
 * Fixed input type problems found on CRAN, see https://github.com/hypertidy/vapour/issues/110. Thanks to CRAN 
