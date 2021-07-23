@@ -951,17 +951,25 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
   //poDataset->GetGeoTransform( adfGeoTransform );
   GDALGetGeoTransform(hDataset, adfGeoTransform );
 
+
   // bail out NOW (we have no SDS and/or no rasters)
   // #f <- system.file("h5ex_t_enum.h5", package = "h5")
   if (GDALGetRasterCount(hDataset) < 1) {
     Rcpp::stop("no rasters found in dataset");
   }
+
   Rcpp::DoubleVector trans(6);
   for (int ii = 0; ii < 6; ii++) trans[ii] = adfGeoTransform[ii];
 
   char **pfilelist = GDALGetFileList(hDataset);
-  CharacterVector FileList = CharacterVector::create(*pfilelist);
 
+  CharacterVector FileList;
+  // might be no files, because image server
+  if (pfilelist == nullptr) {
+    FileList = CharacterVector::create("");
+  } else {
+    FileList = CharacterVector::create(*pfilelist);
+  }
   GDALRasterBandH  hBand;
   int             nBlockXSize, nBlockYSize;
   //int             bGotMin, bGotMax;
