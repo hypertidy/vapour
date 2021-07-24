@@ -1,5 +1,9 @@
 # vapour dev
 
+* `vapour_raster_info()` gains 'extent' element. 
+
+* `vapour_report_fields()` new function aliased to `vapour_report_attributes()` and `vapour_read_fields()` to `vapour_read_attributes()` as more sensible names for what they do. The '_attributes' versions might be deprecated in future. 
+
 * `vapour_layer_info()` gains driver, layer name/s, fields, and feature count. 
 
 * `vapour_raster_info()` now returns `$projstring`, the proj string version of `$projection` (was called 'proj4' and previously 

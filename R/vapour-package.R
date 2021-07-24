@@ -40,13 +40,16 @@
 #'  \code{\link{vapour_geom_name}}       \tab report attribute name of geometry \cr
 #'  \code{\link{vapour_geom_summary}}       \tab report simple properties of each feature geometry \cr
 #'  \code{\link{vapour_layer_names}}        \tab list names of vector layers in a data source \cr
-#'  \code{\link{vapour_read_attributes}}    \tab read attributes of features in a layer, the columnar data associated with each geometry \cr
+#'  \code{\link{vapour_layer_info}} \tab list of data source, driver, layer name/s, fields, feature count, projection \cr
 #'  \code{\link{vapour_read_extent}}        \tab read the extent, or bounding box, of geometries in a layer \cr
+#'  \code{\link{vapour_read_fields}}    \tab read attributes of features in a layer, the columnar data associated with each geometry \cr
 #'  \code{\link{vapour_read_geometry}}      \tab read geometry in binary (blob, WKB) form \cr
+#'  \code{\link{vapour_read_geometry_ia}} \tab read geometry by index, arbitrary \cr
+#'  \code{\link{vapour_read_geometry_ij}} \tab read geometry by sequential index, i to j \cr
 #'  \code{\link{vapour_read_geometry_text}} \tab read geometry in text form, various formats \cr
 #'  \code{\link{vapour_read_names}}         \tab read the 'names' of features in a layer, the 'FID' \cr
 #'  \code{\link{vapour_read_type}}         \tab read the GDAL types of attributes \cr
-#'  \code{\link{vapour_report_attributes}}  \tab report internal type of each attribute by name \cr
+#'  \code{\link{vapour_report_fields}}  \tab report internal type of each attribute by name \cr
 #' }
 #'
 #'  As far as possible vapour aims to minimize the level of interpretation
@@ -81,7 +84,7 @@ NULL
 #' f <- system.file("extdata/sst_c.gpkg", package = "vapour")
 #'
 #' ## create an equivalent but class-less form of sst_c  with GeoJSON rather than sf sfc format
-#' atts <- vapour_read_attributes(f)
+#' atts <- vapour_read_fields(f)
 #' dat <- as.data.frame(atts, stringsAsFactors = FALSE)
 #' dat[["json"]] <- vapour_read_geometry_text(f)
 #' names(dat)

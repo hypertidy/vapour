@@ -23,7 +23,7 @@ Also stored in GeoPackage format in
 f <- system.file("extdata/sst_c.gpkg", package = "vapour")
 
 ## create an equivalent but class-less form of sst_c  with GeoJSON rather than sf sfc format
-atts <- vapour_read_attributes(f)
+atts <- vapour_read_fields(f)
 dat <- as.data.frame(atts, stringsAsFactors = FALSE)
 dat[["json"]] <- vapour_read_geometry_text(f)
 names(dat)

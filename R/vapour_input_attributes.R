@@ -120,35 +120,43 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, ski
   unlist(lapply(fids, function(x) if (is.null(x)) NA_real_ else x))
 }
 
-#' Read feature field attributes types.
+#' Read feature field types.
 #'
 #' Obtains the internal type-constant name for the data attributes in a source.
+#'
 #' Use this to compare the interpreted versions converted into R types by
-#' `vapour_read_attributes`.
+#' `vapour_read_fields`.
+#'
+#' This and [vapour_read_fields()] are aliased to older versions named 'vapour_report_attributes()' and
+#' 'vapour_read_attributes()', but "field" is a clearer and more sensible name (in our opinion).
 #'
 #' These are defined for the enum OGRFieldType in GDAL itself.
 #' \url{https://gdal.org/doxygen/ogr__core_8h.html#a787194bea637faf12d61643124a7c9fc}
 #'
 #' @inheritParams vapour_read_geometry
 #' @export
-#' @return named character vector of the GDAL types for each attribute
+#' @return named character vector of the GDAL types for each field
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' vapour_report_attributes(mvfile)
+#' vapour_report_fields(mvfile)
 #'
 #' ## modified by sql argument
-#' vapour_report_attributes(mvfile,
+#' vapour_report_fields(mvfile,
 #'   sql = "SELECT POSTCODE, NAME FROM list_locality_postcode_meander_valley")
-vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
+vapour_report_fields <- function(dsource, layer = 0L, sql = "") {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   report_fields_gdal_cpp(dsource, layer, sql = sql)
 }
 
-
-#' Read feature attribute data
+#' @name vapour_report_fields
+#' @export
+vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
+  vapour_report_fields(dsource, layer, sql)
+}
+#' Read feature field data
 #'
-#' Read features attributes, optionally after SQL execution.
+#' Read features fields (attributes), optionally after SQL execution.
 #'
 #' Internal types are not fully supported, there are straightforward conversions
 #' for numeric, integer (32-bit) and string types. Date, Time, DateTime are
@@ -158,16 +166,16 @@ vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' att <- vapour_read_attributes(mvfile)
+#' att <- vapour_read_fields(mvfile)
 #' str(att)
 #' sq <- "SELECT * FROM list_locality_postcode_meander_valley WHERE FID < 5"
-#' (att <- vapour_read_attributes(mvfile, sql = sq))
+#' (att <- vapour_read_fields(mvfile, sql = sq))
 #' pfile <- "list_locality_postcode_meander_valley.tab"
 #' dsource <- system.file(file.path("extdata/tab", pfile), package="vapour")
 #' SQL <- "SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7300"
-#' vapour_read_attributes(dsource, sql = SQL)
+#' vapour_read_fields(dsource, sql = SQL)
 #' @export
-vapour_read_attributes <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+vapour_read_fields <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
@@ -177,5 +185,8 @@ vapour_read_attributes <- function(dsource, layer = 0L, sql = "", limit_n = NULL
                        fid_column_name = character(0))
 }
 
-
-
+#' @name vapour_read_fields
+#' @export
+vapour_read_attributes <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+ vapour_read_fields(dsource, layer, sql, limit_n, skip_n, extent)
+}

@@ -2,6 +2,8 @@
 #'
 #' Read GDAL layer information for a vector data source.
 #'
+#' Set `extent` and/or `count` to `FALSE` to avoid calculating them if not needed, it might take some time.
+#'
 #' The layer information elements are
 #'
 #' \describe{
@@ -9,8 +11,9 @@
 #'  \item{driver}{the short name of the driver used}
 #'  \item{layer}{the name of the layer queried}
 #'  \item{layer_names}{the name/s of all available layers (see [vapour_layer_names])}
-#'  \item{fields}{a named vector of field types (see [vapour_report_attributes])}
-#'  \item{count}{the number of features in this data source}
+#'  \item{fields}{a named vector of field types (see [vapour_report_fields])}
+#'  \item{count}{the number of features in this data source (can be turned off to avoid the extra work `count`)}
+#'  \item{extent}{the extent of all features xmin, xmax, ymin, ymax (can be turned off to avoid the extra work `extent`)}
 #'  \item{projection}{a list of character strings, see next}
 #'  }
 #'
@@ -19,27 +22,42 @@
 #' might be done with this (that's up to you). Currently we see
 #' `c("Proj4", "MICoordSys", "PrettyWkt", "Wkt", "EPSG", "XML")` as names of this `$projection` element.
 #'
+#' To get the geometry type/s of a layer see [vapour_read_type()].
+#'
 #' @inheritParams vapour_read_geometry
 #' @param ... unused, reserved for future use
+#' @param extent logical to control if extent calculated and returned, TRUE by default (set to FALSE to avoid the extra calculation and missing value is the result)
+#' @param count logical to control if count calculated and returned, TRUE by default (set to FALSE to avoid the extra calculation and missing value is the result)
 #' @return list with a list of character vectors of projection metadata, see details
 #' @export
-#'
+#' @seealso vapour_geom_name vapour_layer_names vapour_report_fields vapour_read_fields vapour_driver vapour_read_names
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' ## A MapInfo TAB file with polygons
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' info <- vapour_layer_info(mvfile)
 #' names(info$projection)
-vapour_layer_info <- function(dsource, layer = 0L, sql = "", ...) {
+vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE, count = TRUE) {
   driver <- vapour_driver(dsource)
   geom_name <- vapour_geom_name(dsource, layer, sql)
   layer_names <- vapour_layer_names(dsource)
-  fields <- vapour_report_attributes(dsource, layer, sql)
-  count <- length(vapour_read_names(dsource, layer, sql))
+  fields <- vapour_report_fields(dsource, layer, sql)
+  if (count) {
+    cnt <- length(vapour_read_names(dsource, layer, sql))
+  } else {
+    cnt <- NA_integer_
+  }
+  if (extent) {
+    exts <- do.call(rbind, vapour_read_extent(dsource, layer, sql))
+    ext <- c(min(exts[,1L], na.rm = TRUE), max(exts[,2L], na.rm = TRUE), min(exts[,3L], na.rm = TRUE), max(exts[,4L], na.rm = TRUE))
+  } else {
+    ext <- rep(NA_real_, 4L)
+  }
   list(dsn = dsource, driver = driver, layer = layer_names[layer + 1],
        layer_names = layer_names,
        fields = fields,
-       count = count,
+       count = cnt,
+       extent = ext,
        projection = projection_info_gdal_cpp(dsource, layer = layer, sql = sql))
 }
 

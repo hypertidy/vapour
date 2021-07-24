@@ -37,7 +37,7 @@ test_that("raster info works", {
 
   f1 <- system.file("extdata/volcano_overview.tif", package = "vapour", mustWork = TRUE)
   f2 <- system.file("extdata/volcano.tif", package = "vapour", mustWork = TRUE)
-
+  expect_equal(vapour_raster_info(f2)$extent, c(0, 61, 0, 87))
   expect_true(vapour_raster_info(f2)$overviews == 0L)
   expect_equal(vapour_raster_info(f1)$overviews, ## Overviews: 31x44, 16x22, 8x11, 4x6
                c(4L, 31L, 44L, 16L, 22L, 8L, 11L, 4L, 6L))
