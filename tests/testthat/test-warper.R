@@ -71,3 +71,27 @@ test_that("warper gives the right number of values", {
   expect_message(vapour_warp_raster(f, bands = 1, extent = c(145, 146, 90, -48), dimension = c(300L, 301L))[[1L]], "expert use")
 
 })
+
+test_that("giving source extent and projection works", {
+  expect_named(
+    vapour_warp_raster(f, extent = c(0, 67, 0, 81), source_extent = c(0, 67, 0, 81)/2,
+                     wkt = "+proj=laea", source_wkt = "+proj=laea", dimension = c(10, 10)), "Band1"
+  )
+})
+test_that("robust to bad inputs", {
+  expect_error(vapour_warp_raster(c(f, "afile"), extent = c(0, 1, 0, 1),
+                                  wkt = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10))
+  )
+
+  expect_named(vapour_warp_raster(c(f, f), extent = c(0, 1, 0, 1),
+                     wkt = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10)), "Band1")
+
+  expect_named(vapour_warp_raster(f, extent = c(0, 1, 0, 1),
+                                  wkt = "+proj=laea",  dimension = c(10, 10)))
+
+  expect_error(vapour_warp_raster(f, extent = c(0, 1, 0, 1), band = 2,
+                                  wkt = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10)),
+               "band requested exceeds"
+  )
+
+})
