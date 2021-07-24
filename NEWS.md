@@ -1,5 +1,12 @@
 # vapour dev
 
+* `vapour_layer_info()` gains driver, layer name/s, fields, and feature count. 
+
+* `vapour_raster_info()` now returns `$projstring`, the proj string version of `$projection` (was called 'proj4' and previously 
+ unimplemented). The value may be an empty string. 
+ 
+* File list from `vapour_raster_info()` now returns a missing value (NA) when no files are in the list. 
+
 * Fixed a serious bug caused by 'vapour_raster_info()' attempting to create a character vector from a null pointer
  when no file list exists for a source (such as an image server). 
  

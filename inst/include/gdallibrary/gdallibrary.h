@@ -966,7 +966,7 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
   CharacterVector FileList;
   // might be no files, because image server
   if (pfilelist == nullptr) {
-    FileList = CharacterVector::create("");
+    FileList = CharacterVector::create(NA_STRING);
   } else {
     FileList = CharacterVector::create(*pfilelist);
   }
@@ -1024,7 +1024,6 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
   const char *proj;
   proj = GDALGetProjectionRef(hDataset);
   //https://gis.stackexchange.com/questions/164279/how-do-i-create-ogrspatialreference-from-raster-files-georeference-c
-  //char *proj_tmp = (char *) proj;
   out[4] = Rcpp::CharacterVector::create(proj);
   names[4] = "projection";
 
@@ -1033,12 +1032,12 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
   out[5] = nBands;
   names[5] = "bands";
 
-  //char *stri;
-  //OGRSpatialReference oSRS;
-  //oSRS.importFromWkt(&proj_tmp);
-  //oSRS.exportToProj4(&stri);
-  out[6] =  Rcpp::CharacterVector::create(""); //Rcpp::CharacterVector::create(stri);
-  names[6] = "proj4";
+  char *stri;
+  OGRSpatialReference oSRS;
+  oSRS.importFromWkt(&proj);
+  oSRS.exportToProj4(&stri);
+  out[6] =  Rcpp::CharacterVector::create(stri); //Rcpp::CharacterVector::create(stri);
+  names[6] = "projstring";
 
   int succ;
   out[7] = GDALGetRasterNoDataValue(hBand, &succ);

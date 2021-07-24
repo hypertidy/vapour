@@ -39,9 +39,10 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' \item{tilesXY}{dimensions x-y of internal tiling scheme}
 #' \item{projection}{text version of map projection parameter string}
 #' \item{bands}{number of bands in the dataset}
-#' \item{proj4}{not implemented}
+#' \item{projstring}{the proj string version of 'projection'}
 #' \item{nodata_value}{not implemented}
 #' \item{overviews}{the number and size of any available overviews}
+#' \item{filelist}{the list of files involved (may be none, and so will be a single NA character value)}
 #' }
 #'
 #' On access vapour functions will report on the existence of subdatasets while

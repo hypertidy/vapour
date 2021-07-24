@@ -2,12 +2,23 @@
 #'
 #' Read GDAL layer information for a vector data source.
 #'
-#' Currently we only return `$projection` which is a list of various formats of the projection metadata.
+#' The layer information elements are
+#'
+#' \describe{
+#'  \item{dsn}{the data source name}
+#'  \item{driver}{the short name of the driver used}
+#'  \item{layer}{the name of the layer queried}
+#'  \item{layer_names}{the name/s of all available layers (see [vapour_layer_names])}
+#'  \item{fields}{a named vector of field types (see [vapour_report_attributes])}
+#'  \item{count}{the number of features in this data source}
+#'  \item{projection}{a list of character strings, see next}
+#'  }
+#'
+#' `$projection` is a list of various formats of the projection metadata.
 #' Use `$projection$Wkt` as most authoritative, but we don't enter into the discussion or limit what
 #' might be done with this (that's up to you). Currently we see
 #' `c("Proj4", "MICoordSys", "PrettyWkt", "Wkt", "EPSG", "XML")` as names of this `$projection` element.
 #'
-#' Future versions might also include the attribute field types, the feature count, the file list, what else?
 #' @inheritParams vapour_read_geometry
 #' @param ... unused, reserved for future use
 #' @return list with a list of character vectors of projection metadata, see details
@@ -17,9 +28,19 @@
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' ## A MapInfo TAB file with polygons
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-#' names(vapour_layer_info(mvfile)$projection)
+#' info <- vapour_layer_info(mvfile)
+#' names(info$projection)
 vapour_layer_info <- function(dsource, layer = 0L, sql = "", ...) {
-  list(projection = projection_info_gdal_cpp(dsource, layer = layer, sql = sql))
+  driver <- vapour_driver(dsource)
+  geom_name <- vapour_geom_name(dsource, layer, sql)
+  layer_names <- vapour_layer_names(dsource)
+  fields <- vapour_report_attributes(dsource, layer, sql)
+  count <- length(vapour_read_names(dsource, layer, sql))
+  list(dsn = dsource, driver = driver, layer = layer_names[layer + 1],
+       layer_names = layer_names,
+       fields = fields,
+       count = count,
+       projection = projection_info_gdal_cpp(dsource, layer = layer, sql = sql))
 }
 
 
