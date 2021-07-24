@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.5.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.5.9003</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@
       <h1 data-toc-skip>Vapour - lightweight GDAL</h1>
                         <h4 class="author">Michael D. Sumner</h4>
             
-            <h4 class="date">2021-07-23</h4>
+            <h4 class="date">2021-07-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/hypertidy/vapour/blob/master/vignettes/vapour.Rmd"><code>vignettes/vapour.Rmd</code></a></small>
       <div class="hidden name"><code>vapour.Rmd</code></div>
@@ -104,17 +104,17 @@
 
     
     
-<p>There’s a function <code>vapour_read_attributes</code> that returns the attributes as list of vectors.</p>
+<p>There’s a function <code>vapour_read_fields</code> that returns the fields (attributes) as list of vectors.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"point.shp"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hypertidy/vapour">vapour</a></span><span class="op">)</span>
-<span class="fu"><a href="../reference/vapour_read_attributes.html">vapour_read_attributes</a></span><span class="op">(</span><span class="va">pfile</span><span class="op">)</span>
+<span class="fu"><a href="../reference/vapour_read_fields.html">vapour_read_fields</a></span><span class="op">(</span><span class="va">pfile</span><span class="op">)</span>
 <span class="co">#&gt; $a</span>
 <span class="co">#&gt;  [1]  1  2  3  4  5  6  7  8  9 10</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mvfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"tab"</span>, <span class="st">"list_locality_postcode_meander_valley.tab"</span>, package<span class="op">=</span><span class="st">"vapour"</span><span class="op">)</span>
 
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="../reference/vapour_read_attributes.html">vapour_read_attributes</a></span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span>,  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="../reference/vapour_read_fields.html">vapour_read_fields</a></span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span>,  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>
 <span class="co">#&gt; [1] 58 11</span>
@@ -185,7 +185,7 @@
 <span class="co">#&gt; The following objects are masked from 'package:base':</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     intersect, setdiff, setequal, union</span>
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="../reference/vapour_read_attributes.html">vapour_read_attributes</a></span><span class="op">(</span><span class="va">cfile</span><span class="op">)</span>,  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="../reference/vapour_read_fields.html">vapour_read_fields</a></span><span class="op">(</span><span class="va">cfile</span><span class="op">)</span>,  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>wkt <span class="op">=</span> <span class="fu"><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_text</a></span><span class="op">(</span><span class="va">cfile</span>, textformat <span class="op">=</span> <span class="st">"wkt"</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>
 <span class="co">#&gt; Rows: 7</span>
@@ -300,8 +300,8 @@
 <span class="co">#&gt; $bands</span>
 <span class="co">#&gt; [1] 1</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; $proj4</span>
-<span class="co">#&gt; [1] ""</span>
+<span class="co">#&gt; $projstring</span>
+<span class="co">#&gt; [1] "+proj=longlat +datum=WGS84 +no_defs"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $nodata_value</span>
 <span class="co">#&gt; [1] -3.4e+38</span>
@@ -310,7 +310,10 @@
 <span class="co">#&gt; integer(0)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $filelist</span>
-<span class="co">#&gt; [1] "/Users/runner/work/_temp/Library/vapour/extdata/sst.tif"</span></code></pre></div>
+<span class="co">#&gt; [1] "/Users/runner/work/_temp/Library/vapour/extdata/sst.tif"</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $extent</span>
+<span class="co">#&gt; [1] 140.00000 150.01000 -60.01833 -39.99722</span></code></pre></div>
 <p>Read raster data (requires explicit setting of <code>window</code> argument, and is not useful without being used in the context of the raster dimensions).</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/vapour_read_raster.html">vapour_read_raster</a></span><span class="op">(</span><span class="va">f</span>, window <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">6</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>
@@ -357,7 +360,7 @@
 <p>SQL is available for general GDAL vector data.</p>
 <p>Note that each lower-level function accepts a <code>sql</code> argument, which sends a query to the GDAL library to be executed against the data source, this can create custom layers and so is independent of and ignores the <code>layer</code> argument. Note that the same sql statement can be passed to the geometry readers, so we get the matching sets of information. <code>vapour_read_geometry</code> will return NULL for each missing geometry if the statement doesn’t include geometry explicitly or implicitly, but <code>vapour_read_geometry</code>, <code>vapour_read_geometry_text</code> and <code>vapour_read_extent</code> all explicitly modify the statement "SELECT *". (We are also assuming the data source hasn’t changed between accesses … let me know if this causes you problems!).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/vapour_read_attributes.html">vapour_read_attributes</a></span><span class="op">(</span><span class="va">mvfile</span>, sql <span class="op">=</span> <span class="st">"SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE &lt; 7291"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="../reference/vapour_read_fields.html">vapour_read_fields</a></span><span class="op">(</span><span class="va">mvfile</span>, sql <span class="op">=</span> <span class="st">"SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE &lt; 7291"</span><span class="op">)</span>
 <span class="co">#&gt; $NAME</span>
 <span class="co">#&gt;  [1] "Frankford"          "Bridgenorth"        "Summerhill"        </span>
 <span class="co">#&gt;  [4] "Blackstone Heights" "Lake St Clair"      "Trevallyn"         </span>
@@ -369,7 +372,7 @@
 <span class="co">#&gt;  [8] "CPR5329" "CPR5326" "CPR5325"</span>
 
 
-<span class="fu"><a href="../reference/vapour_read_attributes.html">vapour_read_attributes</a></span><span class="op">(</span><span class="va">mvfile</span>, sql <span class="op">=</span> <span class="st">"SELECT NAME, PLAN_REF, FID FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7306"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/vapour_read_fields.html">vapour_read_fields</a></span><span class="op">(</span><span class="va">mvfile</span>, sql <span class="op">=</span> <span class="st">"SELECT NAME, PLAN_REF, FID FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7306"</span><span class="op">)</span>
 <span class="co">#&gt; $NAME</span>
 <span class="co">#&gt; [1] "Cradle Mountain" "Mount Roland"    "Middlesex"       "Lower Beulah"   </span>
 <span class="co">#&gt; </span>
@@ -386,18 +389,18 @@
 <span class="va">mvfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/tab"</span>, <span class="va">file0</span>, package<span class="op">=</span><span class="st">"vapour"</span><span class="op">)</span>
 <span class="va">layer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">".tab$"</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/basename.html">basename</a></span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span><span class="op">)</span>
 <span class="co">## get the number of features by FID (DISTINCT should be redundant here)</span>
-<span class="fu"><a href="../reference/vapour_read_attributes.html">vapour_read_attributes</a></span><span class="op">(</span><span class="va">mvfile</span>, sql <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"SELECT COUNT(DISTINCT FID) AS nfeatures FROM %s"</span>, <span class="va">layer</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="../reference/vapour_read_fields.html">vapour_read_fields</a></span><span class="op">(</span><span class="va">mvfile</span>, sql <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"SELECT COUNT(DISTINCT FID) AS nfeatures FROM %s"</span>, <span class="va">layer</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; $nfeatures</span>
 <span class="co">#&gt; [1] 58</span>
 
 <span class="co">## note how TAB is 1-based </span>
-<span class="fu"><a href="../reference/vapour_read_attributes.html">vapour_read_attributes</a></span><span class="op">(</span><span class="va">mvfile</span>, sql <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"SELECT COUNT(*) AS n FROM %s WHERE FID &lt; 2"</span>, <span class="va">layer</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="../reference/vapour_read_fields.html">vapour_read_fields</a></span><span class="op">(</span><span class="va">mvfile</span>, sql <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"SELECT COUNT(*) AS n FROM %s WHERE FID &lt; 2"</span>, <span class="va">layer</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; $n</span>
 <span class="co">#&gt; [1] 1</span>
 
 <span class="co">## but SHP is 0-based</span>
 <span class="va">shp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/point.shp"</span>, package<span class="op">=</span><span class="st">"vapour"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/vapour_read_attributes.html">vapour_read_attributes</a></span><span class="op">(</span><span class="va">shp</span>, sql <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"SELECT COUNT(*) AS n FROM %s WHERE FID &lt; 2"</span>, <span class="st">"point"</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="../reference/vapour_read_fields.html">vapour_read_fields</a></span><span class="op">(</span><span class="va">shp</span>, sql <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"SELECT COUNT(*) AS n FROM %s WHERE FID &lt; 2"</span>, <span class="st">"point"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; $n</span>
 <span class="co">#&gt; [1] 2</span></code></pre></div>
 <p>See <a href="https://gdal.org/user/ogr_sql_dialect.html" class="uri">https://gdal.org/user/ogr_sql_dialect.html</a></p>

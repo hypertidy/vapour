@@ -82,7 +82,7 @@ vapour_sds_names for more." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.5.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.5.9003</span>
       </span>
     </div>
 
@@ -178,18 +178,24 @@ Subdatasets may be specified by number, starting at 1. See
 
     <p>The structural metadata are</p>
 <dl>
+<dt>extent</dt><dd><p>the extent of the data, xmin, xmax, ymin, ymax - these are the lower left and upper right corners of pixels</p></dd>
 <dt>geotransform</dt><dd><p>the affine transform</p></dd>
 <dt>dimXY</dt><dd><p>dimensions x-y, columns*rows</p></dd>
 <dt>minmax</dt><dd><p>numeric values of the computed min and max from the first band (optional)</p></dd>
 <dt>tilesXY</dt><dd><p>dimensions x-y of internal tiling scheme</p></dd>
 <dt>projection</dt><dd><p>text version of map projection parameter string</p></dd>
 <dt>bands</dt><dd><p>number of bands in the dataset</p></dd>
-<dt>proj4</dt><dd><p>not implemented</p></dd>
+<dt>projstring</dt><dd><p>the proj string version of 'projection'</p></dd>
 <dt>nodata_value</dt><dd><p>not implemented</p></dd>
 <dt>overviews</dt><dd><p>the number and size of any available overviews</p></dd>
+<dt>filelist</dt><dd><p>the list of files involved (may be none, and so will be a single NA character value)</p></dd>
+
 
 </dl>
 
+<p>Note that the geotransform is a kind of obscure combination of the extent and dimension, I don't find it
+useful and modern GDAL is moving away from needing it so much. Extent is more sensible and used in many places in
+a straightforward way.</p>
 <p>On access vapour functions will report on the existence of subdatasets while
 defaulting to the first subdataset found.</p>
     <h2 class="hasAnchor" id="subdatasets"><a class="anchor" href="#subdatasets"></a>Subdatasets</h2>
@@ -281,8 +287,8 @@ their dimensions will be listed as pairs of x,y values.</p>
 #&gt; $bands
 #&gt; [1] 1
 #&gt; 
-#&gt; $proj4
-#&gt; [1] ""
+#&gt; $projstring
+#&gt; [1] "+proj=longlat +datum=WGS84 +no_defs"
 #&gt; 
 #&gt; $nodata_value
 #&gt; [1] -3.4e+38
@@ -292,6 +298,9 @@ their dimensions will be listed as pairs of x,y values.</p>
 #&gt; 
 #&gt; $filelist
 #&gt; [1] "/Users/runner/work/_temp/Library/vapour/extdata/sst.tif"
+#&gt; 
+#&gt; $extent
+#&gt; [1] 140.00000 150.01000 -60.01833 -39.99722
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
