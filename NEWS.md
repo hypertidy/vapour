@@ -1,4 +1,6 @@
-# vapour dev
+# vapour 0.7.6
+
+* Include OFTBinary in supported field types. 
 
 * REALLY fixed the CRAN UBSAN problem. Listed here: https://github.com/hypertidy/vapour/issues/110
 

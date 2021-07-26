@@ -207,6 +207,9 @@ inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, int n_features, 
     case OFTInteger64List:
       out[i] = Rcpp::List(n_features);
       break;
+    case OFTBinary:
+      out[i] = Rcpp::List(n_features);
+      break;
     case OFTString:
     default:
       out[i] = Rcpp::CharacterVector(n_features);
@@ -308,6 +311,21 @@ inline List gdal_read_fields(CharacterVector dsn,
           nv[lFeature] = poFeature->GetFieldAsString( iField );
 
         }
+
+        if( poFieldDefn->GetType() == OFTBinary ) {
+          Rcpp::List nv;
+          nv = out[iField];
+          //nv = out[iField];
+          int bytecount;
+          const GByte *bin = poFeature->GetFieldAsBinary(iField, &bytecount);
+          RawVector rb(bytecount);
+         for (int ib = 0; ib < bytecount; ib++) {
+           rb[ib] = bin[ib];
+         }
+         nv[lFeature] = rb;
+        }
+
+
       }
       // so we start counting
       lFeature = lFeature + 1;

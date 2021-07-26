@@ -1,11 +1,8 @@
-## vapour 0.7.5
+## vapour 0.8.0
 
-Fix for CRAN errors, with unsanitized type input (integer input for extent in warper, found on 
- clang-UBSAN tests and reported by CRAN 2021-07-04 and 2021-07-18). 
+Fix for CRAN errors, with unsanitized type input (int type for double in warper nodata) found on  clang-UBSAN tests and reported by CRAN on 2021-07-25. 
 
-
-Thank you, especially for the extra explanation.  
-
+Thank you!
 
 ## Test environments
 
@@ -22,7 +19,7 @@ There is a note about the size of installed directories on Windows and MacOS bec
 
 ## Reverse dependencies
 
-lazyraster passes check with this version
+{lazyraster} passes check with this version
 
 
 
