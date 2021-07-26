@@ -1,5 +1,7 @@
 # vapour dev
 
+* REALLY fixed the CRAN UBSAN problem. Listed here: https://github.com/hypertidy/vapour/issues/110
+
 * `vapour_raster_info()` gains 'extent' element. 
 
 * `vapour_report_fields()` new function aliased to `vapour_report_attributes()` and `vapour_read_fields()` to `vapour_read_attributes()` as more sensible names for what they do. The '_attributes' versions might be deprecated in future. 

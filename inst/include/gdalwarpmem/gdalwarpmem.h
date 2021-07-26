@@ -128,12 +128,9 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
     papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
   }
-  int bHasNoData = FALSE;
 
-  const auto poFirstBand = GDALGetRasterBand(poSrcDS[dsi0], 1);
+  //const auto poFirstBand = GDALGetRasterBand(poSrcDS[dsi0], 1);
 
-  int aerr;
-  bHasNoData =  GDALGetRasterNoDataValue(poFirstBand, &aerr);
   papszArg = CSLAddString(papszArg, "-r");
   papszArg = CSLAddString(papszArg, resample[0]);
   papszArg = CSLAddString(papszArg, "-wo");
@@ -142,10 +139,6 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   papszArg = CSLAddString(papszArg, "-wo");
   papszArg = CSLAddString(papszArg, "SOURCE_EXTRA=64");
 
-  //  papszArg = CSLAddString(papszArg, "-wo");
-  // papszArg = CSLAddString(papszArg, "NUM_THREADS=ALL_CPUS");
-
-  const bool bHasMask = GDALGetMaskFlags(poFirstBand);
 
   const int nBands = GDALGetRasterCount(poSrcDS[dsi0]);
   int band_length = bands.size();
@@ -184,7 +177,6 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   int hasScale, hasOffset;
   double scale, offset;
 
-  CPLErr err;
   GDALRasterBandH dstBand, poBand;
   int sbands = (int)bands_to_read.size();
   for (int iband = 0; iband < sbands; iband++) {
@@ -208,9 +200,11 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     int actual_XSize = GDALGetRasterBandXSize(dstBand);
     int actual_YSize = GDALGetRasterBandYSize(dstBand);
     std::vector<double> double_scanline( actual_XSize * actual_YSize );
+    CPLErr err;
     err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,
                        &double_scanline[0], actual_XSize, actual_YSize, GDT_Float64,
                        0, 0);
+    if (err) Rprintf("we have a problem at RasterIO\n");
     NumericVector res(actual_XSize * actual_YSize );
 
     // consider doing at R level, at least for MEM
@@ -229,11 +223,12 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
         std::replace(double_scanline.begin(), double_scanline.end(), naflag, (double) NAN);
       }
     }
-    for (int i = 0; i < (double_scanline.size()); i++) {
-      dval = double_scanline[i];
+    long unsigned int isi;
+    for (isi = 0; isi < (double_scanline.size()); isi++) {
+      dval = double_scanline[isi];
       if (hasScale) dval = dval * scale;
       if (hasOffset) dval = dval + offset;
-      res[i] = dval;
+      res[isi] = dval;
     }
 
     outlist[iband] = res;
