@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.5.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.6</span>
       </span>
     </div>
 
@@ -137,6 +137,21 @@
       <small>Source: <a href='https://github.com/hypertidy/vapour/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="vapour-076" class="section level1">
+<h1 class="page-header" data-toc-text="0.7.6">
+<a href="#vapour-076" class="anchor"></a>vapour 0.7.6<small> Unreleased </small>
+</h1>
+<ul>
+<li><p>Include OFTBinary in supported field types.</p></li>
+<li><p>REALLY fixed the CRAN UBSAN problem. Listed here: <a href="https://github.com/hypertidy/vapour/issues/110" class="uri">https://github.com/hypertidy/vapour/issues/110</a></p></li>
+<li><p><code><a href="../reference/vapour_raster_info.html">vapour_raster_info()</a></code> gains ‘extent’ element.</p></li>
+<li><p><code><a href="../reference/vapour_report_fields.html">vapour_report_fields()</a></code> new function aliased to <code><a href="../reference/vapour_report_fields.html">vapour_report_attributes()</a></code> and <code><a href="../reference/vapour_read_fields.html">vapour_read_fields()</a></code> to <code><a href="../reference/vapour_read_fields.html">vapour_read_attributes()</a></code> as more sensible names for what they do. The ’_attributes’ versions might be deprecated in future.</p></li>
+<li><p><code><a href="../reference/vapour_layer_info.html">vapour_layer_info()</a></code> gains driver, layer name/s, fields, and feature count.</p></li>
+<li><p><code><a href="../reference/vapour_raster_info.html">vapour_raster_info()</a></code> now returns <code>$projstring</code>, the proj string version of <code>$projection</code> (was called ‘proj4’ and previously unimplemented). The value may be an empty string.</p></li>
+<li><p>File list from <code><a href="../reference/vapour_raster_info.html">vapour_raster_info()</a></code> now returns a missing value (NA) when no files are in the list.</p></li>
+<li><p>Fixed a serious bug caused by ‘vapour_raster_info()’ attempting to create a character vector from a null pointer when no file list exists for a source (such as an image server).</p></li>
+</ul>
+</div>
     <div id="vapour-075" class="section level1">
 <h1 class="page-header" data-toc-text="0.7.5">
 <a href="#vapour-075" class="anchor"></a>vapour 0.7.5<small> 2021-07-21 </small>
