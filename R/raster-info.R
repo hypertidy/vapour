@@ -12,7 +12,7 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
   if (wasnull) sds <- 1
   if (!is.numeric(sds)) stop("sds must be specified by number, starting from 1")
   if (wasnull && nrow(datavars) > 1L) {
-    varnames <- unlist(lapply(strsplit(datavars$subdataset, ":"), utils::tail, 1L))
+    varnames <- unlist(lapply(strsplit(datavars$subdataset, ":"), utils::tail, 1L), use.names = FALSE)
     message(sprintf("subdataset (variable) used is '%s'\n", varnames[1]))
     message("If that is not correct (or to suppress this message) choose 'sds' by number from ",
       paste(sprintf("\n%i: '%s'", seq_len(nrow(datavars)), varnames), collapse = ", "))
@@ -216,7 +216,7 @@ vapour_sds_names <- function(x) {
     sources0 <- sources
     if (!sum(grepl("NAME=", sources)) == length(sources)/2) warning("sds mismatch")
     sources <- sources[seq(1, length(sources), by = 2L)]
-    sources <- unlist(lapply(strsplit(sources, "="), "[", 2))
+    sources <- unlist(lapply(strsplit(sources, "="), "[", 2), use.names = FALSE)
   }
   list(datasource = rep(x, length(sources)), subdataset = sources)
 }

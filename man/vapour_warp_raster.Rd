@@ -96,5 +96,5 @@ vals <- vapour_warp_raster(f, extent = c(-b, b, -b, b),
                              dimension = c(186, 298),
                              wkt = vapour_srs_wkt(prj))
 image(list(x = seq(-b, b, length.out = 187), y = seq(-b, b, length.out = 298),
-    z = matrix(unlist(vals), 186)[,298:1]), asp = 1)
+    z = matrix(unlist(vals, use.names = FALSE), 186)[,298:1]), asp = 1)
 }

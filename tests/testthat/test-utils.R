@@ -6,7 +6,7 @@ test_that("utilities work", {
   drivers <- as.data.frame(vapour_all_drivers(), stringsAsFactors = FALSE)
 
   drivers %>% expect_s3_class("data.frame") %>% expect_named(c("driver", "name", "vector", "raster", "create", "copy", "virtual"))
-  types <- unlist(lapply(drivers, typeof), recursive = FALSE)
+  types <- unlist(lapply(drivers, typeof), recursive = FALSE, use.names = TRUE)
   expect_equal(types, c(driver = "character", name = "character", vector = "logical",
                         raster = "logical", create = "logical", copy = "logical", virtual = "logical"
   ))

@@ -164,7 +164,7 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL, sk
                                   layer = layer, sql = sql,
                                   what = "extent", textformat = "",
                                   limit_n = limit_n, skip_n = skip_n, ex = extent)
-  nulls <- unlist(lapply(out, is.null))
+  nulls <- unlist(lapply(out, is.null), use.names = FALSE)
   if (any(nulls)) out[nulls] <- replicate(sum(nulls), rep(NA_real_, 4L), simplify = FALSE)
   out
 
@@ -181,7 +181,7 @@ vapour_read_type <- function(dsource, layer = 0L,  sql = "", limit_n = NULL, ski
                                 what = "type", textformat = "",
                                 limit_n = limit_n, skip_n = skip_n, ex = extent)
 
-  nulls <- unlist(lapply(out, is.null))
+  nulls <- unlist(lapply(out, is.null), use.names = FALSE)
   if (any(nulls)) out[nulls] <- list(NA_integer_)
-  unlist( out)
+  unlist( out, use.names = FALSE)
 }

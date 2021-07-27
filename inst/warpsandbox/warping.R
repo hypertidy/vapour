@@ -31,5 +31,5 @@ v <- vapour_warp_raster(f, band = 1,
 
 image(
   list(x = seq(-b, b, length.out = dm[1] + 1), y = seq(-b, b, length.out = dm[2] + 1),
-       z = matrix(unlist(v), dm[1])[,dm[2]:1]),
+       z = matrix(unlist(v, use.names = FALSE), dm[1])[,dm[2]:1]),
   asp = 1, col = hcl.colors(256))

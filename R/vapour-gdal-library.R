@@ -10,7 +10,7 @@
 #' @examples
 #' vapour_srs_wkt("+proj=laea +datum=WGS84")
 vapour_srs_wkt <- function(crs) {
-  unlist(lapply(crs, proj_to_wkt_gdal_cpp))
+  unlist(lapply(crs, proj_to_wkt_gdal_cpp), use.names = FALSE)
 }
 
 
@@ -50,14 +50,14 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, s
   #limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
   types <- vapour_read_type(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
-  na_geoms <- unlist(lapply(extents, anyNA))
+  na_geoms <- unlist(lapply(extents, anyNA), use.names = FALSE)
   list(FID = fids,
        valid_geometry = !na_geoms,
        type = types,
-       xmin = unlist(lapply(extents, "[", 1L)),
-       xmax = unlist(lapply(extents, "[", 2L)),
-       ymin = unlist(lapply(extents, "[", 3L)),
-       ymax = unlist(lapply(extents, "[", 4L)))
+       xmin = unlist(lapply(extents, "[", 1L), use.names = FALSE),
+       xmax = unlist(lapply(extents, "[", 2L), use.names = FALSE),
+       ymin = unlist(lapply(extents, "[", 3L), use.names = FALSE),
+       ymax = unlist(lapply(extents, "[", 4L), use.names = FALSE))
 }
 
 #' GDAL version and drivers.
