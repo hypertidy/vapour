@@ -38,17 +38,29 @@
 #' info <- vapour_layer_info(mvfile)
 #' names(info$projection)
 vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE, count = TRUE) {
+
+  layer_names <- vapour_layer_names(dsource)
+  layer_name <- layer
+  if (!is.numeric(layer)) layer <- match(layer_name, layer_names) - 1
+  if (is.numeric(layer_name)) layer_name <- layer_names[layer + 1]
+  if (is.na(layer)) stop(sprintf("layer: %s not found", layer_name))
+
   driver <- vapour_driver(dsource)
   geom_name <- vapour_geom_name(dsource, layer, sql)
-  layer_names <- vapour_layer_names(dsource)
+
   fields <- vapour_report_fields(dsource, layer, sql)
-  if (count) {
-    cnt <- length(vapour_read_names(dsource, layer, sql))
+  ## if we're getting extent use that for count, otherwise try sql first, then read names
+  if (count && !extent) {
+    cnt <- try(vapour_read_fields(dsource, sql = sprintf("SELECT COUNT(*) FROM %s", layer_name))[[1]], silent = TRUE)
+    if (inherits(cnt, "try-error")) cnt <- length(vapour_read_names(dsource, layer, sql))
   } else {
     cnt <- NA_integer_
   }
+  ## if we're getting extent, use it for count
   if (extent) {
-    exts <- do.call(rbind, vapour_read_extent(dsource, layer, sql))
+    listextent <- vapour_read_extent(dsource, layer, sql)
+    if (count && is.na(cnt)) cnt <- length(listextent)
+    exts <- do.call(rbind, listextent)
     ext <- c(min(exts[,1L], na.rm = TRUE), max(exts[,2L], na.rm = TRUE), min(exts[,3L], na.rm = TRUE), max(exts[,4L], na.rm = TRUE))
   } else {
     ext <- rep(NA_real_, 4L)
