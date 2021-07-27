@@ -1,6 +1,7 @@
-## vapour 0.8.0
+## vapour 0.7.6
 
-Fix for CRAN errors, with unsanitized type input (int type for double in warper nodata) found on  clang-UBSAN tests and reported by CRAN on 2021-07-25. 
+Fix for CRAN errors, with unsanitized type input (int type for double in warper nodata) found on  clang-UBSAN tests and 
+re-reported by CRAN on 2021-07-25. 
 
 Thank you!
 
