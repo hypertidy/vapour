@@ -88,6 +88,7 @@ vapour_layer_names <- function(dsource, ...) {
 #' file <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package = "vapour")
 #' vapour_geom_name(file)  ## empty string
 vapour_geom_name <- function(dsource, layer = 0L, sql = "") {
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   vapour_geom_name_cpp(dsource = dsource, layer = layer, sql = sql, ex = 0)
 }
 
