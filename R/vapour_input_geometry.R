@@ -70,7 +70,7 @@ vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE,
        fields = fields,
        count = cnt,
        extent = ext,
-       projection = projection_info_gdal_cpp(dsource, layer = layer, sql = sql))
+       projection = projection_info_gdal_cpp(dsource, layer = layer, sql = sql)[c("Wkt", "Proj4", "EPSG")])
 }
 
 
