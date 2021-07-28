@@ -7,17 +7,26 @@
 vapour_srs_wkt(crs)
 }
 \arguments{
-\item{crs}{PROJ4 string}
+\item{crs}{projection string, see Details.}
 }
 \value{
 WKT2 projection string
 }
 \description{
-Convert a PROJ4 string to Well Known Text.
+Convert a projstring to Well Known Text.
 }
 \details{
 The function is vectorized because why not, but probably only ever will be
 used on single element vectors of character strings.
+
+Note that no sanitizing is done on inputs, we literally just 'OGRSpatialReference.SetFromUserInput(crs)' and
+give the output as WKT. If it's an error in GDAL it's an error in R.
+
+You can get some funky outputs from random strings, so don't do that. Common sensible inputs are WKT variants,
+'AUTH:CODE's e.g. 'EPSG:3031', the 'OGC:CRS84' for long,lat WGS84, 'ESRI:<code>' and other authority variants, and
+datum names such as 'WGS84','NAD27' recognized by PROJ itself.
+
+See help for 'SetFromUserInput' in 'OGRSpatialReference', and 'proj_create_crs_to_crs' in PROJ.
 }
 \examples{
 vapour_srs_wkt("+proj=laea +datum=WGS84")

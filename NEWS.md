@@ -1,3 +1,7 @@
+# vapour dev
+
+* `vapour_srs_wkt()` now accepts more inputs, not just proj strings. 
+
 # vapour 0.7.6
 
 * Include OFTBinary in supported field types. 

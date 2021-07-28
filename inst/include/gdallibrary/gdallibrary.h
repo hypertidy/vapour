@@ -687,7 +687,7 @@ inline List gdal_read_names(CharacterVector dsn,
 inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
   OGRSpatialReference oSRS;
   char *pszWKT = NULL;
-  oSRS.importFromProj4(proj_str[0]);
+  oSRS.SetFromUserInput(proj_str[0]);
   oSRS.exportToWkt(&pszWKT);
   CharacterVector out =  Rcpp::CharacterVector::create(pszWKT);
   CPLFree(pszWKT);
