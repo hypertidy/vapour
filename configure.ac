@@ -2,7 +2,7 @@ dnl adapted from rgdal configure.ac 2020-05-15 Michael Sumner
 dnl
 
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(src/vapour.cpp)
+AC_INIT(src/00headers_dirigible.cpp)
 
 
 

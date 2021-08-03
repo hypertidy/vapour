@@ -582,7 +582,7 @@ PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 PACKAGE_URL=
 
-ac_unique_file="src/vapour.cpp"
+ac_unique_file="src/00headers_dirigible.cpp"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -2221,7 +2221,7 @@ $as_echo "no" >&6; }
 	echo "Error: gdal-config not found"
 	echo "The gdal-config script distributed with GDAL could not be found."
 	echo "If you have not installed the GDAL libraries, you can"
-	echo "download the source from  http://www.gdal.org/"
+	echo "download the source from  https://gdal.org/"
 	echo "If you have installed the GDAL libraries, then make sure that"
 	echo "gdal-config is in your path. Try typing gdal-config at a"
 	echo "shell prompt and see if it runs. If not, use:"
