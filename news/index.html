@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.7</span>
       </span>
     </div>
 
@@ -137,9 +137,20 @@
       <small>Source: <a href='https://github.com/hypertidy/vapour/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="vapour-077" class="section level1">
+<h1 class="page-header" data-toc-text="0.7.7">
+<a href="#vapour-077" class="anchor"></a>vapour 0.7.7<small> Unreleased </small>
+</h1>
+<ul>
+<li><p>Remove unused vapour.cpp which trigger unused warnings: MAX_INT variable and code GetPointsInternal, warnings on CRAN r-devel-linux-x86_64-fedora-clang, 2021-08-03.</p></li>
+<li><p>Fixed dependence on GDAL, require version GDAL &gt;= 2.3.0. Older versions not const correct for OGRGeometry::importFromWkt(), triggering errors on Solaris CRAN which was GDAL 2.2.4 at 2021-08-03.</p></li>
+<li><p>Fixed <code><a href="../reference/vapour_layer_info.html">vapour_layer_info()</a></code>, now accepts name of layer not just index to be more consistent across other layer functions. Now includes more information about the layer.</p></li>
+<li><p><code><a href="../reference/vapour_srs_wkt.html">vapour_srs_wkt()</a></code> now accepts more inputs, not just proj strings.</p></li>
+</ul>
+</div>
     <div id="vapour-076" class="section level1">
 <h1 class="page-header" data-toc-text="0.7.6">
-<a href="#vapour-076" class="anchor"></a>vapour 0.7.6<small> Unreleased </small>
+<a href="#vapour-076" class="anchor"></a>vapour 0.7.6<small> 2021-08-02 </small>
 </h1>
 <ul>
 <li><p>Include OFTBinary in supported field types.</p></li>
