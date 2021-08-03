@@ -1,7 +1,12 @@
-## vapour 0.7.6
+## vapour 0.7.7
 
-Fix for CRAN errors, with unsanitized type input (int type for double in warper nodata) found on  clang-UBSAN tests and 
-re-reported by CRAN on 2021-07-25. 
+Fix for CRAN errors, with required version of minimum version of GDAL now 2.3.0. 
+
+There was a change in 0.7.6 to use `OGRGeometry::importFromWkt()` from GDAL, with syntax
+requirement for 2.3.0. This triggered the error on Solaris. 
+
+There was unused code in src/vapour.cpp that triggered warnings on fedora devel clang about 
+unused variable and function. 
 
 Thank you!
 
