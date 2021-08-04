@@ -28,10 +28,8 @@ Imports:
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Suggests:
-    covr,
     testthat,
     knitr,
-    rbenchmark,
     rmarkdown,
     spelling
 SystemRequirements: GDAL (>= 2.3.0), PROJ.4 (>= 4.8.0), C++11
