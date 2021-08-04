@@ -4,7 +4,7 @@ author: "Michael D. Sumner"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vapour}
+  %\VignetteIndexEntry{Vapour - lightweight GDAL}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   chunk_output_type: console
