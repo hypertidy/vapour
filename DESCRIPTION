@@ -30,6 +30,7 @@ Roxygen: list(markdown = TRUE)
 Suggests:
     testthat,
     knitr,
+    markdown,
     rmarkdown,
     spelling
 SystemRequirements: GDAL (>= 2.3.0), PROJ.4 (>= 4.8.0), C++11
