@@ -72,9 +72,9 @@ test_that("warper gives the right number of values", {
 
 })
 
-test_that("giving source extent and projection works", {
+test_that("giving source projection works", {
   expect_named(
-    vapour_warp_raster(f, extent = c(0, 67, 0, 81), source_extent = c(0, 67, 0, 81)/2,
+    vapour_warp_raster(f, extent = c(0, 67, 0, 81),
                      wkt = "+proj=laea", source_wkt = "+proj=laea", dimension = c(10, 10)), "Band1"
   )
 })
