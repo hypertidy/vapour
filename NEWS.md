@@ -8,6 +8,8 @@ errors on Solaris CRAN which was GDAL 2.2.4 at 2021-08-03.
 * Fixed `vapour_layer_info()`, now accepts name of layer not just index to be more consistent across other layer functions. Now includes
  more information about the layer. 
 
+* `vapour_read_fields()` will now return binary fields. 
+
 * `vapour_srs_wkt()` now accepts more inputs, not just proj strings. 
 
 # vapour 0.7.6

@@ -173,11 +173,6 @@ image(x)
 ## or as a spatial object
 library(raster)
 #> Loading required package: sp
-#> 
-#> Attaching package: 'raster'
-#> The following object is masked from 'package:dplyr':
-#> 
-#>     select
 r <- setValues(raster(extent(ex), nrows = dm[2], ncols = dm[1], crs = crs), vals[[1]])
 contour(r, add = TRUE)
 ```

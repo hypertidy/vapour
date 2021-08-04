@@ -12,8 +12,8 @@ Thank you!
 
 ## Test environments
 
-* Linux Ubuntu 18.04 R 4.1.0
-* win-builder (devel and release)
+* Linux Ubuntu 20.04 R 4.1.0
+* win-builder (devel)
 
 
 ## R CMD check results

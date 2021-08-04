@@ -60,10 +60,9 @@ str(vapour_read_geometry_text(cfile, textformat = "wkt")[1:2])
 Combine these together to get a custom data set. 
 
 ```{r}
-library(dplyr)
-dat <- as.data.frame(vapour_read_fields(cfile),  stringsAsFactors = FALSE) %>%
-    dplyr::mutate(wkt = vapour_read_geometry_text(cfile, textformat = "wkt"))
-glimpse(dat)
+dat <- as.data.frame(vapour_read_fields(cfile),  stringsAsFactors = FALSE)
+dat$wkt <- vapour_read_geometry_text(cfile, textformat = "wkt")
+head(dat)
 ```
 
 
