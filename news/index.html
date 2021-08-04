@@ -145,6 +145,7 @@
 <li><p>Remove unused vapour.cpp which trigger unused warnings: MAX_INT variable and code GetPointsInternal, warnings on CRAN r-devel-linux-x86_64-fedora-clang, 2021-08-03.</p></li>
 <li><p>Fixed dependence on GDAL, require version GDAL &gt;= 2.3.0. Older versions not const correct for OGRGeometry::importFromWkt(), triggering errors on Solaris CRAN which was GDAL 2.2.4 at 2021-08-03.</p></li>
 <li><p>Fixed <code><a href="../reference/vapour_layer_info.html">vapour_layer_info()</a></code>, now accepts name of layer not just index to be more consistent across other layer functions. Now includes more information about the layer.</p></li>
+<li><p><code><a href="../reference/vapour_read_fields.html">vapour_read_fields()</a></code> will now return binary fields.</p></li>
 <li><p><code><a href="../reference/vapour_srs_wkt.html">vapour_srs_wkt()</a></code> now accepts more inputs, not just proj strings.</p></li>
 </ul>
 </div>
