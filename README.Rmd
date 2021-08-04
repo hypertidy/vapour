@@ -24,15 +24,6 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 
-```{r, echo = FALSE, include=FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "README-"
-)
-
-```
-
 ## Overview
 
 The vapour package provides access to the basic *read* functions available in [GDAL](https://gdal.org/) for both [raster](https://gdal.org/user/raster_data_model.html) and [vector](https://gdal.org/user/vector_data_model.html) data sources. 

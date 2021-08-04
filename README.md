@@ -163,7 +163,7 @@ vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension 
 image(m <- matrix(vals[[1]], nrow = dm[2], ncol = dm[1])[,dm[2]:1 ])
 ```
 
-<img src="README-topo-example-1.png" width="100%" />
+<img src="man/figures/README-topo-example-1.png" width="100%" />
 
 ``` r
 ## using the image list format
@@ -177,7 +177,7 @@ r <- setValues(raster(extent(ex), nrows = dm[2], ncols = dm[1], crs = crs), vals
 contour(r, add = TRUE)
 ```
 
-<img src="README-topo-example-2.png" width="100%" />
+<img src="man/figures/README-topo-example-2.png" width="100%" />
 
 If we want more detail, go ahead:
 
@@ -196,7 +196,7 @@ vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension 
 plot(r, col = hcl.colors(24))
 ```
 
-<img src="README-lod-1.png" width="100%" />
+<img src="man/figures/README-lod-1.png" width="100%" />
 
 GDAL is obstinately *format agnostic*, the A stands for *Abstraction*
 and we like that in R too, just gives us the data. Here we created a
