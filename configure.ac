@@ -137,7 +137,7 @@ GDAL_MINOR=`echo $GDAL_VERSION | cut -f2 -d"."`
 GDAL_PATCH=`echo $GDAL_VERSION | cut -f3 -d"."`
 
 
-AC_MSG_CHECKING([GDAL version >= 2.2.2])
+AC_MSG_CHECKING([GDAL version >= 2.3.0])
 if test ${GDAL_MAJOR} -gt 2 ; then
   AC_MSG_RESULT(yes)
 else
@@ -145,7 +145,7 @@ else
     AC_MSG_RESULT(yes)
   else
     AC_MSG_RESULT(no)
-    AC_MSG_ERROR([upgrade GDAL to 2.2.2 or later])
+    AC_MSG_ERROR([upgrade GDAL to 2.3.0 or later])
   fi
 fi
 
