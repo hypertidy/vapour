@@ -1,3 +1,8 @@
+# vapour dev
+
+* Fixed errors for earlier GDAL (that were seen on Solaris with GDAL 2.2.4, now 2.4.4), by condition on GDAL version for 
+ importFromWkt() as sf does. This means vapour can work on GDAL from version 2.0.1, and so support its use on Ubuntu 18.04. 
+
 # vapour 0.7.7
 
 * Remove unused vapour.cpp which trigger unused warnings: MAX_INT variable and code GetPointsInternal, warnings on CRAN r-devel-linux-x86_64-fedora-clang, 2021-08-03. 

@@ -1,3 +1,3 @@
 #!/bin/sh
 
-rm -rf config.* src/Makevars proj_conf_test*
+rm -rf errors.txt config.* src/Makevars proj_conf_test* autom4te.cache

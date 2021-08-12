@@ -11,3 +11,5 @@ autom4te.cache
 pkgdown/*
 docs/
 gdalwmscache
+errors.txt
+proj_conf_test

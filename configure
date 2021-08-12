@@ -621,17 +621,18 @@ ac_includes_default="\
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+PROJ_LIBS
+PROJ_CPPFLAGS
 EGREP
 GREP
-CXXCPP
+CPP
 OBJEXT
 EXEEXT
-ac_ct_CXX
+ac_ct_CC
 CPPFLAGS
 LDFLAGS
-CXXFLAGS
-CXX
-GDAL_DATADIR
+CFLAGS
+CC
 PKG_LIBS
 PKG_CPPFLAGS
 GDAL_CONFIG
@@ -681,19 +682,19 @@ with_gdal_config
 with_data_copy
 with_proj_data
 with_proj_include
-with_proj_lib
 with_proj_api
+with_proj_lib
+with_proj_share
 '
       ac_precious_vars='build_alias
 host_alias
 target_alias
-CXX
-CXXFLAGS
+CC
+CFLAGS
 LDFLAGS
 LIBS
 CPPFLAGS
-CCC
-CXXCPP'
+CPP'
 
 
 # Initialize some variables set by options.
@@ -1317,20 +1318,22 @@ Optional Packages:
                           no
   --with-proj-data=DIR    location of PROJ data directory
   --with-proj-include=DIR location of proj header files
+  --with-proj-api=yes/no  use the deprecated proj_api.h even when PROJ 6 is
+                          available; default no
   --with-proj-lib=LIB_PATH
                           the location of proj libraries
-  --with-proj_api=ARG        legacy proj_api.h while still available, or current proj.h (ARG="proj_api.h", "proj.h"(default))
-  --with-proj-data=DIR    location of PROJ.4 data directory
+  --with-proj-share=SHARE_PATH
+                          the location of proj metadata files
 
 Some influential environment variables:
-  CXX         C++ compiler command
-  CXXFLAGS    C++ compiler flags
+  CC          C compiler command
+  CFLAGS      C compiler flags
   LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
               nonstandard directory <lib dir>
   LIBS        libraries to pass to the linker, e.g. -l<library>
   CPPFLAGS    (Objective) C/C++ preprocessor flags, e.g. -I<include dir> if
               you have headers in a nonstandard directory <include dir>
-  CXXCPP      C++ preprocessor
+  CPP         C preprocessor
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -1412,10 +1415,10 @@ fi
 ## Autoconf initialization. ##
 ## ------------------------ ##
 
-# ac_fn_cxx_try_compile LINENO
-# ----------------------------
+# ac_fn_c_try_compile LINENO
+# --------------------------
 # Try to compile conftest.$ac_ext, and return whether this succeeded.
-ac_fn_cxx_try_compile ()
+ac_fn_c_try_compile ()
 {
   as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
   rm -f conftest.$ac_objext
@@ -1435,7 +1438,7 @@ $as_echo "$ac_try_echo"; } >&5
   fi
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } && {
-	 test -z "$ac_cxx_werror_flag" ||
+	 test -z "$ac_c_werror_flag" ||
 	 test ! -s conftest.err
        } && test -s conftest.$ac_objext; then :
   ac_retval=0
@@ -1448,12 +1451,12 @@ fi
   eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
   as_fn_set_status $ac_retval
 
-} # ac_fn_cxx_try_compile
+} # ac_fn_c_try_compile
 
-# ac_fn_cxx_try_cpp LINENO
-# ------------------------
+# ac_fn_c_try_cpp LINENO
+# ----------------------
 # Try to preprocess conftest.$ac_ext, and return whether this succeeded.
-ac_fn_cxx_try_cpp ()
+ac_fn_c_try_cpp ()
 {
   as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
   if { { ac_try="$ac_cpp conftest.$ac_ext"
@@ -1472,7 +1475,7 @@ $as_echo "$ac_try_echo"; } >&5
   fi
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } > conftest.i && {
-	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
 	 test ! -s conftest.err
        }; then :
   ac_retval=0
@@ -1485,14 +1488,14 @@ fi
   eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
   as_fn_set_status $ac_retval
 
-} # ac_fn_cxx_try_cpp
+} # ac_fn_c_try_cpp
 
-# ac_fn_cxx_check_header_mongrel LINENO HEADER VAR INCLUDES
-# ---------------------------------------------------------
+# ac_fn_c_check_header_mongrel LINENO HEADER VAR INCLUDES
+# -------------------------------------------------------
 # Tests whether HEADER exists, giving a warning if it cannot be compiled using
 # the include files in INCLUDES and setting the cache variable VAR
 # accordingly.
-ac_fn_cxx_check_header_mongrel ()
+ac_fn_c_check_header_mongrel ()
 {
   as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
   if eval \${$3+:} false; then :
@@ -1513,7 +1516,7 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 $4
 #include <$2>
 _ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
+if ac_fn_c_try_compile "$LINENO"; then :
   ac_header_compiler=yes
 else
   ac_header_compiler=no
@@ -1529,7 +1532,7 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <$2>
 _ACEOF
-if ac_fn_cxx_try_cpp "$LINENO"; then :
+if ac_fn_c_try_cpp "$LINENO"; then :
   ac_header_preproc=yes
 else
   ac_header_preproc=no
@@ -1539,7 +1542,7 @@ rm -f conftest.err conftest.i conftest.$ac_ext
 $as_echo "$ac_header_preproc" >&6; }
 
 # So?  What about this header?
-case $ac_header_compiler:$ac_header_preproc:$ac_cxx_preproc_warn_flag in #((
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in #((
   yes:no: )
     { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2: accepted by the compiler, rejected by the preprocessor!" >&5
 $as_echo "$as_me: WARNING: $2: accepted by the compiler, rejected by the preprocessor!" >&2;}
@@ -1572,13 +1575,13 @@ $as_echo "$ac_res" >&6; }
 fi
   eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
 
-} # ac_fn_cxx_check_header_mongrel
+} # ac_fn_c_check_header_mongrel
 
-# ac_fn_cxx_try_run LINENO
-# ------------------------
+# ac_fn_c_try_run LINENO
+# ----------------------
 # Try to link conftest.$ac_ext, and return whether this succeeded. Assumes
 # that executables *can* be run.
-ac_fn_cxx_try_run ()
+ac_fn_c_try_run ()
 {
   as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
   if { { ac_try="$ac_link"
@@ -1614,13 +1617,13 @@ fi
   eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
   as_fn_set_status $ac_retval
 
-} # ac_fn_cxx_try_run
+} # ac_fn_c_try_run
 
-# ac_fn_cxx_check_header_compile LINENO HEADER VAR INCLUDES
-# ---------------------------------------------------------
+# ac_fn_c_check_header_compile LINENO HEADER VAR INCLUDES
+# -------------------------------------------------------
 # Tests whether HEADER exists and can be compiled using the include files in
 # INCLUDES, setting the cache variable VAR accordingly.
-ac_fn_cxx_check_header_compile ()
+ac_fn_c_check_header_compile ()
 {
   as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $2" >&5
@@ -1633,7 +1636,7 @@ else
 $4
 #include <$2>
 _ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
+if ac_fn_c_try_compile "$LINENO"; then :
   eval "$3=yes"
 else
   eval "$3=no"
@@ -1645,12 +1648,12 @@ eval ac_res=\$$3
 $as_echo "$ac_res" >&6; }
   eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
 
-} # ac_fn_cxx_check_header_compile
+} # ac_fn_c_check_header_compile
 
-# ac_fn_cxx_try_link LINENO
-# -------------------------
+# ac_fn_c_try_link LINENO
+# -----------------------
 # Try to link conftest.$ac_ext, and return whether this succeeded.
-ac_fn_cxx_try_link ()
+ac_fn_c_try_link ()
 {
   as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
   rm -f conftest.$ac_objext conftest$ac_exeext
@@ -1670,7 +1673,7 @@ $as_echo "$ac_try_echo"; } >&5
   fi
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } && {
-	 test -z "$ac_cxx_werror_flag" ||
+	 test -z "$ac_c_werror_flag" ||
 	 test ! -s conftest.err
        } && test -s conftest$ac_exeext && {
 	 test "$cross_compiling" = yes ||
@@ -1691,7 +1694,7 @@ fi
   eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
   as_fn_set_status $ac_retval
 
-} # ac_fn_cxx_try_link
+} # ac_fn_c_try_link
 cat >config.log <<_ACEOF
 This file contains any messages produced by compilers while
 running configure, to aid debugging if configure makes a mistake.
@@ -2046,74 +2049,98 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+# as at 2021-08-12 sf uses the following flags in src/
+#if ((PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 1) || PROJ_VERSION_MAJOR > 7)
+#if (GDAL_VERSION_MINOR >= 2 || GDAL_VERSION_MAJOR > 2)
+#if defined(__MINGW32__) && !defined(__MINGW64__)
+#if defined(HAVE_PROJ_H) && !defined(ACCEPT_USE_OF_DEPRECATED_PROJ_API_H)
+#if defined(HAVE_PROJ_H) && !defined(ACCEPT_USE_OF_DEPRECATED_PROJ_API_H) // new api
+#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
+#if GDAL_VERSION_MAJOR >= 3
+#if GDAL_VERSION_MINOR >= 3
+#if GDAL_VERSION_NUM < 2050000
+#if GDAL_VERSION_NUM > 3000000
+#if GDAL_VERSION_NUM > 3010000
+#if GDAL_VERSION_NUM >= 2010000
+#if GDAL_VERSION_NUM >= 2030000
+#if GDAL_VERSION_NUM >= 2040000
+#if GDAL_VERSION_NUM >= 2050000
+#if GDAL_VERSION_NUM >= 3000000
+#if GDAL_VERSION_NUM >= 3000300
+#if GDAL_VERSION_NUM >= 3010000
+#if GDAL_VERSION_NUM >= 3010000 && !(defined(WIN32BIT))
+#if GEOS_VERSION_MAJOR == 3
+#if PJ_VERSION <= 480
+#if PJ_VERSION == 480
+#if PJ_VERSION >= 500
+#if PJ_VERSION >= 600
+#if PROJ_VERSION_MAJOR > 7
+#if PROJ_VERSION_MAJOR >= 7
+#ifdef HAVE_390
+#ifdef HAVE_71
+#ifdef HAVE_PROJ_H
+#ifdef HAVE340
+#ifdef HAVE350
+#ifdef HAVE361
+#ifdef HAVE370
+#ifdef HAVE380
+#ifdef HAVE390
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+#ifndef HAVE380
+#ifndef NO_GDAL_CPP_HEADERS
+## for vapour the only relevant ones are
+##src/polygonize.cpp:84:#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2   sr->importFromWkt(ppt); or sr->importFromWkt( (const char**) ppt);
+##src/stars.cpp:326:#if GDAL_VERSION_MAJOR >= 3                                  oDataset->GetSpatialRef vs oDataset->GetProjectionRef
 
-# AC_PROG_CXX()
 
-# find R home and set correct compiler + flags
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
-  as_fn_error $? "cannot determine R_HOME. Make sure you use R CMD INSTALL!" "$LINENO" 5
+  echo "could not determine R_HOME"
+  exit 1
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: R_HOME: ${R_HOME}" >&5
-$as_echo "$as_me: R_HOME: ${R_HOME}" >&6;}
+
 RBIN="${R_HOME}/bin/R"
+RSCRIPT="${R_HOME}/bin/Rscript"
+RVER=`"${RSCRIPT}" -e 'writeLines(paste(sep=".", base::version$major, base::version$minor))'`
+
+RVER_MAJOR=`echo ${RVER} | cut  -f1 -d"."`
+RVER_MINOR=`echo ${RVER} | cut  -f2 -d"."`
+RVER_PATCH=`echo ${RVER} | cut  -f3 -d"."`
+
+if test $RVER_MAJOR = "development"; then
+    CXX11=`"${RBIN}" CMD config CXX11`
+    CXX11STD=`"${RBIN}" CMD config CXX11STD`
+else
+    if test $RVER_MAJOR -lt 3 -o $RVER_MAJOR -eq 3 -a $RVER_MINOR -lt 3; then
+        as_fn_error $? "sf is not compatible with R versions before 3.3.0" "$LINENO" 5
+    else
+        if test $RVER_MAJOR -eq 3 -a $RVER_MINOR -eq 3; then
+            CXX11=`"${RBIN}" CMD config CXX1X`
+            CXX11STD=`"${RBIN}" CMD config CXX1XSTD`
+        else
+            CXX11=`"${RBIN}" CMD config CXX11`
+            CXX11STD=`"${RBIN}" CMD config CXX11STD`
+        fi
+    fi
+fi
 
 # pick all flags for testing from R
 : ${CC=`"${RBIN}" CMD config CC`}
-: ${CXX=`"${RBIN}" CMD config CXX`}
+: ${CXX=${CXX11} ${CXX11STD}}
 : ${CFLAGS=`"${RBIN}" CMD config CFLAGS`}
 : ${CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`}
 : ${CXXFLAGS=`"${RBIN}" CMD config CXXFLAGS`}
 : ${LDFLAGS=`"${RBIN}" CMD config LDFLAGS`}
+# AC_SUBST([CC],["clang"])
+# AC_SUBST([CXX],["clang++"])
 { $as_echo "$as_me:${as_lineno-$LINENO}: CC: ${CC}" >&5
 $as_echo "$as_me: CC: ${CC}" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}: CXX: ${CXX}" >&5
 $as_echo "$as_me: CXX: ${CXX}" >&6;}
 
-#CXX_11
-
-R_VERSION=`echo 'o <- R.version; cat(paste0(o$major, ".", o$minor))' | ${RBIN} --vanilla --slave`
-R_MINOR=`echo $R_VERSION | cut -f2 -d"."`
-R_MAJOR=`echo $R_VERSION | cut -f1 -d"."`
-
-
-if test ${R_MAJOR} -ge 4; then
- CXX11=`"${RBIN}" CMD config CXX11`
- CXX11STD=`"${RBIN}" CMD config CXX11STD`
-else
- if test ${R_MAJOR} -eq 3 && test ${R_MINOR} -ge 4; then
-  CXX11=`"${RBIN}" CMD config CXX11`
-  CXX11STD=`"${RBIN}" CMD config CXX11STD`
- else
-  CXX11=`"${RBIN}" CMD config CXX1X`
-  CXX11STD=`"${RBIN}" CMD config CXX1XSTD`
- fi
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: CXX11 is: ${CXX11}, CXX11STD is: ${CXX11STD}" >&5
-$as_echo "$as_me: CXX11 is: ${CXX11}, CXX11STD is: ${CXX11STD}" >&6;}
-
-CXX="${CXX11} ${CXX11STD}"
-{ $as_echo "$as_me:${as_lineno-$LINENO}: CXX is: ${CXX}" >&5
-$as_echo "$as_me: CXX is: ${CXX}" >&6;}
-
-if test -n "${CXX11}"; then
-HAVE_CXX11=1
-else
-HAVE_CXX11=0
-fi
-
-if test ${HAVE_CXX11} = 1 ; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: C++11 support available" >&5
-$as_echo "$as_me: C++11 support available" >&6;}
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: C++11 support not available" >&5
-$as_echo "$as_me: C++11 support not available" >&6;}
-fi
-
+# AC_MSG_NOTICE([${PACKAGE_NAME}: ${PACKAGE_VERSION}])
 
 #GDAL
-
 GDAL_CONFIG="gdal-config"
 
 GDAL_CONFIG_SET="no"
@@ -2207,21 +2234,20 @@ fi
 $as_echo_n "checking gdal-config usability... " >&6; }
 if test `${GDAL_CONFIG} --version`;
 then
-  GDAL_CPPFLAGS=`${GDAL_CONFIG} --cflags`
-  GDAL_LIBS=`${GDAL_CONFIG} --libs`
-  GDAL_VERSION=`${GDAL_CONFIG} --version`
-  GDAL_DEP_LIBS=`${GDAL_CONFIG} --dep-libs`
-  GDAL_DATADIR=`${GDAL_CONFIG} --datadir`
-  gdalok=yes
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+	GDAL_CPPFLAGS=`${GDAL_CONFIG} --cflags`
+	GDAL_VERSION=`${GDAL_CONFIG} --version`
+	GDAL_LIBS=`${GDAL_CONFIG} --libs`
+	GDAL_DEP_LIBS=`${GDAL_CONFIG} --dep-libs`
+	GDAL_DATADIR=`${GDAL_CONFIG} --datadir`
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	echo "Error: gdal-config not found"
 	echo "The gdal-config script distributed with GDAL could not be found."
 	echo "If you have not installed the GDAL libraries, you can"
-	echo "download the source from  https://gdal.org/"
+	echo "download the source from  http://www.gdal.org/"
 	echo "If you have installed the GDAL libraries, then make sure that"
 	echo "gdal-config is in your path. Try typing gdal-config at a"
 	echo "shell prompt and see if it runs. If not, use:"
@@ -2232,31 +2258,20 @@ $as_echo "no" >&6; }
 	exit 1
 fi
 
-
 { $as_echo "$as_me:${as_lineno-$LINENO}: GDAL: ${GDAL_VERSION}" >&5
 $as_echo "$as_me: GDAL: ${GDAL_VERSION}" >&6;}
-GDAL_MAJOR=`echo $GDAL_VERSION | cut -f1 -d"."`
-GDAL_MINOR=`echo $GDAL_VERSION | cut -f2 -d"."`
-GDAL_PATCH=`echo $GDAL_VERSION | cut -f3 -d"."`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL version >= 2.0.1" >&5
+$as_echo_n "checking GDAL version >= 2.0.1... " >&6; }
 
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL version >= 2.3.0" >&5
-$as_echo_n "checking GDAL version >= 2.3.0... " >&6; }
-if test ${GDAL_MAJOR} -gt 2 ; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-  if test ${GDAL_MAJOR} = 2 && test ${GDAL_MINOR} -ge 2 && test ${GDAL_PATCH} -ge 2  ; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d "." -f1`
+if test ${GDAL_MAJ_VER} -lt 2 ; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-    as_fn_error $? "upgrade GDAL to 2.3.0 or later" "$LINENO" 5
-  fi
+  as_fn_error $? "vapour is not compatible with GDAL versions below 2.0.1" "$LINENO" 5
+else
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
 fi
-
-
 
 INLIBS="${LIBS}"
 INCPPFLAGS="${CPPFLAGS}"
@@ -2273,400 +2288,22 @@ PKG_LIBS="${INPKG_LIBS} ${GDAL_LIBS}"
 # since we'll set PKG_CPPFLAGS with this, but that shouldn't hurt
 CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS}"
 
-
-NEED_DEPS=no
-LIBS="${INLIBS} ${PKG_LIBS}"
-cat > gdal_test.cc <<_EOCONF
-#include <gdal.h>
-#ifdef __cplusplus
-extern "C" {
-#endif
-int main() {
-GDALAllRegister();
-}
-#ifdef __cplusplus
-}
-#endif
-_EOCONF
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: linking with --libs only" >&5
-$as_echo_n "checking GDAL: linking with --libs only... " >&6; }
-${CXX} ${CPPFLAGS} -o gdal_test gdal_test.cc ${LIBS} 2> errors.txt
-if test `echo $?` -ne 0 ; then
-gdalok=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-else
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-fi
-
-if test "${gdalok}" = no; then
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: linking with --libs and --dep-libs" >&5
-$as_echo_n "checking GDAL: linking with --libs and --dep-libs... " >&6; }
-LIBS="${LIBS} ${GDAL_DEP_LIBS}"
 gdalok=yes
-${CXX} ${CPPFLAGS} -o gdal_test gdal_test.cc ${LIBS} 2>> errors.txt
-if test `echo $?` -ne 0 ; then
-gdalok=no
-fi
-if test "${gdalok}" = yes; then
-    NEED_DEPS=yes
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-fi
-
-if test "${gdalok}" = no; then
-   cat errors.txt
-   { $as_echo "$as_me:${as_lineno-$LINENO}: Install failure: compilation and/or linkage problems." >&5
-$as_echo "$as_me: Install failure: compilation and/or linkage problems." >&6;}
-   as_fn_error $? "GDALAllRegister not found in libgdal." "$LINENO" 5
-fi
-
-rm -f gdal_test errors.txt gdal_test.cc
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: gdal-config data directory readable" >&5
-$as_echo_n "checking GDAL: gdal-config data directory readable... " >&6; }
-if test -d "${GDAL_DATADIR}" ; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: GDAL_DATA data directory readable" >&5
-$as_echo_n "checking GDAL: GDAL_DATA data directory readable... " >&6; }
-  if test -z ${GDAL_DATA} ; then
-    as_fn_error $? "GDAL data directory not found." "$LINENO" 5
-  else
-    if test -d "${GDAL_DATA}" ; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-      GDAL_DATADIR=${GDAL_DATA}
-
-    else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-      as_fn_error $? "GDAL data directory not found." "$LINENO" 5
-    fi
-  fi
-fi
-
-GDAL_GE_250="no"
-GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d "." -f1`
-GDAL_MOD_VER=`echo $GDAL_VERSION | cut -d "." -f2`
-if test "${GDAL_MAJ_VER}" = 2 ; then
-  if test "${GDAL_MOD_VER}" -ge 5 ; then
-    GDAL_GE_250="yes"
-  fi
-else
-  if test "${GDAL_MAJ_VER}" -ge 3 ; then
-    GDAL_GE_250="yes"
-  fi
-fi
-
-
-# Optional local copy of GDAL datadir and PROJ_LIB
-
-data_copy=no
-if test "${PROJ_GDAL_DATA_COPY}" ; then
-    data_copy=yes
-    { $as_echo "$as_me:${as_lineno-$LINENO}: PROJ_GDAL_DATA_COPY used." >&5
-$as_echo "$as_me: PROJ_GDAL_DATA_COPY used." >&6;}
-else
-
-# Check whether --with-data-copy was given.
-if test "${with_data_copy+set}" = set; then :
-  withval=$with_data_copy; data_copy=$withval
-fi
-
-fi
-if test "${data_copy}" = "yes" ; then
-{ $as_echo "$as_me:${as_lineno-$LINENO}: Copy data for:" >&5
-$as_echo "$as_me: Copy data for:" >&6;}
-  proj_lib0="${PROJ_LIB}"
-
-# Check whether --with-proj-data was given.
-if test "${with_proj_data+set}" = set; then :
-  withval=$with_proj_data; proj_lib1=$withval
-fi
-
-  if test -n "${proj_lib0}" ; then
-    proj_lib="${proj_lib0}"
-  else
-    proj_lib="${proj_lib1}"
-  fi
-  if test -n "${proj_lib}" ; then
-    if test -d "${proj_lib}" ; then
-      cp -r "${proj_lib}" "${R_PACKAGE_DIR}"
-      { $as_echo "$as_me:${as_lineno-$LINENO}:   PROJ: ${proj_lib}" >&5
-$as_echo "$as_me:   PROJ: ${proj_lib}" >&6;}
-    else
-      as_fn_error $? "PROJ data files not found; set environment variable PROJ_LIB=DIR or --with-proj-data=DIR." "$LINENO" 5
-    fi
-  else
-      as_fn_error $? "PROJ data files not found; set environment variable PROJ_LIB=DIR or --with-proj-data=DIR." "$LINENO" 5
-  fi
-
-  if test -d "${GDAL_DATADIR}" ; then
-    cp -r "${GDAL_DATADIR}" "${R_PACKAGE_DIR}"
-    { $as_echo "$as_me:${as_lineno-$LINENO}:   GDAL: ${GDAL_DATADIR}" >&5
-$as_echo "$as_me:   GDAL: ${GDAL_DATADIR}" >&6;}
-  else
-    as_fn_error $? "GDAL data files not found." "$LINENO" 5
-  fi
-fi
-
-
-GDAL_DATA_TEST_FILE="${GDAL_DATADIR}/stateplane.csv"
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: ${GDAL_DATADIR}/stateplane.csv readable" >&5
-$as_echo_n "checking GDAL: ${GDAL_DATADIR}/stateplane.csv readable... " >&6; }
-if test -r "${GDAL_DATA_TEST_FILE}" ; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-#  if test "${GDAL_GE_250}" = no; then
-    as_fn_error $? "stateplane.csv not found in GDAL data directory." "$LINENO" 5
-#  fi
-fi
-
-# PROJ.4
-
-# copied from sf/configure.ac
-
-PROJ_CONFIG="pkg-config proj"
-
-if `$PROJ_CONFIG --exists` ; then # pkg-config proj
-  { $as_echo "$as_me:${as_lineno-$LINENO}: pkg-config proj exists, will use it" >&5
-$as_echo "$as_me: pkg-config proj exists, will use it" >&6;}
-  proj_config_ok=yes
-else # pkg-config proj
-  { $as_echo "$as_me:${as_lineno-$LINENO}: pkg-config proj not available" >&5
-$as_echo "$as_me: pkg-config proj not available" >&6;}
-  echo "  set PKG_CONFIG_PATH to the directory containing proj.pc"
-  proj_config_ok=no
-fi # pkg-config proj
-
-PROJ_VERSION=""
-PROJ6=""
-
-if test "${proj_config_ok}" = yes; then # proj_config_ok
-  PROJ_VERSION=`${PROJ_CONFIG} --modversion`
-  { $as_echo "$as_me:${as_lineno-$LINENO}: PROJ version: ${PROJ_VERSION}" >&5
-$as_echo "$as_me: PROJ version: ${PROJ_VERSION}" >&6;}
-
-  PROJ_VERSION_DOT=`echo ${PROJ_VERSION} | tr -d "."`
-  PROJV1=`echo "${PROJ_VERSION}" | cut -c 1`
-
-  if test "${PROJV1}" -ge 6; then # PROJ >= 6
-    PKG_CPPFLAGS="-DPROJ_H_API"
-    PROJ6="yes"
-  else # PROJ >= 6
-    { $as_echo "$as_me:${as_lineno-$LINENO}: PROJ version < 6.0.0" >&5
-$as_echo "$as_me: PROJ version < 6.0.0" >&6;}
-    PKG_CPPFLAGS=""
-    PROJ6="no"
-  fi # PROJ >= 6
-
-else # proj_config_ok
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: PROJ version not determined using pkg-config proj" >&5
-$as_echo "$as_me: PROJ version not determined using pkg-config proj" >&6;}
-
-fi # proj_config_ok
-
-
-
-# Check whether --with-proj-include was given.
-if test "${with_proj_include+set}" = set; then :
-  withval=$with_proj_include; proj_include_path=$withval
-fi
-
-if test  -n "$proj_include_path"  ; then # proj_include_path
-   proj_include_path="-I${proj_include_path}"
-   PKG_CPPFLAGS="${PKG_CPPFLAGS} ${proj_include_path} ${INPKG_CPPFLAGS}"
-
-  if test "${proj_config_ok}" = yes; then # proj_config_ok
-    { $as_echo "$as_me:${as_lineno-$LINENO}: --with-proj-include= overrides pkg-config proj --cflags" >&5
-$as_echo "$as_me: --with-proj-include= overrides pkg-config proj --cflags" >&6;}
-  fi # proj_config_ok
-else # proj_include_path
-  if test "${proj_config_ok}" = yes; then # proj_config_ok
-    PROJ_INCLUDE_PATH=`${PROJ_CONFIG} --cflags`
-    proj_include_path=${PROJ_INCLUDE_PATH}
-    PKG_CPPFLAGS="${PKG_CPPFLAGS} ${PROJ_INCLUDE_PATH} ${INPKG_CPPFLAGS}"
-
-  fi # proj_config_ok
-fi # proj_include_path
-
-# honor PKG_xx overrides
-# for CPPFLAGS we will superfluously double R's flags
-# since we'll set PKG_CPPFLAGS with this, but that shouldn't hurt
-CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS}"
-{ $as_echo "$as_me:${as_lineno-$LINENO}: PROJ CPP flags: ${PKG_CPPFLAGS}" >&5
-$as_echo "$as_me: PROJ CPP flags: ${PKG_CPPFLAGS}" >&6;}
-PKG_LIBS=""
-PROJ_LIB_PATH=""
-
-# dnl ditto for a library path
-
-# Check whether --with-proj-lib was given.
-if test "${with_proj_lib+set}" = set; then :
-  withval=$with_proj_lib; proj_lib_path=$withval
-fi
-
-if test  -n "$proj_lib_path"  ; then # proj_lib_path
-    PKG_LIBS="-L${proj_lib_path} ${INPKG_LIBS}"
-
-  if test "${proj_config_ok}" = yes; then # proj_config_ok
-    { $as_echo "$as_me:${as_lineno-$LINENO}: --with-proj-lib= overrides pkg-config proj --libs" >&5
-$as_echo "$as_me: --with-proj-lib= overrides pkg-config proj --libs" >&6;}
-  fi # proj_config_ok
-else # proj_lib_path
-  if test ${proj_config_ok} = "yes"; then # proj_config_ok
-    PROJ_LIB_PATH=`${PROJ_CONFIG} --libs`
-    PKG_LIBS="${PROJ_LIB_PATH} ${INPKG_LIBS}"
-
-  else # proj_config_ok
-    PKG_LIBS="${INPKG_LIBS} -lproj"
-
-  fi # proj_config_ok
-fi # proj_lib_path
-
-LIBS="${PKG_LIBS} ${LIBS}"
-{ $as_echo "$as_me:${as_lineno-$LINENO}: PROJ LIBS: ${PKG_LIBS}" >&5
-$as_echo "$as_me: PROJ LIBS: ${PKG_LIBS}" >&6;}
-
-
-
-# Check whether --with-proj_api was given.
-if test "${with_proj_api+set}" = set; then :
-  withval=$with_proj_api;
-fi
-
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ header API:" >&5
-$as_echo_n "checking PROJ header API:... " >&6; }
-
-if test -z "$with_proj_api" ; then # with_proj_api
-  PROJ_API=""
-  if test "${PROJ6}" = "yes" ; then # PROJ6
-    PROJ_API="proj.h"
-  fi
-  if test "${PROJ6}" = "no" ; then # PROJ6
-    PROJ_API="proj_api.h"
-  fi
-else # with_proj_api
-  PROJ_API="$with_proj_api"
-fi # with_proj_api
-
-api_string_ok="no"
-if test -z "${PROJ_API}" ; then
-  api_string_ok="yes"
-fi
-if test "${PROJ_API}" = "proj.h" ; then
-  api_string_ok="yes"
-fi
-if test "${PROJ_API}" = "proj_api.h" ; then
-  api_string_ok="yes"
-fi
-
-if test ${api_string_ok} = "no" ; then # PROJ_API
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-  as_fn_error $? "PROJ API string ${PROJ_API} not recognized." "$LINENO" 5
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-fi # PROJ_API
-
-if test -z ${PROJ_API} ; then # PROJ_API = ""
-  { $as_echo "$as_me:${as_lineno-$LINENO}: API to be used as yet undetermined, searching ..." >&5
-$as_echo "$as_me: API to be used as yet undetermined, searching ..." >&6;}
-  PROJ_VERSION_H=""
-  LIBS="${INLIBS} ${PKG_LIBS}"
-# proj.h case
-cat > proj_conf_test_proj.c <<_EOCONF
-#include <stdio.h>
-#include <stdlib.h>
-#include <proj.h>
-
-int main() {
-    printf("%d.%d.%d\n", PROJ_VERSION_MAJOR, PROJ_VERSION_MINOR, PROJ_VERSION_PATCH);
-    exit(0);
-}
-_EOCONF
-
-  if test `${CC} ${CFLAGS} ${PKGCPPFLAGS} -o proj_conf_test_proj proj_conf_test_proj.c ${PKG_LIBS} 2> /dev/null; echo $?` = 0 ; then
-    PROJ_API="proj.h"
-    PROJ6="yes"
-    PROJ_VERSION_H=`./proj_conf_test_proj`
-    PROJ_VERSION_DOT=`echo ${PROJ_VERSION_H} | tr -d "."`
-rm -f proj_conf_test_proj.c proj_conf_test_proj
-  else
-cat > proj_conf_test_proj_api.c <<_EOCONF
-#include <stdio.h>
-#include <stdlib.h>
-#include <proj_api.h>
-
-int main() {
-    printf("%d\n", PJ_VERSION);
-    exit(0);
-}
-_EOCONF
-    if test `${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test_proj_api proj_conf_test_proj_api.c ${PKG_LIBS} 2> /dev/null; echo $?` = 0; then
-      PROJ_API="proj_api.h"
-      PROJ6="no"
-      PROJ_VERSION_H=`./proj_conf_test_proj_api`
-      PROJ_VERSION_DOT=`echo ${PROJ_VERSION_H} | tr -d "."`
-rm -f proj_conf_test_proj_api.c proj_conf_test_proj_api
-    fi
-  fi
-  if test -z "${PROJ_VERSION_H}"; then
-    as_fn_error $? "API to be used not found" "$LINENO" 5
-  else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: Using API: ${PROJ_API}" >&5
-$as_echo "$as_me: Using API: ${PROJ_API}" >&6;}
-  fi
-fi # PROJ_API = ""
-
-ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-if test "${PROJ_API}" =  "proj.h" ; then # proj.h
-
-  if test ${PROJ6} = "yes"; then # PROJ6
-    projhok=yes
-    ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-if test -z "$CXX"; then
-  if test -n "$CCC"; then
-    CXX=$CCC
-  else
-    if test -n "$ac_tool_prefix"; then
-  for ac_prog in g++ c++ gpp aCC CC cxx cc++ cl.exe FCC KCC RCC xlC_r xlC
-  do
-    # Extract the first word of "$ac_tool_prefix$ac_prog", so it can be a program name with args.
-set dummy $ac_tool_prefix$ac_prog; ac_word=$2
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}gcc", so it can be a program name with args.
+set dummy ${ac_tool_prefix}gcc; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_prog_CXX+:} false; then :
+if ${ac_cv_prog_CC+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  if test -n "$CXX"; then
-  ac_cv_prog_CXX="$CXX" # Let the user override the test.
+  if test -n "$CC"; then
+  ac_cv_prog_CC="$CC" # Let the user override the test.
 else
 as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
 for as_dir in $PATH
@@ -2675,7 +2312,7 @@ do
   test -z "$as_dir" && as_dir=.
     for ac_exec_ext in '' $ac_executable_extensions; do
   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_CXX="$ac_tool_prefix$ac_prog"
+    ac_cv_prog_CC="${ac_tool_prefix}gcc"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -2685,32 +2322,28 @@ IFS=$as_save_IFS
 
 fi
 fi
-CXX=$ac_cv_prog_CXX
-if test -n "$CXX"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $CXX" >&5
-$as_echo "$CXX" >&6; }
+CC=$ac_cv_prog_CC
+if test -n "$CC"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $CC" >&5
+$as_echo "$CC" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 fi
 
 
-    test -n "$CXX" && break
-  done
 fi
-if test -z "$CXX"; then
-  ac_ct_CXX=$CXX
-  for ac_prog in g++ c++ gpp aCC CC cxx cc++ cl.exe FCC KCC RCC xlC_r xlC
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
+if test -z "$ac_cv_prog_CC"; then
+  ac_ct_CC=$CC
+  # Extract the first word of "gcc", so it can be a program name with args.
+set dummy gcc; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_prog_ac_ct_CXX+:} false; then :
+if ${ac_cv_prog_ac_ct_CC+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  if test -n "$ac_ct_CXX"; then
-  ac_cv_prog_ac_ct_CXX="$ac_ct_CXX" # Let the user override the test.
+  if test -n "$ac_ct_CC"; then
+  ac_cv_prog_ac_ct_CC="$ac_ct_CC" # Let the user override the test.
 else
 as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
 for as_dir in $PATH
@@ -2719,7 +2352,7 @@ do
   test -z "$as_dir" && as_dir=.
     for ac_exec_ext in '' $ac_executable_extensions; do
   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_ac_ct_CXX="$ac_prog"
+    ac_cv_prog_ac_ct_CC="gcc"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -2729,21 +2362,17 @@ IFS=$as_save_IFS
 
 fi
 fi
-ac_ct_CXX=$ac_cv_prog_ac_ct_CXX
-if test -n "$ac_ct_CXX"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_ct_CXX" >&5
-$as_echo "$ac_ct_CXX" >&6; }
+ac_ct_CC=$ac_cv_prog_ac_ct_CC
+if test -n "$ac_ct_CC"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_ct_CC" >&5
+$as_echo "$ac_ct_CC" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 fi
 
-
-  test -n "$ac_ct_CXX" && break
-done
-
-  if test "x$ac_ct_CXX" = x; then
-    CXX="g++"
+  if test "x$ac_ct_CC" = x; then
+    CC=""
   else
     case $cross_compiling:$ac_tool_warned in
 yes:)
@@ -2751,14 +2380,220 @@ yes:)
 $as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
 ac_tool_warned=yes ;;
 esac
-    CXX=$ac_ct_CXX
+    CC=$ac_ct_CC
   fi
+else
+  CC="$ac_cv_prog_CC"
 fi
+
+if test -z "$CC"; then
+          if test -n "$ac_tool_prefix"; then
+    # Extract the first word of "${ac_tool_prefix}cc", so it can be a program name with args.
+set dummy ${ac_tool_prefix}cc; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_CC+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$CC"; then
+  ac_cv_prog_CC="$CC" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_CC="${ac_tool_prefix}cc"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+CC=$ac_cv_prog_CC
+if test -n "$CC"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $CC" >&5
+$as_echo "$CC" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
 
   fi
 fi
+if test -z "$CC"; then
+  # Extract the first word of "cc", so it can be a program name with args.
+set dummy cc; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_CC+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$CC"; then
+  ac_cv_prog_CC="$CC" # Let the user override the test.
+else
+  ac_prog_rejected=no
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    if test "$as_dir/$ac_word$ac_exec_ext" = "/usr/ucb/cc"; then
+       ac_prog_rejected=yes
+       continue
+     fi
+    ac_cv_prog_CC="cc"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+if test $ac_prog_rejected = yes; then
+  # We found a bogon in the path, so make sure we never use it.
+  set dummy $ac_cv_prog_CC
+  shift
+  if test $# != 0; then
+    # We chose a different compiler from the bogus one.
+    # However, it has the same basename, so the bogon will be chosen
+    # first if we set CC to just the basename; use the full file name.
+    shift
+    ac_cv_prog_CC="$as_dir/$ac_word${1+' '}$@"
+  fi
+fi
+fi
+fi
+CC=$ac_cv_prog_CC
+if test -n "$CC"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $CC" >&5
+$as_echo "$CC" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$CC"; then
+  if test -n "$ac_tool_prefix"; then
+  for ac_prog in cl.exe
+  do
+    # Extract the first word of "$ac_tool_prefix$ac_prog", so it can be a program name with args.
+set dummy $ac_tool_prefix$ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_CC+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$CC"; then
+  ac_cv_prog_CC="$CC" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_CC="$ac_tool_prefix$ac_prog"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+CC=$ac_cv_prog_CC
+if test -n "$CC"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $CC" >&5
+$as_echo "$CC" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+    test -n "$CC" && break
+  done
+fi
+if test -z "$CC"; then
+  ac_ct_CC=$CC
+  for ac_prog in cl.exe
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_ac_ct_CC+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$ac_ct_CC"; then
+  ac_cv_prog_ac_ct_CC="$ac_ct_CC" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_ac_ct_CC="$ac_prog"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+ac_ct_CC=$ac_cv_prog_ac_ct_CC
+if test -n "$ac_ct_CC"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_ct_CC" >&5
+$as_echo "$ac_ct_CC" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$ac_ct_CC" && break
+done
+
+  if test "x$ac_ct_CC" = x; then
+    CC=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    CC=$ac_ct_CC
+  fi
+fi
+
+fi
+
+
+test -z "$CC" && { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "no acceptable C compiler found in \$PATH
+See \`config.log' for more details" "$LINENO" 5; }
+
 # Provide some information about the compiler.
-$as_echo "$as_me:${as_lineno-$LINENO}: checking for C++ compiler version" >&5
+$as_echo "$as_me:${as_lineno-$LINENO}: checking for C compiler version" >&5
 set X $ac_compile
 ac_compiler=$2
 for ac_option in --version -v -V -qversion; do
@@ -2798,8 +2633,8 @@ ac_clean_files="$ac_clean_files a.out a.out.dSYM a.exe b.out"
 # Try to create an executable without -o first, disregard a.out.
 # It will help us diagnose broken compilers, and finding out an intuition
 # of exeext.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the C++ compiler works" >&5
-$as_echo_n "checking whether the C++ compiler works... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the C compiler works" >&5
+$as_echo_n "checking whether the C compiler works... " >&6; }
 ac_link_default=`$as_echo "$ac_link" | sed 's/ -o *conftest[^ ]*//'`
 
 # The possible output files:
@@ -2869,14 +2704,14 @@ sed 's/^/| /' conftest.$ac_ext >&5
 
 { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error 77 "C++ compiler cannot create executables
+as_fn_error 77 "C compiler cannot create executables
 See \`config.log' for more details" "$LINENO" 5; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for C++ compiler default output file name" >&5
-$as_echo_n "checking for C++ compiler default output file name... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for C compiler default output file name" >&5
+$as_echo_n "checking for C compiler default output file name... " >&6; }
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_file" >&5
 $as_echo "$ac_file" >&6; }
 ac_exeext=$ac_cv_exeext
@@ -2970,7 +2805,7 @@ $as_echo "$ac_try_echo"; } >&5
     else
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run C++ compiled programs.
+as_fn_error $? "cannot run C compiled programs.
 If you meant to cross compile, use \`--host'.
 See \`config.log' for more details" "$LINENO" 5; }
     fi
@@ -3032,9 +2867,9 @@ fi
 $as_echo "$ac_cv_objext" >&6; }
 OBJEXT=$ac_cv_objext
 ac_objext=$OBJEXT
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether we are using the GNU C++ compiler" >&5
-$as_echo_n "checking whether we are using the GNU C++ compiler... " >&6; }
-if ${ac_cv_cxx_compiler_gnu+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether we are using the GNU C compiler" >&5
+$as_echo_n "checking whether we are using the GNU C compiler... " >&6; }
+if ${ac_cv_c_compiler_gnu+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -3051,33 +2886,33 @@ main ()
   return 0;
 }
 _ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
+if ac_fn_c_try_compile "$LINENO"; then :
   ac_compiler_gnu=yes
 else
   ac_compiler_gnu=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-ac_cv_cxx_compiler_gnu=$ac_compiler_gnu
+ac_cv_c_compiler_gnu=$ac_compiler_gnu
 
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_cxx_compiler_gnu" >&5
-$as_echo "$ac_cv_cxx_compiler_gnu" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_c_compiler_gnu" >&5
+$as_echo "$ac_cv_c_compiler_gnu" >&6; }
 if test $ac_compiler_gnu = yes; then
-  GXX=yes
+  GCC=yes
 else
-  GXX=
+  GCC=
 fi
-ac_test_CXXFLAGS=${CXXFLAGS+set}
-ac_save_CXXFLAGS=$CXXFLAGS
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CXX accepts -g" >&5
-$as_echo_n "checking whether $CXX accepts -g... " >&6; }
-if ${ac_cv_prog_cxx_g+:} false; then :
+ac_test_CFLAGS=${CFLAGS+set}
+ac_save_CFLAGS=$CFLAGS
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CC accepts -g" >&5
+$as_echo_n "checking whether $CC accepts -g... " >&6; }
+if ${ac_cv_prog_cc_g+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  ac_save_cxx_werror_flag=$ac_cxx_werror_flag
-   ac_cxx_werror_flag=yes
-   ac_cv_prog_cxx_g=no
-   CXXFLAGS="-g"
+  ac_save_c_werror_flag=$ac_c_werror_flag
+   ac_c_werror_flag=yes
+   ac_cv_prog_cc_g=no
+   CFLAGS="-g"
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3089,10 +2924,10 @@ main ()
   return 0;
 }
 _ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  ac_cv_prog_cxx_g=yes
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_prog_cc_g=yes
 else
-  CXXFLAGS=""
+  CFLAGS=""
       cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3104,11 +2939,11 @@ main ()
   return 0;
 }
 _ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
+if ac_fn_c_try_compile "$LINENO"; then :
 
 else
-  ac_cxx_werror_flag=$ac_save_cxx_werror_flag
-	 CXXFLAGS="-g"
+  ac_c_werror_flag=$ac_save_c_werror_flag
+	 CFLAGS="-g"
 	 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3120,56 +2955,150 @@ main ()
   return 0;
 }
 _ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  ac_cv_prog_cxx_g=yes
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_prog_cc_g=yes
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-   ac_cxx_werror_flag=$ac_save_cxx_werror_flag
+   ac_c_werror_flag=$ac_save_c_werror_flag
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_cxx_g" >&5
-$as_echo "$ac_cv_prog_cxx_g" >&6; }
-if test "$ac_test_CXXFLAGS" = set; then
-  CXXFLAGS=$ac_save_CXXFLAGS
-elif test $ac_cv_prog_cxx_g = yes; then
-  if test "$GXX" = yes; then
-    CXXFLAGS="-g -O2"
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_cc_g" >&5
+$as_echo "$ac_cv_prog_cc_g" >&6; }
+if test "$ac_test_CFLAGS" = set; then
+  CFLAGS=$ac_save_CFLAGS
+elif test $ac_cv_prog_cc_g = yes; then
+  if test "$GCC" = yes; then
+    CFLAGS="-g -O2"
   else
-    CXXFLAGS="-g"
+    CFLAGS="-g"
   fi
 else
-  if test "$GXX" = yes; then
-    CXXFLAGS="-O2"
+  if test "$GCC" = yes; then
+    CFLAGS="-O2"
   else
-    CXXFLAGS=
+    CFLAGS=
   fi
 fi
-ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking how to run the C++ preprocessor" >&5
-$as_echo_n "checking how to run the C++ preprocessor... " >&6; }
-if test -z "$CXXCPP"; then
-  if ${ac_cv_prog_CXXCPP+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $CC option to accept ISO C89" >&5
+$as_echo_n "checking for $CC option to accept ISO C89... " >&6; }
+if ${ac_cv_prog_cc_c89+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-      # Double quotes because CXXCPP needs to be expanded
-    for CXXCPP in "$CXX -E" "/lib/cpp"
+  ac_cv_prog_cc_c89=no
+ac_save_CC=$CC
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <stdarg.h>
+#include <stdio.h>
+struct stat;
+/* Most of the following tests are stolen from RCS 5.7's src/conf.sh.  */
+struct buf { int x; };
+FILE * (*rcsopen) (struct buf *, struct stat *, int);
+static char *e (p, i)
+     char **p;
+     int i;
+{
+  return p[i];
+}
+static char *f (char * (*g) (char **, int), char **p, ...)
+{
+  char *s;
+  va_list v;
+  va_start (v,p);
+  s = g (p, va_arg (v,int));
+  va_end (v);
+  return s;
+}
+
+/* OSF 4.0 Compaq cc is some sort of almost-ANSI by default.  It has
+   function prototypes and stuff, but not '\xHH' hex character constants.
+   These don't provoke an error unfortunately, instead are silently treated
+   as 'x'.  The following induces an error, until -std is added to get
+   proper ANSI mode.  Curiously '\x00'!='x' always comes out true, for an
+   array size at least.  It's necessary to write '\x00'==0 to get something
+   that's true only with -std.  */
+int osf4_cc_array ['\x00' == 0 ? 1 : -1];
+
+/* IBM C 6 for AIX is almost-ANSI by default, but it replaces macro parameters
+   inside strings and character constants.  */
+#define FOO(x) 'x'
+int xlc6_cc_array[FOO(a) == 'x' ? 1 : -1];
+
+int test (int i, double x);
+struct s1 {int (*f) (int a);};
+struct s2 {int (*f) (double a);};
+int pairnames (int, char **, FILE *(*)(struct buf *, struct stat *, int), int, int);
+int argc;
+char **argv;
+int
+main ()
+{
+return f (e, argv, 0) != argv[0]  ||  f (e, argv, 1) != argv[1];
+  ;
+  return 0;
+}
+_ACEOF
+for ac_arg in '' -qlanglvl=extc89 -qlanglvl=ansi -std \
+	-Ae "-Aa -D_HPUX_SOURCE" "-Xc -D__EXTENSIONS__"
+do
+  CC="$ac_save_CC $ac_arg"
+  if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_prog_cc_c89=$ac_arg
+fi
+rm -f core conftest.err conftest.$ac_objext
+  test "x$ac_cv_prog_cc_c89" != "xno" && break
+done
+rm -f conftest.$ac_ext
+CC=$ac_save_CC
+
+fi
+# AC_CACHE_VAL
+case "x$ac_cv_prog_cc_c89" in
+  x)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: none needed" >&5
+$as_echo "none needed" >&6; } ;;
+  xno)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: unsupported" >&5
+$as_echo "unsupported" >&6; } ;;
+  *)
+    CC="$CC $ac_cv_prog_cc_c89"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_cc_c89" >&5
+$as_echo "$ac_cv_prog_cc_c89" >&6; } ;;
+esac
+if test "x$ac_cv_prog_cc_c89" != xno; then :
+
+fi
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking how to run the C preprocessor" >&5
+$as_echo_n "checking how to run the C preprocessor... " >&6; }
+# On Suns, sometimes $CPP names a directory.
+if test -n "$CPP" && test -d "$CPP"; then
+  CPP=
+fi
+if test -z "$CPP"; then
+  if ${ac_cv_prog_CPP+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+      # Double quotes because CPP needs to be expanded
+    for CPP in "$CC -E" "$CC -E -traditional-cpp" "/lib/cpp"
     do
       ac_preproc_ok=false
-for ac_cxx_preproc_warn_flag in '' yes
+for ac_c_preproc_warn_flag in '' yes
 do
   # Use a header file that comes with gcc, so configuring glibc
   # with a fresh cross-compiler works.
@@ -3186,7 +3115,7 @@ do
 #endif
 		     Syntax error
 _ACEOF
-if ac_fn_cxx_try_cpp "$LINENO"; then :
+if ac_fn_c_try_cpp "$LINENO"; then :
 
 else
   # Broken: fails on valid input.
@@ -3200,7 +3129,7 @@ rm -f conftest.err conftest.i conftest.$ac_ext
 /* end confdefs.h.  */
 #include <ac_nonexistent.h>
 _ACEOF
-if ac_fn_cxx_try_cpp "$LINENO"; then :
+if ac_fn_c_try_cpp "$LINENO"; then :
   # Broken: success on invalid input.
 continue
 else
@@ -3218,17 +3147,17 @@ if $ac_preproc_ok; then :
 fi
 
     done
-    ac_cv_prog_CXXCPP=$CXXCPP
+    ac_cv_prog_CPP=$CPP
 
 fi
-  CXXCPP=$ac_cv_prog_CXXCPP
+  CPP=$ac_cv_prog_CPP
 else
-  ac_cv_prog_CXXCPP=$CXXCPP
+  ac_cv_prog_CPP=$CPP
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $CXXCPP" >&5
-$as_echo "$CXXCPP" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $CPP" >&5
+$as_echo "$CPP" >&6; }
 ac_preproc_ok=false
-for ac_cxx_preproc_warn_flag in '' yes
+for ac_c_preproc_warn_flag in '' yes
 do
   # Use a header file that comes with gcc, so configuring glibc
   # with a fresh cross-compiler works.
@@ -3245,7 +3174,7 @@ do
 #endif
 		     Syntax error
 _ACEOF
-if ac_fn_cxx_try_cpp "$LINENO"; then :
+if ac_fn_c_try_cpp "$LINENO"; then :
 
 else
   # Broken: fails on valid input.
@@ -3259,7 +3188,7 @@ rm -f conftest.err conftest.i conftest.$ac_ext
 /* end confdefs.h.  */
 #include <ac_nonexistent.h>
 _ACEOF
-if ac_fn_cxx_try_cpp "$LINENO"; then :
+if ac_fn_c_try_cpp "$LINENO"; then :
   # Broken: success on invalid input.
 continue
 else
@@ -3277,15 +3206,15 @@ if $ac_preproc_ok; then :
 else
   { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "C++ preprocessor \"$CXXCPP\" fails sanity check
+as_fn_error $? "C preprocessor \"$CPP\" fails sanity check
 See \`config.log' for more details" "$LINENO" 5; }
 fi
 
-ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for grep that handles long lines and -e" >&5
@@ -3438,7 +3367,7 @@ main ()
   return 0;
 }
 _ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
+if ac_fn_c_try_compile "$LINENO"; then :
   ac_cv_header_stdc=yes
 else
   ac_cv_header_stdc=no
@@ -3511,7 +3440,7 @@ main ()
   return 0;
 }
 _ACEOF
-if ac_fn_cxx_try_run "$LINENO"; then :
+if ac_fn_c_try_run "$LINENO"; then :
 
 else
   ac_cv_header_stdc=no
@@ -3535,7 +3464,7 @@ for ac_header in sys/types.h sys/stat.h stdlib.h string.h memory.h strings.h \
 		  inttypes.h stdint.h unistd.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
-ac_fn_cxx_check_header_compile "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default
+ac_fn_c_check_header_compile "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default
 "
 if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
   cat >>confdefs.h <<_ACEOF
@@ -3547,190 +3476,121 @@ fi
 done
 
 
-ac_fn_cxx_check_header_mongrel "$LINENO" "proj.h" "ac_cv_header_proj_h" "$ac_includes_default"
-if test "x$ac_cv_header_proj_h" = xyes; then :
-
-else
-  projhok=no
-fi
-
-
-    if test "${projhok}" = no; then # libprojok
-      as_fn_error $? "proj.h not found in given locations." "$LINENO" 5
-    fi # libprojok
-    libprojok=yes
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for proj_context_create in -lproj" >&5
-$as_echo_n "checking for proj_context_create in -lproj... " >&6; }
-if ${ac_cv_lib_proj_proj_context_create+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lproj  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char proj_context_create ();
-int
-main ()
-{
-return proj_context_create ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_proj_proj_context_create=yes
-else
-  ac_cv_lib_proj_proj_context_create=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_proj_proj_context_create" >&5
-$as_echo "$ac_cv_lib_proj_proj_context_create" >&6; }
-if test "x$ac_cv_lib_proj_proj_context_create" = xyes; then :
+for ac_header in gdal.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "gdal.h" "ac_cv_header_gdal_h" "$ac_includes_default"
+if test "x$ac_cv_header_gdal_h" = xyes; then :
   cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBPROJ 1
+#define HAVE_GDAL_H 1
 _ACEOF
 
-  LIBS="-lproj $LIBS"
-
 else
-  libprojok=no
+  gdalok=no
 fi
 
-    if test "${libprojok}" = no; then # libprojok
-      as_fn_error $? "proj_context_create not found in libproj." "$LINENO" 5
-    fi # libprojok
-  fi # PROJ6
+done
 
-fi # proj.h
+if test "${gdalok}" = no; then
+   as_fn_error $? "gdal.h not found in given locations." "$LINENO" 5
+fi
 
-if test "${PROJ_API}" =  "proj_api.h"; then # proj_api.h
-
+NEED_DEPS=no
 LIBS="${INLIBS} ${PKG_LIBS}"
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking proj_api.h presence and usability" >&5
-$as_echo_n "checking proj_api.h presence and usability... " >&6; }
-cat > proj_conf_test1.c <<_EOCONF
-#include <stdio.h>
-#include <stdlib.h>
-#include <proj_api.h>
-
+cat > gdal_test.cpp <<_EOCONF
+#include <gdal.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 int main() {
-    printf("%d\n", PJ_VERSION);
-    exit(0);
+GDALAllRegister();
 }
+#ifdef __cplusplus
+}
+#endif
 _EOCONF
 
-  if test `${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test1 proj_conf_test1.c ${PKG_LIBS} 2> /dev/null; echo $?` = 0; then
-    PROJ_VERSION_H=`./proj_conf_test1`
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  else
-    if test `${CC} ${CFLAGS} ${PKG_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H -o proj_conf_test1 proj_conf_test1.c ${PKG_LIBS} 2> /dev/null; echo $?` = 0; then
-      PROJ6="yes"
-      PKG_CPPFLAGS="${PKG_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
-      PROJ_VERSION_H=`./proj_conf_test1`
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-    else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: linking with --libs only" >&5
+$as_echo_n "checking GDAL: linking with --libs only... " >&6; }
+${CXX} ${CPPFLAGS} -o gdal_test gdal_test.cpp ${LIBS} 2> errors.txt
+if test `echo $?` -ne 0 ; then
+gdalok=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-      as_fn_error $? "proj_api.h not found in standard or given locations." "$LINENO" 5
-    fi
-  fi
-
-rm -f proj_conf_test1.c proj_conf_test1
-
-#AC_MSG_NOTICE(["|${PROJ_VERSION}| |${PROJ_VERSION_H}|"])
-
-if test -n "${PROJ_VERSION}" ; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ version agreement" >&5
-$as_echo_n "checking PROJ version agreement... " >&6; }
-  PROJ_VERSION_DOT=`echo ${PROJ_VERSION} | tr -d "."`
-#echo "|${PROJ_VERSION}| |${PROJ_VERSION_DOT}| |${PROJ_VERSION_H}|"
-  if test "${PROJ_VERSION_DOT}$" = "${PROJ_VERSION_H}$"; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    as_fn_error $? "proj_api.h and pkg-config give different versions" "$LINENO" 5
-  fi
-fi
-
-fi
-
-if test -z "${PROJ_VERSION_DOT}"; then
-  PROJ_VERSION_DOT=`echo ${PROJ_VERSION_H} | tr -d "."`
-fi
-NEW_PROJ_WITH_OLD_GDAL="no"
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking Using GDAL < 3 with PROJ >= 6" >&5
-$as_echo_n "checking Using GDAL < 3 with PROJ >= 6... " >&6; }
-if test ${GDAL_MAJOR} -lt 3 && test ${PROJ_VERSION_DOT} -ge 600; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-    if test ${PROJ_API} = "proj.h"; then
-        PROJ_API = "proj_api.h"
-        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: GDAL >= 3 should be used with PROJ >= 6, now using --with-proj_api=\"proj_api.h\" for deprecated API" >&5
-$as_echo "$as_me: WARNING: GDAL >= 3 should be used with PROJ >= 6, now using --with-proj_api=\"proj_api.h\" for deprecated API" >&2;}
-    else
-        NEW_PROJ_WITH_OLD_GDAL="yes"
-        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: GDAL >= 3 should be used with PROJ >= 6" >&5
-$as_echo "$as_me: WARNING: GDAL >= 3 should be used with PROJ >= 6" >&2;}
-    fi
-  else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-
-if test "${PROJ6}" = "yes" && test "${PROJ_API}" =  "proj_api.h"; then
-    PKG_CPPFLAGS="${PKG_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
-fi
-#AC_MSG_NOTICE([CPP FLAGS: ${PKG_CPPFLAGS}])
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ version >= 4.8.0" >&5
-$as_echo_n "checking PROJ version >= 4.8.0... " >&6; }
-if test ${PROJ_VERSION_DOT} -lt 480 ; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-  as_fn_error $? "upgrade PROJ to 4.8.0 or later" "$LINENO" 5
 else
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+
+if test "${gdalok}" = no; then
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: linking with --libs and --dep-libs" >&5
+$as_echo_n "checking GDAL: linking with --libs and --dep-libs... " >&6; }
+LIBS="${LIBS} ${GDAL_DEP_LIBS}"
+gdalok=yes
+${CXX} ${CPPFLAGS} -o gdal_test gdal_test.cpp ${LIBS} 2>> errors.txt
+if test `echo $?` -ne 0 ; then
+gdalok=no
+fi
+if test "${gdalok}" = yes; then
+    NEED_DEPS=yes
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+fi
+
+if test "${gdalok}" = no; then
+   cat errors.txt
+   { $as_echo "$as_me:${as_lineno-$LINENO}: Install failure: compilation and/or linkage problems." >&5
+$as_echo "$as_me: Install failure: compilation and/or linkage problems." >&6;}
+   as_fn_error $? "GDALAllRegister not found in libgdal." "$LINENO" 5
+fi
+
+rm -f gdal_test errors.txt gdal_test.cpp
+
+GDAL_GE_250="no"
+GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d "." -f1`
+GDAL_MOD_VER=`echo $GDAL_VERSION | cut -d "." -f2`
+if test "${GDAL_MAJ_VER}" = 2 ; then
+  if test "${GDAL_MOD_VER}" -ge 5 ; then
+    GDAL_GE_250="yes"
+  fi
+else
+  if test "${GDAL_MAJ_VER}" -ge 3 ; then
+    GDAL_GE_250="yes"
+  fi
+fi
+
+GDAL_DATA_TEST_FILE="${GDAL_DATADIR}/pcs.csv"
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: ${GDAL_DATADIR}/pcs.csv readable" >&5
+$as_echo_n "checking GDAL: ${GDAL_DATADIR}/pcs.csv readable... " >&6; }
+if test -r "${GDAL_DATA_TEST_FILE}" ; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+  if test "${GDAL_GE_250}" = "no" ; then
+    as_fn_error $? "pcs.csv not found in GDAL data directory." "$LINENO" 5
+  fi
 fi
-
-if test ${PROJ_VERSION_DOT} -lt 493; then
-
-if test ${PROJ_VERSION_DOT} = 480 ; then
-  ADDED_PKG_INCL_480=`pwd`"/inst/include"
-  PKG_CPPFLAGS="${PKG_CPPFLAGS} -I${ADDED_PKG_INCL_480}"
-
-  proj_include_path="${PKG_CPPFLAGS} -I${ADDED_PKG_INCL_480}"
-  CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS}"
-fi
-
-fi
-
 
 # Optional local copy of GDAL datadir and PROJ_LIB
 
 data_copy=no
+if test "${PROJ_GDAL_DATA_COPY}" ; then
+    data_copy=yes
+    { $as_echo "$as_me:${as_lineno-$LINENO}: PROJ_GDAL_DATA_COPY used." >&5
+$as_echo "$as_me: PROJ_GDAL_DATA_COPY used." >&6;}
+else
 
 # Check whether --with-data-copy was given.
 if test "${with_data_copy+set}" = set; then :
   withval=$with_data_copy; data_copy=$withval
 fi
 
+fi
 if test "${data_copy}" = "yes" ; then
 { $as_echo "$as_me:${as_lineno-$LINENO}: Copy data for:" >&5
 $as_echo "$as_me: Copy data for:" >&6;}
@@ -3749,13 +3609,13 @@ fi
   if test -n "${proj_lib}" ; then
     if test -d "${proj_lib}" ; then
       cp -r "${proj_lib}" "${R_PACKAGE_DIR}"
-      { $as_echo "$as_me:${as_lineno-$LINENO}:   PROJ.4: ${proj_lib}" >&5
-$as_echo "$as_me:   PROJ.4: ${proj_lib}" >&6;}
+      { $as_echo "$as_me:${as_lineno-$LINENO}:   PROJ: ${proj_lib}" >&5
+$as_echo "$as_me:   PROJ: ${proj_lib}" >&6;}
     else
-      as_fn_error $? "PROJ.4 data files not found; set environment variable PROJ_LIB=DIR or --with-proj-data=DIR." "$LINENO" 5
+      as_fn_error $? "PROJ data files not found; set environment variable PROJ_LIB=DIR or --with-proj-data=DIR." "$LINENO" 5
     fi
   else
-      as_fn_error $? "PROJ.4 data files not found; set environment variable PROJ_LIB=DIR or --with-proj-data=DIR." "$LINENO" 5
+      as_fn_error $? "PROJ data files not found; set environment variable PROJ_LIB=DIR or --with-proj-data=DIR." "$LINENO" 5
   fi
 
   if test -d "${GDAL_DATADIR}" ; then
@@ -3767,53 +3627,502 @@ $as_echo "$as_me:   GDAL: ${GDAL_DATADIR}" >&6;}
   fi
 fi
 
+#
+# test whether PROJ is available to gdal:
+#
 
+gdal_has_proj=no
+cat > gdal_proj.cpp <<_EOCONF
+#include <gdal.h>
+#include <ogr_srs_api.h>
+#include <ogr_spatialref.h>
+int main(int argc, char *argv[]) {
+	OGRSpatialReference *dest = new OGRSpatialReference;
+	OGRSpatialReference *src = new OGRSpatialReference;
+    src->importFromEPSG(4326);
+    dest->importFromEPSG(3857);
+	OGRCoordinateTransformation *ct = OGRCreateCoordinateTransformation(src, dest);
+	return(ct == NULL); // signals PROJ is not available through gdal
+}
+_EOCONF
 
-#AC_MSG_NOTICE([CPP FLAGS: ${PKG_CPPFLAGS}])
-
-# concluding substitution
-
-PKG_CPPFLAGS="${INPKG_CPPFLAGS} ${GDAL_CPPFLAGS}"
-
-#AC_MSG_NOTICE([CPP FLAGS: ${PKG_CPPFLAGS}])
-if test  -n "$proj_include_path"  ; then
-#AC_MSG_NOTICE([INC_PATH: ${proj_include_path}])
-PKG_CPPFLAGS="${PKG_CPPFLAGS} ${proj_include_path}"
-
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: checking whether PROJ is available for linking:" >&5
+$as_echo_n "checking GDAL: checking whether PROJ is available for linking:... " >&6; }
+${CXX} ${CPPFLAGS} -o gdal_proj gdal_proj.cpp ${LIBS} 2> errors.txt
+if test `echo $?` -ne 0 ; then
+gdal_has_proj=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+else
+gdal_has_proj=yes
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
 fi
 
-if test ${PROJ6} = "yes" ; then
-  if test ${PROJ_API} = "proj.h"; then
-    PKG_CPPFLAGS="${PKG_CPPFLAGS} -DPROJ_H_API"
+if test "${gdal_has_proj}" = no; then
+   cat errors.txt
+   { $as_echo "$as_me:${as_lineno-$LINENO}: Install failure: compilation and/or linkage problems." >&5
+$as_echo "$as_me: Install failure: compilation and/or linkage problems." >&6;}
+   as_fn_error $? "cannot link projection code" "$LINENO" 5
+fi
 
-  else
-    PKG_CPPFLAGS="${PKG_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: checking whether PROJ is available fur running:" >&5
+$as_echo_n "checking GDAL: checking whether PROJ is available fur running:... " >&6; }
+./gdal_proj
+if test `echo $?` -ne 0 ; then
+gdal_has_proj=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+else
+gdal_has_proj=yes
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+if test "${gdal_has_proj}" = no; then
+   as_fn_error $? "OGRCoordinateTransformation() does not return a coord.trans: PROJ not available?" "$LINENO" 5
+fi
+rm -fr errors.txt gdal_proj.cpp gdal_proj
+{ $as_echo "$as_me:${as_lineno-$LINENO}: GDAL: ${GDAL_VERSION}" >&5
+$as_echo "$as_me: GDAL: ${GDAL_VERSION}" >&6;}
+
+
+#
+# PROJ
+#
+
+PROJ_CONFIG="pkg-config proj"
+
+if `$PROJ_CONFIG --exists` ; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: pkg-config proj exists, will use it" >&5
+$as_echo "$as_me: pkg-config proj exists, will use it" >&6;}
+  proj_config_ok=yes
+else
+  proj_config_ok=no
+fi
+
+
+# Check whether --with-proj-include was given.
+if test "${with_proj_include+set}" = set; then :
+  withval=$with_proj_include; proj_include_path=$withval
+fi
+
+if test  -n "$proj_include_path"  ; then
+   PROJ_CPPFLAGS="-I${proj_include_path}"
+
+else
+  if test "${proj_config_ok}" = yes; then
+    PROJ_INCLUDE_PATH=`${PROJ_CONFIG} --cflags`
+    PROJ_CPPFLAGS="${PROJ_INCLUDE_PATH}"
 
   fi
 fi
 
-if test ${NEW_PROJ_WITH_OLD_GDAL} = "yes" ; then
-  PKG_CPPFLAGS="${PKG_CPPFLAGS} -DNEW_PROJ_WITH_OLD_GDAL"
+# honor PKG_xx overrides
+# for CPPFLAGS we will superfluously double R's flags
+# since we'll set PKG_CPPFLAGS with this, but that shouldn't hurt
 
+
+# Check whether --with-proj-api was given.
+if test "${with_proj_api+set}" = set; then :
+  withval=$with_proj_api; proj_api=$withval
 fi
 
-PKG_LIBS="${INPKG_LIBS} ${GDAL_LIBS}"
-
-if test "${NEED_DEPS}" = yes; then
-   PKG_LIBS="${PKG_LIBS} ${GDAL_DEP_LIBS}"
-
-fi
-if test  -n "$proj_lib_path"  ; then
-PKG_LIBS="${PKG_LIBS} -L${proj_lib_path}"
-
-fi
-if test  -n "$PROJ_LIB_PATH"  ; then
-PKG_LIBS="${PKG_LIBS} ${PROJ_LIB_PATH}"
+PROJ6="no"
+PROJH="no"
+if test "${proj_config_ok}" = yes; then
+  PROJ_VERSION=`${PROJ_CONFIG} --modversion`
+  PROJV1=`echo "${PROJ_VERSION}" | cut -c 1`
+  if test "${PROJV1}" -ge 6; then
+    PROJ6="yes"
+    PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DHAVE_PROJ_H"
+    if test "${proj_api}" = yes; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: using proj_api.h even with PROJ 5/6" >&5
+$as_echo "$as_me: using proj_api.h even with PROJ 5/6" >&6;}
+        PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
+    else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: using proj.h." >&5
+$as_echo "$as_me: using proj.h." >&6;}
+        PROJH="yes"
+    fi
+  fi
+else
+  if test "${PROJH}" = no ; then
+    PROJH=yes
+    for ac_header in proj.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "proj.h" "ac_cv_header_proj_h" "$ac_includes_default"
+if test "x$ac_cv_header_proj_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_PROJ_H 1
+_ACEOF
 
 else
-PKG_LIBS="${PKG_LIBS} -lproj"
-
+  PROJH=no
 fi
+
+done
+
+    if test "${PROJH}" = yes; then
+      PROJ6="yes"
+      PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DHAVE_PROJ_H"
+    fi
+  fi
+fi
+
+CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS} ${PROJ_CPPFLAGS}"
+
+if test "${PROJH}" = no
+then
+  proj4ok=yes
+  for ac_header in proj_api.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "proj_api.h" "ac_cv_header_proj_api_h" "$ac_includes_default"
+if test "x$ac_cv_header_proj_api_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_PROJ_API_H 1
+_ACEOF
+
+else
+  proj4ok=no
+fi
+
+done
+
+  if test "${proj4ok}" = no; then
+     as_fn_error $? "proj_api.h not found in standard or given locations." "$LINENO" 5
+  fi
+fi
+
+# dnl ditto for a library path
+
+# Check whether --with-proj-lib was given.
+if test "${with_proj_lib+set}" = set; then :
+  withval=$with_proj_lib; proj_lib_path=$withval
+fi
+
+if test  -n "$proj_lib_path"  ; then
+    PROJ_LIBS="-L${proj_lib_path} ${INPKG_LIBS} -lproj"
+
+else
+  if test "${proj_config_ok}" = yes; then
+    if test `uname` = "Darwin"; then
+      PROJ_LIB_PATH=`${PROJ_CONFIG} --libs --static`
+    else
+      PROJ_LIB_PATH=`${PROJ_CONFIG} --libs`
+    fi
+    PROJ_LIBS="${PROJ_LIB_PATH} ${INPKG_LIBS}"
+
+	proj_version=`${PROJ_CONFIG} --modversion`
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: PROJ: ${proj_version}" >&5
+$as_echo "$as_me: PROJ: ${proj_version}" >&6;}
+  else
+    PROJ_LIBS="${PKG_LIBS} -lproj"
+  fi
+fi
+
+LIBS="${PROJ_LIBS} ${INLIBS} ${PKG_LIBS}"
+
+if test "${PROJH}" = no; then
+  proj4ok=yes
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pj_init_plus in -lproj" >&5
+$as_echo_n "checking for pj_init_plus in -lproj... " >&6; }
+if ${ac_cv_lib_proj_pj_init_plus+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lproj  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char pj_init_plus ();
+int
+main ()
+{
+return pj_init_plus ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_proj_pj_init_plus=yes
+else
+  ac_cv_lib_proj_pj_init_plus=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_proj_pj_init_plus" >&5
+$as_echo "$ac_cv_lib_proj_pj_init_plus" >&6; }
+if test "x$ac_cv_lib_proj_pj_init_plus" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBPROJ 1
+_ACEOF
+
+  LIBS="-lproj $LIBS"
+
+else
+  proj4ok=no
+fi
+
+  if test "${proj4ok}" = no; then
+     as_fn_error $? "libproj not found in standard or given locations." "$LINENO" 5
+  fi
+cat > proj_conf_test.c <<_EOCONF
+#include <stdio.h>
+#include <stdlib.h>
+#include <proj_api.h>
+
+int main() {
+    printf("%d\n", PJ_VERSION);
+    exit(0);
+}
+_EOCONF
+else
+cat > proj_conf_test.cpp <<_EOCONF
+#include <stdio.h>
+#include <stdlib.h>
+#include <proj.h>
+
+int main() {
+	proj_context_create();
+    exit(0);
+}
+_EOCONF
+  #AC_CHECK_LIB(proj,proj_context_create,,proj6ok=no)
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ: checking whether PROJ and sqlite3 are available for linking:" >&5
+$as_echo_n "checking PROJ: checking whether PROJ and sqlite3 are available for linking:... " >&6; }
+  ${CXX} ${CPPFLAGS} -o proj_conf_test proj_conf_test.cpp ${LIBS} -lsqlite3 2> errors.txt
+  if test `echo $?` -ne 0 ; then
+    proj6ok=no
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+  else
+    proj6ok=yes
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+  fi
+  if test "${proj6ok}" = no; then
+     as_fn_error $? "libproj or sqlite3 not found in standard or given locations." "$LINENO" 5
+  fi
+
+cat > proj_conf_test.c <<_EOCONF
+#include <stdio.h>
+#include <stdlib.h>
+#include <proj.h>
+
+int main() {
+    printf("%d.%d.%d\n", PROJ_VERSION_MAJOR, PROJ_VERSION_MINOR, PROJ_VERSION_PATCH);
+    exit(0);
+}
+_EOCONF
+fi
+
+#AC_MSG_NOTICE([PKG_LIBS: ${PKG_LIBS}])
+
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+
+proj_version=`./proj_conf_test`
+
+
+# Check whether --with-proj-share was given.
+if test "${with_proj_share+set}" = set; then :
+  withval=$with_proj_share; proj_share_path=$withval
+fi
+
+if test  -n "$proj_share_path"  ; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: PROJ_LIB: ${proj_share_path}" >&5
+$as_echo "$as_me: PROJ_LIB: ${proj_share_path}" >&6;}
+fi
+
+if test ${PROJ6} = "no"; then
+
+cat > proj_conf_test.c <<_EOCONF
+#include <stdio.h>
+#include <proj_api.h>
+#if PJ_VERSION <= 480
+FILE *pj_open_lib(projCtx, const char *, const char *);
+#endif
+
+int main() {
+#if PJ_VERSION <= 480
+    FILE *fp;
+#else
+    PAFile fp;
+#endif
+    projCtx ctx;
+    ctx = pj_get_default_ctx();
+    fp = pj_open_lib(ctx, "epsg", "rb");
+    if (fp == NULL) exit(1);
+#if PJ_VERSION <= 480
+    fclose(fp);
+#else
+    pj_ctx_fclose(ctx, fp);
+#endif
+    exit(0);
+}
+_EOCONF
+
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+if test  -n "$proj_share_path"  ; then
+  PROJ_LIB="${proj_share_path}" ./proj_conf_test
+  proj_share=`echo $?`
+else
+  ./proj_conf_test
+  proj_share=`echo $?`
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ: epsg found and readable" >&5
+$as_echo_n "checking PROJ: epsg found and readable... " >&6; }
+if test ${proj_share} -eq 1 ; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    STOP="stop"
+else
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+
+rm -f proj_conf_test.c proj_conf_test
+
+if test "$STOP" = "stop" ; then
+    echo "Error: proj/epsg not found"
+    echo "Either install missing proj support files, for example"
+    echo "the proj-nad and proj-epsg RPMs on systems using RPMs,"
+    echo "or if installed but not autodetected, set PROJ_LIB to the"
+    echo "correct path, and if need be use the --with-proj-share="
+    echo "configure argument."
+    exit 1
+fi
+
+else # proj >= 6
+
+if test "${PROJH}" = no; then
+
+cat > proj_conf_test.c <<_EOCONF
+#include <stdio.h>
+#include <proj_api.h>
+
+int main() {
+    PAFile fp;
+    projCtx ctx;
+    ctx = pj_get_default_ctx();
+    fp = pj_open_lib(ctx, "proj.db", "rb");
+    if (fp == NULL) exit(1);
+    pj_ctx_fclose(ctx, fp);
+    exit(0);
+}
+_EOCONF
+
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+if test  -n "$proj_share_path"  ; then
+  PROJ_LIB="${proj_share_path}" ./proj_conf_test
+  proj_share=`echo $?`
+else
+  ./proj_conf_test
+  proj_share=`echo $?`
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ: proj.db found and readable" >&5
+$as_echo_n "checking PROJ: proj.db found and readable... " >&6; }
+if test ${proj_share} -eq 1 ; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    STOP="stop"
+else
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+
+rm -f proj_conf_test.c proj_conf_test
+
+if test "$STOP" = "stop" ; then
+    echo "Error: proj/proj.db not found"
+    echo "Either install missing proj support files, set PROJ_LIB to the"
+    echo "correct path, and if need be use the --with-proj-share="
+    echo "configure argument."
+    exit 1
+fi
+
+cat > proj_conf_test.c <<_EOCONF
+#include <stdio.h>
+#include <proj_api.h>
+#if PJ_VERSION <= 480
+FILE *pj_open_lib(projCtx, const char *, const char *);
+#endif
+
+int main() {
+#if PJ_VERSION <= 480
+    FILE *fp;
+#else
+    PAFile fp;
+#endif
+    projCtx ctx;
+    ctx = pj_get_default_ctx();
+    fp = pj_open_lib(ctx, "conus", "rb");
+    if (fp == NULL) exit(1);
+#if PJ_VERSION <= 480
+    fclose(fp);
+#else
+    pj_ctx_fclose(ctx, fp);
+#endif
+    exit(0);
+}
+_EOCONF
+
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+if test  -n "$proj_share_path"  ; then
+  PROJ_LIB="${proj_share_path}" ./proj_conf_test
+  proj_share=`echo $?`
+else
+  ./proj_conf_test
+  proj_share=`echo $?`
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ: conus found and readable" >&5
+$as_echo_n "checking PROJ: conus found and readable... " >&6; }
+if test ${proj_share} -eq 1 ; then
+    WARN="warn"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+else
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+
+rm -f proj_conf_test.c proj_conf_test
+
+if test "$WARN" = "warn" ; then
+    echo "Note: proj/conus not found"
+    echo "No support available in PROJ4 for NAD grid datum transformations"
+    echo "If required, consider re-installing from source with the contents"
+    echo "of proj-datumgrid-1.<latest>.zip from http://download.osgeo.org/proj/ in nad/."
+fi
+
+fi # PROJH = no
+
+fi # proj >= 6
+
+
+
+
+
+
+#
+# add PROJ_LIBS
+#
+PKG_LIBS="${PROJ_LIBS} ${PKG_LIBS}"
+
+
+#
+# concluding substitution
+#
 { $as_echo "$as_me:${as_lineno-$LINENO}: Package CPP flags: ${PKG_CPPFLAGS}" >&5
 $as_echo "$as_me: Package CPP flags: ${PKG_CPPFLAGS}" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}: Package LIBS: ${PKG_LIBS}" >&5
