@@ -1,4 +1,4 @@
-# vapour dev
+# vapour 0.7.8
 
 * Fixed errors for earlier GDAL (that were seen on Solaris with GDAL 2.2.4, now 2.4.4), by condition on GDAL version for 
  importFromWkt() as sf does. This means vapour can work on GDAL from version 2.0.1, and so support its use on Ubuntu 18.04. 

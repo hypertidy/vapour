@@ -27,3 +27,4 @@
 ^Makefile$
 ^Jenkinsfile$
 ^gdalwmscache$
+^proj_conf.*$
