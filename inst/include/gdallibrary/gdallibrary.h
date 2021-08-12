@@ -1041,7 +1041,7 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
   OGRSpatialReference oSRS;
   char **cwkt = (char **) &proj;
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-  oSRS.importFromWkt(cwkt;
+  oSRS.importFromWkt(cwkt);
 #else
   oSRS.importFromWkt( (const char**) cwkt);
 #endif
