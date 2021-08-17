@@ -1,13 +1,7 @@
-dnl adapted from rgdal configure.ac 2021-08-12 Michael Sumner
-dnl GDAL stuff largely copied from rgdal, (c) Roger Bivand
-
-dnl Process this file with autoconf to produce a configure script.
-
-
 # dnl Process this file with autoconf to produce a configure script.
 define([pkgversion], esyscmd([sh -c "grep Version: DESCRIPTION | cut -d' ' -f2 | tr -d '\n'"]))dnl
-AC_INIT(vapour, [pkgversion], mdsumner@gmail.com)
-AC_INIT(src/00headers_dirigible.cpp)
+AC_INIT(vapour [pkgversion], mdsumner@gmail.com)
+AC_CONFIG_SRCDIR(src/00headers_dirigible.cpp)
 
 # AC_PROG_CXX()
 
@@ -201,12 +195,17 @@ if test ${GDAL_MAJOR} = 2 && test ${GDAL_MINOR} -ge 3 ; then
   fi
 fi
 
-AC_MSG_CHECKING([GDAL version >= 2.0.1])
-if test ${GDAL_MAJOR} -lt 2 ; then
-  AC_MSG_RESULT(no)
+AC_MSG_CHECKING([GDAL version >= 1.11.4])
+if test ${GDAL_MAJOR} -gt 1 ; then
+  AC_MSG_RESULT(yes)
 else
+#  if test ${GDAL_MAJOR} = 1 -a test ${GDAL_MINOR} = 11 -a test ${GDAL_PATCH} -ge 4 ; then
+  if test ${GDAL_MAJOR} = 1 && test ${GDAL_MINOR} = 11 && test ${GDAL_PATCH} -ge 4 ; then
+    AC_MSG_RESULT(yes)
+  else
     AC_MSG_RESULT(no)
-    AC_MSG_ERROR([upgrade GDAL to 2.0.1 or later])
+    AC_MSG_ERROR([upgrade GDAL to 1.11.4 or later])
+  fi
 fi
 
 
@@ -910,5 +909,11 @@ fi
 AC_MSG_NOTICE([Package CPP flags: ${PKG_CPPFLAGS}])
 AC_MSG_NOTICE([Package LIBS: ${PKG_LIBS}])
 
+MKVARS=`cat src/Makevars`
+AC_MSG_NOTICE([mv: ${MKVARS}])
+
 AC_CONFIG_FILES(src/Makevars)
 AC_OUTPUT
+
+
+
