@@ -159,6 +159,9 @@ GDALAllRegister();
 _EOCONF]
 
 AC_MSG_CHECKING(GDAL: linking with --libs only)
+AC_MSG_NOTICE([GDAL --libs: ${LIBS}])
+AC_MSG_NOTICE([GDAL --libs --dep-libs: ${LIBS} ${GDAL_DEP_LIBS}])
+
 ${CXX} ${CPPFLAGS} -o gdal_test gdal_test.cpp ${LIBS} 2> errors.txt
 if test `echo $?` -ne 0 ; then
 gdalok=no
@@ -630,9 +633,6 @@ fi
 fi # PROJH = no
 
 fi # proj >= 6
-
-
-
 
 
 AC_SUBST([PKG_CPPFLAGS], ["${INPKG_CPPFLAGS} ${PROJ_CPPFLAGS} ${GDAL_CPPFLAGS}"])
