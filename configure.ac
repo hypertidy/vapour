@@ -697,7 +697,7 @@ LIBS="${LIBS} ${PKG_LIBS}"
 #
 # add PROJ_LIBS
 #
-AC_SUBST([PKG_LIBS], ["${PROJ_LIBS} ${PKG_LIBS}"])
+AC_SUBST([PKG_LIBS], ["${PKG_LIBS} ${PROJ_LIBS}"])
 
 #
 # concluding substitution
