@@ -158,9 +158,12 @@ GDALAllRegister();
 #endif
 _EOCONF]
 
-AC_MSG_CHECKING(GDAL: linking with --libs only)
+
 AC_MSG_NOTICE([GDAL --libs: ${LIBS}])
 AC_MSG_NOTICE([GDAL --libs --dep-libs: ${LIBS} ${GDAL_DEP_LIBS}])
+
+
+AC_MSG_CHECKING(GDAL: linking with --libs only)
 
 ${CXX} ${CPPFLAGS} -o gdal_test gdal_test.cpp ${LIBS} 2> errors.txt
 if test `echo $?` -ne 0 ; then
@@ -659,9 +662,10 @@ AC_MSG_NOTICE([Package CPP flags: ${PKG_CPPFLAGS}])
 AC_MSG_NOTICE([Package LIBS: ${PKG_LIBS}])
 
 
-MKVARS=`cat src/Makevars`
-AC_MSG_NOTICE([mv: ${MKVARS}])
 
 
 AC_CONFIG_FILES(src/Makevars)
+MKVARS=`cat src/Makevars`
+AC_MSG_NOTICE([mv: ${MKVARS}])
+
 AC_OUTPUT
