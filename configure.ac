@@ -1,7 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl GDAL stuff largely copied from rgdal, (c) Roger Bivand
-AC_INIT(vapour)
-AC_CONFIG_SRCDIR(src/00headers_dirigible.cpp)
+AC_INIT(src/00headers_dirigible.cpp)
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
@@ -125,7 +124,7 @@ else
    AC_MSG_RESULT(yes)
 fi
 
-INLIBS="${LIBS} -lssl -lcrypto"
+INLIBS="${LIBS}"
 INCPPFLAGS="${CPPFLAGS}"
 INPKG_CPPFLAGS="${PKG_CPPFLAGS}"
 INPKG_LIBS="${PKG_LIBS}"
@@ -159,13 +158,7 @@ GDALAllRegister();
 #endif
 _EOCONF]
 
-
-AC_MSG_NOTICE([GDAL --libs: ${LIBS}])
-AC_MSG_NOTICE([GDAL --libs --dep-libs: ${LIBS} ${GDAL_DEP_LIBS}])
-
-
 AC_MSG_CHECKING(GDAL: linking with --libs only)
-
 ${CXX} ${CPPFLAGS} -o gdal_test gdal_test.cpp ${LIBS} 2> errors.txt
 if test `echo $?` -ne 0 ; then
 gdalok=no
@@ -639,6 +632,9 @@ fi # PROJH = no
 fi # proj >= 6
 
 
+
+
+
 AC_SUBST([PKG_CPPFLAGS], ["${INPKG_CPPFLAGS} ${PROJ_CPPFLAGS} ${GDAL_CPPFLAGS}"])
 AC_SUBST([PKG_LIBS], ["${INPKG_LIBS} ${GDAL_LIBS}"])
 if test "${NEED_DEPS}" = yes; then
@@ -663,10 +659,9 @@ AC_MSG_NOTICE([Package CPP flags: ${PKG_CPPFLAGS}])
 AC_MSG_NOTICE([Package LIBS: ${PKG_LIBS}])
 
 
-
-
-AC_CONFIG_FILES(src/Makevars)
 MKVARS=`cat src/Makevars`
 AC_MSG_NOTICE([mv: ${MKVARS}])
 
+
+AC_CONFIG_FILES(src/Makevars)
 AC_OUTPUT

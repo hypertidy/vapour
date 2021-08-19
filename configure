@@ -582,7 +582,6 @@ PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 PACKAGE_URL=
 
-ac_unique_file="vapour"
 ac_unique_file="src/00headers_dirigible.cpp"
 # Factoring default headers for most tests.
 ac_includes_default="\
@@ -2049,7 +2048,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
   echo "could not determine R_HOME"
@@ -3468,16 +3466,8 @@ GDALAllRegister();
 #endif
 _EOCONF
 
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: GDAL --libs: ${LIBS}" >&5
-$as_echo "$as_me: GDAL --libs: ${LIBS}" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}: GDAL --libs --dep-libs: ${LIBS} ${GDAL_DEP_LIBS}" >&5
-$as_echo "$as_me: GDAL --libs --dep-libs: ${LIBS} ${GDAL_DEP_LIBS}" >&6;}
-
-
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: linking with --libs only" >&5
 $as_echo_n "checking GDAL: linking with --libs only... " >&6; }
-
 ${CXX} ${CPPFLAGS} -o gdal_test gdal_test.cpp ${LIBS} 2> errors.txt
 if test `echo $?` -ne 0 ; then
 gdalok=no
@@ -4077,6 +4067,9 @@ fi # PROJH = no
 fi # proj >= 6
 
 
+
+
+
 PKG_CPPFLAGS="${INPKG_CPPFLAGS} ${PROJ_CPPFLAGS} ${GDAL_CPPFLAGS}"
 
 PKG_LIBS="${INPKG_LIBS} ${GDAL_LIBS}"
@@ -4107,13 +4100,12 @@ $as_echo "$as_me: Package CPP flags: ${PKG_CPPFLAGS}" >&6;}
 $as_echo "$as_me: Package LIBS: ${PKG_LIBS}" >&6;}
 
 
-
-
-ac_config_files="$ac_config_files src/Makevars"
-
 MKVARS=`cat src/Makevars`
 { $as_echo "$as_me:${as_lineno-$LINENO}: mv: ${MKVARS}" >&5
 $as_echo "$as_me: mv: ${MKVARS}" >&6;}
+
+
+ac_config_files="$ac_config_files src/Makevars"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
