@@ -2232,7 +2232,7 @@ else
 $as_echo "yes" >&6; }
 fi
 
-INLIBS="${LIBS} -lssl"
+INLIBS="${LIBS} -lssl -lcrypto"
 INCPPFLAGS="${CPPFLAGS}"
 INPKG_CPPFLAGS="${PKG_CPPFLAGS}"
 INPKG_LIBS="${PKG_LIBS}"

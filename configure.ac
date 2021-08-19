@@ -1,6 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl GDAL stuff largely copied from rgdal, (c) Roger Bivand
-AC_INIT(src/00headers_dirigible.cpp)
+AC_INIT(vapour)
+AC_CONFIG_SRCDIR(src/00headers_dirigible.cpp)
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
@@ -124,7 +125,7 @@ else
    AC_MSG_RESULT(yes)
 fi
 
-INLIBS="${LIBS}"
+INLIBS="${LIBS} -lssl -lcrypto"
 INCPPFLAGS="${CPPFLAGS}"
 INPKG_CPPFLAGS="${PKG_CPPFLAGS}"
 INPKG_LIBS="${PKG_LIBS}"
