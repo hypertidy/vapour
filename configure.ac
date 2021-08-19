@@ -1,6 +1,54 @@
-dnl Process this file with autoconf to produce a configure script.
+dnl adapted from sf configure.ac 2021-08-19 Michael Sumner
 dnl GDAL stuff largely copied from rgdal, (c) Roger Bivand
+
+dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/00headers_dirigible.cpp)
+
+
+# as at 2021-08-12 sf uses the following flags in src/
+#if ((PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 1) || PROJ_VERSION_MAJOR > 7)
+#if (GDAL_VERSION_MINOR >= 2 || GDAL_VERSION_MAJOR > 2)
+#if defined(__MINGW32__) && !defined(__MINGW64__)
+#if defined(HAVE_PROJ_H) && !defined(ACCEPT_USE_OF_DEPRECATED_PROJ_API_H)
+#if defined(HAVE_PROJ_H) && !defined(ACCEPT_USE_OF_DEPRECATED_PROJ_API_H) // new api
+#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
+#if GDAL_VERSION_MAJOR >= 3
+#if GDAL_VERSION_MINOR >= 3
+#if GDAL_VERSION_NUM < 2050000
+#if GDAL_VERSION_NUM > 3000000
+#if GDAL_VERSION_NUM > 3010000
+#if GDAL_VERSION_NUM >= 2010000
+#if GDAL_VERSION_NUM >= 2030000
+#if GDAL_VERSION_NUM >= 2040000
+#if GDAL_VERSION_NUM >= 2050000
+#if GDAL_VERSION_NUM >= 3000000
+#if GDAL_VERSION_NUM >= 3000300
+#if GDAL_VERSION_NUM >= 3010000
+#if GDAL_VERSION_NUM >= 3010000 && !(defined(WIN32BIT))
+#if GEOS_VERSION_MAJOR == 3
+#if PJ_VERSION <= 480
+#if PJ_VERSION == 480
+#if PJ_VERSION >= 500
+#if PJ_VERSION >= 600
+#if PROJ_VERSION_MAJOR > 7
+#if PROJ_VERSION_MAJOR >= 7
+#ifdef HAVE_390
+#ifdef HAVE_71
+#ifdef HAVE_PROJ_H
+#ifdef HAVE340
+#ifdef HAVE350
+#ifdef HAVE361
+#ifdef HAVE370
+#ifdef HAVE380
+#ifdef HAVE390
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+#ifndef HAVE380
+#ifndef NO_GDAL_CPP_HEADERS
+
+## for vapour source code the only relevant ones are
+##src/polygonize.cpp:84:#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2   sr->importFromWkt(ppt); or sr->importFromWkt( (const char**) ppt);
+##src/stars.cpp:326:#if GDAL_VERSION_MAJOR >= 3                                  oDataset->GetSpatialRef vs oDataset->GetProjectionRef
+
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
@@ -23,7 +71,7 @@ if test [$RVER_MAJOR = "development"]; then
     CXX11STD=`"${RBIN}" CMD config CXX11STD`
 else
     if test [$RVER_MAJOR -lt 3] -o [$RVER_MAJOR -eq 3 -a $RVER_MINOR -lt 3]; then
-        AC_MSG_ERROR([sf is not compatible with R versions before 3.3.0])
+        AC_MSG_ERROR([vapour is not compatible with R versions before 3.3.0])
     else
         if test [$RVER_MAJOR -eq 3 -a $RVER_MINOR -eq 3]; then
             CXX11=`"${RBIN}" CMD config CXX1X`
@@ -119,7 +167,7 @@ AC_MSG_CHECKING([GDAL version >= 2.0.1])
 GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d "." -f1`
 if test ${GDAL_MAJ_VER} -lt 2 ; then
   AC_MSG_RESULT(no)
-  AC_MSG_ERROR([sf is not compatible with GDAL versions below 2.0.1])
+  AC_MSG_ERROR([vapour is not compatible with GDAL versions below 2.0.1])
 else
    AC_MSG_RESULT(yes)
 fi
@@ -633,8 +681,6 @@ fi # proj >= 6
 
 
 
-
-
 AC_SUBST([PKG_CPPFLAGS], ["${INPKG_CPPFLAGS} ${PROJ_CPPFLAGS} ${GDAL_CPPFLAGS}"])
 AC_SUBST([PKG_LIBS], ["${INPKG_LIBS} ${GDAL_LIBS}"])
 if test "${NEED_DEPS}" = yes; then
@@ -647,6 +693,7 @@ fi
 CPPFLAGS="${CPPFLAGS} ${PKG_CPPFLAGS}"
 LIBS="${LIBS} ${PKG_LIBS}"
 
+
 #
 # add PROJ_LIBS
 #
@@ -657,11 +704,6 @@ AC_SUBST([PKG_LIBS], ["${PROJ_LIBS} ${PKG_LIBS}"])
 #
 AC_MSG_NOTICE([Package CPP flags: ${PKG_CPPFLAGS}])
 AC_MSG_NOTICE([Package LIBS: ${PKG_LIBS}])
-
-
-MKVARS=`cat src/Makevars`
-AC_MSG_NOTICE([mv: ${MKVARS}])
-
 
 AC_CONFIG_FILES(src/Makevars)
 AC_OUTPUT
