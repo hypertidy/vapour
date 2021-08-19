@@ -91,6 +91,7 @@ jobs:
       - name: MacOS brew system dependencies
         if: runner.os == 'macOS' && matrix.config.binary == 'brew'
         run: |
+           brew install openssl
            brew install proj
            brew install geos
            brew install gdal
