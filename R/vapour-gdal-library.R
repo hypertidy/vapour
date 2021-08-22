@@ -19,6 +19,7 @@
 #' @return WKT2 projection string
 #' @examples
 #' vapour_srs_wkt("+proj=laea +datum=WGS84")
+#' stop()
 vapour_srs_wkt <- function(crs) {
   do.call(c, lapply(crs, proj_to_wkt_gdal_cpp))
 }
