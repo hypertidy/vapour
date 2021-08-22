@@ -81,7 +81,7 @@ jobs:
       - name: MacOS CRAN-binary system dependencies
         if: runner.os == 'macOS' && matrix.config.binary == 'CRAN'
         run: |
-           args=("gdal-3.2.1-darwin.17" "geos-3.8.1-darwin.17" "proj-7.2.1-darwin.17" "szip-2.1.1-darwin.17" "hdf4-4.2.15-darwin.17" "hdf5-1.12.0-darwin.17" "netcdf-4.7.4-darwin.17" "sqlite3-3.32.3-darwin.17")
+           args=("gdal-3.2.1-darwin.17" "freexl-1.0.6-darwin.17" "geos-3.8.1-darwin.17"  "hdf4-4.2.15-darwin.17" "hdf5-1.12.0-darwin.17"  "libwebp-1.1.0-darwin.17"  "netcdf-4.7.4-darwin.17"  "openjpeg-2.4.0-darwin.17" "openssl-1.1.1h-darwin.17" "proj-7.2.1-darwin.17" "sqlite3-3.32.3-darwin.17" "szip-2.1.1-darwin.17"   "xz-5.2.5-darwin.17")
            pat=$(echo ${args[@]}|tr " " "|")
            curl -sL  https://mac.r-project.org/libs-4/ |
              sed -n 's/.*href=\([^>]*x86_64.tar.gz\).*/\1/p' |
@@ -91,6 +91,7 @@ jobs:
       - name: MacOS brew system dependencies
         if: runner.os == 'macOS' && matrix.config.binary == 'brew'
         run: |
+           brew install openssl
            brew install proj
            brew install geos
            brew install gdal

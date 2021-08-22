@@ -1,4 +1,4 @@
-dnl adapted from sf configure.ac 2021-08-12 Michael Sumner
+dnl adapted from sf configure.ac 2021-08-19 Michael Sumner
 dnl GDAL stuff largely copied from rgdal, (c) Roger Bivand
 
 dnl Process this file with autoconf to produce a configure script.
@@ -44,7 +44,8 @@ AC_INIT(src/00headers_dirigible.cpp)
 #ifdef RCPP_USE_GLOBAL_ROSTREAM
 #ifndef HAVE380
 #ifndef NO_GDAL_CPP_HEADERS
-## for vapour the only relevant ones are
+
+## for vapour source code the only relevant ones are
 ##src/polygonize.cpp:84:#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2   sr->importFromWkt(ppt); or sr->importFromWkt( (const char**) ppt);
 ##src/stars.cpp:326:#if GDAL_VERSION_MAJOR >= 3                                  oDataset->GetSpatialRef vs oDataset->GetProjectionRef
 
@@ -56,6 +57,8 @@ if test -z "${R_HOME}"; then
 fi
 
 RBIN="${R_HOME}/bin/R"
+# https://github.com/r-spatial/sf/issues/1054:
+# RVER=`"${RBIN}" --version | head -1 | cut -f3 -d" "`
 RSCRIPT="${R_HOME}/bin/Rscript"
 RVER=`"${RSCRIPT}" -e 'writeLines(paste(sep=".", base::version$major, base::version$minor))'`
 
@@ -68,7 +71,7 @@ if test [$RVER_MAJOR = "development"]; then
     CXX11STD=`"${RBIN}" CMD config CXX11STD`
 else
     if test [$RVER_MAJOR -lt 3] -o [$RVER_MAJOR -eq 3 -a $RVER_MINOR -lt 3]; then
-        AC_MSG_ERROR([sf is not compatible with R versions before 3.3.0])
+        AC_MSG_ERROR([vapour is not compatible with R versions before 3.3.0])
     else
         if test [$RVER_MAJOR -eq 3 -a $RVER_MINOR -eq 3]; then
             CXX11=`"${RBIN}" CMD config CXX1X`
@@ -678,13 +681,23 @@ fi # proj >= 6
 
 
 
+AC_SUBST([PKG_CPPFLAGS], ["${INPKG_CPPFLAGS} ${PROJ_CPPFLAGS} ${GDAL_CPPFLAGS}"])
+AC_SUBST([PKG_LIBS], ["${INPKG_LIBS} ${GDAL_LIBS}"])
+if test "${NEED_DEPS}" = yes; then
+   AC_SUBST([PKG_LIBS], ["${PKG_LIBS} ${GDAL_DEP_LIBS}"])
+fi
 
+# honor PKG_xx overrides
+# for CPPFLAGS we will superfluously double R's flags
+# since we'll set PKG_CPPFLAGS with this, but that shouldn't hurt
+CPPFLAGS="${CPPFLAGS} ${PKG_CPPFLAGS}"
+LIBS="${LIBS} ${PKG_LIBS}"
 
 
 #
 # add PROJ_LIBS
 #
-AC_SUBST([PKG_LIBS], ["${PROJ_LIBS} ${PKG_LIBS}"])
+AC_SUBST([PKG_LIBS], ["${PKG_LIBS} ${PROJ_LIBS}"])
 
 #
 # concluding substitution
