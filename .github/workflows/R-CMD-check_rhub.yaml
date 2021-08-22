@@ -65,6 +65,7 @@ jobs:
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: |
+          rhub::validate_email("mdsumner@gmail.com", "7c64c59b05554db6bab9b109bc2f0550")
           rhub::check()
         shell: Rscript {0}
 
