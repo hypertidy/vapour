@@ -30,5 +30,4 @@ See help for 'SetFromUserInput' in 'OGRSpatialReference', and 'proj_create_crs_t
 }
 \examples{
 vapour_srs_wkt("+proj=laea +datum=WGS84")
-stop()
 }
