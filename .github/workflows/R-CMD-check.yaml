@@ -62,7 +62,6 @@ jobs:
           - {os: macOS-latest, r: 'devel',   binary: 'brew', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
           #- {os: ubuntu-16.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
           - {os: ubuntu-18.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
-          - {os: ubuntu-16.04, r: 'release', libsrc: 'PROJ5', rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
 
 
     env:
@@ -96,25 +95,6 @@ jobs:
            brew install proj
            brew install geos
            brew install gdal
-
-
-      - name: Linux PROJ build system dependencies
-        if: runner.os == 'Linux' && matrix.config.libsrc == 'PROJ5'
-        run: |
-            sudo apt update
-            sudo apt install -y cppcheck libsqlite3-dev ccache
-            curl https://download.osgeo.org/proj/proj-5.2.0.tar.gz > proj-5.2.0.tar.gz
-            tar xzf proj-5.2.0.tar.gz
-            mv proj-5.2.0 ../proj
-            cd ../proj
-            CC="ccache gcc" CXX="ccache g++" CFLAGS=-O0 CXXFLAGS=-O0 ./configure --without-static
-            echo "\nnproc:"
-            echo $nproc
-            echo "\n"
-            make -j$(nproc)
-            sudo make install -j$(nproc)
-            sudo ldconfig
-            cd ../vapour
 
 
       - name: Query R package dependencies
