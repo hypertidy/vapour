@@ -1,4 +1,4 @@
-## vapour 0.7.9
+## vapour 0.8.0
 
 Fix for CRAN errors, with broken configure. 
 
