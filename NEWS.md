@@ -1,3 +1,7 @@
+# vapour 0.7.9
+
+* Fix for CRAN errors, with broken configure. 
+
 # vapour 0.7.8
 
 * Fixed errors for earlier GDAL (that were seen on Solaris with GDAL 2.2.4, now 2.4.4), by condition on GDAL version for 
