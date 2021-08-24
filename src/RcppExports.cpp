@@ -310,6 +310,35 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vapour_read_raster_block_cpp
+Rcpp::List vapour_read_raster_block_cpp(CharacterVector dsource, IntegerVector offset, IntegerVector dimension, IntegerVector band);
+RcppExport SEXP _vapour_vapour_read_raster_block_cpp(SEXP dsourceSEXP, SEXP offsetSEXP, SEXP dimensionSEXP, SEXP bandSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type offset(offsetSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type dimension(dimensionSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_read_raster_block_cpp(dsource, offset, dimension, band));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vapour_write_raster_block_cpp
+Rcpp::LogicalVector vapour_write_raster_block_cpp(CharacterVector dsource, NumericVector data, IntegerVector offset, IntegerVector dimension, IntegerVector band);
+RcppExport SEXP _vapour_vapour_write_raster_block_cpp(SEXP dsourceSEXP, SEXP dataSEXP, SEXP offsetSEXP, SEXP dimensionSEXP, SEXP bandSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type offset(offsetSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type dimension(dimensionSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_write_raster_block_cpp(dsource, data, offset, dimension, band));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gdal_read_fids_all
 NumericVector gdal_read_fids_all(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex);
 RcppExport SEXP _vapour_gdal_read_fids_all(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP) {
@@ -505,6 +534,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_raster_info_gdal_cpp", (DL_FUNC) &_vapour_raster_info_gdal_cpp, 2},
     {"_vapour_raster_gcp_gdal_cpp", (DL_FUNC) &_vapour_raster_gcp_gdal_cpp, 1},
     {"_vapour_raster_io_gdal_cpp", (DL_FUNC) &_vapour_raster_io_gdal_cpp, 4},
+    {"_vapour_vapour_read_raster_block_cpp", (DL_FUNC) &_vapour_vapour_read_raster_block_cpp, 4},
+    {"_vapour_vapour_write_raster_block_cpp", (DL_FUNC) &_vapour_vapour_write_raster_block_cpp, 5},
     {"_vapour_gdal_read_fids_all", (DL_FUNC) &_vapour_gdal_read_fids_all, 4},
     {"_vapour_gdal_read_fids_ij", (DL_FUNC) &_vapour_gdal_read_fids_ij, 5},
     {"_vapour_gdal_read_fids_ia", (DL_FUNC) &_vapour_gdal_read_fids_ia, 5},

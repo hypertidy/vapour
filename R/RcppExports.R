@@ -93,6 +93,14 @@ raster_io_gdal_cpp <- function(dsn, window, band, resample) {
     .Call('_vapour_raster_io_gdal_cpp', PACKAGE = 'vapour', dsn, window, band, resample)
 }
 
+vapour_read_raster_block_cpp <- function(dsource, offset, dimension, band) {
+    .Call('_vapour_vapour_read_raster_block_cpp', PACKAGE = 'vapour', dsource, offset, dimension, band)
+}
+
+vapour_write_raster_block_cpp <- function(dsource, data, offset, dimension, band) {
+    .Call('_vapour_vapour_write_raster_block_cpp', PACKAGE = 'vapour', dsource, data, offset, dimension, band)
+}
+
 gdal_read_fids_all <- function(dsn, layer, sql, ex) {
     .Call('_vapour_gdal_read_fids_all', PACKAGE = 'vapour', dsn, layer, sql, ex)
 }
