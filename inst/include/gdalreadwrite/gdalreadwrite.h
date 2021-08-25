@@ -21,9 +21,17 @@ inline List gdal_read_block(CharacterVector dsn, IntegerVector offset, IntegerVe
   }
 
   // band
+  if (band[0] < 1) { GDALClose(poDataset);  Rcpp::stop("requested band %i should be 1 or greater", band[0]);  }
+  int nbands = poDataset->GetRasterCount();
+  if (band[0] > nbands) { GDALClose(poDataset);   Rcpp::stop("requested band %i should be equal to or less than number of bands: %i", band[0], nbands); }
+
   GDALRasterBand  *poBand;
   poBand = poDataset->GetRasterBand( band[0] );
-
+  if (poBand == NULL) {
+      Rprintf("cannot access band %i", band[0]);
+      GDALClose(poDataset);
+      Rcpp::stop("");
+  }
   //rasterio
   float *pafScanline;
   pafScanline = (float *) CPLMalloc(sizeof(float)*dimension[0] * dimension[1]);
@@ -56,8 +64,18 @@ inline LogicalVector gdal_write_block(CharacterVector dsn, NumericVector data,
     Rcpp::stop("cannot open\n");
   }
 
+
+  if (band[0] < 1) { GDALClose(poDataset);  Rcpp::stop("requested band %i should be 1 or greater", band[0]);  }
+  int nbands = poDataset->GetRasterCount();
+  if (band[0] > nbands) { GDALClose(poDataset);   Rcpp::stop("requested band %i should be equal to or less than number of bands: %i", band[0], nbands); }
+
   GDALRasterBand  *poBand;
   poBand = poDataset->GetRasterBand( band[0] );
+  if (poBand == NULL) {
+    Rprintf("cannot access band %i", band[0]);
+    GDALClose(poDataset);
+    Rcpp::stop("");
+  }
 
   float *pafScanline;
   pafScanline = (float *) CPLMalloc(sizeof(float)*dimension[0] * dimension[1]);
@@ -72,8 +90,11 @@ inline LogicalVector gdal_write_block(CharacterVector dsn, NumericVector data,
 
   GDALClose(poDataset);
   CPLFree(pafScanline);
+  bool ok = true;
 
-  bool ok = false;
+  if (err) {
+    ok = false;
+  }
   LogicalVector out(1);
   out[0] = ok;
   return out;
