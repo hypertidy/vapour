@@ -19,7 +19,7 @@ vapour_read_raster_block(dsource, offset, dimension, band = 1L)
 for vapour_read_raster_block, a list with vector of data
 }
 \description{
-Read a 'block' from raster, or write data to a block \emph{in an existing file}.
+Read a 'block' from raster.
 }
 \examples{
 f <- system.file("extdata", "sst.tif", package = "vapour")
