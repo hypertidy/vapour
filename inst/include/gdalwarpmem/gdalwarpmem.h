@@ -6,11 +6,7 @@
 #include "gdalwarper.h"
 #include "gdal_utils.h"  // for GDALWarpAppOptions
 
-//#include "cpl_conv.h" // for CPLMalloc()
-//#include "cpl_string.h" // for CSLAddString
-
 namespace gdalwarpmem{
-
 
 using namespace Rcpp;
 
@@ -25,8 +21,9 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 LogicalVector silent) {
 
 
-  GDALAllRegister();
+
   GDALDatasetH *poSrcDS;
+  GDALAllRegister();
   poSrcDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * source_filename.size()));
 
   char** papszArg = nullptr;
@@ -47,25 +44,11 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     }
     if (source_extent.length() == 1) {
       // do nothing
-    } else {
-      int XSize = GDALGetRasterXSize(poSrcDS[si]);
-      int YSize = GDALGetRasterYSize(poSrcDS[si]);
-
-      double SourceGeoTransform[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-      SourceGeoTransform[0] = source_extent[0];
-      SourceGeoTransform[1] = (source_extent[1] - source_extent[0])/XSize;
-
-      SourceGeoTransform[3] = source_extent[3];
-      SourceGeoTransform[5] = -(source_extent[3] - source_extent[2])/YSize;
-
-      GDALSetGeoTransform( poSrcDS[si], SourceGeoTransform );
-    }
+    } // and else also do nothing (doesn't work how I thought, only VRT can do this so wait for /vrt/)
 
     // https://github.com/OSGeo/gdal/blob/fec15b146f8a750c23c5e765cac12ed5fc9c2b85/gdal/frmts/gtiff/cogdriver.cpp#L512
     papszArg = CSLAddString(papszArg, "-of");
     papszArg = CSLAddString(papszArg, "MEM");
-    // papszArg = CSLAddString(papszArg, "-wo");
-    // papszArg = CSLAddString(papszArg, "INIT_DEST=NODATA");
 
     // if we don't supply it don't try to set it!
     if (!target_WKT[0].empty()){
@@ -86,7 +69,6 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       }
     } else {
       if (silent[0] != true) Rprintf("setting projection");
-
       if (si == 0) {
         // if supplied check that it's valid
         OGRSpatialReference oSourceSRS;
@@ -97,11 +79,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
         papszArg = CSLAddString(papszArg, source_WKT[0]);
       }
     }
-
-
   }//si
-
-
   // we always provide extent and dimension, crs is optional and just means subset/decimate
   double dfMinX = target_extent[0];
   double dfMaxX = target_extent[1];
@@ -134,6 +112,16 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   papszArg = CSLAddString(papszArg, "SOURCE_EXTRA=64");
 
 
+  auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
+  CSLDestroy(papszArg);
+  GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
+  auto hRet = GDALWarp( "", nullptr,
+                        source_filename.size(), poSrcDS,
+                        psOptions, nullptr);
+  CPLAssert( hRet != NULL );
+  GDALWarpAppOptionsFree(psOptions);
+
+
   const int nBands = GDALGetRasterCount(poSrcDS[dsi0]);
   int band_length = bands.size();
   if (bands.size() == 1 && bands[0] == 0) {
@@ -150,21 +138,6 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   }
   Rcpp::List outlist(bands_to_read.size());
 
-  auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
-  CSLDestroy(papszArg);
-
-
-  GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
-
-  auto hRet = GDALWarp( "", nullptr,
-                        source_filename.size(), poSrcDS,
-                        psOptions, nullptr);
-
-  CPLAssert( hRet != NULL );
-
-
-  GDALWarpAppOptionsFree(psOptions);
-  CPLDebug("MEM", "Reprojecting source dataset: end");
 
   double naflag;
   int hasNA;
@@ -232,7 +205,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     GDALClose( poSrcDS[si] );
   }
 
-  // CPLFree(double_scanline);
+  //CPLFree(double_scanline);
 
   return outlist;
 }
