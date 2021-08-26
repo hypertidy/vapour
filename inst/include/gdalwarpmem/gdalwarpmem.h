@@ -1,19 +1,13 @@
 #ifndef GDALWARPMEM_H
 #define GDALWARPMEM_H
 
-//#define DBL_EPSILON 2.2204460492503131e-16
-
 #include <Rcpp.h>
-#include "gdal.h"
-#include "gdal_alg.h"
-#include "gdal_alg_priv.h"
 #include "gdal_priv.h"
 #include "gdalwarper.h"
-#include "gdal_utils.h"
-//#include "gdal_version.h"
+#include "gdal_utils.h"  // for GDALWarpAppOptions
 
-#include "cpl_conv.h" // for CPLMalloc()
-#include "cpl_string.h" // for CSLAddString
+//#include "cpl_conv.h" // for CPLMalloc()
+//#include "cpl_string.h" // for CSLAddString
 
 namespace gdalwarpmem{
 

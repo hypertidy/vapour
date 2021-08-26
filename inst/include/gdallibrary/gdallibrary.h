@@ -2,11 +2,8 @@
 #define GDALLIBRARY_H
 #include <Rcpp.h>
 #include "ogrsf_frmts.h"
-//#include "ogr_api.h"
 #include "gdal_priv.h"
 #include "CollectorList.h"
-// #include "ogr_spatialref.h" // for OGRSpatialReference
-// #include "cpl_conv.h" // for CPLFree()
 
 namespace gdallibrary {
 using namespace Rcpp;
@@ -32,7 +29,6 @@ inline CharacterVector gdal_layer_geometry_name(OGRLayer *poLayer) {
 
   poLayer->ResetReading();
 
-  //OGRFeature *poFeature = poLayer->GetNextFeature();
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   int gfields = poFDefn->GetGeomFieldCount();
   CharacterVector out(gfields);
