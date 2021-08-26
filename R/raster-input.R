@@ -134,6 +134,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #' @param resample resampling method used (see details in [vapour_read_raster])
 #' @param source_wkt optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)
 #' @param silent `TRUE` by default, set to `FALSE` to report messages
+#' @param band_output_type numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'
 #' @param ... unused
 #'
 #' @export
@@ -156,7 +157,8 @@ vapour_warp_raster <- function(x, bands = 1L,
                                source_extent = 0.0,
                                resample = "near",
                                silent = TRUE, ...,
-                               source_geotransform = 0.0, geotransform = NULL) {
+                               source_geotransform = 0.0, geotransform = NULL,
+                               band_output_type = "") {
 
   ## bands
   if (is.numeric(bands) && any(bands < 1)) stop("all 'bands' index must be >= 1")
@@ -267,7 +269,8 @@ vapour_warp_raster <- function(x, bands = 1L,
                                   bands = as.integer(bands),
                                   source_extent = as.numeric(source_extent),
                                   resample = resample,
-                                  silent = silent)
+                                  silent = silent,
+                                  band_output_type = band_output_type)
   if (length(bands) == 1 && bands == 0) {
     ## we got all bands by index
     bands <- seq_along(vals)

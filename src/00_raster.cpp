@@ -37,7 +37,8 @@ List warp_in_memory_gdal_cpp(CharacterVector dsn,
                              IntegerVector bands,
                              NumericVector source_extent,
                              CharacterVector resample,
-                             LogicalVector silent) {
+                             LogicalVector silent,
+                             CharacterVector band_output_type) {
   return gdalwarpmem::gdal_warp_in_memory(dsn,
                                           source_WKT,
                                           target_WKT,
@@ -46,5 +47,6 @@ List warp_in_memory_gdal_cpp(CharacterVector dsn,
                                           bands,
                                           source_extent,
                                           resample,
-                                          silent);
+                                          silent,
+                                          band_output_type);
 }

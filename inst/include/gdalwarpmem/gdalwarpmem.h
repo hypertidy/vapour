@@ -18,7 +18,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 IntegerVector bands,
                                 NumericVector source_extent,
                                 CharacterVector resample,
-                                LogicalVector silent) {
+                                LogicalVector silent,
+                                CharacterVector band_output_type) {
 
 
 
@@ -138,8 +139,11 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   }
   Rcpp::List outlist(bands_to_read.size());
 
+  double *double_scanline;
+  int    *integer_scanline;
+  uint8_t *byte_scanline;
 
-  double naflag;
+
   int hasNA;
   int hasScale, hasOffset;
   double scale, offset;
@@ -158,47 +162,116 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     //Rprintf("bands_to_read[i] %i\n", bands_to_read[iband]);
     poBand = GDALGetRasterBand(poSrcDS[dsi0], bands_to_read[iband]);
     dstBand = GDALGetRasterBand(hRet, bands_to_read[iband]);
-    naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
 
+    GDALDataType band_type =  GDALGetRasterDataType(poBand);
 
+    // if band_output_type is not empty, possible override:
+    if (band_output_type[0] == "Byte") {
+                      band_type = GDT_Byte;
+    }
+    if (band_output_type[0] == "Int32" ||
+        band_type == GDT_Int16 ||
+        band_type == GDT_UInt16 ||
+        band_type == GDT_UInt32) {
+                         band_type = GDT_Int32;
+    }
+    if (band_output_type[0] == "Float64" ||
+        band_type == GDT_Float32) {
+                         band_type = GDT_Float64;
+    }
     scale = GDALGetRasterScale(poBand, &hasScale);
     offset = GDALGetRasterOffset(poBand, &hasOffset);
 
     int actual_XSize = GDALGetRasterBandXSize(dstBand);
     int actual_YSize = GDALGetRasterBandYSize(dstBand);
-    std::vector<double> double_scanline( actual_XSize * actual_YSize );
-    CPLErr err;
-    err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,
+    if (band_type == GDT_Float64) {
+      std::vector<double> double_scanline( actual_XSize * actual_YSize );
+      CPLErr err;
+      err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,
                        &double_scanline[0], actual_XSize, actual_YSize, GDT_Float64,
                        0, 0);
-    if (err) Rprintf("we have a problem at RasterIO\n");
-    NumericVector res(actual_XSize * actual_YSize );
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      NumericVector res(actual_XSize * actual_YSize );
 
-    // consider doing at R level, at least for MEM
-    double dval;
-    if (hasNA && (!std::isnan(naflag))) {
-      if (naflag < -3.4e+37) {
-        naflag = -3.4e+37;
+      // consider doing at R level, at least for MEM
+      double dval;
+      double naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
 
-        for (size_t i=0; i< double_scanline.size(); i++) {
-          if (double_scanline[i] <= naflag) {
-            double_scanline[i] = NAN;
+      if (hasNA && (!std::isnan(naflag))) {
+        if (naflag < -3.4e+37) {
+          naflag = -3.4e+37;
+
+          for (size_t i=0; i< double_scanline.size(); i++) {
+            if (double_scanline[i] <= naflag) {
+              double_scanline[i] = NAN;
+            }
           }
+        } else {
+
+          std::replace(double_scanline.begin(), double_scanline.end(), naflag, (double) NAN);
         }
-      } else {
-
-        std::replace(double_scanline.begin(), double_scanline.end(), naflag, (double) NAN);
       }
+      long unsigned int isi;
+      for (isi = 0; isi < (double_scanline.size()); isi++) {
+        dval = double_scanline[isi];
+        if (hasScale) dval = dval * scale;
+        if (hasOffset) dval = dval + offset;
+        res[isi] = dval;
+      }
+      outlist[iband] = res;
     }
-    long unsigned int isi;
-    for (isi = 0; isi < (double_scanline.size()); isi++) {
-      dval = double_scanline[isi];
-      if (hasScale) dval = dval * scale;
-      if (hasOffset) dval = dval + offset;
-      res[isi] = dval;
+    if (band_type == GDT_Int32) {
+      std::vector<int32_t> integer_scanline( actual_XSize * actual_YSize );
+      CPLErr err;
+      err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,
+                         &integer_scanline[0], actual_XSize, actual_YSize,
+                         GDT_Int32,
+                         0, 0);
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      IntegerVector res(actual_XSize * actual_YSize );
+
+      // consider doing at R level, at least for MEM
+      int dval;
+      int naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
+
+      if (hasNA && (!std::isnan(naflag))) {
+          std::replace(integer_scanline.begin(), integer_scanline.end(), naflag, (int) NAN);
+
+      }
+      long unsigned int isi;
+      for (isi = 0; isi < (integer_scanline.size()); isi++) {
+        dval = integer_scanline[isi];
+        if (hasScale) dval = dval * scale;
+        if (hasOffset) dval = dval + offset;
+        res[isi] = dval;
+      }
+      outlist[iband] = res;
     }
 
-    outlist[iband] = res;
+    if (band_type == GDT_Byte) {
+      std::vector<uint8_t> byte_scanline( actual_XSize * actual_YSize );
+      CPLErr err;
+      err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,
+                         &byte_scanline[0], actual_XSize, actual_YSize,
+                         GDT_Byte,
+                         0, 0);
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      RawVector res(actual_XSize * actual_YSize );
+      uint8_t naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
+
+      if (hasNA && (!std::isnan(naflag))) {
+          std::replace(byte_scanline.begin(), byte_scanline.end(), naflag, (uint8_t) NAN);
+
+      }
+      long unsigned int isi;
+      for (isi = 0; isi < (byte_scanline.size()); isi++) {
+        res[isi] = byte_scanline[isi];
+      }
+      outlist[iband] = res;
+    }
+
+
+
   }
   GDALClose( hRet );
   for (int si = 0; si < source_filename.size(); si++) {

@@ -17,7 +17,8 @@ vapour_warp_raster(
   silent = TRUE,
   ...,
   source_geotransform = 0,
-  geotransform = NULL
+  geotransform = NULL,
+  band_output_type = ""
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ vapour_warp_raster(
 \item{source_geotransform}{DEPRECATED use 'source_extent' (override the native geotransform of the source)}
 
 \item{geotransform}{DEPRECATED use 'extent' the affine geotransform of the warped raster}
+
+\item{band_output_type}{numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'}
 }
 \value{
 list of vectors (only 1 for 'band') of numeric values, in raster order
