@@ -1222,15 +1222,28 @@ inline List gdal_raster_io(CharacterVector dsn,
 
   double *double_scanline;
   int    *integer_scanline;
-
+  uint8_t *byte_scanline;
   List out(1);
   CPLErr err;
 
   bool band_type_not_supported = true;
+  if (band_type == GDT_Byte) {
+    byte_scanline = (uint8_t *) CPLMalloc(sizeof(uint8_t)*
+      static_cast<unsigned long>(outXSize)*
+      static_cast<unsigned long>(outYSize));
+    err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+                            byte_scanline, outXSize, outYSize, GDT_Byte,
+                            0, 0, &psExtraArg);
+    RawVector res(outXSize*outYSize);
+    for (int i = 0; i < (outXSize*outYSize); i++) res[i] = byte_scanline[i];
+    CPLFree(byte_scanline);
+    out[0] = res;
+    band_type_not_supported = false;
+  }
+
   // here we catch byte, int* as R's 32-bit integer
   // or Float32/64 as R's 64-bit numeric
-  if ((band_type == GDT_Byte) |
-      (band_type == GDT_Int16) |
+  if ((band_type == GDT_Int16) |
       (band_type == GDT_Int32) |
       (band_type == GDT_UInt16) |
       (band_type == GDT_UInt32)) {

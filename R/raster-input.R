@@ -77,7 +77,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
   if (any(window[5:6] < 1)) stop("requested output dimension cannot be less than 1")
   ## pull a swifty here with [[  to return numeric or integer
   vals <- raster_io_gdal_cpp(dsn = datasourcename, window  = window, band = band, resample = resample[1L])
-  if (set_na) vals[[1]][vals[[1]] == ri$nodata_value] <- NA   ## hardcode to 1 for now
+  if (set_na && !is.raw(vals[[1L]][1L])) vals[[1]][vals[[1]] == ri$nodata_value] <- NA   ## hardcode to 1 for now
   names(vals) <- sprintf("Band%i",band)
   vals
 }
