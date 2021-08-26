@@ -1,3 +1,10 @@
+# vapour dev
+
+* Raster read now detects Byte case and return raw vector/s. 
+
+* New function `vapour_read_raster_block()` a helper around the internal C++ reader for the simple case of offset/dimension read. There's a matching but non-exported vapour_write_raster_block(). 
+
+
 # vapour 0.8.0
 
 * Fix for CRAN errors, with broken configure. 
