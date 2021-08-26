@@ -1,7 +1,6 @@
 #ifndef GDALREADWRITE_H
 #define GDALREADWRITE_H
 
-
 #include <Rcpp.h>
 
 #include "gdal_priv.h"
@@ -12,7 +11,9 @@ namespace gdalreadwrite{
 
 using namespace Rcpp;
 
-inline List gdal_read_block(CharacterVector dsn, IntegerVector offset, IntegerVector dimension, IntegerVector band) {
+inline List gdal_read_block(CharacterVector dsn, IntegerVector offset,
+                            IntegerVector dimension, IntegerVector band,
+                            CharacterVector band_output_type) {
   IntegerVector window(6);
   window[0] = offset[0];
   window[1] = offset[1];
@@ -20,10 +21,8 @@ inline List gdal_read_block(CharacterVector dsn, IntegerVector offset, IntegerVe
   window[3] = dimension[1];
   window[4] = dimension[0];
   window[5] = dimension[1];
-
-  return   gdallibrary::gdal_raster_io(dsn, window, band, "nearestneighbour");
+  return   gdallibrary::gdal_raster_io(dsn, window, band, "nearestneighbour", band_output_type);
 }
-
 
 inline LogicalVector gdal_write_block(CharacterVector dsn, NumericVector data,
                                       IntegerVector offset, IntegerVector dimension, IntegerVector band) {
@@ -34,8 +33,6 @@ inline LogicalVector gdal_write_block(CharacterVector dsn, NumericVector data,
   {
     Rcpp::stop("cannot open\n");
   }
-
-
   if (band[0] < 1) { GDALClose(poDataset);  Rcpp::stop("requested band %i should be 1 or greater", band[0]);  }
   int nbands = poDataset->GetRasterCount();
   if (band[0] > nbands) { GDALClose(poDataset);   Rcpp::stop("requested band %i should be equal to or less than number of bands: %i", band[0], nbands); }
@@ -53,12 +50,10 @@ inline LogicalVector gdal_write_block(CharacterVector dsn, NumericVector data,
   for (int i = 0; i < data.length(); i++) {
     pafScanline[i] = data[i];
   }
-
   CPLErr err;
   err = poBand->RasterIO( GF_Write, offset[0], offset[1], dimension[0], dimension[1],
                           pafScanline, dimension[0], dimension[1], GDT_Float32,
                           0, 0);
-
   GDALClose(poDataset);
   CPLFree(pafScanline);
   bool ok = true;

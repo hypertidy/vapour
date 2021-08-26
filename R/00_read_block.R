@@ -5,19 +5,23 @@
 #' @param dsource file name to read from, or write to
 #' @param offset position x,y to start writing (0-based, y-top)
 #' @param dimension window size to read from, or write to
-#' @param band which band to write to (1-based)
+#' @param band_output_type numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'
+#' @param band which band to read (1-based)
+#'
 #' @return for vapour_read_raster_block, a list with vector of data
 #' @export
 #'
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' v <- vapour_read_raster_block(f, c(0L, 0L), dimension = c(2L, 3L), band = 1L)
-vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L) {
+vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band_output_type = "") {
   if (anyNA(band) || length(band) < 1L) stop("missing band value")
   if (file.exists(dsource)) {
     dsource <- normalizePath(dsource)
   }
-  vapour_read_raster_block_cpp(dsource, as.integer(rep(offset, length.out = 2L)), as.integer(rep(dimension, length.out = 2L)), band = as.integer(band[1L]))
+  vapour_read_raster_block_cpp(dsource, as.integer(rep(offset, length.out = 2L)),
+                               as.integer(rep(dimension, length.out = 2L)), band = as.integer(band[1L]),
+                               band_output_type = band_output_type)
 }
 #'  write data to a block *in an existing file*.
 #'
@@ -27,6 +31,7 @@ vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L) {
 #' @return for vapour_write_raster_block a logical indicating success or failure to write
 #' @param data data vector, length should match  `prod(dimension)` or length 1 allowed
 #' @param overwrite set to FALSE as a safety valve to not overwrite an existing file
+#' @param band which band to write to (1-based)
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' v <- vapour_read_raster_block(f, c(0L, 0L), dimension = c(2L, 3L), band = 1L)

@@ -4,7 +4,13 @@
 \alias{vapour_read_raster_block}
 \title{Read or write raster block}
 \usage{
-vapour_read_raster_block(dsource, offset, dimension, band = 1L)
+vapour_read_raster_block(
+  dsource,
+  offset,
+  dimension,
+  band = 1L,
+  band_output_type = ""
+)
 }
 \arguments{
 \item{dsource}{file name to read from, or write to}
@@ -13,7 +19,9 @@ vapour_read_raster_block(dsource, offset, dimension, band = 1L)
 
 \item{dimension}{window size to read from, or write to}
 
-\item{band}{which band to write to (1-based)}
+\item{band}{which band to read (1-based)}
+
+\item{band_output_type}{numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'}
 }
 \value{
 for vapour_read_raster_block, a list with vector of data

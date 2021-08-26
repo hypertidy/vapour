@@ -16,9 +16,11 @@ constexpr int MAX_INT =  std::numeric_limits<int>::max ();
 inline void gdal_register_all() {
   GDALAllRegister();
 }
+
 inline void ogr_register_all() {
   OGRRegisterAll();
 }
+
 inline void ogr_cleanup_all() {
   OGRCleanupAll();
 }
@@ -1179,7 +1181,8 @@ inline GDALRasterIOExtraArg init_resample_alg(CharacterVector resample) {
 inline List gdal_raster_io(CharacterVector dsn,
                            IntegerVector window,
                            IntegerVector band,
-                           CharacterVector resample)
+                           CharacterVector resample,
+                           CharacterVector band_output_type)
 {
 
 
@@ -1207,6 +1210,10 @@ inline List gdal_raster_io(CharacterVector dsn,
   poBand = poDataset->GetRasterBand( band[0] );
   GDALDataType band_type =  poBand->GetRasterDataType();
 
+  // if band_output_type is not empty, possible override:
+  if (band_output_type[0] == "Byte") band_type = GDT_Byte;
+  if (band_output_type[0] == "Int32") band_type = GDT_Int32;
+  if (band_output_type[0] == "Float64") band_type = GDT_Float64;
   if( poBand == NULL )
   {
     Rprintf("cannot access band %i", band[0]);

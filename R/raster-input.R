@@ -28,6 +28,7 @@
 #' @param native apply the full native window for read, `FALSE` by default
 #' @param sds index of subdataset to read (usually 1)
 #' @param set_na specify whether NA values should be set for the NODATA
+#' @param band_output_type numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'
 #' @export
 #' @return list of numeric vectors (only one for 'band')
 #' @examples
@@ -41,7 +42,7 @@
 #' ## the method can be used to up-sample as well
 #' str(matrix(vapour_read_raster(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 #'
-vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL, native = FALSE, set_na = TRUE) {
+vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL, native = FALSE, set_na = TRUE, band_output_type = "") {
   datasourcename <- sds_boilerplate_checks(x, sds = sds)
   resample <- tolower(resample)  ## ensure check internally is lower case
   if (!resample %in% c("nearestneighbour", "average", "bilinear", "cubic", "cubicspline",
@@ -76,7 +77,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
   ## GDAL error
   if (any(window[5:6] < 1)) stop("requested output dimension cannot be less than 1")
   ## pull a swifty here with [[  to return numeric or integer
-  vals <- raster_io_gdal_cpp(dsn = datasourcename, window  = window, band = band, resample = resample[1L])
+  vals <- raster_io_gdal_cpp(dsn = datasourcename, window  = window, band = band, resample = resample[1L], band_output_type = band_output_type)
   if (set_na && !is.raw(vals[[1L]][1L])) vals[[1]][vals[[1]] == ri$nodata_value] <- NA   ## hardcode to 1 for now
   names(vals) <- sprintf("Band%i",band)
   vals

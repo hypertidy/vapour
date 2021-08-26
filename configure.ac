@@ -2,7 +2,7 @@ dnl adapted from sf configure.ac 2021-08-19 Michael Sumner
 dnl GDAL stuff largely copied from rgdal, (c) Roger Bivand
 
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(src/00headers_dirigible.cpp)
+AC_INIT(src/00_gdal.cpp)
 
 
 # as at 2021-08-12 sf uses the following flags in src/
