@@ -1,5 +1,10 @@
 # vapour dev
 
+* New functions `vapour_read_raster_raw()`, `vapour_read_raster_int()`, `vapour_read_raster_dbl()`, `vapour_read_raster_chr()` and its
+alias `vapour_read_raster_hex()` to return specific types of atomic vector. _chr and _hex convert raw bytes to colours. 
+
+* New feature to provide `band_output_type` to raster read functions, to take Byte, Int32, or Float64. 
+
 * Raster read now detects Byte case and return raw vector/s. 
 
 * New function `vapour_read_raster_block()` a helper around the internal C++ reader for the simple case of offset/dimension read. There's a matching but non-exported vapour_write_raster_block(). 

@@ -89,3 +89,10 @@ These wrappers around \code{\link[=vapour_read_raster]{vapour_read_raster()}} gu
 \details{
 _hex and _chr are aliases of each other.
 }
+\examples{
+f <- system.file("extdata", "sst.tif", package = "vapour")
+vapour_read_raster_int(f, window = c(0, 0, 5, 4))
+vapour_read_raster_raw(f, window = c(0, 0, 5, 4))
+vapour_read_raster_chr(f, window = c(0, 0, 5, 4))
+plot(vapour_read_raster_dbl(f, native = TRUE), pch = ".", ylim = c(273, 300))
+}
