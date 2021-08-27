@@ -53,10 +53,10 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
   if (native && !missing(window)) warning("'window' is specified, so 'native = TRUE' is ignored")
   if (native && missing(window)) window <- c(0, 0, ri$dimXY, ri$dimXY)
 
-  if (!is.numeric(band) || band < 1 || length(band) < 1 || length(band) > 1 || is.na(band)) {
+  if (!is.numeric(band) || band < 1 || length(band) < 1  || anyNA(band)) {
     stop("'band' must be an integer of length 1, and be greater than 0")
   }
-  if (band > ri$bands) stop(sprintf("specified 'band = %i', but maximum band number is %i", band, ri$bands))
+  if (any(band > ri$bands)) stop(sprintf("specified 'band = %i', but maximum band number is %i", band, ri$bands))
   ## turn these warning cases into errors here, + tests
   ## rationale is that dev can still call the internal R wrapper function to
   ## get these errors, but not the R user
@@ -77,11 +77,101 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
   ## GDAL error
   if (any(window[5:6] < 1)) stop("requested output dimension cannot be less than 1")
   ## pull a swifty here with [[  to return numeric or integer
-  vals <- raster_io_gdal_cpp(dsn = datasourcename, window  = window, band = band, resample = resample[1L], band_output_type = band_output_type)
-  if (set_na && !is.raw(vals[[1L]][1L])) vals[[1]][vals[[1]] == ri$nodata_value] <- NA   ## hardcode to 1 for now
+  ##vals <- raster_io_gdal_cpp(dsn = datasourcename, window  = window, band = band, resample = resample[1L], band_output_type = band_output_type)
+  vals <- lapply(band, function(iband) {
+    raster_io_gdal_cpp(dsn = datasourcename, window  = window, band = iband, resample = resample[1L], band_output_type = band_output_type)[[1L]]
+    })
+  if (set_na && !is.raw(vals[[1L]][1L])) {
+    for (i in seq_along(vals)) {
+      vals[[i]][vals[[i]] == ri$nodata_value] <- NA   ## hardcode to 1 for now
+    }
+  }
   names(vals) <- sprintf("Band%i",band)
   vals
 }
+
+#' type safe(r) raster read
+#'
+#' These wrappers around [vapour_read_raster()] guarantee single vector output of the nominated type.
+#'
+#' _hex and _chr are aliases of each other.
+#' @inheritParams vapour_read_raster
+#' @aliases vapour_read_raster_raw vapour_read_raster_int vapour_read_raster_dbl vapour_read_raster_chr vapour_read_raster_hex
+#' @export
+#' @return atomic vector of the nominated type raw, int, dbl, or character (hex)
+#' @examples
+#' f <- system.file("extdata", "sst.tif", package = "vapour")
+#' vapour_read_raster_int(f, window = c(0, 0, 5, 4))
+#' vapour_read_raster_raw(f, window = c(0, 0, 5, 4))
+#' vapour_read_raster_chr(f, window = c(0, 0, 5, 4))
+#' plot(vapour_read_raster_dbl(f, native = TRUE), pch = ".", ylim = c(273, 300))
+vapour_read_raster_raw <- function(x, band = 1,
+                               window,
+                               resample = "nearestneighbour", ...,
+                               sds = NULL, native = FALSE, set_na = TRUE) {
+
+
+  if (length(band) > 1) message("_raw output implies one band, using only the first")
+  vapour_read_raster(x, band = band, window = window, resample = resample, ..., sds = sds,
+                     native = native, set_na = set_na, band_output_type = "Byte")[[1L]]
+}
+
+#' @name vapour_read_raster_raw
+#' @export
+vapour_read_raster_int <- function(x, band = 1,
+                                   window,
+                                   resample = "nearestneighbour", ...,
+                                   sds = NULL, native = FALSE, set_na = TRUE) {
+
+  if (length(band) > 1) message("_int output implies one band, using only the first")
+  vapour_read_raster(x, band = band, window = window, resample = resample, ..., sds = sds,
+                     native = native, set_na = set_na, band_output_type = "Int32")[[1L]]
+}
+
+#' @name vapour_read_raster_raw
+#' @export
+vapour_read_raster_dbl <- function(x, band = 1,
+                                   window,
+                                   resample = "nearestneighbour", ...,
+                                   sds = NULL, native = FALSE, set_na = TRUE) {
+
+  if (length(band) > 1) message("_dbl output implies one band, using only the first")
+  vapour_read_raster(x, band = band, window = window, resample = resample, ..., sds = sds,
+                     native = native, set_na = set_na, band_output_type = "Float64")[[1L]]
+}
+
+
+#' @name vapour_read_raster_raw
+#' @export
+vapour_read_raster_chr <- function(x, band = 1,
+                                   window,
+                                   resample = "nearestneighbour", ...,
+                                   sds = NULL, native = FALSE, set_na = TRUE) {
+
+  ## band must be length 1, 3 or 4
+  if (length(band) == 2 || length(band) > 4) message("_chr output implies one, three or four bands ...")
+  if (length(band) == 2L) band <- band[1L]
+  if (length(band) > 4) band <- band[1:4]
+  bytes <- vapour_read_raster(x, band = band, window = window, resample = resample, ..., sds = sds,
+                     native = native, set_na = set_na, band_output_type = "Byte")
+
+  ## pack into character with as.raster ...
+
+  ## note that we replicate out *3 if we only have one band ... (annoying of as.raster)
+  as.vector(grDevices::as.raster(array(unlist(bytes, use.names = FALSE), c(length(bytes[[1]]), 1, max(c(3, length(bytes)))))))
+}
+
+#' @name vapour_read_raster_raw
+#' @export
+vapour_read_raster_hex <- function(x, band = 1,
+                                   window,
+                                   resample = "nearestneighbour", ...,
+                                   sds = NULL, native = FALSE, set_na = TRUE) {
+    vapour_read_raster_chr(x, band = band, window = window, resample = resample, sds = sds,
+                     native = native, set_na = set_na, ...)[[1L]]
+}
+
+
 
 
 #' Raster warper (reprojection)
