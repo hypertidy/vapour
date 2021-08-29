@@ -19,22 +19,24 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 NumericVector source_extent,
                                 CharacterVector resample,
                                 LogicalVector silent,
-                                CharacterVector band_output_type) {
-
-
-
+                                CharacterVector band_output_type, 
+                                CharacterVector warp_options, 
+                                CharacterVector transformation_options) {
+  
+  
+  
   GDALDatasetH *poSrcDS;
   GDALAllRegister();
   poSrcDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * source_filename.size()));
-
+  
   char** papszArg = nullptr;
   int dsi0 = 0;
   for (int si = 0; si < source_filename.size(); si++) {
     poSrcDS[si] = GDALOpen((const char *) source_filename[si], GA_ReadOnly);
-
+    
     if (poSrcDS[si] == NULL) {
       //Rprintf("cannot open %s\n", source_filename[0]);
-
+      
       if (si > 0) {
         for (int ii = 0; ii < si; ii++) {
           GDALClose( poSrcDS[ii] );
@@ -46,18 +48,18 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     if (source_extent.length() == 1) {
       // do nothing
     } // and else also do nothing (doesn't work how I thought, only VRT can do this so wait for /vrt/)
-
+    
     // https://github.com/OSGeo/gdal/blob/fec15b146f8a750c23c5e765cac12ed5fc9c2b85/gdal/frmts/gtiff/cogdriver.cpp#L512
     papszArg = CSLAddString(papszArg, "-of");
     papszArg = CSLAddString(papszArg, "MEM");
-
+    
     // if we don't supply it don't try to set it!
     if (!target_WKT[0].empty()){
       // if supplied check that it's valid
       OGRSpatialReference oTargetSRS;
       OGRErr target_chk =  oTargetSRS.SetFromUserInput(target_WKT[0]);
       if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
-
+      
       papszArg = CSLAddString(papszArg, "-t_srs");
       papszArg = CSLAddString(papszArg, target_WKT[0]);
     }
@@ -75,7 +77,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
         OGRSpatialReference oSourceSRS;
         OGRErr source_chk =  oSourceSRS.SetFromUserInput(source_WKT[0]);
         if (source_chk != OGRERR_NONE) Rcpp::stop("cannot initialize source projection");
-
+        
         papszArg = CSLAddString(papszArg, "-s_srs");
         papszArg = CSLAddString(papszArg, source_WKT[0]);
       }
@@ -86,13 +88,13 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   double dfMaxX = target_extent[1];
   double dfMinY = target_extent[2];
   double dfMaxY = target_extent[3];
-
+  
   papszArg = CSLAddString(papszArg, "-te");
   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
-
+  
   // we otherwise set a dud dimension, the user didn't set it (so they get native for the extent)
   if (target_dim.size() > 1) {
     int nXSize = target_dim[0];
@@ -101,18 +103,22 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
     papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
   }
-
+  
   //const auto poFirstBand = GDALGetRasterBand(poSrcDS[dsi0], 1);
-
+  
   papszArg = CSLAddString(papszArg, "-r");
   papszArg = CSLAddString(papszArg, resample[0]);
-  papszArg = CSLAddString(papszArg, "-wo");
-  papszArg = CSLAddString(papszArg, "SAMPLE_GRID=YES");
-
-  papszArg = CSLAddString(papszArg, "-wo");
-  papszArg = CSLAddString(papszArg, "SOURCE_EXTRA=64");
-
-
+  
+  // bundle on all user-added options
+  for (int wopt = 0; wopt < warp_options.length(); wopt++) {
+    papszArg = CSLAddString(papszArg, "-wo");
+    papszArg = CSLAddString(papszArg, warp_options[wopt]);
+  }
+  for (int topt = 0; topt < transformation_options.length(); topt++) {
+    papszArg = CSLAddString(papszArg, "-to");
+    papszArg = CSLAddString(papszArg, transformation_options[topt]);
+  }
+  
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
@@ -121,14 +127,14 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                         psOptions, nullptr);
   CPLAssert( hRet != NULL );
   GDALWarpAppOptionsFree(psOptions);
-
-
+  
+  
   const int nBands = GDALGetRasterCount(poSrcDS[dsi0]);
   int band_length = bands.size();
   if (bands.size() == 1 && bands[0] == 0) {
     band_length = nBands;
   }
-
+  
   std::vector<int> bands_to_read(band_length);
   if (bands.size() == 1 && bands[0] == 0) {
     for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
@@ -138,22 +144,22 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     // Rprintf("input bands\n");
   }
   Rcpp::List outlist(bands_to_read.size());
-
+  
   double *double_scanline;
   int    *integer_scanline;
   uint8_t *byte_scanline;
-
-
+  
+  
   int hasNA;
   int hasScale, hasOffset;
   double scale, offset;
-
+  
   GDALRasterBandH dstBand, poBand;
   int sbands = (int)bands_to_read.size();
   for (int iband = 0; iband < sbands; iband++) {
     if (bands_to_read[iband] > nBands) {
       GDALClose( hRet );
-
+      
       for (int si = 0; si < source_filename.size(); si++) {
         GDALClose( poSrcDS[si] );
       }
@@ -162,52 +168,52 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     //Rprintf("bands_to_read[i] %i\n", bands_to_read[iband]);
     poBand = GDALGetRasterBand(poSrcDS[dsi0], bands_to_read[iband]);
     dstBand = GDALGetRasterBand(hRet, bands_to_read[iband]);
-
+    
     GDALDataType band_type =  GDALGetRasterDataType(poBand);
-
+    
     // if band_output_type is not empty, possible override:
     if (band_output_type[0] == "Byte") {
-                      band_type = GDT_Byte;
+      band_type = GDT_Byte;
     }
     if (band_output_type[0] == "Int32" ||
         band_type == GDT_Int16 ||
         band_type == GDT_UInt16 ||
         band_type == GDT_UInt32) {
-                         band_type = GDT_Int32;
+      band_type = GDT_Int32;
     }
     if (band_output_type[0] == "Float64" ||
         band_type == GDT_Float32) {
-                         band_type = GDT_Float64;
+      band_type = GDT_Float64;
     }
     scale = GDALGetRasterScale(poBand, &hasScale);
     offset = GDALGetRasterOffset(poBand, &hasOffset);
-
+    
     int actual_XSize = GDALGetRasterBandXSize(dstBand);
     int actual_YSize = GDALGetRasterBandYSize(dstBand);
     if (band_type == GDT_Float64) {
       std::vector<double> double_scanline( actual_XSize * actual_YSize );
       CPLErr err;
       err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,
-                       &double_scanline[0], actual_XSize, actual_YSize, GDT_Float64,
-                       0, 0);
+                         &double_scanline[0], actual_XSize, actual_YSize, GDT_Float64,
+                         0, 0);
       if (err) Rprintf("we have a problem at RasterIO\n");
       NumericVector res(actual_XSize * actual_YSize );
-
+      
       // consider doing at R level, at least for MEM
       double dval;
       double naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
-
+      
       if (hasNA && (!std::isnan(naflag))) {
         if (naflag < -3.4e+37) {
           naflag = -3.4e+37;
-
+          
           for (size_t i=0; i< double_scanline.size(); i++) {
             if (double_scanline[i] <= naflag) {
               double_scanline[i] = NAN;
             }
           }
         } else {
-
+          
           std::replace(double_scanline.begin(), double_scanline.end(), naflag, (double) NAN);
         }
       }
@@ -229,14 +235,14 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                          0, 0);
       if (err) Rprintf("we have a problem at RasterIO\n");
       IntegerVector res(actual_XSize * actual_YSize );
-
+      
       // consider doing at R level, at least for MEM
       int dval;
       int naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
-
+      
       if (hasNA && (!std::isnan(naflag))) {
-          std::replace(integer_scanline.begin(), integer_scanline.end(), naflag, (int) NAN);
-
+        std::replace(integer_scanline.begin(), integer_scanline.end(), naflag, (int) NAN);
+        
       }
       long unsigned int isi;
       for (isi = 0; isi < (integer_scanline.size()); isi++) {
@@ -247,7 +253,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       }
       outlist[iband] = res;
     }
-
+    
     if (band_type == GDT_Byte) {
       std::vector<uint8_t> byte_scanline( actual_XSize * actual_YSize );
       CPLErr err;
@@ -258,10 +264,10 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       if (err) Rprintf("we have a problem at RasterIO\n");
       RawVector res(actual_XSize * actual_YSize );
       uint8_t naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
-
+      
       if (hasNA && (!std::isnan(naflag))) {
-          std::replace(byte_scanline.begin(), byte_scanline.end(), naflag, (uint8_t) NAN);
-
+        std::replace(byte_scanline.begin(), byte_scanline.end(), naflag, (uint8_t) NAN);
+        
       }
       long unsigned int isi;
       for (isi = 0; isi < (byte_scanline.size()); isi++) {
@@ -269,17 +275,17 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       }
       outlist[iband] = res;
     }
-
-
-
+    
+    
+    
   }
   GDALClose( hRet );
   for (int si = 0; si < source_filename.size(); si++) {
     GDALClose( poSrcDS[si] );
   }
-
+  
   //CPLFree(double_scanline);
-
+  
   return outlist;
 }
 
