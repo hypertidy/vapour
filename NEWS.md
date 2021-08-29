@@ -6,6 +6,8 @@
 
 ## NEW FEATURES
 
+* Warp read functions gain `warp_options` and `transformation_options`. 
+
 * New feature to provide `band_output_type` to raster read functions, to take Byte, Int32, or Float64. 
 
 * New functions `vapour_read_raster_raw()`, `vapour_read_raster_int()`, `vapour_read_raster_dbl()`, `vapour_read_raster_chr()` and its

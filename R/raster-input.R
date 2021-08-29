@@ -443,6 +443,8 @@ vapour_warp_raster_raw <- function(x, bands = 1L,
                                silent = TRUE, ...,
                                warp_options = "", 
                                transformation_options = "") {
+  if (length(bands) > 1 ) message("_raw output implies one band, ignoring all but the first")
+  
   vapour_warp_raster(x, 
                      bands = bands, 
                      extent = extent, 
@@ -455,7 +457,7 @@ vapour_warp_raster_raw <- function(x, bands = 1L,
                      silent = silent, 
                      band_output_type = "Byte",
                      warp_options = warp_options, 
-                     transformation_options = transformation_options)
+                     transformation_options = transformation_options)[[1L]]
 }
 
 
@@ -471,7 +473,9 @@ vapour_warp_raster_int <- function(x, bands = 1L,
                                    resample = "near",
                                    silent = TRUE, ...,
                                    warp_options = "", 
-                                   transformation_options = "") {
+                                   transformation_options = "")  {
+  if (length(bands) > 1 ) message("_int output implies one band, ignoring all but the first")
+
   vapour_warp_raster(x, 
                      bands = bands, 
                      extent = extent, 
@@ -484,7 +488,7 @@ vapour_warp_raster_int <- function(x, bands = 1L,
                      silent = silent, 
                      band_output_type = "Int32",
                      warp_options = warp_options, 
-                     transformation_options = transformation_options)
+                     transformation_options = transformation_options)[[1L]]
 }
 
 #' @name vapour_warp_raster_raw
@@ -500,6 +504,8 @@ vapour_warp_raster_dbl <- function(x, bands = 1L,
                                    silent = TRUE, ...,
                                    warp_options = "", 
                                    transformation_options = "") {
+  if (length(bands) > 1 ) message("_dbl output implies one band, ignoring all but the first")
+  
   vapour_warp_raster(x, 
                      bands = bands, 
                      extent = extent, 
@@ -512,7 +518,7 @@ vapour_warp_raster_dbl <- function(x, bands = 1L,
                      silent = silent, 
                      band_output_type = "Float64",
                      warp_options = warp_options, 
-                     transformation_options = transformation_options)
+                     transformation_options = transformation_options)[[1L]]
 }
 
 
