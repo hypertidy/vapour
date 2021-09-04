@@ -300,7 +300,7 @@ vapour_warp_raster <- function(x, bands = 1L,
   if (is.null(bands)) bands <- 0
   if(!is.numeric(bands)) stop("'bands' must be numeric (integer), start at 1")
   bands <- as.integer(bands)
-  
+  if ("projection" %in% names(list(...))) message("argument 'projection' input is ignored, warper functions use 'wkt = ' to specify target projection (any format is ok)")
   # dud_extent <- FALSE
   # if (is.null(extent)) {
   #   ## set a dummy and then pass in dud after following tests
@@ -457,7 +457,7 @@ vapour_warp_raster_raw <- function(x, bands = 1L,
                      silent = silent, 
                      band_output_type = "Byte",
                      warp_options = warp_options, 
-                     transformation_options = transformation_options)[[1L]]
+                     transformation_options = transformation_options, ...)[[1L]]
 }
 
 
@@ -488,7 +488,7 @@ vapour_warp_raster_int <- function(x, bands = 1L,
                      silent = silent, 
                      band_output_type = "Int32",
                      warp_options = warp_options, 
-                     transformation_options = transformation_options)[[1L]]
+                     transformation_options = transformation_options, ...)[[1L]]
 }
 
 #' @name vapour_warp_raster_raw
@@ -518,7 +518,7 @@ vapour_warp_raster_dbl <- function(x, bands = 1L,
                      silent = silent, 
                      band_output_type = "Float64",
                      warp_options = warp_options, 
-                     transformation_options = transformation_options)[[1L]]
+                     transformation_options = transformation_options, ...)[[1L]]
 }
 
 
@@ -551,7 +551,7 @@ vapour_warp_raster_chr <- function(x, bands = 1L,
                      silent = silent, 
                      band_output_type = "Byte",
                      warp_options = warp_options, 
-                     transformation_options = transformation_options)
+                     transformation_options = transformation_options, ...)
   ## note that we replicate out *3 if we only have one band ... (annoying of as.raster)
   as.vector(grDevices::as.raster(array(unlist(bytes, use.names = FALSE), c(length(bytes[[1]]), 1, max(c(3, length(bytes)))))))
   
@@ -582,5 +582,5 @@ vapour_warp_raster_hex <- function(x, bands = 1L,
                      resample = resample, 
                      silent = silent, 
                      warp_options = warp_options, 
-                     transformation_options = transformation_options)
+                     transformation_options = transformation_options, ...)
 }
