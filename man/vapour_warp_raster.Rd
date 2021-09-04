@@ -17,7 +17,10 @@ vapour_warp_raster(
   silent = TRUE,
   ...,
   source_geotransform = 0,
-  geotransform = NULL
+  geotransform = NULL,
+  band_output_type = "",
+  warp_options = "",
+  transformation_options = ""
 )
 }
 \arguments{
@@ -46,23 +49,32 @@ vapour_warp_raster(
 \item{source_geotransform}{DEPRECATED use 'source_extent' (override the native geotransform of the source)}
 
 \item{geotransform}{DEPRECATED use 'extent' the affine geotransform of the warped raster}
+
+\item{band_output_type}{numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'}
+
+\item{warp_options}{character vector of options, as in gdalwarp -wo - see Details}
+
+\item{transformation_options}{character vector of options, as in gdalwarp -to}
 }
 \value{
 list of vectors (only 1 for 'band') of numeric values, in raster order
 }
 \description{
 Read a window of data from a GDAL raster source through a warp specification.
-Only a single band may be read. The warp specification is provided by 'extent',
+The warp specification is provided by 'extent',
 'dimension', and 'wkt' properties of the transformed output.
 }
 \details{
+Any bands may be read, including repeats.
+
 This function is not memory safe, the source is left on disk but the output
 raster is all computed in memory so please be careful with very large values
 for 'dimension'. \code{1000 * 1000 * 8} for 1000 columns, 1000 rows and floating point
 double type will be 8Mb.
 
-There's no control over the output type (always double floating point).
-#'
+There's control over the output type, and is auto-detected from the source (raw/Byte, integer/Int32, numeric/Float64) or
+can be set with 'band_output_type'.
+
 'wkt' refers to the full Well-Known-Text specification of a coordinate reference
 system. See \code{\link[=vapour_srs_wkt]{vapour_srs_wkt()}} for conversion from PROJ.4 string to WKT. Any string
 accepted by GDAL may be used for 'wkt' or 'source_wkt', including EPSG strings, PROJ4 strings, and
@@ -88,13 +100,56 @@ Wild combinations of
 expert usage only. Old versions allowed transform input for target and source but this is now disabled (maybe we'll write
 a new wrapper for that).
 }
+\section{Options}{
+
+
+The 'warp_options' arguments are for 'warp options -wo',
+
+'transformation options -to', 'creation options -co',
+'open options -oo', or 'dataset open options -doo', and other arguments that use named options in gdalwarp.
+
+To input use the appropriate argument 'warp_options' for '-wo', 'transformation_options' for '-to'.
+
+'warp_options = c("SAMPLE_GRID=YES", "SAMPLE_STEPS=30") '
+
+Do not include the '-wo' or the '-to', and make sure each is a separate character element. These are added in turn
+with '-wo' or '-to' prepended to the string list in the implementation.
+
+There are no creation options '-co' available, because the MEM driver is used. This might changed, see for example 'vapour_write_raster_block'.
+We might add '-oo', '-doo' in future.
+
+See \href{https://gdal.org/api/gdalwarp_cpp.html#_CPPv4N15GDALWarpOptions16papszWarpOptionsE}{GDALWarpOptions} for '-wo'.
+
+See \href{https://gdal.org/api/gdal_alg.html#_CPPv432GDALCreateGenImgProjTransformer212GDALDatasetH12GDALDatasetHPPc}{GDAL transformation options} for '-to'.
+
+Note we already apply the following gdalwarp arguments based on input R arguments to this function.
+\itemize{
+\item \strong{-of}      MEM is hardcoded, but may be extended in future
+\item \strong{-t_srs}   set via 'wkt'
+\item \strong{-s_srs}   set via 'source_wkt'
+\item \strong{-te}      set via 'extent'
+\item \strong{-ts}      set via 'dimension'
+\item \strong{-r}       set via 'resample'
+}
+
+note that 'source_extent' does nothing atm, there's no -se (you have to use VRT and we'll do that via new /vsivrt/ ...)
+bundle any required options into 'options'.
+}
+
 \examples{
 b <- 4e5
 f <- system.file("extdata", "sst.tif", package = "vapour")
 prj <- "+proj=aeqd +lon_0=147 +lat_0=-42"
 vals <- vapour_warp_raster(f, extent = c(-b, b, -b, b),
                              dimension = c(186, 298),
-                             wkt = vapour_srs_wkt(prj))
+                             bands = 1, 
+                             wkt = vapour_srs_wkt(prj), 
+                             warp_options = c("SAMPLE_GRID=YES"))
+                             
+                             
 image(list(x = seq(-b, b, length.out = 187), y = seq(-b, b, length.out = 298),
     z = matrix(unlist(vals, use.names = FALSE), 186)[,298:1]), asp = 1)
+}
+\seealso{
+vapour_read_raster vapour_read_raster_raw vapour_read_raster_int vapour_read_raster_dbl vapour_read_raster_chr vapour_read_raster_hex
 }

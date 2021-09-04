@@ -1,13 +1,23 @@
 # vapour dev
 
+## BREAKING CHANGES
+
+* Raster read now detects type of the source and return raw, integer, or double as per the native type in the source. 
+
+## BUG FIXES 
+
 * Fixed huge SDS name wrecking bug. So now works for WMTS sources, for example. 
 
-* New type safe(r) functions to read specific band types `_raw`, `_chr` (and `_hex`), `_int`, `_dbl` for both the 
- raster read and raster warper. New argument to control the band output type.
- 
- * New options capability for the warper. 
+## NEW FEATURES
 
-* New ability to read *and write* by block. Write only internal for now. See issue/PR #123 for examples. 
+* Warp read functions gain `warp_options` and `transformation_options`. 
+
+* New feature to provide `band_output_type` to raster read functions, to take Byte, Int32, or Float64. 
+
+* New functions `vapour_read_raster_raw()`, `vapour_read_raster_int()`, `vapour_read_raster_dbl()`, `vapour_read_raster_chr()` and its alias `vapour_read_raster_hex()` to return specific types of atomic vector. _chr and _hex convert raw bytes to colours. 
+
+* New function `vapour_read_raster_block()` a helper around the internal C++ reader for the simple case of offset/dimension read. There's a matching but non-exported vapour_write_raster_block(). See issue/PR #123 for examples. 
+
 
 # vapour 0.8.0
 
