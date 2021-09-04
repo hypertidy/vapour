@@ -12,7 +12,8 @@ vapour_read_raster(
   ...,
   sds = NULL,
   native = FALSE,
-  set_na = TRUE
+  set_na = TRUE,
+  band_output_type = ""
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ vapour_read_raster(
 \item{native}{apply the full native window for read, \code{FALSE} by default}
 
 \item{set_na}{specify whether NA values should be set for the NODATA}
+
+\item{band_output_type}{numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'}
 }
 \value{
 list of numeric vectors (only one for 'band')

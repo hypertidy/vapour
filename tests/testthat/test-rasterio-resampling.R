@@ -70,7 +70,7 @@ test_that("band sanity prevails", {
   tst <- try(vapour_sds_names(f1), silent = TRUE)
   canopen <- !inherits(tst, "try-error")
   if (!canopen) skip("unable to open netcdf file on this platform")
-  expect_equivalent(unique(vapour_read_raster(f1, native = TRUE, band = 1)[[1]]), 129.0)
+  expect_equivalent(unique(vapour_read_raster(f1, native = TRUE, band = 1)[[1]]), as.raw(0x81))
 
 
   expect_error(vapour_read_raster(f1))

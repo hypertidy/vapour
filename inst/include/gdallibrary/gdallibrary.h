@@ -2,11 +2,8 @@
 #define GDALLIBRARY_H
 #include <Rcpp.h>
 #include "ogrsf_frmts.h"
-//#include "ogr_api.h"
 #include "gdal_priv.h"
 #include "CollectorList.h"
-// #include "ogr_spatialref.h" // for OGRSpatialReference
-// #include "cpl_conv.h" // for CPLFree()
 
 namespace gdallibrary {
 using namespace Rcpp;
@@ -16,9 +13,11 @@ constexpr int MAX_INT =  std::numeric_limits<int>::max ();
 inline void gdal_register_all() {
   GDALAllRegister();
 }
+
 inline void ogr_register_all() {
   OGRRegisterAll();
 }
+
 inline void ogr_cleanup_all() {
   OGRCleanupAll();
 }
@@ -30,7 +29,6 @@ inline CharacterVector gdal_layer_geometry_name(OGRLayer *poLayer) {
 
   poLayer->ResetReading();
 
-  //OGRFeature *poFeature = poLayer->GetNextFeature();
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   int gfields = poFDefn->GetGeomFieldCount();
   CharacterVector out(gfields);
@@ -1147,42 +1145,9 @@ inline List gdal_raster_gcp(CharacterVector dsn) {
 }
 
 
-inline List gdal_raster_io(CharacterVector dsn,
-                           IntegerVector window,
-                           IntegerVector band,
-                           CharacterVector resample)
-{
-
-  int Xoffset = window[0];
-  int Yoffset = window[1];
-  int nXSize = window[2];
-  int nYSize = window[3];
-
-  int outXSize = window[4];
-  int outYSize = window[5];
-
-  GDALDataset  *poDataset;
-
-  poDataset = (GDALDataset *) GDALOpen(dsn[0], GA_ReadOnly );
-  if( poDataset == NULL )
-  {
-    Rcpp::stop("cannot open dataset");
-  }
-
-  GDALRasterBand  *poBand;
-  poBand = poDataset->GetRasterBand( band[0] );
-  GDALDataType band_type =  poBand->GetRasterDataType();
-
-  if( poBand == NULL )
-  {
-    Rcpp::stop("cannot get band");
-  }
-
-  // how to do this is here:
-  // https://stackoverflow.com/questions/45978178/how-to-pass-in-a-gdalresamplealg-to-gdals-rasterio
+inline GDALRasterIOExtraArg init_resample_alg(CharacterVector resample) {
   GDALRasterIOExtraArg psExtraArg;
   INIT_RASTERIO_EXTRA_ARG(psExtraArg);
-
   if (resample[0] == "average") {
     psExtraArg.eResampleAlg = GRIORA_Average;
   }
@@ -1192,7 +1157,6 @@ inline List gdal_raster_io(CharacterVector dsn,
   if (resample[0] == "cubic") {
     psExtraArg.eResampleAlg = GRIORA_Cubic;
   }
-
   if (resample[0] == "cubicspline") {
     psExtraArg.eResampleAlg = GRIORA_CubicSpline;
   }
@@ -1208,19 +1172,81 @@ inline List gdal_raster_io(CharacterVector dsn,
   if (resample[0] == "nearestneighbour") {
     psExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
   }
+ return psExtraArg;
+}
+inline List gdal_raster_io(CharacterVector dsn,
+                           IntegerVector window,
+                           IntegerVector band,
+                           CharacterVector resample,
+                           CharacterVector band_output_type)
+{
 
+
+  GDALDataset  *poDataset;
+  GDALAllRegister();
+  poDataset = (GDALDataset *) GDALOpen(dsn[0], GA_ReadOnly );
+  if( poDataset == NULL )
+  {
+    Rcpp::stop("cannot open dataset");
+  }
+
+  int Xoffset = window[0];
+  int Yoffset = window[1];
+  int nXSize = window[2];
+  int nYSize = window[3];
+
+  int outXSize = window[4];
+  int outYSize = window[5];
+
+  if (band[0] < 1) { GDALClose(poDataset);  Rcpp::stop("requested band %i should be 1 or greater", band[0]);  }
+  int nbands = poDataset->GetRasterCount();
+  if (band[0] > nbands) { GDALClose(poDataset);   Rcpp::stop("requested band %i should be equal to or less than number of bands: %i", band[0], nbands); }
+
+  GDALRasterBand  *poBand;
+  poBand = poDataset->GetRasterBand( band[0] );
+  GDALDataType band_type =  poBand->GetRasterDataType();
+
+  // if band_output_type is not empty, possible override:
+  if (band_output_type[0] == "Byte") band_type = GDT_Byte;
+  if (band_output_type[0] == "Int32") band_type = GDT_Int32;
+  if (band_output_type[0] == "Float64") band_type = GDT_Float64;
+  if( poBand == NULL )
+  {
+    Rprintf("cannot access band %i", band[0]);
+    GDALClose(poDataset);
+    Rcpp::stop("");
+  }
+
+  // how to do this is here:
+  // https://stackoverflow.com/questions/45978178/how-to-pass-in-a-gdalresamplealg-to-gdals-rasterio
+
+  GDALRasterIOExtraArg psExtraArg;
+  psExtraArg = init_resample_alg(resample);
 
   double *double_scanline;
   int    *integer_scanline;
-
+  uint8_t *byte_scanline;
   List out(1);
   CPLErr err;
 
   bool band_type_not_supported = true;
+  if (band_type == GDT_Byte) {
+    byte_scanline = (uint8_t *) CPLMalloc(sizeof(uint8_t)*
+      static_cast<unsigned long>(outXSize)*
+      static_cast<unsigned long>(outYSize));
+    err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+                            byte_scanline, outXSize, outYSize, GDT_Byte,
+                            0, 0, &psExtraArg);
+    RawVector res(outXSize*outYSize);
+    for (int i = 0; i < (outXSize*outYSize); i++) res[i] = byte_scanline[i];
+    CPLFree(byte_scanline);
+    out[0] = res;
+    band_type_not_supported = false;
+  }
+
   // here we catch byte, int* as R's 32-bit integer
   // or Float32/64 as R's 64-bit numeric
-  if ((band_type == GDT_Byte) |
-      (band_type == GDT_Int16) |
+  if ((band_type == GDT_Int16) |
       (band_type == GDT_Int32) |
       (band_type == GDT_UInt16) |
       (band_type == GDT_UInt32)) {
@@ -1232,6 +1258,7 @@ inline List gdal_raster_io(CharacterVector dsn,
                             0, 0, &psExtraArg);
     IntegerVector res(outXSize*outYSize);
     for (int i = 0; i < (outXSize*outYSize); i++) res[i] = integer_scanline[i];
+    CPLFree(integer_scanline);
     out[0] = res;
     band_type_not_supported = false;
   }
@@ -1244,6 +1271,7 @@ inline List gdal_raster_io(CharacterVector dsn,
                             0, 0, &psExtraArg);
     NumericVector res(outXSize*outYSize);
     for (int i = 0; i < (outXSize*outYSize); i++) res[i] = double_scanline[i];
+    CPLFree(double_scanline);
     out[0] = res;
 
     band_type_not_supported = false;
@@ -1260,7 +1288,8 @@ inline List gdal_raster_io(CharacterVector dsn,
     Rcpp::stop("raster read failed");
   }
   // close up
-  GDALClose( (GDALDatasetH) poDataset );
+  GDALClose(poDataset );
+
 
   return out;
 }
