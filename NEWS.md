@@ -1,3 +1,14 @@
+# vapour dev
+
+* Fixed huge SDS name wrecking bug. So now works for WMTS sources, for example. 
+
+* New type safe(r) functions to read specific band types `_raw`, `_chr` (and `_hex`), `_int`, `_dbl` for both the 
+ raster read and raster warper. New argument to control the band output type.
+ 
+ * New options capability for the warper. 
+
+* New ability to read *and write* by block. Write only internal for now. See issue/PR #123 for examples. 
+
 # vapour 0.8.0
 
 * Fix for CRAN errors, with broken configure. 
