@@ -10,6 +10,18 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// gdalmdimarray_cpp
+IntegerVector gdalmdimarray_cpp(CharacterVector dsn, CharacterVector array);
+RcppExport SEXP _vapour_gdalmdimarray_cpp(SEXP dsnSEXP, SEXP arraySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type array(arraySEXP);
+    rcpp_result_gen = Rcpp::wrap(gdalmdimarray_cpp(dsn, array));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cleanup_gdal_cpp
 LogicalVector cleanup_gdal_cpp();
 RcppExport SEXP _vapour_cleanup_gdal_cpp() {
@@ -514,8 +526,132 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gh_GDALOpenEx
+SEXP gh_GDALOpenEx(CharacterVector dsn);
+RcppExport SEXP _vapour_gh_GDALOpenEx(SEXP dsnSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    rcpp_result_gen = Rcpp::wrap(gh_GDALOpenEx(dsn));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gh_GDALClose
+SEXP gh_GDALClose(SEXP xp);
+RcppExport SEXP _vapour_gh_GDALClose(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gh_GDALClose(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gh_ExecuteSQL
+SEXP gh_ExecuteSQL(SEXP xp, CharacterVector sql, SEXP extent);
+RcppExport SEXP _vapour_gh_ExecuteSQL(SEXP xpSEXP, SEXP sqlSEXP, SEXP extentSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type extent(extentSEXP);
+    rcpp_result_gen = Rcpp::wrap(gh_ExecuteSQL(xp, sql, extent));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gh_GetLayer
+SEXP gh_GetLayer(SEXP xp, IntegerVector layer);
+RcppExport SEXP _vapour_gh_GetLayer(SEXP xpSEXP, SEXP layerSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
+    rcpp_result_gen = Rcpp::wrap(gh_GetLayer(xp, layer));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gh_GetNextFeature
+SEXP gh_GetNextFeature(SEXP xp);
+RcppExport SEXP _vapour_gh_GetNextFeature(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gh_GetNextFeature(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gh_DestroyFeature
+SEXP gh_DestroyFeature(SEXP xp);
+RcppExport SEXP _vapour_gh_DestroyFeature(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gh_DestroyFeature(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gh_getGeometryRef
+SEXP gh_getGeometryRef(SEXP xp);
+RcppExport SEXP _vapour_gh_getGeometryRef(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gh_getGeometryRef(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gh_getPoints_preview
+SEXP gh_getPoints_preview(SEXP xp);
+RcppExport SEXP _vapour_gh_getPoints_preview(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gh_getPoints_preview(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gh_exportToWkb
+SEXP gh_exportToWkb(SEXP xp);
+RcppExport SEXP _vapour_gh_exportToWkb(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gh_exportToWkb(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gh_GetGDALDriverManager
+SEXP gh_GetGDALDriverManager();
+RcppExport SEXP _vapour_gh_GetGDALDriverManager() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(gh_GetGDALDriverManager());
+    return rcpp_result_gen;
+END_RCPP
+}
+// gh_GetDriverCount
+SEXP gh_GetDriverCount(SEXP xp);
+RcppExport SEXP _vapour_gh_GetDriverCount(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gh_GetDriverCount(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_vapour_gdalmdimarray_cpp", (DL_FUNC) &_vapour_gdalmdimarray_cpp, 2},
     {"_vapour_cleanup_gdal_cpp", (DL_FUNC) &_vapour_cleanup_gdal_cpp, 0},
     {"_vapour_driver_gdal_cpp", (DL_FUNC) &_vapour_driver_gdal_cpp, 1},
     {"_vapour_driver_id_gdal_cpp", (DL_FUNC) &_vapour_driver_id_gdal_cpp, 1},
@@ -552,6 +688,17 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_warp_in_memory_gdal_cpp", (DL_FUNC) &_vapour_warp_in_memory_gdal_cpp, 12},
     {"_vapour_vapour_read_raster_block_cpp", (DL_FUNC) &_vapour_vapour_read_raster_block_cpp, 5},
     {"_vapour_vapour_write_raster_block_cpp", (DL_FUNC) &_vapour_vapour_write_raster_block_cpp, 5},
+    {"_vapour_gh_GDALOpenEx", (DL_FUNC) &_vapour_gh_GDALOpenEx, 1},
+    {"_vapour_gh_GDALClose", (DL_FUNC) &_vapour_gh_GDALClose, 1},
+    {"_vapour_gh_ExecuteSQL", (DL_FUNC) &_vapour_gh_ExecuteSQL, 3},
+    {"_vapour_gh_GetLayer", (DL_FUNC) &_vapour_gh_GetLayer, 2},
+    {"_vapour_gh_GetNextFeature", (DL_FUNC) &_vapour_gh_GetNextFeature, 1},
+    {"_vapour_gh_DestroyFeature", (DL_FUNC) &_vapour_gh_DestroyFeature, 1},
+    {"_vapour_gh_getGeometryRef", (DL_FUNC) &_vapour_gh_getGeometryRef, 1},
+    {"_vapour_gh_getPoints_preview", (DL_FUNC) &_vapour_gh_getPoints_preview, 1},
+    {"_vapour_gh_exportToWkb", (DL_FUNC) &_vapour_gh_exportToWkb, 1},
+    {"_vapour_gh_GetGDALDriverManager", (DL_FUNC) &_vapour_gh_GetGDALDriverManager, 0},
+    {"_vapour_gh_GetDriverCount", (DL_FUNC) &_vapour_gh_GetDriverCount, 1},
     {NULL, NULL, 0}
 };
 
