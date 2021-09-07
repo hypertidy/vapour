@@ -9,7 +9,7 @@ vapour_warp_raster(
   bands = 1L,
   extent = NULL,
   dimension = NULL,
-  wkt = "",
+  projection = "",
   set_na = TRUE,
   source_wkt = NULL,
   source_extent = 0,
@@ -32,7 +32,7 @@ vapour_warp_raster(
 
 \item{dimension}{dimensions in pixels of the warped raster (x, y)}
 
-\item{wkt}{projection of warped raster (in Well-Known-Text, or any projection string accepted by GDAL)}
+\item{projection}{projection of warped raster (in Well-Known-Text, or any projection string accepted by GDAL)}
 
 \item{set_na}{NOT IMPLEMENTED logical, should 'NODATA' values be set to \code{NA}}
 
@@ -62,7 +62,7 @@ list of vectors (only 1 for 'band') of numeric values, in raster order
 \description{
 Read a window of data from a GDAL raster source through a warp specification.
 The warp specification is provided by 'extent',
-'dimension', and 'wkt' properties of the transformed output.
+'dimension', and 'projection' properties of the transformed output.
 }
 \details{
 Any bands may be read, including repeats.
@@ -75,10 +75,10 @@ double type will be 8Mb.
 There's control over the output type, and is auto-detected from the source (raw/Byte, integer/Int32, numeric/Float64) or
 can be set with 'band_output_type'.
 
-'wkt' refers to the full Well-Known-Text specification of a coordinate reference
+'projection' refers to the full Well-Known-Text specification of a coordinate reference
 system. See \code{\link[=vapour_srs_wkt]{vapour_srs_wkt()}} for conversion from PROJ.4 string to WKT. Any string
-accepted by GDAL may be used for 'wkt' or 'source_wkt', including EPSG strings, PROJ4 strings, and
-file names.
+accepted by GDAL may be used for 'projection' or 'source_wkt', including EPSG strings, PROJ4 strings, and
+file names. Note that this argument was named 'wkt' up until version 0.8.0.
 
 'extent' is the four-figure xmin,xmax,ymin,ymax outer corners of corner pixels
 
@@ -125,7 +125,7 @@ See \href{https://gdal.org/api/gdal_alg.html#_CPPv432GDALCreateGenImgProjTransfo
 Note we already apply the following gdalwarp arguments based on input R arguments to this function.
 \itemize{
 \item \strong{-of}      MEM is hardcoded, but may be extended in future
-\item \strong{-t_srs}   set via 'wkt'
+\item \strong{-t_srs}   set via 'projection'
 \item \strong{-s_srs}   set via 'source_wkt'
 \item \strong{-te}      set via 'extent'
 \item \strong{-ts}      set via 'dimension'
@@ -143,7 +143,7 @@ prj <- "+proj=aeqd +lon_0=147 +lat_0=-42"
 vals <- vapour_warp_raster(f, extent = c(-b, b, -b, b),
                              dimension = c(186, 298),
                              bands = 1, 
-                             wkt = vapour_srs_wkt(prj), 
+                             projection = vapour_srs_wkt(prj), 
                              warp_options = c("SAMPLE_GRID=YES"))
                              
                              
