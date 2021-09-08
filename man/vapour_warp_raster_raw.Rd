@@ -13,7 +13,7 @@ vapour_warp_raster_raw(
   bands = 1L,
   extent = NULL,
   dimension = NULL,
-  wkt = "",
+  projection = "",
   set_na = TRUE,
   source_wkt = NULL,
   source_extent = 0,
@@ -29,7 +29,7 @@ vapour_warp_raster_int(
   bands = 1L,
   extent = NULL,
   dimension = NULL,
-  wkt = "",
+  projection = "",
   set_na = TRUE,
   source_wkt = NULL,
   source_extent = 0,
@@ -45,7 +45,7 @@ vapour_warp_raster_dbl(
   bands = 1L,
   extent = NULL,
   dimension = NULL,
-  wkt = "",
+  projection = "",
   set_na = TRUE,
   source_wkt = NULL,
   source_extent = 0,
@@ -61,7 +61,7 @@ vapour_warp_raster_chr(
   bands = 1L,
   extent = NULL,
   dimension = NULL,
-  wkt = "",
+  projection = "",
   set_na = TRUE,
   source_wkt = NULL,
   source_extent = 0,
@@ -77,7 +77,7 @@ vapour_warp_raster_hex(
   bands = 1L,
   extent = NULL,
   dimension = NULL,
-  wkt = "",
+  projection = "",
   set_na = TRUE,
   source_wkt = NULL,
   source_extent = 0,
@@ -97,7 +97,7 @@ vapour_warp_raster_hex(
 
 \item{dimension}{dimensions in pixels of the warped raster (x, y)}
 
-\item{wkt}{projection of warped raster (in Well-Known-Text, or any projection string accepted by GDAL)}
+\item{projection}{projection of warped raster (in Well-Known-Text, or any projection string accepted by GDAL)}
 
 \item{set_na}{NOT IMPLEMENTED logical, should 'NODATA' values be set to \code{NA}}
 

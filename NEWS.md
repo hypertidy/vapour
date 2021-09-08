@@ -4,6 +4,11 @@
 
 * Raster read now detects type of the source and return raw, integer, or double as per the native type in the source. 
 
+* `wkt` argument for the target projection in warper functions is now replaced by 'projection'. No change has 
+ been made at the C++ level, which still uses the original names. If 'wkt' is given it is used to set the value
+ for 'projection' and a message emitted. 
+ 
+ 
 ## BUG FIXES 
 
 * Fixed huge SDS name wrecking bug. So now works for WMTS sources, for example. 

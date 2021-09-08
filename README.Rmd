@@ -146,7 +146,7 @@ crs <- sprintf("+proj=laea +lon_0=%f +lat_0=%f +datum=WGS84", pt[1,1,drop = TRUE
 dm <- c(256, 256)
 
 
-vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, wkt = crs)
+vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, projection = crs)
 ## now we can use this in a matrix
 image(m <- matrix(vals[[1]], nrow = dm[2], ncol = dm[1])[,dm[2]:1 ])
 ## using the image list format
@@ -164,7 +164,7 @@ If we want more detail, go ahead:
 
 ```{r lod}
 dm <- c(512, 512)
-vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, wkt = crs)
+vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, projection = crs)
 (r <- setValues(raster(extent(ex), nrows = dm[2], ncols = dm[1], crs = crs), vals[[1]]))
 plot(r, col = hcl.colors(24))
 

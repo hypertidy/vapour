@@ -46,15 +46,15 @@ test_that("warper no transformation works", {
 
 test_that("warper no transformation and no dimension works", {
   expect_that(vapour_warp_raster(f, extent = c(145, 146, -50, -48)), is_a("list"))
-  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), wkt = "+proj=laea"), "'dimension' must be numeric")
+  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), projection = "+proj=laea"), "'dimension' must be numeric")
 
 })
 
 test_that("warper bad transformation fails", {
-  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), wkt = "aabbcc"), "cannot initialize target projection")
+  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), projection = "aabbcc"), "cannot initialize target projection")
 
   ## this should get checked by GDAL itself, else crashy
-  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), wkt = "PROJala[kakakaka]"), "cannot initialize target projection")
+  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), projection = "PROJala[kakakaka]"), "cannot initialize target projection")
   expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), source_wkt =   "PROJala[kakakaka]"), "cannot initialize source projection")
 
 })
@@ -75,22 +75,22 @@ test_that("warper gives the right number of values", {
 test_that("giving source projection works", {
   expect_named(
     vapour_warp_raster(f, extent = c(0, 67, 0, 81),
-                     wkt = "+proj=laea", source_wkt = "+proj=laea", dimension = c(10, 10)), "Band1"
+                     projection = "+proj=laea", source_wkt = "+proj=laea", dimension = c(10, 10)), "Band1"
   )
 })
 test_that("robust to bad inputs", {
   expect_error(vapour_warp_raster(c(f, "afile"), extent = c(0, 1, 0, 1),
-                                  wkt = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10))
+                                  projection = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10))
   )
 
   expect_named(vapour_warp_raster(c(f, f), extent = c(0, 1, 0, 1),
-                     wkt = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10)), "Band1")
+                     projection = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10)), "Band1")
 
   expect_named(vapour_warp_raster(f, extent = c(0, 1, 0, 1),
-                                  wkt = "+proj=laea",  dimension = c(10, 10)))
+                                  projection = "+proj=laea",  dimension = c(10, 10)))
 
   expect_error(vapour_warp_raster(f, extent = c(0, 1, 0, 1), band = 2,
-                                  wkt = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10)),
+                                  projection = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10)),
                "band requested exceeds"
   )
 
