@@ -49,7 +49,7 @@
 <meta property="og:title" content="Raster warper (reprojection) — vapour_warp_raster" />
 <meta property="og:description" content="Read a window of data from a GDAL raster source through a warp specification.
 The warp specification is provided by 'extent',
-'dimension', and 'wkt' properties of the transformed output." />
+'dimension', and 'projection' properties of the transformed output." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -144,7 +144,7 @@ The warp specification is provided by 'extent',
     <div class="ref-description">
     <p>Read a window of data from a GDAL raster source through a warp specification.
 The warp specification is provided by 'extent',
-'dimension', and 'wkt' properties of the transformed output.</p>
+'dimension', and 'projection' properties of the transformed output.</p>
     </div>
 
     <pre class="usage"><span class='fu'>vapour_warp_raster</span><span class='op'>(</span>
@@ -152,7 +152,7 @@ The warp specification is provided by 'extent',
   bands <span class='op'>=</span> <span class='fl'>1L</span>,
   extent <span class='op'>=</span> <span class='cn'>NULL</span>,
   dimension <span class='op'>=</span> <span class='cn'>NULL</span>,
-  wkt <span class='op'>=</span> <span class='st'>""</span>,
+  projection <span class='op'>=</span> <span class='st'>""</span>,
   set_na <span class='op'>=</span> <span class='cn'>TRUE</span>,
   source_wkt <span class='op'>=</span> <span class='cn'>NULL</span>,
   source_extent <span class='op'>=</span> <span class='fl'>0</span>,
@@ -186,7 +186,7 @@ The warp specification is provided by 'extent',
       <td><p>dimensions in pixels of the warped raster (x, y)</p></td>
     </tr>
     <tr>
-      <th>wkt</th>
+      <th>projection</th>
       <td><p>projection of warped raster (in Well-Known-Text, or any projection string accepted by GDAL)</p></td>
     </tr>
     <tr>
@@ -247,10 +247,10 @@ for 'dimension'. <code>1000 * 1000 * 8</code> for 1000 columns, 1000 rows and fl
 double type will be 8Mb.</p>
 <p>There's control over the output type, and is auto-detected from the source (raw/Byte, integer/Int32, numeric/Float64) or
 can be set with 'band_output_type'.</p>
-<p>'wkt' refers to the full Well-Known-Text specification of a coordinate reference
+<p>'projection' refers to the full Well-Known-Text specification of a coordinate reference
 system. See <code><a href='vapour_srs_wkt.html'>vapour_srs_wkt()</a></code> for conversion from PROJ.4 string to WKT. Any string
-accepted by GDAL may be used for 'wkt' or 'source_wkt', including EPSG strings, PROJ4 strings, and
-file names.</p>
+accepted by GDAL may be used for 'projection' or 'source_wkt', including EPSG strings, PROJ4 strings, and
+file names. Note that this argument was named 'wkt' up until version 0.8.0.</p>
 <p>'extent' is the four-figure xmin,xmax,ymin,ymax outer corners of corner pixels</p>
 <p>'dimension' is the pixel dimensions of the output, x (ncol) then y (nrow).</p>
 <p>Values for missing data are not yet handled, just returned
@@ -283,7 +283,7 @@ We might add '-oo', '-doo' in future.</p>
 <p>See <a href='https://gdal.org/api/gdal_alg.html#_CPPv432GDALCreateGenImgProjTransformer212GDALDatasetH12GDALDatasetHPPc'>GDAL transformation options</a> for '-to'.</p>
 <p>Note we already apply the following gdalwarp arguments based on input R arguments to this function.</p><ul>
 <li><p><strong>-of</strong>      MEM is hardcoded, but may be extended in future</p></li>
-<li><p><strong>-t_srs</strong>   set via 'wkt'</p></li>
+<li><p><strong>-t_srs</strong>   set via 'projection'</p></li>
 <li><p><strong>-s_srs</strong>   set via 'source_wkt'</p></li>
 <li><p><strong>-te</strong>      set via 'extent'</p></li>
 <li><p><strong>-ts</strong>      set via 'dimension'</p></li>
@@ -303,7 +303,7 @@ bundle any required options into 'options'.</p>
 <span class='va'>vals</span> <span class='op'>&lt;-</span> <span class='fu'>vapour_warp_raster</span><span class='op'>(</span><span class='va'>f</span>, extent <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>b</span>, <span class='va'>b</span>, <span class='op'>-</span><span class='va'>b</span>, <span class='va'>b</span><span class='op'>)</span>,
                              dimension <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>186</span>, <span class='fl'>298</span><span class='op'>)</span>,
                              bands <span class='op'>=</span> <span class='fl'>1</span>, 
-                             wkt <span class='op'>=</span> <span class='fu'><a href='vapour_srs_wkt.html'>vapour_srs_wkt</a></span><span class='op'>(</span><span class='va'>prj</span><span class='op'>)</span>, 
+                             projection <span class='op'>=</span> <span class='fu'><a href='vapour_srs_wkt.html'>vapour_srs_wkt</a></span><span class='op'>(</span><span class='va'>prj</span><span class='op'>)</span>, 
                              warp_options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"SAMPLE_GRID=YES"</span><span class='op'>)</span><span class='op'>)</span>
                              
                              
