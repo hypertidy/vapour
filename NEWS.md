@@ -2,11 +2,13 @@
 
 ## BREAKING CHANGES
 
-* Raster read now detects type of the source and return raw, integer, or double as per the native type in the source. 
+* Raster read now detects type of the source and return raw, integer, or double
+as per the native type in the source.
 
-* `wkt` argument for the target projection in warper functions is now replaced by 'projection'. No change has 
- been made at the C++ level, which still uses the original names. If 'wkt' is given it is used to set the value
- for 'projection' and a message emitted. 
+* `wkt` argument for the target projection in warper functions is now replaced
+by 'projection'. No change has been made at the C++ level, which still uses the
+original names. If 'wkt' is given it is used to set the value for 'projection'
+and a message emitted.
  
  
 ## BUG FIXES 
@@ -17,12 +19,17 @@
 
 * Warp read functions gain `warp_options` and `transformation_options`. 
 
-* New feature to provide `band_output_type` to raster read functions, to take Byte, Int32, or Float64. 
+* New feature to provide `band_output_type` to raster read functions, to take
+Byte, Int32, or Float64.
 
-* New functions `vapour_read_raster_raw()`, `vapour_read_raster_int()`, `vapour_read_raster_dbl()`, `vapour_read_raster_chr()` and its alias `vapour_read_raster_hex()` to return specific types of atomic vector. _chr and _hex convert raw bytes to colours. 
+* New functions `vapour_read_raster_raw()`, `vapour_read_raster_int()`,
+`vapour_read_raster_dbl()`, `vapour_read_raster_chr()` and its alias
+`vapour_read_raster_hex()` to return specific types of atomic vector. _chr and
+_hex convert raw bytes to colours.
 
-* New function `vapour_read_raster_block()` a helper around the internal C++ reader for the simple case of offset/dimension read. There's a matching but non-exported vapour_write_raster_block(). See issue/PR #123 for examples. 
-
+* New function `vapour_read_raster_block()` a helper around the internal C++
+reader for the simple case of offset/dimension read. There's a matching but
+non-exported vapour_write_raster_block(). See issue/PR #123 for examples.
 
 # vapour 0.8.0
 

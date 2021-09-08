@@ -4,9 +4,9 @@
 # vapour <img src="man/figures/logo.png" align="right" height="228" />
 
 <!-- badges: start -->
-[![R\_build\_status](https://github.com/hypertidy/vapour/workflows/R-CMD-check/badge.svg)](https://github.com/hypertidy/vapour/actions)
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
-[![CRAN\_Download\_Badge](http://cranlogs.r-pkg.org/badges/vapour)](https://cran.r-project.org/package=vapour)
+[![R_build_status](https://github.com/hypertidy/vapour/workflows/R-CMD-check/badge.svg)](https://github.com/hypertidy/vapour/actions)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
+[![CRAN_Download_Badge](http://cranlogs.r-pkg.org/badges/vapour)](https://cran.r-project.org/package=vapour)
 <!-- badges: end -->
 
 ## Overview
@@ -118,11 +118,11 @@ will always be value in having modularity in an ecosystem of tools.)
 GDAL’s dynamic resampling of arbitrary raster windows is also very
 useful for interactive tools on local data, and is radically
 under-utilized. A quick example, topography data is available from
-Amazon compute servers, first we need a config file for the source:
+Amazon compute servers, first we need a config for the source:
 
 ``` r
-elevation.tiles.prod <- tempfile(fileext = ".xml")
-writeLines('<GDAL_WMS>
+elevation.tiles.prod <- 
+ '<GDAL_WMS>
   <Service name="TMS">
     <ServerUrl>https://s3.amazonaws.com/elevation-tiles-prod/geotiff/${z}/${x}/${y}.tif</ServerUrl>
   </Service>
@@ -146,7 +146,7 @@ writeLines('<GDAL_WMS>
     <NoData>-32768</NoData>
   </DataValues>
   <Cache/>
-</GDAL_WMS>', elevation.tiles.prod)
+</GDAL_WMS>'
 ```
 
 ``` r
@@ -158,7 +158,7 @@ crs <- sprintf("+proj=laea +lon_0=%f +lat_0=%f +datum=WGS84", pt[1,1,drop = TRUE
 dm <- c(256, 256)
 
 
-vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, wkt = crs)
+vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, projection = crs)
 ## now we can use this in a matrix
 image(m <- matrix(vals[[1]], nrow = dm[2], ncol = dm[1])[,dm[2]:1 ])
 ```
@@ -183,7 +183,7 @@ If we want more detail, go ahead:
 
 ``` r
 dm <- c(512, 512)
-vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, wkt = crs)
+vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, projection = crs)
 (r <- setValues(raster(extent(ex), nrows = dm[2], ncols = dm[1], crs = crs), vals[[1]]))
 #> class      : RasterLayer 
 #> dimensions : 512, 512, 262144  (nrow, ncol, ncell)
