@@ -168,7 +168,7 @@ vapour_read_raster_hex <- function(x, band = 1,
                                    resample = "nearestneighbour", ...,
                                    sds = NULL, native = FALSE, set_na = TRUE) {
   vapour_read_raster_chr(x, band = band, window = window, resample = resample, sds = sds,
-                         native = native, set_na = set_na, ...)[[1L]]
+                         native = native, set_na = set_na, ...)
 }
 
 
