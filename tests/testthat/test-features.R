@@ -65,6 +65,7 @@ test_that("OSM read works", {
   skip_on_os("windows")
   ## can't usse sst gpkg because
   ## kml can't be in a projection
+  gkml <- vapour_read_geometry_text(f2, textformat = "kml")
   gkml %>% expect_length(1L)
   gkml[[1]] %>% expect_type("character")  %>% grepl("<Point><coordinates>", .) %>% expect_true()
 
