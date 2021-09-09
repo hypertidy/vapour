@@ -998,7 +998,7 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
     GDALComputeRasterMinMax(hBand, TRUE, adfMinMax);
   }
 
-  int nn = 10;
+  int nn = 11;
   Rcpp::List out(nn);
   Rcpp::CharacterVector names(nn);
   out[0] = trans;
@@ -1079,6 +1079,8 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
   names[9] = "filelist";
 
 
+  out[10] = CharacterVector::create(GDALGetDataTypeName(GDALGetRasterDataType(hBand))); 
+  names[10] = "datatype"; 
 
   out.attr("names") = names;
 
