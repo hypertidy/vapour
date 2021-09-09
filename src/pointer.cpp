@@ -72,7 +72,11 @@ SEXP gh_GetNextFeature(SEXP xp) {
   
   //lyr->ResetReading();
   poFeature = lyr->GetNextFeature();
-  //double nFeature = (double)
+  // double* pdfProgressPct; 
+  // GDALProgressFunc pfnProgress; 
+  // void* pProgressData; 
+  // poFeature = GDALDataset::GetNextFeature(lyr, pdfProgressPct, pfnProgress, pProgressData); 
+  // //double nFeature = (double)
   
   //  poFeature = ptr->GetNextFeature();
   XPtr<OGRFeature> out_ptr(poFeature);
