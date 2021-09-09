@@ -86,7 +86,7 @@ inline NumericVector layer_read_fids_all(OGRLayer *poLayer) {
   // trying to fix SQL problem 2020-10-05
   double nFeature = poLayer->GetFeatureCount();
   if (nFeature < 1) {
-    Rprintf("force count\n");
+    //Rprintf("force count\n");
     nFeature = gdallibrary::force_layer_feature_count(poLayer);
   }
 
@@ -218,7 +218,7 @@ inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
   // trying to fix SQL problem 2020-10-05
   double nFeature = poLayer->GetFeatureCount();
   if (nFeature < 1) {
-    Rprintf("force count\n");
+    //Rprintf("force count\n");
     nFeature = gdallibrary::force_layer_feature_count(poLayer);
   }
 
@@ -469,7 +469,7 @@ inline List layer_read_fields_all(OGRLayer *poLayer, CharacterVector fid_column_
   // trying to fix SQL problem 2020-10-05
   double nFeature = poLayer->GetFeatureCount();
   if (nFeature < 0) {
-    Rprintf("force count\n");
+    //Rprintf("force count\n");
     nFeature = gdallibrary::force_layer_feature_count(poLayer);
   }
 

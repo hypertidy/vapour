@@ -42,16 +42,16 @@ test_that("layer logic works", {
   
   
   ex <- c(5235796, 12007371, -8823169, 9817684)
-  rext <- raster::extent(ex)
+  #rext <- raster::extent(ex)
   a <- expect_warning(vapour_read_attributes(f, 0, extent = ex))
-  b <- expect_warning(vapour_read_attributes(f, 0, extent = rext))
-  expect_equal(a, b)
-  sql <- "SELECT * FROM sst_c"
-  expect_equal(vapour_read_attributes(f, 0, extent = ex, sql = sql), 
-               vapour_read_attributes(f, 0, extent = rext, sql = sql))
-  expect_equal(vapour_read_names(f, 0, extent = ex, sql = sql), vapour_read_names(f, 0, extent = rext, sql = sql))
-  expect_equal(vapour_read_geometry(f, 0, extent = ex, sql = sql), vapour_read_geometry(f, 0, extent = rext, sql = sql))
-  # expect_equal(vapour_read_geometry_text(f, 0)
+  #b <- expect_warning(vapour_read_attributes(f, 0, extent = rext))
+  #expect_equal(a, b)
+  # sql <- "SELECT * FROM sst_c"
+  # expect_equal(vapour_read_attributes(f, 0, extent = ex, sql = sql), 
+  #              vapour_read_attributes(f, 0, extent = rext, sql = sql))
+  # expect_equal(vapour_read_names(f, 0, extent = ex, sql = sql), vapour_read_names(f, 0, extent = rext, sql = sql))
+  # expect_equal(vapour_read_geometry(f, 0, extent = ex, sql = sql), vapour_read_geometry(f, 0, extent = rext, sql = sql))
+  # # expect_equal(vapour_read_geometry_text(f, 0)
   # expect_equal(vapour_read_extent(f, 0)
   # 
 })

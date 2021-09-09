@@ -245,7 +245,7 @@ inline List gdal_read_fields(CharacterVector dsn,
   // trying to fix SQL problem 2020-10-05
   double nFeature = poLayer->GetFeatureCount();
   if (nFeature < 1) {
-    Rprintf("force count\n");
+    //Rprintf("force count\n");
     nFeature = force_layer_feature_count(poLayer);
   }
 
@@ -363,7 +363,7 @@ inline DoubleVector gdal_feature_count(CharacterVector dsn,
   // trying to fix SQL problem 2020-10-05
   double nFeature = poLayer->GetFeatureCount();
   if (nFeature < 1) {
-    Rprintf("force count\n");
+    //Rprintf("force count\n");
     nFeature = force_layer_feature_count(poLayer);
   }
 
@@ -447,7 +447,7 @@ inline List gdal_read_geometry(CharacterVector dsn,
   // trying to fix SQL problem 2020-10-05
   double nFeature = poLayer->GetFeatureCount();
   if (nFeature < 1) {
-    Rprintf("force count\n");
+    //Rprintf("force count\n");
     nFeature = force_layer_feature_count(poLayer);
   }
 
@@ -621,7 +621,7 @@ inline List gdal_read_names(CharacterVector dsn,
   // trying to fix SQL problem 2020-10-05
   double nFeature = poLayer->GetFeatureCount();
   if (nFeature < 1) {
-    Rprintf("force count\n");
+    //Rprintf("force count\n");
     nFeature = force_layer_feature_count(poLayer);
   }
 
