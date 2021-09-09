@@ -172,25 +172,36 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     GDALDataType band_type =  GDALGetRasterDataType(poBand);
     
     // if band_output_type is not empty, possible override:
-    if (band_output_type[0] == "Byte") {
-      band_type = GDT_Byte;
-    }
-    if (band_output_type[0] == "Int32" ||
-        band_type == GDT_Int16 ||
-        band_type == GDT_UInt16 ||
-        band_type == GDT_UInt32) {
-      band_type = GDT_Int32;
-    }
-    if (band_output_type[0] == "Float64" ||
-        band_type == GDT_Float32) {
-      band_type = GDT_Float64;
-    }
+    // complex types not supported Byte, UInt16, Int16, UInt32, Int32, Float32, Float64
+    if (band_output_type[0] == "Byte")   band_type = GDT_Byte;
+    if (band_output_type[0] == "UInt16") band_type = GDT_UInt16;
+    if (band_output_type[0] == "Int16")  band_type = GDT_Int16;
+    
+    if (band_output_type[0] == "UInt32") band_type = GDT_UInt32;
+    if (band_output_type[0] == "Int32") band_type = GDT_Int32;
+    
+    if (band_output_type[0] == "Float32") band_type = GDT_Float32;
+    if (band_output_type[0] == "Float64") band_type = GDT_Float64;
+    // 
+    // if (band_output_type[0] == "Byte") {
+    //   band_type = GDT_Byte;
+    // }
+    // if (band_output_type[0] == "Int32" ||
+    //     band_type == GDT_Int16 ||
+    //     band_type == GDT_UInt16 ||
+    //     band_type == GDT_UInt32) {
+    //   band_type = GDT_Int32;
+    // }
+    // if (band_output_type[0] == "Float64" ||
+    //     band_type == GDT_Float32) {
+    //   band_type = GDT_Float64;
+    // }
     scale = GDALGetRasterScale(poBand, &hasScale);
     offset = GDALGetRasterOffset(poBand, &hasOffset);
     
     int actual_XSize = GDALGetRasterBandXSize(dstBand);
     int actual_YSize = GDALGetRasterBandYSize(dstBand);
-    if (band_type == GDT_Float64) {
+    if ((band_type == GDT_Float64) | (band_type == GDT_Float32)) {
       std::vector<double> double_scanline( actual_XSize * actual_YSize );
       CPLErr err;
       err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,
@@ -226,7 +237,10 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       }
       outlist[iband] = res;
     }
-    if (band_type == GDT_Int32) {
+    if ((band_type == GDT_Int16) |
+        (band_type == GDT_Int32) |
+        (band_type == GDT_UInt16) |
+        (band_type == GDT_UInt32))  {
       std::vector<int32_t> integer_scanline( actual_XSize * actual_YSize );
       CPLErr err;
       err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,

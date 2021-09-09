@@ -50,7 +50,7 @@ vapour_write_raster_block <- function(dsource, data, offset, dimension, band = 1
     if (length(data) == 1L && !is.na(data)) {
       data <- rep(data, length.out = prod(dimension))
     } else {
-      if (is.na(data)) stop("data is NA singleton but prod(dimension) > 1, please explicity input NA for every element not just a single value")
+      if (length(data) == 1L && anyNA(data)) stop("data is NA singleton but prod(dimension) > 1, please explicity input NA for every element not just a single value")
       stop("mismatched data and dimension")
     }
   }
