@@ -82,7 +82,7 @@ vapour_sds_names for more." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0.9003</span>
       </span>
     </div>
 
@@ -189,7 +189,7 @@ Subdatasets may be specified by number, starting at 1. See
 <dt>nodata_value</dt><dd><p>not implemented</p></dd>
 <dt>overviews</dt><dd><p>the number and size of any available overviews</p></dd>
 <dt>filelist</dt><dd><p>the list of files involved (may be none, and so will be a single NA character value)</p></dd>
-
+<dt>datatype</dt><dd><p>the band type name, in GDAL form 'Byte', 'Int16', 'Float32', etc.</p></dd>
 
 </dl>
 
@@ -298,6 +298,9 @@ their dimensions will be listed as pairs of x,y values.</p>
 #&gt; 
 #&gt; $filelist
 #&gt; [1] "/Users/runner/work/_temp/Library/vapour/extdata/sst.tif"
+#&gt; 
+#&gt; $datatype
+#&gt; [1] "Float32"
 #&gt; 
 #&gt; $extent
 #&gt; [1] 140.00000 150.01000 -60.01833 -39.99722
