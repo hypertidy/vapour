@@ -454,6 +454,15 @@ vapour_warp_raster <- function(x, bands = 1L,
 #' @export
 #' @return atomic vector of the nominated type raw, int, dbl, or character (hex)
 #' @examples
+#' b <- 4e5
+#' f <- system.file("extdata", "sst.tif", package = "vapour")
+#' prj <- "+proj=aeqd +lon_0=147 +lat_0=-42"
+#' bytes <- vapour_warp_raster_raw(f, extent = c(-b, b, -b, b),
+#'                              dimension = c(18, 2),
+#'                              bands = 1, 
+#'                              projection = prj)
+#' # not useful given source type floating point, but works
+#' str(bytes)
 vapour_warp_raster_raw <- function(x, bands = 1L,
                                extent = NULL,
                                dimension = NULL,
