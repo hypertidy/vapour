@@ -50,7 +50,7 @@ vapour_warp_raster(
 
 \item{geotransform}{DEPRECATED use 'extent' the affine geotransform of the warped raster}
 
-\item{band_output_type}{numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'}
+\item{band_output_type}{numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64' but see details in \code{\link[=vapour_read_raster]{vapour_read_raster()}}}
 
 \item{warp_options}{character vector of options, as in gdalwarp -wo - see Details}
 

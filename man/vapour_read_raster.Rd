@@ -33,7 +33,7 @@ vapour_read_raster(
 
 \item{set_na}{specify whether NA values should be set for the NODATA}
 
-\item{band_output_type}{numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'}
+\item{band_output_type}{numeric type of band to apply (else the native type if ''), is mapped to one of 'Byte', 'Int32', or 'Float64'}
 }
 \value{
 list of numeric vectors (only one for 'band')
@@ -60,6 +60,10 @@ There is no write support in vapour.
 Currently the \code{window} argument is required. If this argument unspecified and \code{native = TRUE} then
 the default window specification will be used, the entire extent at native resolution. If 'window'
 is specified and \code{native = TRUE} then the window is used as-is, with a warning (native is ignored).
+
+'band_output_type' can be 'raw', 'integer', 'double', or case-insensitive versions of the GDAL types
+'Byte', 'UInt16', 'Int16', 'UInt32', 'Int32', 'Float32', or 'Float64'. These are mapped to one of the
+supported types 'Byte' ('== raw'), 'Int32' ('== integer'), or 'Float64' ('== double').
 }
 \examples{
 f <- system.file("extdata", "sst.tif", package = "vapour")

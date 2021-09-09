@@ -1,3 +1,18 @@
+.r_to_gdal_datatype <- function(x) {
+  if (nchar(x) == 0 || is.na(x)) return("")
+  xout <- toupper(x[1L])
+  xout <- c("RAW" = "Byte", "INTEGER" = "Int32", "DOUBLE" = "Float64", "NUMERIC" = "Float64", 
+    "BYTE" = "Byte", 
+    "UINT16" = "Int32", "INT16" = "Int32", 
+    "UINT32" = "Int32", "INT32" = "Int32", 
+    "FLOAT32"  = "Float32", "FLOAT64" = "Float64")[xout]
+  if (is.na(xout)) {
+    message(sprintf("unknown 'band_output_type = \'%s\'', ignoring", x))
+    xout <- ""
+  }
+  xout
+}
+
 #' Raster IO (read)
 #'
 #' Read a window of data from a GDAL raster source. The first argument is the source
@@ -20,6 +35,11 @@
 #' Currently the `window` argument is required. If this argument unspecified and `native = TRUE` then
 #' the default window specification will be used, the entire extent at native resolution. If 'window'
 #' is specified and `native = TRUE` then the window is used as-is, with a warning (native is ignored).
+#' 
+#' 'band_output_type' can be 'raw', 'integer', 'double', or case-insensitive versions of the GDAL types
+#' 'Byte', 'UInt16', 'Int16', 'UInt32', 'Int32', 'Float32', or 'Float64'. These are mapped to one of the 
+#' supported types 'Byte' ('== raw'), 'Int32' ('== integer'), or 'Float64' ('== double'). 
+#'  
 #' @param x data source
 #' @param band index of which band to read (1-based)
 #' @param window src_offset, src_dim, out_dim
@@ -28,7 +48,7 @@
 #' @param native apply the full native window for read, `FALSE` by default
 #' @param sds index of subdataset to read (usually 1)
 #' @param set_na specify whether NA values should be set for the NODATA
-#' @param band_output_type numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'
+#' @param band_output_type numeric type of band to apply (else the native type if ''), is mapped to one of 'Byte', 'Int32', or 'Float64'
 #' @export
 #' @return list of numeric vectors (only one for 'band')
 #' @examples
@@ -43,6 +63,8 @@
 #' str(matrix(vapour_read_raster(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 #'
 vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL, native = FALSE, set_na = TRUE, band_output_type = "") {
+  
+  band_output_type <- .r_to_gdal_datatype(band_output_type)
   datasourcename <- sds_boilerplate_checks(x, sds = sds)
   resample <- tolower(resample)  ## ensure check internally is lower case
   if (!resample %in% c("nearestneighbour", "average", "bilinear", "cubic", "cubicspline",
@@ -261,7 +283,7 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' @param resample resampling method used (see details in [vapour_read_raster])
 #' @param source_wkt optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)
 #' @param silent `TRUE` by default, set to `FALSE` to report messages
-#' @param band_output_type numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'
+#' @param band_output_type numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64' but see details in [vapour_read_raster()]
 #' @param ... unused
 #' @param warp_options character vector of options, as in gdalwarp -wo - see Details
 #' @param transformation_options character vector of options, as in gdalwarp -to
@@ -294,7 +316,10 @@ vapour_warp_raster <- function(x, bands = 1L,
                                band_output_type = "", 
                                warp_options = "", 
                                transformation_options = "") {
+  band_output_type <- .r_to_gdal_datatype(band_output_type)
+  
   args <- list(...)
+  
   if (projection == "" && "wkt" %in% names(args)) {
     projection <- args$wkt
     message("please use 'projection = ' rather than 'wkt = ', use of 'wkt' is deprecated and will be removed in a future version")
