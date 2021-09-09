@@ -39,7 +39,7 @@ The structural metadata are
 \item{nodata_value}{not implemented}
 \item{overviews}{the number and size of any available overviews}
 \item{filelist}{the list of files involved (may be none, and so will be a single NA character value)}
-
+\item{datatype}{the band type name, in GDAL form 'Byte', 'Int16', 'Float32', etc.}
 }
 
 Note that the geotransform is a kind of obscure combination of the extent and dimension, I don't find it

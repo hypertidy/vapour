@@ -17,6 +17,8 @@ and a message emitted.
 
 ## NEW FEATURES
 
+* `vapour_raster_info()` gains `datatype` field. 
+
 * Warp read functions gain `warp_options` and `transformation_options`. 
 
 * New feature to provide `band_output_type` to raster read functions, to take
