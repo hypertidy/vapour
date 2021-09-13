@@ -1,15 +1,8 @@
-## vapour 0.8.0
+## vapour <next>
 
-Fix for CRAN errors, with broken configure. 
+Bug fix, warper wasn't providing correct scaling of values. 
 
-* had modified sf/configure.ac to remove GEOS, but had remove key AC_SUBST along with that (GDAL_DEP_LIBS was lost, amongst other things)
-* put PROJ_LIBS after PKG_LIBS, as per CRAN advice
-* CRAN notes AC_SUBST should only be called once at the end for clarity, but I've only restored what sf does until I can understand more
-
-Please note that Jeroen Ooms already applied a PR for UCRT, so there's a warning currently on  
- r-devel-windows-x86_64-gcc10-UCRT. 
-
-Thanks very much again, appreciate the patience and detailed feedback.  
+(There is an error on CRAN but due to an Rcpp problem affecting many packages also. )
 
 ## Test environments
 

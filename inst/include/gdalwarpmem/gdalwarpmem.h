@@ -201,7 +201,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     
     int actual_XSize = GDALGetRasterBandXSize(dstBand);
     int actual_YSize = GDALGetRasterBandYSize(dstBand);
-    if ((band_type == GDT_Float64) | (band_type == GDT_Float32)) {
+    // if hasScale we ignore integer or byte and go with float
+    if ((band_type == GDT_Float64) | (band_type == GDT_Float32) | hasScale) {
       std::vector<double> double_scanline( actual_XSize * actual_YSize );
       CPLErr err;
       err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,
@@ -220,7 +221,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
           
           for (size_t i=0; i< double_scanline.size(); i++) {
             if (double_scanline[i] <= naflag) {
-              double_scanline[i] = NAN;
+              double_scanline[i] = NA_REAL; 
             }
           }
         } else {
@@ -237,10 +238,12 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       }
       outlist[iband] = res;
     }
-    if ((band_type == GDT_Int16) |
+    // if hasScale we assume to never use scale/offset in integer case (see block above we already dealt)
+    if (!hasScale & 
+        ((band_type == GDT_Int16) |
         (band_type == GDT_Int32) |
         (band_type == GDT_UInt16) |
-        (band_type == GDT_UInt32))  {
+        (band_type == GDT_UInt32)))  {
       std::vector<int32_t> integer_scanline( actual_XSize * actual_YSize );
       CPLErr err;
       err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,
@@ -267,8 +270,10 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       }
       outlist[iband] = res;
     }
-    
-    if (band_type == GDT_Byte) {
+   
+   // if hasScale we assume to never use scale/offset in integer case (see block above we already dealt)
+   
+    if (!hasScale & (band_type == GDT_Byte)) {
       std::vector<uint8_t> byte_scanline( actual_XSize * actual_YSize );
       CPLErr err;
       err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,

@@ -15,6 +15,8 @@ and a message emitted.
 
 * Fixed huge SDS name wrecking bug. So now works for WMTS sources, for example. 
 
+* Fixed bug in use of scaling, was applied without conversion to floating point type. 
+
 ## NEW FEATURES
 
 * `vapour_raster_info()` gains `datatype` field. 
