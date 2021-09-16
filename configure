@@ -2049,6 +2049,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+
 # as at 2021-08-12 sf uses the following flags in src/
 #if ((PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 1) || PROJ_VERSION_MAJOR > 7)
 #if (GDAL_VERSION_MINOR >= 2 || GDAL_VERSION_MAJOR > 2)

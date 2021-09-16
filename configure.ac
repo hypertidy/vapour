@@ -2,7 +2,8 @@ dnl adapted from sf configure.ac 2021-08-19 Michael Sumner
 dnl GDAL stuff largely copied from rgdal, (c) Roger Bivand
 
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(src/00_gdal.cpp)
+AC_INIT
+AC_CONFIG_SRCDIR([src/00_gdal.cpp])
 
 
 # as at 2021-08-12 sf uses the following flags in src/
@@ -103,8 +104,7 @@ GDAL_CONFIG="gdal-config"
 GDAL_CONFIG_SET="no"
 
 AC_ARG_WITH([gdal-config],
-    AC_HELP_STRING([--with-gdal-config=GDAL_CONFIG],
-           [the location of gdal-config]),
+    AS_HELP_STRING([--with-gdal-config=GDAL_CONFIG],[the location of gdal-config]),
            [gdal_config=$withval])
 if test [ -n "$gdal_config" ] ; then
     GDAL_CONFIG_SET="yes"
@@ -271,16 +271,14 @@ if test "${PROJ_GDAL_DATA_COPY}" ; then
     AC_MSG_NOTICE([PROJ_GDAL_DATA_COPY used.])
 else
     AC_ARG_WITH([data-copy],
-        AC_HELP_STRING([--with-data-copy=yes/no],
-               [local copy of data directories in package, default no]),
+        AS_HELP_STRING([--with-data-copy=yes/no],[local copy of data directories in package, default no]),
                [data_copy=$withval])
 fi
 if test "${data_copy}" = "yes" ; then
 AC_MSG_NOTICE([Copy data for:])
   proj_lib0="${PROJ_LIB}"
   AC_ARG_WITH([proj-data],
-    AC_HELP_STRING([--with-proj-data=DIR],
-                   [location of PROJ data directory]),
+    AS_HELP_STRING([--with-proj-data=DIR],[location of PROJ data directory]),
     [proj_lib1=$withval])
   if test -n "${proj_lib0}" ; then
     proj_lib="${proj_lib0}"
@@ -371,8 +369,7 @@ else
 fi
 
 AC_ARG_WITH([proj-include],
-    AC_HELP_STRING([--with-proj-include=DIR],
-                   [location of proj header files]),
+    AS_HELP_STRING([--with-proj-include=DIR],[location of proj header files]),
     [proj_include_path=$withval])
 if test [ -n "$proj_include_path" ] ; then
    AC_SUBST([PROJ_CPPFLAGS],["-I${proj_include_path}"])
@@ -388,8 +385,7 @@ fi
 # since we'll set PKG_CPPFLAGS with this, but that shouldn't hurt
 
 AC_ARG_WITH([proj-api],
-    AC_HELP_STRING([--with-proj-api=yes/no],
-               [use the deprecated proj_api.h even when PROJ 6 is available; default no]),
+    AS_HELP_STRING([--with-proj-api=yes/no],[use the deprecated proj_api.h even when PROJ 6 is available; default no]),
                [proj_api=$withval])
 PROJ6="no"
 PROJH="no"
@@ -431,8 +427,7 @@ fi
 
 # dnl ditto for a library path
 AC_ARG_WITH([proj-lib],
-    AC_HELP_STRING([--with-proj-lib=LIB_PATH],
-               [the location of proj libraries]),
+    AS_HELP_STRING([--with-proj-lib=LIB_PATH],[the location of proj libraries]),
                [proj_lib_path=$withval])
 if test [ -n "$proj_lib_path" ] ; then
     AC_SUBST([PROJ_LIBS], ["-L${proj_lib_path} ${INPKG_LIBS} -lproj"])
@@ -513,8 +508,7 @@ ${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
 proj_version=`./proj_conf_test`
 
 AC_ARG_WITH([proj-share],
-    AC_HELP_STRING([--with-proj-share=SHARE_PATH],
-               [the location of proj metadata files]),
+    AS_HELP_STRING([--with-proj-share=SHARE_PATH],[the location of proj metadata files]),
                [proj_share_path=$withval])
 if test [ -n "$proj_share_path" ] ; then
     AC_MSG_NOTICE([PROJ_LIB: ${proj_share_path}])
