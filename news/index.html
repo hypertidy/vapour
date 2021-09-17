@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0.9005</span>
       </span>
     </div>
 
@@ -137,6 +137,39 @@
       <small>Source: <a href='https://github.com/hypertidy/vapour/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="vapour-085" class="section level1">
+<h1 class="page-header" data-toc-text="0.8.5">
+<a href="#vapour-085" class="anchor"></a>vapour 0.8.5<small> Unreleased </small>
+</h1>
+<div id="breaking-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#breaking-changes" class="anchor"></a>BREAKING CHANGES</h2>
+<ul>
+<li><p>Raster read now detects type of the source and return raw, integer, or double as per the native type in the source.</p></li>
+<li><p><code>wkt</code> argument for the target projection in warper functions is now replaced by ‘projection’. No change has been made at the C++ level, which still uses the original names. If ‘wkt’ is given it is used to set the value for ‘projection’ and a message emitted.</p></li>
+</ul>
+</div>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>BUG FIXES</h2>
+<ul>
+<li><p>Fixed configure.ac, upgraded syntax causing warnings on CRAN.</p></li>
+<li><p>Fixed huge SDS name wrecking bug. So now works for WMTS sources, for example.</p></li>
+<li><p>Fixed bug in use of scaling, was applied without conversion to floating point type.</p></li>
+</ul>
+</div>
+<div id="new-features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features" class="anchor"></a>NEW FEATURES</h2>
+<ul>
+<li><p><code><a href="../reference/vapour_raster_info.html">vapour_raster_info()</a></code> gains <code>datatype</code> field.</p></li>
+<li><p>Warp read functions gain <code>warp_options</code> and <code>transformation_options</code>.</p></li>
+<li><p>New feature to provide <code>band_output_type</code> to raster read functions, to take Byte, Int32, or Float64.</p></li>
+<li><p>New functions <code><a href="../reference/vapour_read_raster_raw.html">vapour_read_raster_raw()</a></code>, <code><a href="../reference/vapour_read_raster_raw.html">vapour_read_raster_int()</a></code>, <code><a href="../reference/vapour_read_raster_raw.html">vapour_read_raster_dbl()</a></code>, <code><a href="../reference/vapour_read_raster_raw.html">vapour_read_raster_chr()</a></code> and its alias <code><a href="../reference/vapour_read_raster_raw.html">vapour_read_raster_hex()</a></code> to return specific types of atomic vector. _chr and _hex convert raw bytes to colours.</p></li>
+<li><p>New function <code><a href="../reference/vapour_read_raster_block.html">vapour_read_raster_block()</a></code> a helper around the internal C++ reader for the simple case of offset/dimension read. There’s a matching but non-exported vapour_write_raster_block(). See issue/PR <a href='https://github.com/hypertidy/vapour/issues/123'>#123</a> for examples.</p></li>
+</ul>
+</div>
+</div>
     <div id="vapour-080" class="section level1">
 <h1 class="page-header" data-toc-text="0.8.0">
 <a href="#vapour-080" class="anchor"></a>vapour 0.8.0<small> 2021-08-25 </small>
