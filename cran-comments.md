@@ -1,8 +1,8 @@
-## vapour <next>
+## vapour 0.8.5
 
-Bug fix, warper wasn't providing correct scaling of values. 
+Fix for CRAN warnings due to outdated autoconf syntax. 
 
-(There is an error on CRAN but due to an Rcpp problem affecting many packages also. )
+Important bug fixes for raster scaling in the warper. 
 
 ## Test environments
 
@@ -14,17 +14,13 @@ Bug fix, warper wasn't providing correct scaling of values.
 * `rhub::check_for_cran()` (multiple platforms). 
 * ubuntu 18.04    GDAL: 2.2.3, PROJ: 4.9.3
 
-
 ## R CMD check results
 
-0 errors | 1 warning | 1 note
+0 errors | 0 warnings | 1 note
 
 There is a note about the size of installed directories on Windows and MacOS because 
  of the GDAL and PROJ folders. 
 
-There is a warning on Windows: 
-
-r-devel-windows-x86_64-gcc10-UCRT:  WARNING: failed to apply patch patches/CRAN/vapour.diff
 
 ## Reverse dependencies
 

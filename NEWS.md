@@ -1,4 +1,4 @@
-# vapour dev
+# vapour 0.8.5
 
 ## BREAKING CHANGES
 
@@ -12,6 +12,8 @@ and a message emitted.
  
  
 ## BUG FIXES 
+
+* Fixed configure.ac, upgraded syntax causing warnings on CRAN. 
 
 * Fixed huge SDS name wrecking bug. So now works for WMTS sources, for example. 
 
