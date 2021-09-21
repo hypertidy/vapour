@@ -133,6 +133,10 @@ sds_list_gdal_cpp <- function(dsn) {
     .Call('_vapour_sds_list_gdal_cpp', PACKAGE = 'vapour', dsn)
 }
 
+sds_list_list_gdal_cpp <- function(dsn) {
+    .Call('_vapour_sds_list_list_gdal_cpp', PACKAGE = 'vapour', dsn)
+}
+
 warp_in_memory_gdal_cpp <- function(dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent, band_output_type, warp_options, transformation_options) {
     .Call('_vapour_warp_in_memory_gdal_cpp', PACKAGE = 'vapour', dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent, band_output_type, warp_options, transformation_options)
 }

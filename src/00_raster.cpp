@@ -29,6 +29,16 @@ CharacterVector sds_list_gdal_cpp(CharacterVector dsn) {
 }
 
 // [[Rcpp::export]]
+List sds_list_list_gdal_cpp(CharacterVector dsn) {
+  List outlist(dsn.length()); 
+  for (int i = 0; i < dsn.length(); i++) {
+    outlist[i] = gdallibrary::gdal_sds_list(dsn[i]);
+  }
+  return outlist; 
+}
+
+
+// [[Rcpp::export]]
 List warp_in_memory_gdal_cpp(CharacterVector dsn,
                              CharacterVector source_WKT,
                              CharacterVector target_WKT,
