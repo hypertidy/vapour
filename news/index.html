@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.5</span>
       </span>
     </div>
 
@@ -146,7 +146,7 @@
 <a href="#breaking-changes" class="anchor"></a>BREAKING CHANGES</h2>
 <ul>
 <li><p>Raster read now detects type of the source and return raw, integer, or double as per the native type in the source.</p></li>
-<li><p><code>wkt</code> argument for the target projection in warper functions is now replaced by ‘projection’. No change has been made at the C++ level, which still uses the original names. If ‘wkt’ is given it is used to set the value for ‘projection’ and a message emitted.</p></li>
+<li><p><code>wkt</code> argument for the target projection in warper functions is now replaced by ‘projection’. If ‘wkt’ is given it is used to set the value for ‘projection’ and a message emitted. No change has been made at the C++ level, which still uses the original names.</p></li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
