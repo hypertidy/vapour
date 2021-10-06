@@ -13,7 +13,7 @@ Important bug fixes for raster scaling in the warper.
 * fedora-clang-devel      (~= CRAN with config flags: r-devel-linux-x86_64-fedora-clang )
 * fedora-gcc-devel        (~= CRAN with config flags: r-devel-linux-x86_64-fedora-gcc)
 * `rhub::check_for_cran()` (multiple platforms). 
-* ubuntu 18.04    GDAL: 2.2.3, PROJ: 4.9.3
+* ubuntu 18.04    GDAL: 2.2.2, PROJ: 4.8.0
 
 ## R CMD check results
 
