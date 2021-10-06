@@ -20,7 +20,8 @@ vapour_warp_raster(
   geotransform = NULL,
   band_output_type = "",
   warp_options = "",
-  transformation_options = ""
+  transformation_options = "",
+  cutline_filename = ""
 )
 }
 \arguments{

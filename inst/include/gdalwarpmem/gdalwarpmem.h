@@ -151,7 +151,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 LogicalVector silent,
                                 CharacterVector band_output_type, 
                                 CharacterVector warp_options, 
-                                CharacterVector transformation_options) {
+                                CharacterVector transformation_options, 
+                                CharacterVector cutline_filename) {
   
   
   
@@ -234,6 +235,11 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
   }
   
+  if (!cutline_filename[0].empty()) {
+    papszArg = CSLAddString(papszArg, "-cutline");
+    papszArg = CSLAddString(papszArg, cutline_filename[0]);
+    
+  }
   
   papszArg = CSLAddString(papszArg, "-r");
   papszArg = CSLAddString(papszArg, resample[0]);
@@ -251,6 +257,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
+
   auto hRet = GDALWarp( "", nullptr,
                         source_filename.size(), poSrcDS,
                         psOptions, nullptr);

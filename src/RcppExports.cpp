@@ -463,8 +463,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // warp_in_memory_gdal_cpp
-List warp_in_memory_gdal_cpp(CharacterVector dsn, CharacterVector source_WKT, CharacterVector target_WKT, NumericVector target_extent, IntegerVector target_dim, IntegerVector bands, NumericVector source_extent, CharacterVector resample, LogicalVector silent, CharacterVector band_output_type, CharacterVector warp_options, CharacterVector transformation_options);
-RcppExport SEXP _vapour_warp_in_memory_gdal_cpp(SEXP dsnSEXP, SEXP source_WKTSEXP, SEXP target_WKTSEXP, SEXP target_extentSEXP, SEXP target_dimSEXP, SEXP bandsSEXP, SEXP source_extentSEXP, SEXP resampleSEXP, SEXP silentSEXP, SEXP band_output_typeSEXP, SEXP warp_optionsSEXP, SEXP transformation_optionsSEXP) {
+List warp_in_memory_gdal_cpp(CharacterVector dsn, CharacterVector source_WKT, CharacterVector target_WKT, NumericVector target_extent, IntegerVector target_dim, IntegerVector bands, NumericVector source_extent, CharacterVector resample, LogicalVector silent, CharacterVector band_output_type, CharacterVector warp_options, CharacterVector transformation_options, CharacterVector cutline_filename);
+RcppExport SEXP _vapour_warp_in_memory_gdal_cpp(SEXP dsnSEXP, SEXP source_WKTSEXP, SEXP target_WKTSEXP, SEXP target_extentSEXP, SEXP target_dimSEXP, SEXP bandsSEXP, SEXP source_extentSEXP, SEXP resampleSEXP, SEXP silentSEXP, SEXP band_output_typeSEXP, SEXP warp_optionsSEXP, SEXP transformation_optionsSEXP, SEXP cutline_filenameSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -480,7 +480,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type band_output_type(band_output_typeSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type warp_options(warp_optionsSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type transformation_options(transformation_optionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(warp_in_memory_gdal_cpp(dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent, band_output_type, warp_options, transformation_options));
+    Rcpp::traits::input_parameter< CharacterVector >::type cutline_filename(cutline_filenameSEXP);
+    rcpp_result_gen = Rcpp::wrap(warp_in_memory_gdal_cpp(dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent, band_output_type, warp_options, transformation_options, cutline_filename));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -549,7 +550,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_raster_info_gdal_cpp", (DL_FUNC) &_vapour_raster_info_gdal_cpp, 2},
     {"_vapour_raster_io_gdal_cpp", (DL_FUNC) &_vapour_raster_io_gdal_cpp, 5},
     {"_vapour_sds_list_gdal_cpp", (DL_FUNC) &_vapour_sds_list_gdal_cpp, 1},
-    {"_vapour_warp_in_memory_gdal_cpp", (DL_FUNC) &_vapour_warp_in_memory_gdal_cpp, 12},
+    {"_vapour_warp_in_memory_gdal_cpp", (DL_FUNC) &_vapour_warp_in_memory_gdal_cpp, 13},
     {"_vapour_vapour_read_raster_block_cpp", (DL_FUNC) &_vapour_vapour_read_raster_block_cpp, 5},
     {"_vapour_vapour_write_raster_block_cpp", (DL_FUNC) &_vapour_vapour_write_raster_block_cpp, 5},
     {NULL, NULL, 0}

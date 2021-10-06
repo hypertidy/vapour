@@ -40,7 +40,8 @@ List warp_in_memory_gdal_cpp(CharacterVector dsn,
                              LogicalVector silent,
                              CharacterVector band_output_type, 
                              CharacterVector warp_options, 
-                             CharacterVector transformation_options) {
+                             CharacterVector transformation_options, 
+                             CharacterVector cutline_filename) {
   return gdalwarpmem::gdal_warp_in_memory(dsn,
                                           source_WKT,
                                           target_WKT,
@@ -52,5 +53,5 @@ List warp_in_memory_gdal_cpp(CharacterVector dsn,
                                           silent,
                                           band_output_type, 
                                           warp_options, 
-                                          transformation_options);
+                                          transformation_options, cutline_filename);
 }

@@ -315,7 +315,8 @@ vapour_warp_raster <- function(x, bands = 1L,
                                source_geotransform = 0.0, geotransform = NULL,
                                band_output_type = "", 
                                warp_options = "", 
-                               transformation_options = "") {
+                               transformation_options = "", 
+                               cutline_filename = "") {
   band_output_type <- .r_to_gdal_datatype(band_output_type)
   
   args <- list(...)
@@ -433,7 +434,8 @@ vapour_warp_raster <- function(x, bands = 1L,
                                   silent = silent,
                                   band_output_type = band_output_type, 
                                   warp_options = warp_options, 
-                                  transformation_options = transformation_options)
+                                  transformation_options = transformation_options, 
+                                  cutline_filename = cutline_filename)
   if (length(bands) == 1 && bands == 0) {
     ## we got all bands by index
     bands <- seq_along(vals)
