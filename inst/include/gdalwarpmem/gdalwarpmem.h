@@ -182,23 +182,15 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     
     if (band_output_type[0] == "Float32") band_type = GDT_Float32;
     if (band_output_type[0] == "Float64") band_type = GDT_Float64;
-    // 
-    // if (band_output_type[0] == "Byte") {
-    //   band_type = GDT_Byte;
-    // }
-    // if (band_output_type[0] == "Int32" ||
-    //     band_type == GDT_Int16 ||
-    //     band_type == GDT_UInt16 ||
-    //     band_type == GDT_UInt32) {
-    //   band_type = GDT_Int32;
-    // }
-    // if (band_output_type[0] == "Float64" ||
-    //     band_type == GDT_Float32) {
-    //   band_type = GDT_Float64;
-    // }
+
     scale = GDALGetRasterScale(poBand, &hasScale);
     offset = GDALGetRasterOffset(poBand, &hasOffset);
     
+// if scale is 1 then don't override the type
+
+    if (abs(scale - 1.0) <= 1.0e-05) {
+      hasScale = 0; 
+    }
     int actual_XSize = GDALGetRasterBandXSize(dstBand);
     int actual_YSize = GDALGetRasterBandYSize(dstBand);
     // if hasScale we ignore integer or byte and go with float
@@ -239,7 +231,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       outlist[iband] = res;
     }
     // if hasScale we assume to never use scale/offset in integer case (see block above we already dealt)
-    if (!hasScale & 
+    if (!hasScale && 
         ((band_type == GDT_Int16) |
         (band_type == GDT_Int32) |
         (band_type == GDT_UInt16) |
