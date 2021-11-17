@@ -1,6 +1,14 @@
 f2 <- system.file("extdata/osm/myosmfile.osm", package = "vapour", mustWork = TRUE)
 f <- system.file("extdata", "sst_c.gpkg", package = "vapour", mustWork = TRUE)
 
+file <- "list_locality_postcode_meander_valley.tab"
+mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+
+test_that("layer extent works", 
+          {
+            expect_equivalent(vapour_layer_extent(mvfile),c(412718.69, 511687.49, 5352612.8, 5425154.32))
+          }
+)
 
 test_that("layer logic works", {
   expect_equal(vapour_layer_names(f2), c("points", "lines", "multilinestrings", "multipolygons", "other_relations"))
