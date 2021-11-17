@@ -1,3 +1,13 @@
+# dev
+
+* Faster layer extent determination in `vapour_layer_info()`, new function `vapour_layer_extent()`. 
+
+* Better escaping for layer name, needed quotes around layer 'SELECT' when counting features with 
+ SQL for FlatGeoBuf. 
+ 
+ 
+
+
 # vapour 0.8.5
 
 ## BREAKING CHANGES

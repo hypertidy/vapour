@@ -51,7 +51,7 @@ vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE,
   fields <- vapour_report_fields(dsource, layer, sql)
   
   if (count) {
-    cnt <- try(vapour_read_fields(dsource, sql = sprintf("SELECT COUNT(*) FROM %s", layer_name))[[1]], silent = TRUE)
+    cnt <- try(vapour_read_fields(dsource, sql = sprintf("SELECT COUNT(*) FROM \"%s\"", layer_name))[[1]], silent = TRUE)
 
     if (inherits(cnt, "try-error")) cnt <- length(vapour_read_names(dsource, layer, sql))
   } else {
@@ -71,6 +71,23 @@ vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE,
        projection = projection_info_gdal_cpp(dsource, layer = layer, sql = sql)[c("Wkt", "Proj4", "EPSG")])
 }
 
+#' Read layer extent
+#' 
+#' Extent of all features in entire layer, possibly after execution of sql query and
+#' input extent filter. 
+#'
+#' @inheritParams vapour_read_geometry
+#' @param ... 
+#'
+#' @return vector of numeric valuex xmin,xmax,ymin,ymax
+#' @seealso vapour_read_extent vapour_layer_info
+#' @export
+#'
+#' @examples
+#' file <- "list_locality_postcode_meander_valley.tab"
+#' ## A MapInfo TAB file with polygons
+#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+#' vapour_layer_extent(mvfile)
 vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ...) {
   layer_names <- vapour_layer_names(dsource)
   layer_name <- layer
