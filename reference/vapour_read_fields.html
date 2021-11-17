@@ -197,74 +197,77 @@ for numeric, integer (32-bit) and string types. Date, Time, DateTime are
 returned as character, and Integer64 is returned as numeric.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>file</span> <span class='op'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span>
-<span class='va'>mvfile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='st'>"extdata/tab"</span>, <span class='va'>file</span><span class='op'>)</span>, package<span class='op'>=</span><span class='st'>"vapour"</span><span class='op'>)</span>
-<span class='va'>att</span> <span class='op'>&lt;-</span> <span class='fu'>vapour_read_fields</span><span class='op'>(</span><span class='va'>mvfile</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>att</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; List of 11
-#&gt;  $ LOCAL_ID  : num [1:58] 1e+05 1e+05 1e+05 1e+05 1e+05 ...
-#&gt;  $ NAME      : chr [1:58] "Caveside" "Weegena" "Kimberley" "Parkham" ...
-#&gt;  $ POSTCODE  : int [1:58] 7304 7304 7304 7304 7275 7277 7250 7304 7304 7304 ...
-#&gt;  $ PLAN_REF  : chr [1:58] "CPR5322" "CPR5327" "CPR5361" "CPR5327" ...
-#&gt;  $ GAZ_DATE  : Date[1:58], format: "1970-01-01" "1970-01-01" ...
-#&gt;  $ NOM_REG_NO: chr [1:58] "947L" "1300M" "1063T" "1179Y" ...
-#&gt;  $ UFI       : chr [1:58] "{4a5db4da-ca19-41a0-8dd4-c28a14bbee18}" "{253b676e-2791-469c-ac5e-9cb3a95cc158}" "{75f60a99-4c58-4d3e-911d-bbaa9a04164c}" "{b008d456-4e80-4237-80f6-a26c03817e3c}" ...
-#&gt;  $ CREATED_ON: chr [1:58] "2016-03-04 10:42:37" "2015-06-19 13:46:50" "2016-09-16 10:54:56" "2014-06-06 16:50:22" ...
-#&gt;  $ LIST_GUID : chr [1:58] "{839edd46-01a7-4a45-9d97-499962fa952b}" "{de35ebd4-0ac0-4299-947d-87d07c69426a}" "{73ced9ad-ee9a-41d5-a5bc-c95c4ab948d9}" "{37f17d1f-d2a0-4b78-ba0d-e5f62f216658}" ...
-#&gt;  $ SHAPE_AREA: num [1:58] -9999 -9999 -9999 -9999 -9999 ...
-#&gt;  $ SHAPE_LEN : num [1:58] 39786 31588 35693 67615 70141 ...</div><div class='input'><span class='va'>sq</span> <span class='op'>&lt;-</span> <span class='st'>"SELECT * FROM list_locality_postcode_meander_valley WHERE FID &lt; 5"</span>
-<span class='op'>(</span><span class='va'>att</span> <span class='op'>&lt;-</span> <span class='fu'>vapour_read_fields</span><span class='op'>(</span><span class='va'>mvfile</span>, sql <span class='op'>=</span> <span class='va'>sq</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $LOCAL_ID
-#&gt; [1] 100422 100366 100337 100308
-#&gt; 
-#&gt; $NAME
-#&gt; [1] "Caveside"  "Weegena"   "Kimberley" "Parkham"  
-#&gt; 
-#&gt; $POSTCODE
-#&gt; [1] 7304 7304 7304 7304
-#&gt; 
-#&gt; $PLAN_REF
-#&gt; [1] "CPR5322" "CPR5327" "CPR5361" "CPR5327"
-#&gt; 
-#&gt; $GAZ_DATE
-#&gt; [1] "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01"
-#&gt; 
-#&gt; $NOM_REG_NO
-#&gt; [1] "947L"  "1300M" "1063T" "1179Y"
-#&gt; 
-#&gt; $UFI
-#&gt; [1] "{4a5db4da-ca19-41a0-8dd4-c28a14bbee18}"
-#&gt; [2] "{253b676e-2791-469c-ac5e-9cb3a95cc158}"
-#&gt; [3] "{75f60a99-4c58-4d3e-911d-bbaa9a04164c}"
-#&gt; [4] "{b008d456-4e80-4237-80f6-a26c03817e3c}"
-#&gt; 
-#&gt; $CREATED_ON
-#&gt; [1] "2016-03-04 10:42:37" "2015-06-19 13:46:50" "2016-09-16 10:54:56"
-#&gt; [4] "2014-06-06 16:50:22"
-#&gt; 
-#&gt; $LIST_GUID
-#&gt; [1] "{839edd46-01a7-4a45-9d97-499962fa952b}"
-#&gt; [2] "{de35ebd4-0ac0-4299-947d-87d07c69426a}"
-#&gt; [3] "{73ced9ad-ee9a-41d5-a5bc-c95c4ab948d9}"
-#&gt; [4] "{37f17d1f-d2a0-4b78-ba0d-e5f62f216658}"
-#&gt; 
-#&gt; $SHAPE_AREA
-#&gt; [1] -9999 -9999 -9999 -9999
-#&gt; 
-#&gt; $SHAPE_LEN
-#&gt; [1] 39785.88 31587.54 35693.32 67614.51
-#&gt; </div><div class='input'><span class='va'>pfile</span> <span class='op'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span>
-<span class='va'>dsource</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='st'>"extdata/tab"</span>, <span class='va'>pfile</span><span class='op'>)</span>, package<span class='op'>=</span><span class='st'>"vapour"</span><span class='op'>)</span>
-<span class='va'>SQL</span> <span class='op'>&lt;-</span> <span class='st'>"SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE &lt; 7300"</span>
-<span class='fu'>vapour_read_fields</span><span class='op'>(</span><span class='va'>dsource</span>, sql <span class='op'>=</span> <span class='va'>SQL</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $NAME
-#&gt;  [1] "Frankford"          "Bridgenorth"        "Summerhill"        
-#&gt;  [4] "Carrick"            "Rosevale"           "Selbourne"         
-#&gt;  [7] "Blackstone Heights" "Lake St Clair"      "Hagley"            
-#&gt; [10] "Quamby Bend"        "Trevallyn"          "Westwood"          
-#&gt; [13] "Riverside"          "Hadspen"            "Travellers Rest"   
-#&gt; [16] "Prospect Vale"     
-#&gt; </div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>file</span> <span class='op'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span></span>
+<span class='r-in'><span class='va'>mvfile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='st'>"extdata/tab"</span>, <span class='va'>file</span><span class='op'>)</span>, package<span class='op'>=</span><span class='st'>"vapour"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>att</span> <span class='op'>&lt;-</span> <span class='fu'>vapour_read_fields</span><span class='op'>(</span><span class='va'>mvfile</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>att</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> List of 11</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  $ LOCAL_ID  : num [1:58] 1e+05 1e+05 1e+05 1e+05 1e+05 ...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  $ NAME      : chr [1:58] "Caveside" "Weegena" "Kimberley" "Parkham" ...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  $ POSTCODE  : int [1:58] 7304 7304 7304 7304 7275 7277 7250 7304 7304 7304 ...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  $ PLAN_REF  : chr [1:58] "CPR5322" "CPR5327" "CPR5361" "CPR5327" ...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  $ GAZ_DATE  : Date[1:58], format: "1970-01-01" "1970-01-01" ...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  $ NOM_REG_NO: chr [1:58] "947L" "1300M" "1063T" "1179Y" ...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  $ UFI       : chr [1:58] "{4a5db4da-ca19-41a0-8dd4-c28a14bbee18}" "{253b676e-2791-469c-ac5e-9cb3a95cc158}" "{75f60a99-4c58-4d3e-911d-bbaa9a04164c}" "{b008d456-4e80-4237-80f6-a26c03817e3c}" ...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  $ CREATED_ON: chr [1:58] "2016-03-04 10:42:37" "2015-06-19 13:46:50" "2016-09-16 10:54:56" "2014-06-06 16:50:22" ...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  $ LIST_GUID : chr [1:58] "{839edd46-01a7-4a45-9d97-499962fa952b}" "{de35ebd4-0ac0-4299-947d-87d07c69426a}" "{73ced9ad-ee9a-41d5-a5bc-c95c4ab948d9}" "{37f17d1f-d2a0-4b78-ba0d-e5f62f216658}" ...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  $ SHAPE_AREA: num [1:58] -9999 -9999 -9999 -9999 -9999 ...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  $ SHAPE_LEN : num [1:58] 39786 31588 35693 67615 70141 ...</span>
+<span class='r-in'><span class='va'>sq</span> <span class='op'>&lt;-</span> <span class='st'>"SELECT * FROM list_locality_postcode_meander_valley WHERE FID &lt; 5"</span></span>
+<span class='r-in'><span class='op'>(</span><span class='va'>att</span> <span class='op'>&lt;-</span> <span class='fu'>vapour_read_fields</span><span class='op'>(</span><span class='va'>mvfile</span>, sql <span class='op'>=</span> <span class='va'>sq</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $LOCAL_ID</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 100422 100366 100337 100308</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $NAME</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Caveside"  "Weegena"   "Kimberley" "Parkham"  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $POSTCODE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 7304 7304 7304 7304</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $PLAN_REF</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "CPR5322" "CPR5327" "CPR5361" "CPR5327"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $GAZ_DATE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "1970-01-01" "1970-01-01" "1970-01-01" "1970-01-01"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $NOM_REG_NO</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "947L"  "1300M" "1063T" "1179Y"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $UFI</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "{4a5db4da-ca19-41a0-8dd4-c28a14bbee18}"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2] "{253b676e-2791-469c-ac5e-9cb3a95cc158}"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3] "{75f60a99-4c58-4d3e-911d-bbaa9a04164c}"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4] "{b008d456-4e80-4237-80f6-a26c03817e3c}"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $CREATED_ON</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "2016-03-04 10:42:37" "2015-06-19 13:46:50" "2016-09-16 10:54:56"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4] "2014-06-06 16:50:22"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $LIST_GUID</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "{839edd46-01a7-4a45-9d97-499962fa952b}"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2] "{de35ebd4-0ac0-4299-947d-87d07c69426a}"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3] "{73ced9ad-ee9a-41d5-a5bc-c95c4ab948d9}"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4] "{37f17d1f-d2a0-4b78-ba0d-e5f62f216658}"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $SHAPE_AREA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] -9999 -9999 -9999 -9999</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $SHAPE_LEN</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 39785.88 31587.54 35693.32 67614.51</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'><span class='va'>pfile</span> <span class='op'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span></span>
+<span class='r-in'><span class='va'>dsource</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='st'>"extdata/tab"</span>, <span class='va'>pfile</span><span class='op'>)</span>, package<span class='op'>=</span><span class='st'>"vapour"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>SQL</span> <span class='op'>&lt;-</span> <span class='st'>"SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE &lt; 7300"</span></span>
+<span class='r-in'><span class='fu'>vapour_read_fields</span><span class='op'>(</span><span class='va'>dsource</span>, sql <span class='op'>=</span> <span class='va'>SQL</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $NAME</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "Frankford"          "Bridgenorth"        "Summerhill"        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [4] "Carrick"            "Rosevale"           "Selbourne"         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7] "Blackstone Heights" "Lake St Clair"      "Hagley"            </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [10] "Quamby Bend"        "Trevallyn"          "Westwood"          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] "Riverside"          "Hadspen"            "Travellers Rest"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [16] "Prospect Vale"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

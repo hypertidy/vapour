@@ -195,36 +195,38 @@
     <p>Use <code>limit_n</code> to arbitrarily limit the number of features queried.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>file</span> <span class='op'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span>
-<span class='va'>mvfile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='st'>"extdata/tab"</span>, <span class='va'>file</span><span class='op'>)</span>, package<span class='op'>=</span><span class='st'>"vapour"</span><span class='op'>)</span>
-<span class='fu'>vapour_geom_summary</span><span class='op'>(</span><span class='va'>mvfile</span>, limit_n <span class='op'>=</span> <span class='fl'>3L</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $FID
-#&gt; [1] 1 2 3
-#&gt; 
-#&gt; $valid_geometry
-#&gt; [1] TRUE TRUE TRUE
-#&gt; 
-#&gt; $type
-#&gt; [1] 3 6 3
-#&gt; 
-#&gt; $xmin
-#&gt; [1] 448353.3 453543.6 454839.8
-#&gt; 
-#&gt; $xmax
-#&gt; [1] 457705.8 459318.0 461042.0
-#&gt; 
-#&gt; $ymin
-#&gt; [1] 5386606 5403972 5411562
-#&gt; 
-#&gt; $ymax
-#&gt; [1] 5397352 5412505 5417892
-#&gt; </div><div class='input'>
-<span class='va'>gsum</span> <span class='op'>&lt;-</span> <span class='fu'>vapour_geom_summary</span><span class='op'>(</span><span class='va'>mvfile</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='cn'>NA</span>, xlim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/range.html'>range</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>gsum</span><span class='op'>$</span><span class='va'>xmin</span>, <span class='va'>gsum</span><span class='op'>$</span><span class='va'>xmax</span><span class='op'>)</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
-         ylim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/range.html'>range</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>gsum</span><span class='op'>$</span><span class='va'>ymin</span>, <span class='va'>gsum</span><span class='op'>$</span><span class='va'>ymax</span><span class='op'>)</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/rect.html'>rect</a></span><span class='op'>(</span><span class='va'>gsum</span><span class='op'>$</span><span class='va'>xmin</span>, <span class='va'>gsum</span><span class='op'>$</span><span class='va'>ymin</span>, <span class='va'>gsum</span><span class='op'>$</span><span class='va'>xmax</span>, <span class='va'>gsum</span><span class='op'>$</span><span class='va'>ymax</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span><span class='op'>(</span><span class='va'>gsum</span><span class='op'>$</span><span class='va'>xmin</span>, <span class='va'>gsum</span><span class='op'>$</span><span class='va'>ymin</span>, labels <span class='op'>=</span> <span class='va'>gsum</span><span class='op'>$</span><span class='va'>FID</span><span class='op'>)</span>
-</div><div class='img'><img src='vapour_geom_summary-1.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>file</span> <span class='op'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span></span>
+<span class='r-in'><span class='va'>mvfile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='st'>"extdata/tab"</span>, <span class='va'>file</span><span class='op'>)</span>, package<span class='op'>=</span><span class='st'>"vapour"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>vapour_geom_summary</span><span class='op'>(</span><span class='va'>mvfile</span>, limit_n <span class='op'>=</span> <span class='fl'>3L</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $FID</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1 2 3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $valid_geometry</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE TRUE TRUE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $type</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 3 6 3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $xmin</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 448353.3 453543.6 454839.8</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $xmax</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 457705.8 459318.0 461042.0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ymin</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 5386606 5403972 5411562</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ymax</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 5397352 5412505 5417892</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>gsum</span> <span class='op'>&lt;-</span> <span class='fu'>vapour_geom_summary</span><span class='op'>(</span><span class='va'>mvfile</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='cn'>NA</span>, xlim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/range.html'>range</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>gsum</span><span class='op'>$</span><span class='va'>xmin</span>, <span class='va'>gsum</span><span class='op'>$</span><span class='va'>xmax</span><span class='op'>)</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,</span>
+<span class='r-in'>         ylim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/range.html'>range</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>gsum</span><span class='op'>$</span><span class='va'>ymin</span>, <span class='va'>gsum</span><span class='op'>$</span><span class='va'>ymax</span><span class='op'>)</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/rect.html'>rect</a></span><span class='op'>(</span><span class='va'>gsum</span><span class='op'>$</span><span class='va'>xmin</span>, <span class='va'>gsum</span><span class='op'>$</span><span class='va'>ymin</span>, <span class='va'>gsum</span><span class='op'>$</span><span class='va'>xmax</span>, <span class='va'>gsum</span><span class='op'>$</span><span class='va'>ymax</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span><span class='op'>(</span><span class='va'>gsum</span><span class='op'>$</span><span class='va'>xmin</span>, <span class='va'>gsum</span><span class='op'>$</span><span class='va'>ymin</span>, labels <span class='op'>=</span> <span class='va'>gsum</span><span class='op'>$</span><span class='va'>FID</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='vapour_geom_summary-1.png' alt='' width='700' height='433' /></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -170,26 +170,27 @@ use this function interactively to determine a  useable <code>/vsiPREFIX/dsource
 source string.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>pointzipfile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/vsi/point_shp.zip"</span>, package <span class='op'>=</span> <span class='st'>"vapour"</span>, mustWork <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='fu'>vapour_vsi_list</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sprintf.html'>sprintf</a></span><span class='op'>(</span><span class='st'>"/vsizip/%s"</span>, <span class='va'>pointzipfile</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "point.dbf" "point.shx" "point.shp"</div><div class='input'><span class='co'># \donttest{</span>
-<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'>## example from https://github.com/hypertidy/vapour/issues/55</span>
-<span class='co'>#file &lt;- "http/radmap_v3_2015_filtered_dose/radmap_v3_2015_filtered_dose.ers.zip"</span>
-<span class='co'>#url &lt;- "http://dapds00.nci.org.au/thredds/fileServer/rr2/national_geophysical_compilations"</span>
-<span class='co'>#u &lt;- sprintf("/vsizip//vsicurl/%s", file.path(url, file))</span>
-<span class='co'>#vapour_vsi_list(u)</span>
-<span class='co'>#[1] "radmap_v3_2015_filtered_dose"     "radmap_v3_2015_filtered_dose.ers"</span>
-<span class='co'>#[3] "radmap_v3_2015_filtered_dose.isi" "radmap_v3_2015_filtered_dose.txt"</span>
-<span class='co'>#gdalinfo /vsitar//home/ubuntu/LT05_L1GS_027026_20060116_20160911_01_T2.tar.gz</span>
-<span class='co'>#vapour_vsi_list("/vsitar//home/ubuntu/LT05_L1GS_027026_20060116_20160911_01_T2.tar.gz")</span>
-<span class='co'>#"LT05_L1TP_027026_20061218_20160911_01_T1_ANG.txt"</span>
-<span class='co'>#"LT05_L1TP_027026_20061218_20160911_01_T1_B1.TIF"</span>
-<span class='co'>#"LT05_L1TP_027026_20061218_20160911_01_T1_B2.TIF"</span>
-<span class='co'>#"LT05_L1TP_027026_20061218_20160911_01_T1_B3.TIF"</span>
-<span class='co'>#...</span>
-<span class='op'>}</span><span class='co'># }</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>pointzipfile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/vsi/point_shp.zip"</span>, package <span class='op'>=</span> <span class='st'>"vapour"</span>, mustWork <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>vapour_vsi_list</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sprintf.html'>sprintf</a></span><span class='op'>(</span><span class='st'>"/vsizip/%s"</span>, <span class='va'>pointzipfile</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "point.dbf" "point.shx" "point.shp"</span>
+<span class='r-in'><span class='co'># \donttest{</span></span>
+<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='co'>## example from https://github.com/hypertidy/vapour/issues/55</span></span>
+<span class='r-in'><span class='co'>#file &lt;- "http/radmap_v3_2015_filtered_dose/radmap_v3_2015_filtered_dose.ers.zip"</span></span>
+<span class='r-in'><span class='co'>#url &lt;- "http://dapds00.nci.org.au/thredds/fileServer/rr2/national_geophysical_compilations"</span></span>
+<span class='r-in'><span class='co'>#u &lt;- sprintf("/vsizip//vsicurl/%s", file.path(url, file))</span></span>
+<span class='r-in'><span class='co'>#vapour_vsi_list(u)</span></span>
+<span class='r-in'><span class='co'>#[1] "radmap_v3_2015_filtered_dose"     "radmap_v3_2015_filtered_dose.ers"</span></span>
+<span class='r-in'><span class='co'>#[3] "radmap_v3_2015_filtered_dose.isi" "radmap_v3_2015_filtered_dose.txt"</span></span>
+<span class='r-in'><span class='co'>#gdalinfo /vsitar//home/ubuntu/LT05_L1GS_027026_20060116_20160911_01_T2.tar.gz</span></span>
+<span class='r-in'><span class='co'>#vapour_vsi_list("/vsitar//home/ubuntu/LT05_L1GS_027026_20060116_20160911_01_T2.tar.gz")</span></span>
+<span class='r-in'><span class='co'>#"LT05_L1TP_027026_20061218_20160911_01_T1_ANG.txt"</span></span>
+<span class='r-in'><span class='co'>#"LT05_L1TP_027026_20061218_20160911_01_T1_B1.TIF"</span></span>
+<span class='r-in'><span class='co'>#"LT05_L1TP_027026_20061218_20160911_01_T1_B2.TIF"</span></span>
+<span class='r-in'><span class='co'>#"LT05_L1TP_027026_20061218_20160911_01_T1_B3.TIF"</span></span>
+<span class='r-in'><span class='co'>#...</span></span>
+<span class='r-in'><span class='op'>}</span><span class='co'># }</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

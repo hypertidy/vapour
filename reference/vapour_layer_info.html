@@ -203,19 +203,20 @@
 <p><code>$projection</code> is a list of various formats of the projection metadata.
 Use <code>$projection$Wkt</code> as most authoritative, but we don't enter into the discussion or limit what
 might be done with this (that's up to you). Currently we see
-<code><a href='https://rdrr.io/r/base/c.html'>c("Proj4", "MICoordSys", "PrettyWkt", "Wkt", "EPSG", "XML")</a></code> as names of this <code>$projection</code> element.</p>
+<code>c("Proj4", "MICoordSys", "PrettyWkt", "Wkt", "EPSG", "XML")</code> as names of this <code>$projection</code> element.</p>
 <p>To get the geometry type/s of a layer see <code><a href='vapour_read_geometry.html'>vapour_read_type()</a></code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>vapour_geom_name vapour_layer_names vapour_report_fields vapour_read_fields vapour_driver vapour_read_names</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>file</span> <span class='op'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span>
-<span class='co'>## A MapInfo TAB file with polygons</span>
-<span class='va'>mvfile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='st'>"extdata/tab"</span>, <span class='va'>file</span><span class='op'>)</span>, package<span class='op'>=</span><span class='st'>"vapour"</span><span class='op'>)</span>
-<span class='va'>info</span> <span class='op'>&lt;-</span> <span class='fu'>vapour_layer_info</span><span class='op'>(</span><span class='va'>mvfile</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>info</span><span class='op'>$</span><span class='va'>projection</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "Wkt"   "Proj4" "EPSG" </div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>file</span> <span class='op'>&lt;-</span> <span class='st'>"list_locality_postcode_meander_valley.tab"</span></span>
+<span class='r-in'><span class='co'>## A MapInfo TAB file with polygons</span></span>
+<span class='r-in'><span class='va'>mvfile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='st'>"extdata/tab"</span>, <span class='va'>file</span><span class='op'>)</span>, package<span class='op'>=</span><span class='st'>"vapour"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>info</span> <span class='op'>&lt;-</span> <span class='fu'>vapour_layer_info</span><span class='op'>(</span><span class='va'>mvfile</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>info</span><span class='op'>$</span><span class='va'>projection</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Wkt"   "Proj4" "EPSG" </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

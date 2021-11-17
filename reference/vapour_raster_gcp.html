@@ -176,50 +176,53 @@ the grid and may not align with the grid spacing itself (though they often do in
 <p>The coordinate system of the GCPs is currently not read.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## this file has no ground control points</span>
-<span class='co'>## they are rare, and tend to be in large files</span>
-<span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"sst.tif"</span>, package <span class='op'>=</span> <span class='st'>"vapour"</span><span class='op'>)</span>
-<span class='fu'>vapour_raster_gcp</span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; No GCP (ground control points) found.</div><div class='output co'>#&gt; $Pixel
-#&gt; NULL
-#&gt; 
-#&gt; $Line
-#&gt; NULL
-#&gt; 
-#&gt; $X
-#&gt; NULL
-#&gt; 
-#&gt; $Y
-#&gt; NULL
-#&gt; 
-#&gt; $Z
-#&gt; NULL
-#&gt; 
-#&gt; $CRS
-#&gt; NULL
-#&gt; </div><div class='input'>
-<span class='co'>## a very made-up example with no real use</span>
-<span class='va'>f1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/gcps"</span>, <span class='st'>"volcano_gcp.tif"</span>, package <span class='op'>=</span> <span class='st'>"vapour"</span><span class='op'>)</span>
-<span class='fu'>vapour_raster_gcp</span><span class='op'>(</span><span class='va'>f1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $Pixel
-#&gt; [1]  0  5 20
-#&gt; 
-#&gt; $Line
-#&gt; [1]  0  5 15
-#&gt; 
-#&gt; $X
-#&gt; [1] 100 200 300
-#&gt; 
-#&gt; $Y
-#&gt; [1] 100 200 300
-#&gt; 
-#&gt; $Z
-#&gt; [1] 0 0 0
-#&gt; 
-#&gt; $CRS
-#&gt; [1] ""
-#&gt; </div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>## this file has no ground control points</span></span>
+<span class='r-in'><span class='co'>## they are rare, and tend to be in large files</span></span>
+<span class='r-in'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"sst.tif"</span>, package <span class='op'>=</span> <span class='st'>"vapour"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>vapour_raster_gcp</span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> No GCP (ground control points) found.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $Pixel</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $Line</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $X</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $Y</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $Z</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $CRS</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## a very made-up example with no real use</span></span>
+<span class='r-in'><span class='va'>f1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/gcps"</span>, <span class='st'>"volcano_gcp.tif"</span>, package <span class='op'>=</span> <span class='st'>"vapour"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>vapour_raster_gcp</span><span class='op'>(</span><span class='va'>f1</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $Pixel</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1]  0  5 20</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $Line</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1]  0  5 15</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $X</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 100 200 300</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $Y</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 100 200 300</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $Z</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0 0 0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $CRS</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] ""</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

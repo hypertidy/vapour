@@ -266,45 +266,46 @@ their dimensions will be listed as pairs of x,y values.</p>
     <div class='dont-index'><p>vapour_sds_info</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"sst.tif"</span>, package <span class='op'>=</span> <span class='st'>"vapour"</span><span class='op'>)</span>
-<span class='fu'>vapour_raster_info</span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $geotransform
-#&gt; [1] 140.00000000   0.07000000   0.00000000 -39.99722207   0.00000000
-#&gt; [6]  -0.07000389
-#&gt; 
-#&gt; $dimXY
-#&gt; [1] 143 286
-#&gt; 
-#&gt; $minmax
-#&gt; [1] NA NA
-#&gt; 
-#&gt; $tilesXY
-#&gt; [1] 143  14
-#&gt; 
-#&gt; $projection
-#&gt; [1] "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]"
-#&gt; 
-#&gt; $bands
-#&gt; [1] 1
-#&gt; 
-#&gt; $projstring
-#&gt; [1] "+proj=longlat +datum=WGS84 +no_defs"
-#&gt; 
-#&gt; $nodata_value
-#&gt; [1] -3.4e+38
-#&gt; 
-#&gt; $overviews
-#&gt; integer(0)
-#&gt; 
-#&gt; $filelist
-#&gt; [1] "/Users/runner/work/_temp/Library/vapour/extdata/sst.tif"
-#&gt; 
-#&gt; $datatype
-#&gt; [1] "Float32"
-#&gt; 
-#&gt; $extent
-#&gt; [1] 140.00000 150.01000 -60.01833 -39.99722
-#&gt; </div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"sst.tif"</span>, package <span class='op'>=</span> <span class='st'>"vapour"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>vapour_raster_info</span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $geotransform</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 140.00000000   0.07000000   0.00000000 -39.99722207   0.00000000</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [6]  -0.07000389</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $dimXY</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 143 286</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $minmax</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] NA NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $tilesXY</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 143  14</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $projection</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $bands</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $projstring</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "+proj=longlat +datum=WGS84 +no_defs"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $nodata_value</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] -3.4e+38</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $overviews</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> integer(0)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $filelist</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "/Users/runner/work/_temp/Library/vapour/extdata/sst.tif"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $datatype</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Float32"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $extent</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 140.00000 150.01000 -60.01833 -39.99722</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
