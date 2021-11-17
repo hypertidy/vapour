@@ -51,7 +51,7 @@ vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE,
   fields <- vapour_report_fields(dsource, layer, sql)
   ## if we're getting extent use that for count, otherwise try sql first, then read names
   if (count && !extent) {
-    cnt <- try(vapour_read_fields(dsource, sql = sprintf("SELECT COUNT(*) FROM %s", layer_name))[[1]], silent = TRUE)
+    cnt <- try(vapour_read_fields(dsource, sql = sprintf("SELECT COUNT(*) FROM \"%s\"", layer_name))[[1]], silent = TRUE)
     if (inherits(cnt, "try-error")) cnt <- length(vapour_read_names(dsource, layer, sql))
   } else {
     cnt <- NA_integer_
