@@ -49,19 +49,17 @@ vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE,
   geom_name <- vapour_geom_name(dsource, layer, sql)
 
   fields <- vapour_report_fields(dsource, layer, sql)
-  ## if we're getting extent use that for count, otherwise try sql first, then read names
-  if (count && !extent) {
-    cnt <- try(vapour_read_fields(dsource, sql = sprintf("SELECT COUNT(*) FROM \"%s\"", layer_name))[[1]], silent = TRUE)
+  
+  if (count) {
+    cnt <- try(vapour_read_fields(dsource, sql = sprintf("SELECT COUNT(*) FROM %s", layer_name))[[1]], silent = TRUE)
+
     if (inherits(cnt, "try-error")) cnt <- length(vapour_read_names(dsource, layer, sql))
   } else {
     cnt <- NA_integer_
   }
-  ## if we're getting extent, use it for count
+  ## if we're getting extent
   if (extent) {
-    listextent <- vapour_read_extent(dsource, layer, sql)
-    if (count && is.na(cnt)) cnt <- length(listextent)
-    exts <- do.call(rbind, listextent)
-    ext <- c(min(exts[,1L], na.rm = TRUE), max(exts[,2L], na.rm = TRUE), min(exts[,3L], na.rm = TRUE), max(exts[,4L], na.rm = TRUE))
+    ext <- vapour_layer_extent(dsource, layer, sql)
   } else {
     ext <- rep(NA_real_, 4L)
   }
@@ -73,6 +71,17 @@ vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE,
        projection = projection_info_gdal_cpp(dsource, layer = layer, sql = sql)[c("Wkt", "Proj4", "EPSG")])
 }
 
+vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ...) {
+  layer_names <- vapour_layer_names(dsource)
+  layer_name <- layer
+  if (!is.numeric(layer)) layer <- match(layer_name, layer_names) - 1
+  if (is.numeric(layer_name)) layer_name <- layer_names[layer + 1]
+  if (is.na(layer)) stop(sprintf("layer: %s not found", layer_name))
+  extent <- validate_extent(extent, sql)
+  
+  
+ vapour:::vapour_layer_extent_cpp(dsource, layer, sql, extent) 
+}
 
 #' Read GDAL feature geometry
 #'
