@@ -52,6 +52,7 @@ vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE,
   
   if (count) {
     cnt <- try(vapour_read_fields(dsource, sql = sprintf("SELECT COUNT(*) FROM %s", layer_name))[[1]], silent = TRUE)
+
     if (inherits(cnt, "try-error")) cnt <- length(vapour_read_names(dsource, layer, sql))
   } else {
     cnt <- NA_integer_
