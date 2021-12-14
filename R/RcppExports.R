@@ -117,6 +117,10 @@ vapour_geom_name_cpp <- function(dsource, layer, sql, ex) {
     .Call('_vapour_vapour_geom_name_cpp', PACKAGE = 'vapour', dsource, layer, sql, ex)
 }
 
+vapour_layer_extent_cpp <- function(dsource, layer, sql, ex) {
+    .Call('_vapour_vapour_layer_extent_cpp', PACKAGE = 'vapour', dsource, layer, sql, ex)
+}
+
 raster_gcp_gdal_cpp <- function(dsn) {
     .Call('_vapour_raster_gcp_gdal_cpp', PACKAGE = 'vapour', dsn)
 }

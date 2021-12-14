@@ -191,3 +191,25 @@ Rcpp::CharacterVector vapour_geom_name_cpp(CharacterVector dsource,
   GDALClose(poDS);
   return out;
 }
+
+// [[Rcpp::export]]
+Rcpp::NumericVector vapour_layer_extent_cpp(CharacterVector dsource, 
+                                            IntegerVector layer, 
+                                            CharacterVector sql, 
+                                            NumericVector ex) {
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer *p_layer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  NumericVector out = gdallibrary::gdal_layer_extent(p_layer);
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(p_layer);
+  }
+  GDALClose(poDS);
+  return out;
+  
+}

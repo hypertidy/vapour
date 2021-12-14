@@ -41,6 +41,19 @@ inline CharacterVector gdal_layer_geometry_name(OGRLayer *poLayer) {
   //OGRFeature::DestroyFeature( poFeature );
   return out;
 }
+inline NumericVector gdal_layer_extent(OGRLayer *poLayer) {
+    
+  OGREnvelope poEnvelope;
+  poLayer ->GetExtent(&poEnvelope,true);
+  
+  NumericVector out(4); 
+  out[0] = poEnvelope.MinX;
+  out[1] = poEnvelope.MaxX;
+  out[2] = poEnvelope.MinY;
+  out[3] = poEnvelope.MaxY;
+  return out;
+}
+
 // this force function takes cheap count, checks, then more expensive, checks,
 // then iterates and resets reading
 inline double force_layer_feature_count(OGRLayer *poLayer) {
