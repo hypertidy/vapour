@@ -1,3 +1,7 @@
+# vapour 0.8.6
+
+* Patch release for R UCRT changes. Applied patch provided by CRAN. 
+
 # vapour 0.8.5
 
 ## BREAKING CHANGES
