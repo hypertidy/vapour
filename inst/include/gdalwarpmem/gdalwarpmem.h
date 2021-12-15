@@ -274,12 +274,12 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                          0, 0);
       if (err) Rprintf("we have a problem at RasterIO\n");
       RawVector res(actual_XSize * actual_YSize );
-      uint8_t naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
+// remove missing value, this isn't how to do it - causing valgrind issues on cran
+//uint8_t naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
       
-      if (hasNA && (!std::isnan(naflag))) {
-        std::replace(byte_scanline.begin(), byte_scanline.end(), naflag, (uint8_t) NAN);
-        
-      }
+//      if (hasNA && (!std::isnan(naflag))) {
+//        std::replace(byte_scanline.begin(), byte_scanline.end(), naflag, (uint8_t) NAN);
+//              }
       long unsigned int isi;
       for (isi = 0; isi < (byte_scanline.size()); isi++) {
         res[isi] = byte_scanline[isi];

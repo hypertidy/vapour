@@ -1,7 +1,10 @@
-# vapour 0.8.6
+# vapour 0.8.7
 
 * Patch release for R UCRT changes. Applied patch provided by CRAN. 
 
+* Removed invalid missing value setting for type raw in the warper, causing 
+ representable range errors on cran. 
+ 
 # vapour 0.8.5
 
 ## BREAKING CHANGES
