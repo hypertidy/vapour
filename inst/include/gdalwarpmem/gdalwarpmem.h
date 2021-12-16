@@ -247,12 +247,12 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       
       // consider doing at R level, at least for MEM
       int dval;
-      int naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
-      
-      if (hasNA && (!std::isnan(naflag))) {
-        std::replace(integer_scanline.begin(), integer_scanline.end(), naflag, (int) NAN);
-        
-      }
+      // double naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
+      // 
+      // if (hasNA && (!std::isnan(naflag))) {
+      //   std::replace(integer_scanline.begin(), integer_scanline.end(), naflag, (int) NAN);
+      //   
+      // }
       long unsigned int isi;
       for (isi = 0; isi < (integer_scanline.size()); isi++) {
         dval = integer_scanline[isi];
