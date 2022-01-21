@@ -91,7 +91,7 @@
       <h1 data-toc-skip>Vapour - lightweight GDAL</h1>
                         <h4 data-toc-skip class="author">Michael D. Sumner</h4>
             
-            <h4 data-toc-skip class="date">2021-12-16</h4>
+            <h4 data-toc-skip class="date">2022-01-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/hypertidy/vapour/blob/HEAD/vignettes/vapour.Rmd" class="external-link"><code>vignettes/vapour.Rmd</code></a></small>
       <div class="hidden name"><code>vapour.Rmd</code></div>
@@ -270,9 +270,9 @@
 <span class="co">#&gt; [26] 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56</span>
 <span class="co">#&gt; [51] 57 58</span></code></pre></div>
 <p>Each geometry function also includes an <code>extent</code> argument, which takes a simple vector of four values <code>xmin, xmax, ymin, ymax</code> or sp bbox, sf bbox, or raster extent. This is only applied if the sql argument is non empty, and corresponds to the <a href="https://gdal.org/user/ogr_sql_dialect.html#executesql" class="external-link">SpatialFilter argument of ExecuteSQL</a>.</p>
-<div class="section level2">
-<h2 id="raster-data">Raster data<a class="anchor" aria-label="anchor" href="#raster-data"></a>
-</h2>
+<div class="section level3">
+<h3 id="raster-data">Raster data<a class="anchor" aria-label="anchor" href="#raster-data"></a>
+</h3>
 <p>Find raster info.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sst.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span>
@@ -353,9 +353,9 @@
 <p><img src="vapour_files/figure-html/gdal-flex-1.png" width="100%"></p>
 <p>An example of using this facility interactively is in <a href="https://github.com/hypertidy/lazyraster" class="external-link">lazyraster</a>.</p>
 </div>
-<div class="section level2">
-<h2 id="ogrsql">OGRSQL<a class="anchor" aria-label="anchor" href="#ogrsql"></a>
-</h2>
+<div class="section level3">
+<h3 id="ogrsql">OGRSQL<a class="anchor" aria-label="anchor" href="#ogrsql"></a>
+</h3>
 <p>SQL is available for general GDAL vector data.</p>
 <p>Note that each lower-level function accepts a <code>sql</code> argument, which sends a query to the GDAL library to be executed against the data source, this can create custom layers and so is independent of and ignores the <code>layer</code> argument. Note that the same sql statement can be passed to the geometry readers, so we get the matching sets of information. <code>vapour_read_geometry</code> will return NULL for each missing geometry if the statement doesn’t include geometry explicitly or implicitly, but <code>vapour_read_geometry</code>, <code>vapour_read_geometry_text</code> and <code>vapour_read_extent</code> all explicitly modify the statement "SELECT *". (We are also assuming the data source hasn’t changed between accesses … let me know if this causes you problems!).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -405,23 +405,23 @@
 <p>See <a href="https://gdal.org/user/ogr_sql_dialect.html" class="external-link uri">https://gdal.org/user/ogr_sql_dialect.html</a></p>
 <p>There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables.</p>
 </div>
-<div class="section level1">
-<h1 id="gdal-information">GDAL information<a class="anchor" aria-label="anchor" href="#gdal-information"></a>
-</h1>
+<div class="section level2">
+<h2 id="gdal-information">GDAL information<a class="anchor" aria-label="anchor" href="#gdal-information"></a>
+</h2>
 <p>Find the GDAL version and drivers available.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/GDAL-library.html">vapour_gdal_version</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; [1] "GDAL 3.3.3, released 2021/10/25"</span>
+<span class="co">#&gt; [1] "GDAL 3.4.1, released 2021/12/27"</span>
 
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/GDAL-library.html">vapour_all_drivers</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; List of 7</span>
-<span class="co">#&gt;  $ driver : chr [1:215] "VRT" "DERIVED" "GTiff" "COG" ...</span>
-<span class="co">#&gt;  $ name   : chr [1:215] "Virtual Raster" "Derived datasets using VRT pixel functions" "GeoTIFF" "Cloud optimized GeoTIFF generator" ...</span>
-<span class="co">#&gt;  $ vector : logi [1:215] FALSE FALSE FALSE FALSE FALSE FALSE ...</span>
-<span class="co">#&gt;  $ raster : logi [1:215] TRUE TRUE TRUE TRUE TRUE TRUE ...</span>
-<span class="co">#&gt;  $ create : logi [1:215] TRUE FALSE TRUE FALSE TRUE FALSE ...</span>
-<span class="co">#&gt;  $ copy   : logi [1:215] TRUE FALSE TRUE TRUE TRUE FALSE ...</span>
-<span class="co">#&gt;  $ virtual: logi [1:215] TRUE FALSE TRUE TRUE TRUE TRUE ...</span></code></pre></div>
+<span class="co">#&gt;  $ driver : chr [1:217] "VRT" "DERIVED" "GTiff" "COG" ...</span>
+<span class="co">#&gt;  $ name   : chr [1:217] "Virtual Raster" "Derived datasets using VRT pixel functions" "GeoTIFF" "Cloud optimized GeoTIFF generator" ...</span>
+<span class="co">#&gt;  $ vector : logi [1:217] FALSE FALSE FALSE FALSE FALSE FALSE ...</span>
+<span class="co">#&gt;  $ raster : logi [1:217] TRUE TRUE TRUE TRUE TRUE TRUE ...</span>
+<span class="co">#&gt;  $ create : logi [1:217] TRUE FALSE TRUE FALSE TRUE FALSE ...</span>
+<span class="co">#&gt;  $ copy   : logi [1:217] TRUE FALSE TRUE TRUE TRUE FALSE ...</span>
+<span class="co">#&gt;  $ virtual: logi [1:217] TRUE FALSE TRUE TRUE TRUE TRUE ...</span></code></pre></div>
 <p>Find the driver that will be used for a given data source.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/GDAL-library.html">vapour_driver</a></span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span>
@@ -446,7 +446,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
