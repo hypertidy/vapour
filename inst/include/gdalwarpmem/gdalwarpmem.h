@@ -295,7 +295,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     GDALClose( poSrcDS[si] );
   }
   
-  //CPLFree(double_scanline);
+  CPLFree(poSrcDS);
   
   return outlist;
 }

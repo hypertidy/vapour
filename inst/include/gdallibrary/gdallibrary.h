@@ -44,7 +44,7 @@ inline CharacterVector gdal_layer_geometry_name(OGRLayer *poLayer) {
 inline NumericVector gdal_layer_extent(OGRLayer *poLayer) {
     
   OGREnvelope poEnvelope;
-  poLayer ->GetExtent(&poEnvelope,true);
+  double err = poLayer ->GetExtent(&poEnvelope,true);
   
   NumericVector out(4); 
   out[0] = poEnvelope.MinX;
