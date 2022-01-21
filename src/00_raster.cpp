@@ -15,6 +15,11 @@ List raster_info_gdal_cpp(CharacterVector dsn, LogicalVector min_max) {
 }
 
 // [[Rcpp::export]]
+NumericVector raster_extent_cpp(CharacterVector dsn) {
+  return gdallibrary::gdal_extent_only(dsn); 
+}
+
+// [[Rcpp::export]]
 List raster_io_gdal_cpp(CharacterVector dsn,
                         IntegerVector window,
                         IntegerVector band,

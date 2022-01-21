@@ -1,13 +1,20 @@
-# dev
+# vapour dev
 
 * Faster layer extent determination in `vapour_layer_info()`, new function `vapour_layer_extent()`. 
 
 * Better escaping for layer name, needed quotes around layer 'SELECT' when counting features with 
  SQL for FlatGeoBuf. 
+
+# vapour 0.8.8
+
+* Patch release for R UCRT changes. Applied patch provided by CRAN. 
+
+* Removed invalid missing value setting for type raw and int in the warper, causing 
+ representable range errors on cran. 
  
  
-
-
+ 
+ 
 # vapour 0.8.5
 
 ## BREAKING CHANGES

@@ -44,7 +44,7 @@ inline CharacterVector gdal_layer_geometry_name(OGRLayer *poLayer) {
 inline NumericVector gdal_layer_extent(OGRLayer *poLayer) {
     
   OGREnvelope poEnvelope;
-  poLayer ->GetExtent(&poEnvelope,true);
+  double err = poLayer ->GetExtent(&poEnvelope,true);
   
   NumericVector out(4); 
   out[0] = poEnvelope.MinX;
@@ -905,6 +905,7 @@ inline CharacterVector  gdal_vsi_list(CharacterVector urlpath)
 
     names[i] = VSI_paths[i];
   }
+  
   CSLDestroy(VSI_paths);
   return names;
 
@@ -935,24 +936,22 @@ inline CharacterVector gdal_sds_list(const char* pszFilename)
 
   int dscount = 1;
   if (has_sds) {
+    // owned by the object
     char **SDS = GDALGetMetadata(poDataset, "SUBDATASETS");
     int sdi = 0;
     while (SDS && SDS[sdi] != NULL) {
       sdi++; // count
     }
-    //this seems to be the wrong context in which to do this?
-    //CSLDestroy(SDS);
     dscount = sdi;
   }
   Rcpp::CharacterVector ret(dscount);
   if (has_sds) {
     // we have subdatasets, so list them all
+    // owned by the object
     char **SDS2 = GDALGetMetadata(poDataset, "SUBDATASETS");
     for (int ii = 0; ii < dscount; ii++) {
       ret(ii) = SDS2[ii];
     }
-    //this seems to be the wrong context in which to do this?
-    //CSLDestroy(SDS2);
   } else {
     ret[0] = pszFilename;
   }
@@ -961,6 +960,30 @@ inline CharacterVector gdal_sds_list(const char* pszFilename)
 }
 
 
+inline NumericVector gdal_extent_only(CharacterVector dsn) {
+  GDALDatasetH hDataset;
+
+  hDataset = GDALOpenEx(dsn[0], GA_ReadOnly, nullptr, NULL, nullptr);
+
+  if( hDataset == nullptr )
+  {
+    Rcpp::stop("cannot open dataset");
+  }
+
+  double        adfGeoTransform[6];
+  //poDataset->GetGeoTransform( adfGeoTransform );
+  GDALGetGeoTransform(hDataset, adfGeoTransform );
+  int nXSize = GDALGetRasterXSize(hDataset);
+  int nYSize = GDALGetRasterYSize(hDataset);
+
+  GDALClose( hDataset );
+  NumericVector extent(4); 
+  extent[0] = adfGeoTransform[0];
+  extent[1] = adfGeoTransform[0] + nXSize * adfGeoTransform[1];
+  extent[3] = adfGeoTransform[3]; 
+  extent[2] = adfGeoTransform[3] + nYSize * adfGeoTransform[5]; 
+  return extent; 
+}
 inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
 {
   GDALDatasetH hDataset;
@@ -991,14 +1014,24 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
   for (int ii = 0; ii < 6; ii++) trans[ii] = adfGeoTransform[ii];
 
   char **pfilelist = GDALGetFileList(hDataset);
-
-  CharacterVector FileList;
+  int fdi = 0;
+  while (pfilelist && pfilelist[fdi] != NULL) {
+      fdi++; // count
+  }
+  int ilist = fdi;
+  if (ilist < 1) {
+    ilist = 1; 
+  }
+  CharacterVector FileList(ilist);
   // might be no files, because image server
   if (pfilelist == nullptr) {
-    FileList = CharacterVector::create(NA_STRING);
+    FileList[0] = NA_STRING;
   } else {
-    FileList = CharacterVector::create(*pfilelist);
+    for (int ifile = 0; ifile < fdi; ifile++) {
+      FileList[ifile] = pfilelist[ifile]; 
+    }
   }
+  CSLDestroy(pfilelist);
   GDALRasterBandH  hBand;
   int             nBlockXSize, nBlockYSize;
   //int             bGotMin, bGotMax;
@@ -1056,7 +1089,6 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
 #else
   oSRS.importFromWkt( (const char**) cwkt);
 #endif
-
   oSRS.exportToProj4(&stri);
   out[6] =  Rcpp::CharacterVector::create(stri); //Rcpp::CharacterVector::create(stri);
   names[6] = "projstring";

@@ -129,6 +129,10 @@ raster_info_gdal_cpp <- function(dsn, min_max) {
     .Call('_vapour_raster_info_gdal_cpp', PACKAGE = 'vapour', dsn, min_max)
 }
 
+raster_extent_cpp <- function(dsn) {
+    .Call('_vapour_raster_extent_cpp', PACKAGE = 'vapour', dsn)
+}
+
 raster_io_gdal_cpp <- function(dsn, window, band, resample, band_output_type) {
     .Call('_vapour_raster_io_gdal_cpp', PACKAGE = 'vapour', dsn, window, band, resample, band_output_type)
 }

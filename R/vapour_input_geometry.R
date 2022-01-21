@@ -97,7 +97,7 @@ vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ...) 
   extent <- validate_extent(extent, sql)
   
   
- vapour:::vapour_layer_extent_cpp(dsource, layer, sql, extent) 
+ vapour_layer_extent_cpp(dsource, layer, sql, extent) 
 }
 
 #' Read GDAL feature geometry
