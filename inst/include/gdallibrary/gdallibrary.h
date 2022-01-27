@@ -722,7 +722,13 @@ inline List gdal_projection_info(CharacterVector dsn,
 
   OGRSpatialReference *SRS =  poLayer->GetSpatialRef();
 
-  char *proj;  // this gets cleaned up lower in the SRS==NULL else
+  
+  
+  
+  
+  
+  
+  //  char *proj;  // this gets cleaned up lower in the SRS==NULL else
   List info_out(6);
   CharacterVector outproj(1);
   CharacterVector outnames(6);
@@ -742,31 +748,41 @@ inline List gdal_projection_info(CharacterVector dsn,
     // Rcpp::warning("not null");
     // SRS is not NULL, so explore validation
     //  OGRErr err = SRS->Validate();
-    SRS->exportToProj4(&proj);
-    outproj[0] = proj;
+    char *proj4 = NULL;
+    SRS->exportToProj4(&proj4);
+    outproj[0] = proj4;
     info_out[0] = Rcpp::clone(outproj);
+    CPLFree(proj4);
 
-    SRS->exportToMICoordSys(&proj);
-    outproj[0] = proj;
+    char *MI = NULL;
+    SRS->exportToMICoordSys(&MI);
+    outproj[0] = MI;
     info_out[1] = Rcpp::clone(outproj);
+    CPLFree(MI);
 
-    SRS->exportToPrettyWkt(&proj, false);
-    outproj[0] = proj;
+    char *PWKT = NULL;
+    SRS->exportToPrettyWkt(&PWKT, false);
+    outproj[0] = PWKT;
     info_out[2] = Rcpp::clone(outproj);
+    CPLFree(PWKT);
 
-    SRS->exportToWkt(&proj);
-    outproj[0] = proj;
+    char *UWKT = NULL;
+    SRS->exportToWkt(&UWKT);
+    outproj[0] = UWKT;
     info_out[3] = Rcpp::clone(outproj);
+    CPLFree(UWKT);
 
     int epsg = SRS->GetEPSGGeogCS();
     info_out[4] = epsg;
 
-    SRS->exportToXML(&proj);
-    outproj[0] = proj;
+    char *XML = NULL;
+    SRS->exportToXML(&XML);
+    outproj[0] = XML;
     info_out[5] = Rcpp::clone(outproj);
-
-    CPLFree(proj);
+    CPLFree(XML);
   }
+  
+  
 
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
