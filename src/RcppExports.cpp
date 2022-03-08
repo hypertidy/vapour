@@ -550,6 +550,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// raster_vrt_cpp
+CharacterVector raster_vrt_cpp(CharacterVector dsn, NumericVector extent, CharacterVector projection);
+RcppExport SEXP _vapour_raster_vrt_cpp(SEXP dsnSEXP, SEXP extentSEXP, SEXP projectionSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type extent(extentSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type projection(projectionSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_vrt_cpp(dsn, extent, projection));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_vapour_cleanup_gdal_cpp", (DL_FUNC) &_vapour_cleanup_gdal_cpp, 0},
@@ -591,6 +604,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_warp_in_memory_gdal_cpp", (DL_FUNC) &_vapour_warp_in_memory_gdal_cpp, 12},
     {"_vapour_vapour_read_raster_block_cpp", (DL_FUNC) &_vapour_vapour_read_raster_block_cpp, 5},
     {"_vapour_vapour_write_raster_block_cpp", (DL_FUNC) &_vapour_vapour_write_raster_block_cpp, 5},
+    {"_vapour_raster_vrt_cpp", (DL_FUNC) &_vapour_raster_vrt_cpp, 3},
     {NULL, NULL, 0}
 };
 
