@@ -211,14 +211,7 @@ vapour_sds_names <- function(x) {
   if (file.exists(x)) x <- normalizePath(x)
   stopifnot(length(x) == 1L)
   sources <- sds_list_gdal_cpp(x)
-  
-  if (length(sources) > 1) {
-    if (length(sources) %% 2 != 0) warning(sprintf("length of subdataset info not a factor of 2 (NAME and DESC expected)"))
-    sources0 <- sources
-    if (!sum(grepl("NAME=", sources)) == length(sources)/2) warning("sds mismatch")
-    sources <- sources[seq(1, length(sources), by = 2L)]
-    sources <- unlist(lapply(strsplit(sources, "="), function(xx) paste0(xx[-1], collapse = "=")), use.names = FALSE)
-  }
+  if (length(sources) < 2L && nchar(sources[1L]) < 1L) sources <- x
   list(datasource = rep(x, length(sources)), subdataset = sources)
 }
 
