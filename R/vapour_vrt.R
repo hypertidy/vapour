@@ -34,18 +34,18 @@ vapour_vrt <- function(dsn, extent = NULL, projection = NULL, bands = NULL, sds 
   if (file.exists(dsn)) {
     dsn <- path.expand(dsn)
   }
-  
-   dsn <- sds_boilerplate_checks(dsn, sds)
-   if (!is.null(bands))  {
-     version <- substr(vapour::vapour_gdal_version(), 6, 8)
-     if (version < 3.1) {
-       message("gdal 3.1 or above required for 'bands', ignoring")
-     } else {
-       srcbands <- vapour_raster_info(dsn)$bands
-       if (any(bands) > srcbands) stop(sprintf("source has only %i bands" ,srcbands))
-     dsn <- sprintf("vrt://%s?bands=%s", dsn, paste0(bands, collapse = ","))
-     }
-   }
+  ## FIXME: we can't do bands atm, also what else does boilerplate checks do that the new C++ in gdalraster doesn't do?
+   # dsn <- sds_boilerplate_checks(dsn, sds)
+   # if (!is.null(bands))  {
+   #   version <- substr(vapour::vapour_gdal_version(), 6, 8)
+   #   if (version < 3.1) {
+   #     message("gdal 3.1 or above required for 'bands', ignoring")
+   #   } else {
+   #     srcbands <- vapour_raster_info(dsn)$bands
+   #     if (any(bands) > srcbands) stop(sprintf("source has only %i bands" ,srcbands))
+   #   dsn <- sprintf("vrt://%s?bands=%s", dsn, paste0(bands, collapse = ","))
+   #   }
+   # }
   if (is.null(extent)) {
     extent <- 1.0
   }
@@ -64,5 +64,5 @@ vapour_vrt <- function(dsn, extent = NULL, projection = NULL, bands = NULL, sds 
     message("vapour_vrt(): projection must a valid projection string for PROJ")
     projection <- ""
   }
-  raster_vrt_cpp(dsn, extent, projection[1L])
+  raster_vrt_cpp(dsn, extent, projection[1L], sds)
 }
