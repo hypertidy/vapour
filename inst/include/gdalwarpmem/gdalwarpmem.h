@@ -6,6 +6,7 @@
 #include "gdalwarper.h"
 #include "gdal_utils.h"  // for GDALWarpAppOptions
 #include "gdallibrary/gdallibrary.h"
+#include "gdalraster/gdalraster.h"
 namespace gdalwarpmem{
 
 using namespace Rcpp;
@@ -32,10 +33,10 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   char** papszArg = nullptr;
   int dsi0 = 0;
   for (int si = 0; si < source_filename.size(); si++) {
-    poSrcDS[si] = GDALOpen((const char *) source_filename[si], GA_ReadOnly);
+    poSrcDS[si] = gdalraster::gdal_dataset_augment((char *)source_filename[si], source_extent, source_WKT, 1);
     
     if (poSrcDS[si] == NULL) {
-      //Rprintf("cannot open %s\n", source_filename[0]);
+      Rprintf("cannot open %s\n", source_filename[si]);
       
       if (si > 0) {
         for (int ii = 0; ii < si; ii++) {
@@ -45,9 +46,6 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       Rprintf("failed to open\n");
       Rcpp::stop("\n");
     }
-    if (source_extent.length() == 1) {
-      // do nothing
-    } // and else also do nothing (doesn't work how I thought, only VRT can do this so wait for /vrt/)
     
     // https://github.com/OSGeo/gdal/blob/fec15b146f8a750c23c5e765cac12ed5fc9c2b85/gdal/frmts/gtiff/cogdriver.cpp#L512
     papszArg = CSLAddString(papszArg, "-of");
@@ -64,111 +62,104 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       papszArg = CSLAddString(papszArg, target_WKT[0]);
     }
     if (source_WKT[0].empty()) {
-      // TODO check source projection is valid
-      const char* srcproj = nullptr;
-      srcproj = GDALGetProjectionRef(poSrcDS[si]);
-      if ((srcproj != NULL) && (srcproj[0] == '\0') && !target_WKT[0].empty()) {
-        Rcpp::warning("no valid projection in source, specified output projection will have no effect\n (only the extent and dimension will be applied natively)\n use 'source_projection' to apply the correct details for this source");
-      }
+      //   // TODO check source projection is valid
+      //   const char* srcproj = nullptr;
+      //   srcproj = GDALGetProjectionRef(poSrcDS[si]);
+      //   if ((srcproj != NULL) && (srcproj[0] == '\0') && !target_WKT[0].empty()) {
+      //     Rcpp::warning("no valid projection in source, specified output projection will have no effect\n (only the extent and dimension will be applied natively)\n use 'source_projection' to apply the correct details for this source");
+      //   }
     } else {
       if (silent[0] != true) Rprintf("setting projection");
       if (si == 0) {
         // if supplied check that it's valid
         OGRSpatialReference oSourceSRS;
-        OGRErr source_chk =  oSourceSRS.SetFromUserInput(source_WKT[0]);
-        if (source_chk != OGRERR_NONE) Rcpp::stop("cannot initialize source projection");
-        
-        papszArg = CSLAddString(papszArg, "-s_srs");
-        papszArg = CSLAddString(papszArg, source_WKT[0]);
-      }
+        OGRErr source_chk =  oSourceSRS.SetFromUserInput((char *)source_WKT[0]);
+     //   if (source_chk != OGRERR_NONE) Rcpp::stop("cannot initialize source projection: %s\n", source_WKT[0]);
+      } //si == 0
+    } // silent[0]
+  } // int si
+  
+    // we always provide extent and dimension, crs is optional and just means subset/decimate
+    double dfMinX = target_extent[0];
+    double dfMaxX = target_extent[1];
+    double dfMinY = target_extent[2];
+    double dfMaxY = target_extent[3];
+    
+    papszArg = CSLAddString(papszArg, "-te");
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
+    
+    // we otherwise set a dud dimension, the user didn't set it (so they get native for the extent)
+    if (target_dim.size() > 1) {
+      int nXSize = target_dim[0];
+      int nYSize = target_dim[1];
+      papszArg = CSLAddString(papszArg, "-ts");
+      papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
+      papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
     }
-  }//si
-  // we always provide extent and dimension, crs is optional and just means subset/decimate
-  double dfMinX = target_extent[0];
-  double dfMaxX = target_extent[1];
-  double dfMinY = target_extent[2];
-  double dfMaxY = target_extent[3];
-  
-  papszArg = CSLAddString(papszArg, "-te");
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
-  
-  // we otherwise set a dud dimension, the user didn't set it (so they get native for the extent)
-  if (target_dim.size() > 1) {
-    int nXSize = target_dim[0];
-    int nYSize = target_dim[1];
-    papszArg = CSLAddString(papszArg, "-ts");
-    papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
-    papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
+    
+    //const auto poFirstBand = GDALGetRasterBand(poSrcDS[dsi0], 1);
+    
+    papszArg = CSLAddString(papszArg, "-r");
+    papszArg = CSLAddString(papszArg, resample[0]);
+    
+    // bundle on all user-added options
+    for (int wopt = 0; wopt < warp_options.length(); wopt++) {
+      papszArg = CSLAddString(papszArg, "-wo");
+      papszArg = CSLAddString(papszArg, warp_options[wopt]);
+    }
+    for (int topt = 0; topt < transformation_options.length(); topt++) {
+      papszArg = CSLAddString(papszArg, "-to");
+      papszArg = CSLAddString(papszArg, transformation_options[topt]);
+    }
+    
+    auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
+    CSLDestroy(papszArg);
+    GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
+    auto hRet = GDALWarp( "", nullptr,
+                          source_filename.size(), poSrcDS,
+                          psOptions, nullptr);
+    CPLAssert( hRet != NULL );
+    GDALWarpAppOptionsFree(psOptions);
+    
+    
+    const int nBands = GDALGetRasterCount(poSrcDS[dsi0]);
+    int band_length = bands.size();
+    if (bands.size() == 1 && bands[0] == 0) {
+      band_length = nBands;
+    }
+    
+    std::vector<int> bands_to_read(band_length);
+    if (bands.size() == 1 && bands[0] == 0) {
+      for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
+      // Rprintf("index bands\n");
+    } else {
+      for (int i = 0; i < bands.size(); i++) bands_to_read[i] = bands[i];
+      // Rprintf("input bands\n");
+    }
+    LogicalVector unscale = true;
+    IntegerVector window(6);
+    // default window with all zeroes results in entire read (for warp)
+    // also supports vapour_raster_read  atm
+    for (int i  = 0; i < window.size(); i++) window[i] = 0;
+    List outlist = gdallibrary::gdal_read_band_values(GDALDataset::FromHandle(hRet),
+                                                      window,
+                                                      bands_to_read,
+                                                      band_output_type,
+                                                      resample,
+                                                      unscale);
+    
+    GDALClose( hRet );
+    for (int si = 0; si < source_filename.size(); si++) {
+      GDALClose( poSrcDS[si] );
+    }
+    
+    CPLFree(poSrcDS);
+    
+    return outlist;
   }
   
-  //const auto poFirstBand = GDALGetRasterBand(poSrcDS[dsi0], 1);
-  
-  papszArg = CSLAddString(papszArg, "-r");
-  papszArg = CSLAddString(papszArg, resample[0]);
-  
-  // bundle on all user-added options
-  for (int wopt = 0; wopt < warp_options.length(); wopt++) {
-    papszArg = CSLAddString(papszArg, "-wo");
-    papszArg = CSLAddString(papszArg, warp_options[wopt]);
-  }
-  for (int topt = 0; topt < transformation_options.length(); topt++) {
-    papszArg = CSLAddString(papszArg, "-to");
-    papszArg = CSLAddString(papszArg, transformation_options[topt]);
-  }
-  
-  auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
-  CSLDestroy(papszArg);
-  GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
-  auto hRet = GDALWarp( "", nullptr,
-                        source_filename.size(), poSrcDS,
-                        psOptions, nullptr);
-  CPLAssert( hRet != NULL );
-  GDALWarpAppOptionsFree(psOptions);
-  
-  
-  const int nBands = GDALGetRasterCount(poSrcDS[dsi0]);
-  int band_length = bands.size();
-  if (bands.size() == 1 && bands[0] == 0) {
-    band_length = nBands;
-  }
-  
-  std::vector<int> bands_to_read(band_length);
-  if (bands.size() == 1 && bands[0] == 0) {
-    for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
-    // Rprintf("index bands\n");
-  } else {
-    for (int i = 0; i < bands.size(); i++) bands_to_read[i] = bands[i];
-    // Rprintf("input bands\n");
-  }
-  LogicalVector unscale = true;
-  IntegerVector window(6);
-  // default window with all zeroes results in entire read
-  // which is correct for warp as it currently is defined
-  // but also supports vapour_raster_read even though that gets 
-  // specified from vapour_raster_info atm
-  for (int i  = 0; i < window.size(); i++) window[i] = 0;
-  Rprintf("about to read\n");
-  Rprintf("%s\n", band_output_type[0]);
-  List outlist = gdallibrary::gdal_read_band_values(hRet,
-                                                    window,
-                                                    bands_to_read,
-                                                    band_output_type,
-                                                    resample,
-                                                    unscale);
-  //List outlist(1);
-  
-  GDALClose( hRet );
-  for (int si = 0; si < source_filename.size(); si++) {
-    GDALClose( poSrcDS[si] );
-  }
-  
-  CPLFree(poSrcDS);
-  
-  return outlist;
-}
-
 } // namespace gdalwarpmem
 #endif
