@@ -67,7 +67,6 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   
   GDALDatasetH DS;   
   GDALDatasetH h1; 
-  GDALDatasetH *ds;
   poSrcDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * source_filename.size()));
   
   for (int i = 0; i < source_filename.size(); i++) {
@@ -84,6 +83,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     }
     h1 = GDALTranslate("", DS, psTransOptions, nullptr);
     poSrcDS[i] = static_cast<GDALDatasetH *>(h1); 
+   
   }
   GDALTranslateOptionsFree( psTransOptions );
   
