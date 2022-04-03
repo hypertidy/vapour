@@ -1066,7 +1066,7 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
   //https://gis.stackexchange.com/questions/164279/how-do-i-create-ogrspatialreference-from-raster-files-georeference-c
   out[4] = Rcpp::CharacterVector::create(proj);
   names[4] = "projection";
-
+   
   // get band number
   int nBands = GDALGetRasterCount(hDataset);
   out[5] = nBands;
@@ -1074,7 +1074,10 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
 
   char *stri;
   OGRSpatialReference oSRS;
-  char **cwkt = (char **) &proj;
+  const char *proj2;
+  proj2 = GDALGetProjectionRef(hDataset);
+  char **cwkt = (char **) &proj2;
+
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
   oSRS.importFromWkt(cwkt);
 #else
@@ -1083,7 +1086,8 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
   oSRS.exportToProj4(&stri);
   out[6] =  Rcpp::CharacterVector::create(stri); //Rcpp::CharacterVector::create(stri);
   names[6] = "projstring";
-
+  CPLFree(stri);
+  
   int succ;
   out[7] = GDALGetRasterNoDataValue(hBand, &succ);
   names[7] = "nodata_value";
@@ -1120,7 +1124,6 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
 
   out.attr("names") = names;
 
-  //CPLFree(stri);
   // close up
   GDALClose( hDataset );
   return out;
