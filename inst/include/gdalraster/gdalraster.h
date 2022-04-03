@@ -127,6 +127,7 @@ Rprintf("after argv: %s\n", projection[0]);
 }
 
 
+
 inline CharacterVector open_as_vrt(CharacterVector dsn, NumericVector extent, CharacterVector projection, IntegerVector sds) {
   CharacterVector out(1);
 

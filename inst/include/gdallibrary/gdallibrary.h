@@ -1237,6 +1237,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
   // complex types not supported Byte, UInt16, Int16, UInt32, Int32, Float32, Float64
   GDALDataType src_band_type =  GDALGetRasterDataType(GDALGetRasterBand(hRet, bands_to_read[0])); 
   bool output_type_set = false; 
+  
   if (!band_output_type[0].empty()) {
     if (band_output_type[0] == "Byte")   src_band_type = GDT_Byte;
     if (band_output_type[0] == "UInt16") src_band_type = GDT_UInt16;
@@ -1328,7 +1329,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
       band_type_not_supported = false;
     }
     // if hasScale we assume to never use scale/offset in integer case (see block above we already dealt)
-    if (!hasScale & 
+    if ((!hasScale) & 
         ((src_band_type == GDT_Int16) |
         (src_band_type == GDT_Int32) |
         (src_band_type == GDT_UInt16) |

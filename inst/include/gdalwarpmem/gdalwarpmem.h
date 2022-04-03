@@ -28,10 +28,11 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   
   GDALDatasetH *poSrcDS;
   GDALAllRegister();
-  poSrcDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * source_filename.size()));
+  bool set_projection = false;
+  CPLStringList translate_argv;
+  translate_argv.AddString("-of");
+  translate_argv.AddString("VRT");
   
-  Rprintf("before source: %s\n", source_WKT[0]);
-      
   if ( !source_WKT[0].empty()) {
     if (silent[0] != true) Rprintf("setting projection");
     // if supplied check that it's valid
@@ -40,35 +41,52 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     OGRErr source_chk =  oSourceSRS->SetFromUserInput((char *)source_WKT[0]);
     delete oSourceSRS;
     if (source_chk != OGRERR_NONE) Rcpp::stop("cannot initialize source projection: %s\n", (char *)source_WKT[0]);
+    set_projection = true;
   }
   
-  Rprintf("after source: %s\n", source_WKT[0]);
+  
+  bool set_extent = source_extent.size() == 4;
+  
+  if (set_extent) {
+    if ((source_extent[1] <= source_extent[0]) || source_extent[3] <= source_extent[2]) {
+      Rprintf("source_extent must be valid c(xmin, xmax, ymin, ymax)\n");
+      stop("error: gdal_warp_in_memory");
+    }
+    translate_argv.AddString("-a_ullr");
+    translate_argv.AddString(CPLSPrintf("%f", source_extent[0]));
+    translate_argv.AddString(CPLSPrintf("%f", source_extent[3]));
+    translate_argv.AddString(CPLSPrintf("%f", source_extent[1]));
+    translate_argv.AddString(CPLSPrintf("%f", source_extent[2]));
+  }
+  if (set_projection) {
+    translate_argv.AddString("-a_srs");
+    translate_argv.AddString(source_WKT[0]);
+  }
+  
+  GDALTranslateOptions* psTransOptions = GDALTranslateOptionsNew(translate_argv.List(), nullptr);
+  
+  GDALDatasetH DS;   
+  GDALDatasetH h1; 
+  GDALDatasetH *ds;
+  poSrcDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * source_filename.size()));
+  
+  for (int i = 0; i < source_filename.size(); i++) {
+    DS = GDALOpen(source_filename[i], GA_ReadOnly);
+    h1 = GDALTranslate("", DS, psTransOptions, nullptr);
+    poSrcDS[i] = static_cast<GDALDatasetH *>(h1); 
+  }
+  GDALTranslateOptionsFree( psTransOptions );
+  
   
   char** papszArg = nullptr;
-  int dsi0 = 0;
-  for (int si = 0; si < source_filename.size(); si++) {
-    
-    poSrcDS[si] = gdalraster::gdal_dataset_augment((char *)source_filename[si], source_extent, source_WKT, 1);
-    
-    if (poSrcDS[si] == NULL) {
-      Rprintf("cannot open %s\n", (char *)source_filename[si]);
-      
-      if (si > 0) {
-        for (int ii = 0; ii < si; ii++) {
-          GDALClose( poSrcDS[ii] );
-        }
-      }
-      Rprintf("failed to open\n");
-      Rcpp::stop("\n");
-    }
-    
+  
     // https://github.com/OSGeo/gdal/blob/fec15b146f8a750c23c5e765cac12ed5fc9c2b85/gdal/frmts/gtiff/cogdriver.cpp#L512
     papszArg = CSLAddString(papszArg, "-of");
     papszArg = CSLAddString(papszArg, "MEM");
     
     // if we don't supply it don't try to set it!
-    Rprintf("skip target\n");
-    if (false && !target_WKT[0].empty()){
+    
+    if (!target_WKT[0].empty()){
       // if supplied check that it's valid
       OGRSpatialReference* oTargetSRS = nullptr;
       oTargetSRS = new OGRSpatialReference;
@@ -78,9 +96,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       papszArg = CSLAddString(papszArg, "-t_srs");
       papszArg = CSLAddString(papszArg, target_WKT[0]);
     }
-    
-  } // int si
-  
+
   // we always provide extent and dimension, crs is optional and just means subset/decimate
   double dfMinX = target_extent[0];
   double dfMaxX = target_extent[1];
@@ -120,9 +136,11 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
+  Rprintf("warp\n");
   auto hRet = GDALWarp( "", nullptr,
                         source_filename.size(), poSrcDS,
                         psOptions, nullptr);
+  Rprintf("after\n");
   CPLAssert( hRet != NULL );
   GDALWarpAppOptionsFree(psOptions);
   for (int si = 0; si < source_filename.size(); si++) {
@@ -144,7 +162,6 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   } else {
     for (int i = 0; i < bands.size(); i++) {
       // clean this up, we need to identify which bands can't be read earlier or drop them
-      GDALClose( hRet );
       if (bands[i] > nBands) stop("cannot read band %i, there are only (%i) bands\n", bands[i], nBands);
       bands_to_read[i] = bands[i];
     }
