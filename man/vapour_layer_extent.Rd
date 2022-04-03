@@ -13,12 +13,12 @@ vapour_layer_extent(dsource, layer = 0L, sql = "", extent = 0, ...)
 
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
 
-\item{extent}{apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin, xmax, ymin, ymax)' but sp bbox, sf bbox, and raster extent also accepted)}
+\item{extent}{optional extent (xmin,xmax,ymin,ymax)}
 
-\item{...}{}
+\item{...}{unused}
 }
 \value{
-vector of numeric valuex xmin,xmax,ymin,ymax
+vector of numeric values xmin,xmax,ymin,ymax
 }
 \description{
 Extent of all features in entire layer, possibly after execution of sql query and

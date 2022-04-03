@@ -136,11 +136,11 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
-  Rprintf("warp\n");
+  
   auto hRet = GDALWarp( "", nullptr,
                         source_filename.size(), poSrcDS,
                         psOptions, nullptr);
-  Rprintf("after\n");
+  
   CPLAssert( hRet != NULL );
   GDALWarpAppOptionsFree(psOptions);
   for (int si = 0; si < source_filename.size(); si++) {
@@ -158,14 +158,14 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   std::vector<int> bands_to_read(band_length);
   if (bands.size() == 1 && bands[0] == 0) {
     for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
-    // Rprintf("index bands\n");
+    
   } else {
     for (int i = 0; i < bands.size(); i++) {
       // clean this up, we need to identify which bands can't be read earlier or drop them
       if (bands[i] > nBands) stop("cannot read band %i, there are only (%i) bands\n", bands[i], nBands);
       bands_to_read[i] = bands[i];
     }
-    // Rprintf("input bands\n");
+    
   }
   LogicalVector unscale = true;
   IntegerVector window(6);

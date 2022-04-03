@@ -16,13 +16,13 @@
 #' 
 #' 
 #'
-#' @param dsn data source name, filepath, url, database connnection string, or VRT text
+#' @param dsn data source name, filepath, url, database connection string, or VRT text
 #' @param extent (optional) numeric extent, xmin,xmax,ymin,ymax
 #' @param projection (optional) character string, projection string ("auth:code", proj4, or WKT, or anything understood by PROJ)
 #' @param bands (optional) which band/s to include from the source
 #' @param sds which subdataset to select from a source with more than one
 #'
-#' @return
+#' @return VRT character string (for use by GDAL-capable tools, i.e. reading raster)
 #' @export
 #'
 #' @examples

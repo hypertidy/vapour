@@ -94,7 +94,7 @@ test_that("robust to bad inputs", {
 
   expect_error(vapour_warp_raster(f, extent = c(0, 1, 0, 1), band = 2,
                                   projection = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10)),
-               "band requested exceeds"
+               "cannot read band 2"
   )
 
 })

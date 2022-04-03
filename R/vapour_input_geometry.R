@@ -77,9 +77,10 @@ vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE,
 #' input extent filter. 
 #'
 #' @inheritParams vapour_read_geometry
-#' @param ... 
+#' @param extent optional extent (xmin,xmax,ymin,ymax)
+#' @param ... unused
 #'
-#' @return vector of numeric valuex xmin,xmax,ymin,ymax
+#' @return vector of numeric values xmin,xmax,ymin,ymax
 #' @seealso vapour_read_extent vapour_layer_info
 #' @export
 #'

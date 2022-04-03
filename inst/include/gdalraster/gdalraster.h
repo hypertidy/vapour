@@ -115,8 +115,7 @@ inline GDALDataset *gdal_dataset_augment(CharacterVector dsn,
      argv.AddString("-a_srs");
      argv.AddString(projection[0]);
   }
-Rprintf("after argv: %s\n", projection[0]);
-    
+
   GDALTranslateOptions* psOptions = GDALTranslateOptionsNew(argv.List(), nullptr);
   auto hRet = GDALTranslate("", GDALDataset::ToHandle(poSrcDS),
                             psOptions, nullptr);

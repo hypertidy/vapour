@@ -7,7 +7,7 @@
 vapour_vrt(dsn, extent = NULL, projection = NULL, bands = NULL, sds = 1L)
 }
 \arguments{
-\item{dsn}{data source name, filepath, url, database connnection string, or VRT text}
+\item{dsn}{data source name, filepath, url, database connection string, or VRT text}
 
 \item{extent}{(optional) numeric extent, xmin,xmax,ymin,ymax}
 
@@ -18,7 +18,7 @@ vapour_vrt(dsn, extent = NULL, projection = NULL, bands = NULL, sds = 1L)
 \item{sds}{which subdataset to select from a source with more than one}
 }
 \value{
-
+VRT character string (for use by GDAL-capable tools, i.e. reading raster)
 }
 \description{
 Simple VRT creation of a GDAL virtual raster.
