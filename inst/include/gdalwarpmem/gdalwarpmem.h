@@ -74,7 +74,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     // unwind everything, and stop
     if (DS == nullptr) {
       if (i > 0) {
-        for (int j = 0; j < i; j++) GDALClose(poSrcDS[i]);
+        for (int j = 0; j < i; j++) GDALClose(poSrcDS[j]);
       }
       GDALTranslateOptionsFree( psTransOptions );
       CPLFree(poSrcDS);
