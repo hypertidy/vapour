@@ -82,6 +82,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       Rcpp::stop(""); 
     }
     h1 = GDALTranslate("", DS, psTransOptions, nullptr);
+    GDALReleaseDataset(DS);
     poSrcDS[i] = static_cast<GDALDatasetH *>(h1); 
    
   }
