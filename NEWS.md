@@ -1,5 +1,10 @@
 # vapour dev
 
+* Flushed out memory bugs with valgrind. 
+
+* Refactored read from raster and warp raster. The warping uses the same band reader as the "reader", but could be cleaned 
+up some more still. 
+
 * Faster layer extent determination in `vapour_layer_info()`, new function `vapour_layer_extent()`. 
 
 * Better escaping for layer name, needed quotes around layer 'SELECT' when counting features with 
