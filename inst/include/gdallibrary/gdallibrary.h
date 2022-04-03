@@ -114,8 +114,8 @@ inline OGRLayer *gdal_layer(GDALDataset *poDS, IntegerVector layer, CharacterVec
   } else {
     int nlayer = poDS->GetLayerCount();
     if (layer[0] >= nlayer) {
-      Rprintf("layer count: %i\n", nlayer);
-      Rprintf("layer index: %i\n", layer[0]);
+      //Rprintf("layer count: %i\n", nlayer);
+      //Rprintf("layer index: %i\n", layer[0]);
       Rcpp::stop("layer index exceeds layer count");
     }
     poLayer =  poDS->GetLayer(layer[0]);

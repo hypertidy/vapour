@@ -72,6 +72,16 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   
   for (int i = 0; i < source_filename.size(); i++) {
     DS = GDALOpen(source_filename[i], GA_ReadOnly);
+    // unwind everything, and stop
+    if (DS == nullptr) {
+      if (i > 0) {
+        for (int j = 0; j < i; j++) GDALClose(poSrcDS[i]);
+      }
+      GDALTranslateOptionsFree( psTransOptions );
+      CPLFree(poSrcDS);
+      Rprintf("input source not readable: %s\n", (char *)source_filename[i]);
+      Rcpp::stop(""); 
+    }
     h1 = GDALTranslate("", DS, psTransOptions, nullptr);
     poSrcDS[i] = static_cast<GDALDatasetH *>(h1); 
   }
