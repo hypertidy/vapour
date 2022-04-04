@@ -33,12 +33,6 @@
 #'           dimension = rep(min(dev.size("px")), each = 2L), 
 #'           projection = "+proj=aeqd +lon_0=71 +lat_0=20")
 #'  gdalio_set_default_grid(g)
-#'  par(mfrow = c(1, 2))
-#' terra::plotRGB(gdalio_terra(osm_src, bands = 1:3, resample = "cubic", warp_options = c("SAMPLE_GRID=YES")))
-#' #terra::plot(terra::project(terra::vect(graticule::graticule()), g$projection), add = TRUE)
-
-#' terra::plotRGB(gdalio_terra(bm_src, bands = 1:3, resample = "cubic", warp_options = c("SAMPLE_GRID=YES")))
-#' #terra::plot(terra::project(terra::vect(graticule::graticule()), g$projection, ), add = TRUE)
 .vapour_tilexyz <- function(x, 
                            user_agent = getOption("HTTPUserAgent"), 
                            bands_count = 3L,
