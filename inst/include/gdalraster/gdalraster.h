@@ -83,6 +83,46 @@ inline GDALDataset *gdal_open_dsn(CharacterVector dsn, IntegerVector sds) {
   return GDALDataset::FromHandle( DS);
 }
 
+inline GDALDatasetH gdal_dataset_augmentH(CharacterVector dsn,
+                                         NumericVector extent,
+                                         CharacterVector projection,
+                                         IntegerVector sds) {
+  auto poSrcDS = gdal_open_dsn(dsn, sds);
+  if( poSrcDS == nullptr )
+  {
+    return nullptr;
+  }
+  CPLStringList argv;
+  argv.AddString("-of");
+  argv.AddString("VRT");
+  bool set_extent = extent.size() == 4;
+  bool set_projection = !projection[0].empty();
+  
+  if (set_extent) {
+    if ((extent[1] <= extent[0]) || extent[3] <= extent[2]) {
+      poSrcDS->ReleaseRef();
+      Rprintf("extent must be valid c(xmin, xmax, ymin, ymax)\n");
+      return nullptr;
+    }
+    argv.AddString("-a_ullr");
+    argv.AddString(CPLSPrintf("%f", extent[0]));
+    argv.AddString(CPLSPrintf("%f", extent[3]));
+    argv.AddString(CPLSPrintf("%f", extent[1]));
+    argv.AddString(CPLSPrintf("%f", extent[2]));
+  }
+  if (set_projection) {
+    argv.AddString("-a_srs");
+    argv.AddString(projection[0]);
+  }
+  
+  GDALTranslateOptions* psOptions = GDALTranslateOptionsNew(argv.List(), nullptr);
+  auto hRet = GDALTranslate("", GDALDataset::ToHandle(poSrcDS),
+                            psOptions, nullptr);
+  GDALTranslateOptionsFree( psOptions );
+  poSrcDS->ReleaseRef();
+  
+  return hRet;
+}
 
 inline GDALDataset *gdal_dataset_augment(CharacterVector dsn,
                                   NumericVector extent,

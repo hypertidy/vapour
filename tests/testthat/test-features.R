@@ -94,8 +94,14 @@ test_that("limit_n works",
             expect_silent(vapour_read_geometry(f, limit_n = 1L)) %>% expect_length(1L)
             expect_silent(vapour_read_geometry(f, limit_n = 1L, skip_n = 2)) %>% expect_length(1L)
             
+            expect_silent(vapour_read_type(f, limit_n = 1L, skip_n = 2))  %>% expect_equal(5L)
+            expect_silent(vapour_read_names(f, limit_n = 1L, skip_n = 2)) %>% expect_equal(3L)
+            
+            expect_silent(vapour_read_names(f)) %>% expect_length(7L)
             expect_silent(vapour_read_geometry_text(f, limit_n = 3L)) %>% expect_length(3L)
 
+            expect_named(vapour_layer_info(f), c("dsn", "driver", "layer", "layer_names", "fields", "count", 
+                                                 "extent", "projection"))
             expect_silent(vapour_read_extent(f, limit_n = 3L)) %>% unlist(use.names = FALSE) %>% expect_length(12L)
 
             expect_error(vapour_read_attributes(f, limit_n = 5, skip_n = 7), "is 'skip_n' set too high?")
