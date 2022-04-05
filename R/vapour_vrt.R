@@ -66,3 +66,13 @@ vapour_vrt <- function(dsn, extent = NULL, projection = NULL, bands = NULL, sds 
   }
   raster_vrt_cpp(dsn, extent, projection[1L], sds)
 }
+
+
+vapour_warp_vrt <- function(dsn, extent = NULL, projection = NULL, bands = NULL, sds = 1L) {
+  if (file.exists(dsn)) {
+    dsn <- path.expand(dsn)
+  }
+  
+  
+  
+}

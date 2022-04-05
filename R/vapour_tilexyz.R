@@ -1,4 +1,4 @@
-#' Title
+#' Tile servers as VRT string
 #'
 #' first argument is a tile server template such as 'https://tile.openstreetmap.org/${z}/${x}/${y}.png'
 #' GDAL expects the '${z}' and so forth pattern. See GDAL doc for 'WMS' driver, the TMS minidriver 
@@ -27,13 +27,9 @@
 #' osm_src <- vapour:::.vapour_tilexyz()
 #' bm_src <- vapour:::.vapour_tilexyz("http://s3.amazonaws.com/com.modestmaps.bluemarble/${z}-r${y}-c${x}.jpg", 
 #'                  tile_level = 9L)
-#' source(system.file("raster_format/raster_format.codeR", package = "gdalio", mustWork = TRUE))
-#' library(gdalio)
-#' g <- list(extent = c(-1, 1, -1, 1) * 5e5, 
-#'           dimension = rep(min(dev.size("px")), each = 2L), 
-#'           projection = "+proj=aeqd +lon_0=71 +lat_0=20")
-#'  gdalio_set_default_grid(g)
-.vapour_tilexyz <- function(x, 
+#' ## these are tile server sources useable by raster,stars,terra,python rasterio, etc
+#' writeLines(bm_src, tfile <- tempfile(fileext = ".vrt"))
+vapour_tilexyz <- function(x, 
                            user_agent = getOption("HTTPUserAgent"), 
                            bands_count = 3L,
                            block_size = c(256L, 256L), 

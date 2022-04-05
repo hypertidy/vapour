@@ -2,10 +2,10 @@
   if (nchar(x) == 0 || is.na(x)) return("")
   xout <- toupper(x[1L])
   xout <- c("RAW" = "Byte", "INTEGER" = "Int32", "DOUBLE" = "Float64", "NUMERIC" = "Float64", 
-    "BYTE" = "Byte", 
-    "UINT16" = "Int32", "INT16" = "Int32", 
-    "UINT32" = "Int32", "INT32" = "Int32", 
-    "FLOAT32"  = "Float32", "FLOAT64" = "Float64")[xout]
+            "BYTE" = "Byte", 
+            "UINT16" = "Int32", "INT16" = "Int32", 
+            "UINT32" = "Int32", "INT32" = "Int32", 
+            "FLOAT32"  = "Float32", "FLOAT64" = "Float64")[xout]
   if (is.na(xout)) {
     message(sprintf("unknown 'band_output_type = \'%s\'', ignoring", x))
     xout <- ""
@@ -316,7 +316,11 @@ vapour_warp_raster <- function(x, bands = 1L,
                                band_output_type = "", 
                                warp_options = "", 
                                transformation_options = "") {
-  band_output_type <- .r_to_gdal_datatype(band_output_type)
+  if (band_output_type == "vrt") {
+    ## special case, do nothing
+  } else {
+    band_output_type <- .r_to_gdal_datatype(band_output_type)
+  }
   
   args <- list(...)
   
@@ -401,7 +405,7 @@ vapour_warp_raster <- function(x, bands = 1L,
   if (!silent) {
     if(!nchar(projection) > 0) message("target 'projection' not provided, read will occur from from source in native projection")
   }
-
+  
   if (is.null(source_wkt)) source_wkt <-  ""
   
   resample <- tolower(resample[1L])
@@ -434,10 +438,12 @@ vapour_warp_raster <- function(x, bands = 1L,
                                   band_output_type = band_output_type, 
                                   warp_options = warp_options, 
                                   transformation_options = transformation_options)
-  if (length(bands) == 1 && bands == 0) {
-    ## we got all bands by index
-    bands <- seq_along(vals)
-  }
+  if (band_output_type == "vrt") return(vals)
+  
+    if (length(bands) == 1 && bands == 0) {
+      ## we got all bands by index
+      bands <- seq_along(vals)
+    }
   names(vals) <- make.names(sprintf("Band%i",bands), unique = TRUE)
   vals
 }
@@ -464,16 +470,16 @@ vapour_warp_raster <- function(x, bands = 1L,
 #' # not useful given source type floating point, but works
 #' str(bytes)
 vapour_warp_raster_raw <- function(x, bands = 1L,
-                               extent = NULL,
-                               dimension = NULL,
-                               projection = "",
-                               set_na = TRUE,
-                               source_wkt = NULL,
-                               source_extent = 0.0,
-                               resample = "near",
-                               silent = TRUE, ...,
-                               warp_options = "", 
-                               transformation_options = "") {
+                                   extent = NULL,
+                                   dimension = NULL,
+                                   projection = "",
+                                   set_na = TRUE,
+                                   source_wkt = NULL,
+                                   source_extent = 0.0,
+                                   resample = "near",
+                                   silent = TRUE, ...,
+                                   warp_options = "", 
+                                   transformation_options = "") {
   if (length(bands) > 1 ) message("_raw output implies one band, ignoring all but the first")
   
   vapour_warp_raster(x, 
@@ -491,6 +497,32 @@ vapour_warp_raster_raw <- function(x, bands = 1L,
                      transformation_options = transformation_options, ...)[[1L]]
 }
 
+vapour_warp_raster_vrt <- function(x, bands = 1L,
+                                   extent = NULL,
+                                   dimension = NULL,
+                                   projection = "",
+                                   set_na = TRUE,
+                                   source_wkt = NULL,
+                                   source_extent = 0.0,
+                                   resample = "near",
+                                   silent = TRUE, ...,
+                                   warp_options = "", 
+                                   transformation_options = "") {
+  
+  vapour_warp_raster(x, 
+                     bands = bands, 
+                     extent = extent, 
+                     dimension = dimension, 
+                     projection = projection, 
+                     set_na = set_na, 
+                     source_wkt = source_wkt, 
+                     source_extent = source_extent, 
+                     resample = resample, 
+                     silent = silent, 
+                     band_output_type = "vrt",
+                     warp_options = warp_options, 
+                     transformation_options = transformation_options, ...)[[1L]]
+}
 
 #' @name vapour_warp_raster_raw
 #' @export
@@ -506,7 +538,7 @@ vapour_warp_raster_int <- function(x, bands = 1L,
                                    warp_options = "", 
                                    transformation_options = "")  {
   if (length(bands) > 1 ) message("_int output implies one band, ignoring all but the first")
-
+  
   vapour_warp_raster(x, 
                      bands = bands, 
                      extent = extent, 
@@ -571,18 +603,18 @@ vapour_warp_raster_chr <- function(x, bands = 1L,
   if (length(bands) == 2L) bands <- bands[1L]
   if (length(bands) > 4) bands <- bands[1:4]
   bytes  <- vapour_warp_raster(x, 
-                     bands = bands, 
-                     extent = extent, 
-                     dimension = dimension, 
-                     projection = projection, 
-                     set_na = set_na, 
-                     source_wkt = source_wkt, 
-                     source_extent = source_extent, 
-                     resample = resample, 
-                     silent = silent, 
-                     band_output_type = "Byte",
-                     warp_options = warp_options, 
-                     transformation_options = transformation_options, ...)
+                               bands = bands, 
+                               extent = extent, 
+                               dimension = dimension, 
+                               projection = projection, 
+                               set_na = set_na, 
+                               source_wkt = source_wkt, 
+                               source_extent = source_extent, 
+                               resample = resample, 
+                               silent = silent, 
+                               band_output_type = "Byte",
+                               warp_options = warp_options, 
+                               transformation_options = transformation_options, ...)
   ## note that we replicate out *3 if we only have one band ... (annoying of as.raster)
   as.vector(grDevices::as.raster(array(unlist(bytes, use.names = FALSE), c(length(bytes[[1]]), 1, max(c(3, length(bytes)))))))
   
@@ -603,15 +635,15 @@ vapour_warp_raster_hex <- function(x, bands = 1L,
                                    warp_options = "", 
                                    transformation_options = "") {
   vapour_warp_raster_chr(x, 
-                     bands = bands, 
-                     extent = extent, 
-                     dimension = dimension, 
-                     projection = projection, 
-                     set_na = set_na, 
-                     source_wkt = source_wkt, 
-                     source_extent = source_extent, 
-                     resample = resample, 
-                     silent = silent, 
-                     warp_options = warp_options, 
-                     transformation_options = transformation_options, ...)
+                         bands = bands, 
+                         extent = extent, 
+                         dimension = dimension, 
+                         projection = projection, 
+                         set_na = set_na, 
+                         source_wkt = source_wkt, 
+                         source_extent = source_extent, 
+                         resample = resample, 
+                         silent = silent, 
+                         warp_options = warp_options, 
+                         transformation_options = transformation_options, ...)
 }
