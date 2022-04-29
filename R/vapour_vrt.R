@@ -1,3 +1,15 @@
+
+
+
+
+
+
+
+
+
+
+
+
 #' Virtual raster 
 #' 
 #' Simple VRT creation of a GDAL virtual raster. 
@@ -21,18 +33,25 @@
 #' @param projection (optional) character string, projection string ("auth:code", proj4, or WKT, or anything understood by PROJ)
 #' @param bands (optional) which band/s to include from the source
 #' @param sds which subdataset to select from a source with more than one
+#' @param ... ignored
+#' @param relative_to_vrt default `FALSE`, if `TRUE` input strings that identify as files on the system are left as-is (by default they are made absolute at the R level)
 #'
 #' @return VRT character string (for use by GDAL-capable tools, i.e. reading raster)
 #' @export
 #'
 #' @examples
-#' tif <- system.file("extdata", "sst.tif", package = "vapour")
+#' tif <- system.file("extdata", "sst.tif", package = "vapour", mustWork = TRUE)
 #' vapour_vrt(tif)
 #' 
 #' vapour_vrt(tif, bands = c(1, 1))
-vapour_vrt <- function(dsn, extent = NULL, projection = NULL, bands = NULL, sds = 1L) {
-  if (file.exists(dsn)) {
-    dsn <- path.expand(dsn)
+#' 
+vapour_vrt <- function(dsn, extent = NULL, projection = NULL,  sds = 1L, bands = NULL, ..., relative_to_vrt = FALSE) {
+  if (!relative_to_vrt) { 
+    ## GDAL does its hardest to use relative paths, so either implemente Even's proposal or force alway absolute (but allow turn that off)
+    ## https://lists.osgeo.org/pipermail/gdal-dev/2022-April/055739.html
+    ## relativeToVRT doesn't really make sense for an in-memory VRT string, so depends what you're doing and we'll review over time :)
+    fe <- file.exists(dsn)
+    if (any(fe)) dsn[fe] <- normalizePath(dsn[fe])
   }
   ## FIXME: we can't do bands atm, also what else does boilerplate checks do that the new C++ in gdalraster doesn't do?
    # dsn <- sds_boilerplate_checks(dsn, sds)
@@ -64,7 +83,10 @@ vapour_vrt <- function(dsn, extent = NULL, projection = NULL, bands = NULL, sds 
     message("vapour_vrt(): projection must a valid projection string for PROJ")
     projection <- ""
   }
-  raster_vrt_cpp(dsn, extent, projection[1L], sds)
+  if (is.null(bands)) {
+    bands <- 0
+  }
+  raster_vrt_cpp(dsn, extent, projection[1L], sds, bands)
 }
 
 
