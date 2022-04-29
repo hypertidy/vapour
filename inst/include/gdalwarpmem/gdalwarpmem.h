@@ -142,22 +142,9 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   
   // Prepare to read bands
   const int nBands = GDALGetRasterCount(hRet);// GDALGetRasterCount(poSrcDS[dsi0]);
-  int band_length = bands.size();
-  if (bands.size() == 1 && bands[0] == 0) {
-    band_length = nBands;
-  }
- 
-  std::vector<int> bands_to_read(band_length);
-  if (bands.size() == 1 && bands[0] == 0) {
-    for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
-    
-  } else {
-    for (int i = 0; i < bands.size(); i++) {
-      // clean this up, we need to identify which bands can't be read earlier or drop them
-      if (bands[i] > nBands) stop("cannot read band %i, there are only (%i) bands\n", bands[i], nBands);
-      bands_to_read[i] = bands[i];
-    }
-  }
+  std::vector<int> bands_to_read(nBands);
+  for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
+  
   LogicalVector unscale = true;
   IntegerVector window(6);
   // default window with all zeroes results in entire read (for warp)

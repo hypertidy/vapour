@@ -52,14 +52,14 @@ inline CharacterVector gdal_subdataset_1(GDALDataset *poDataset, int i_sds) {
   
   char **SDS2 = poDataset->GetMetadata("SUBDATASETS");
   while (SDS2 && SDS2[sdi] != NULL) {
-    if (sdi * 2 == (i_sds - 1)) {
-      // ii*2 because SDS tokens come in pairs
-      char  **papszTokens = CSLTokenizeString2(SDS2[sdi * 2], "=", 0);
+    if (sdi / 2 == (i_sds -1 )) {
+      char  **papszTokens = CSLTokenizeString2(SDS2[sdi ], "=", 0);
       ret[0] = papszTokens[1];
       CSLDestroy( papszTokens );
       break;
     }
-    sdi++; // count
+    // ii*2 because SDS tokens come in pairs
+      sdi = sdi + 1 + 1;
   }
   return ret;
 }
@@ -198,9 +198,9 @@ inline CharacterVector gdal_dsn_vrt(CharacterVector dsn, NumericVector extent, C
   GDALDatasetH DS;
   for (int i = 0; i < out.size(); i++) {
     if (extent.size() == 4 || (!projection[0].empty()) || bands[0] > 0) {
-      DS = gdalH_open_avrt(dsn[0], extent, projection, sds, bands);
+      DS = gdalH_open_avrt(dsn[i], extent, projection, sds, bands);
     } else {
-      DS = gdalH_open_dsn(dsn[0], sds);
+      DS = gdalH_open_dsn(dsn[i], sds);
     }
     out[i] = gdal_vrt_text((GDALDataset*) DS);
     GDALClose(DS);
