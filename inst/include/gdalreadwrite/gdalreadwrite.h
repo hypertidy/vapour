@@ -27,7 +27,6 @@ inline List gdal_read_block(CharacterVector dsn, IntegerVector offset,
 inline LogicalVector gdal_write_block(CharacterVector dsn, NumericVector data,
                                       IntegerVector offset, IntegerVector dimension, IntegerVector band) {
   GDALDataset  *poDataset;
-  GDALAllRegister();
   poDataset = (GDALDataset *) GDALOpen(dsn[0], GA_Update );
   if( poDataset == NULL )
   {

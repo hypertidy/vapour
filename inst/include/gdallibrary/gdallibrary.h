@@ -46,7 +46,11 @@ inline NumericVector gdal_layer_extent(OGRLayer *poLayer) {
     
   OGREnvelope poEnvelope;
   double err = poLayer ->GetExtent(&poEnvelope,true);
-  
+  if (err) {
+    // do nothing
+  } else {
+    // more nothin
+  }
   NumericVector out(4); 
   out[0] = poEnvelope.MinX;
   out[1] = poEnvelope.MaxX;
@@ -939,8 +943,8 @@ inline CharacterVector gdal_sds_list(const char* pszFilename)
   }
 
   Rcpp::CharacterVector ret; 
-  if (gdalraster::has_subdataset(poDataset)) {
-    ret = gdalraster::list_subdatasets(poDataset);
+  if (gdalraster::gdal_has_subdataset(poDataset)) {
+    ret = gdalraster::gdal_list_subdatasets(poDataset);
   } else {
     CharacterVector a(1);
     a[0] = pszFilename;
@@ -1239,7 +1243,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
   // if band_output_type is not empty, possible override:
   // complex types not supported Byte, UInt16, Int16, UInt32, Int32, Float32, Float64
   GDALDataType src_band_type =  GDALGetRasterDataType(GDALGetRasterBand(hRet, bands_to_read[0])); 
-  bool output_type_set = false; 
+  //bool output_type_set = false; 
   
   if (!band_output_type[0].empty()) {
     if (band_output_type[0] == "Byte")   src_band_type = GDT_Byte;
@@ -1251,7 +1255,8 @@ inline List gdal_read_band_values(GDALDataset *hRet,
   
     if (band_output_type[0] == "Float32") src_band_type = GDT_Float32;
     if (band_output_type[0] == "Float64") src_band_type = GDT_Float64;
-    output_type_set = true;
+    
+    //output_type_set = true;
   }
   
   int sbands = (int)bands_to_read.size();
@@ -1410,7 +1415,6 @@ inline List gdal_raster_io(CharacterVector dsn,
 {
 
   GDALDataset  *poDataset;
-  GDALAllRegister();
   poDataset = (GDALDataset *) GDALOpen(dsn[0], GA_ReadOnly );
   if( poDataset == NULL )
   {

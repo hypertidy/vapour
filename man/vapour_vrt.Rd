@@ -4,7 +4,15 @@
 \alias{vapour_vrt}
 \title{Virtual raster}
 \usage{
-vapour_vrt(dsn, extent = NULL, projection = NULL, bands = NULL, sds = 1L)
+vapour_vrt(
+  dsn,
+  extent = NULL,
+  projection = NULL,
+  sds = 1L,
+  bands = NULL,
+  ...,
+  relative_to_vrt = FALSE
+)
 }
 \arguments{
 \item{dsn}{data source name, filepath, url, database connection string, or VRT text}
@@ -13,9 +21,13 @@ vapour_vrt(dsn, extent = NULL, projection = NULL, bands = NULL, sds = 1L)
 
 \item{projection}{(optional) character string, projection string ("auth:code", proj4, or WKT, or anything understood by PROJ)}
 
+\item{sds}{which subdataset to select from a source with more than one}
+
 \item{bands}{(optional) which band/s to include from the source}
 
-\item{sds}{which subdataset to select from a source with more than one}
+\item{...}{ignored}
+
+\item{relative_to_vrt}{default \code{FALSE}, if \code{TRUE} input strings that identify as files on the system are left as-is (by default they are made absolute at the R level)}
 }
 \value{
 VRT character string (for use by GDAL-capable tools, i.e. reading raster)
@@ -36,8 +48,9 @@ If 'bands' is provided this is used to select a set of bands (numbered from 1), 
 in any order.
 }
 \examples{
-tif <- system.file("extdata", "sst.tif", package = "vapour")
+tif <- system.file("extdata", "sst.tif", package = "vapour", mustWork = TRUE)
 vapour_vrt(tif)
 
 vapour_vrt(tif, bands = c(1, 1))
+
 }
