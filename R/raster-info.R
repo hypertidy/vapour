@@ -208,8 +208,13 @@ vapour_raster_gcp <- function(x, ...) {
 #' }
 #' vapour_sds_names(system.file("extdata", "sst.tif", package = "vapour"))
 vapour_sds_names <- function(x) {
+  if(!length(x) == 1L) {
+    if (length(x) < 1) stop("no input 'x' value")
+    message("'x' expected as a single string value, ignoring all but the first")
+    x <- x[1L]
+  }
   if (file.exists(x)) x <- normalizePath(x)
-  stopifnot(length(x) == 1L)
+  
   sources <- sds_list_gdal_cpp(x)
   if (length(sources) < 2L && nchar(sources[1L]) < 1L) sources <- x
   list(datasource = rep(x, length(sources)), subdataset = sources)
