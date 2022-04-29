@@ -1,8 +1,8 @@
 pandoc: 2.7.3
-pkgdown: 2.0.2
+pkgdown: 2.0.3
 pkgdown_sha: ~
 articles:
   feature-access: feature-access.html
   vapour: vapour.html
-last_built: 2022-04-05T10:52Z
+last_built: 2022-04-29T05:48Z
 
