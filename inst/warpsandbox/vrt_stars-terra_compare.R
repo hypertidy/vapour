@@ -65,3 +65,20 @@ axis(1);axis(2)
 
 
 
+
+
+library(vapour)
+zipurl <- "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2/ETOPO2v2-2006/ETOPO2v2c/netCDF/ETOPO2v2c_f4_netCDF.zip"
+vsiurl <- file.path("/vsizip//vsicurl", zipurl)
+(u <- file.path(vsiurl, 
+                vapour_vsi_list(vsiurl)[1L]))
+## helper fun
+rinfo <- function(x) setNames(vapour_raster_info(x)[c("extent", "dimXY", "projection")], c("extent", "dimension", "projection"))
+rinfo(u)
+
+## relies on dev build of GDAL, with local patch to vrt:// connection support (adding a_ullr and a_srs)
+u_augment <- sprintf("vrt://%s?a_ullr=-180 90 180 -90&a_srs=OGC:4326", u)
+u_augment
+
+rinfo(u_augment)
+
