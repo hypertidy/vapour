@@ -438,7 +438,14 @@ vapour_warp_raster <- function(x, bands = 1L,
                                   band_output_type = band_output_type, 
                                   warp_options = warp_options, 
                                   transformation_options = transformation_options)
-  if (band_output_type == "vrt") return(vals)
+  
+  # ##// if we Dataset->RasterIO we don't have separated bands'
+  # nbands <- length(vals[[1L]]) / prod(as.integer(dimension))
+  # if (nbands > 1) vals <- split(vals[[1L]], rep(seq_len(nbands), each = prod(as.integer(dimension))))
+  # 
+  # names(vals) <- make.names(sprintf("Band%i",seq_len(nbands)), unique = TRUE)
+  # 
+  if (band_output_type == "vrt") return(vals[[1L]])
   
     if (length(bands) == 1 && bands == 0) {
       ## we got all bands by index
