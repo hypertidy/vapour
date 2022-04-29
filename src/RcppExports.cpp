@@ -10,26 +10,26 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// gdal_set_config_option
-IntegerVector gdal_set_config_option(CharacterVector option, CharacterVector value);
-RcppExport SEXP _vapour_gdal_set_config_option(SEXP optionSEXP, SEXP valueSEXP) {
+// set_gdal_config_cpp
+IntegerVector set_gdal_config_cpp(CharacterVector option, CharacterVector value);
+RcppExport SEXP _vapour_set_gdal_config_cpp(SEXP optionSEXP, SEXP valueSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterVector >::type option(optionSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type value(valueSEXP);
-    rcpp_result_gen = Rcpp::wrap(gdal_set_config_option(option, value));
+    rcpp_result_gen = Rcpp::wrap(set_gdal_config_cpp(option, value));
     return rcpp_result_gen;
 END_RCPP
 }
-// gdal_get_config_option
-CharacterVector gdal_get_config_option(CharacterVector option);
-RcppExport SEXP _vapour_gdal_get_config_option(SEXP optionSEXP) {
+// get_gdal_config_cpp
+CharacterVector get_gdal_config_cpp(CharacterVector option);
+RcppExport SEXP _vapour_get_gdal_config_cpp(SEXP optionSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterVector >::type option(optionSEXP);
-    rcpp_result_gen = Rcpp::wrap(gdal_get_config_option(option));
+    rcpp_result_gen = Rcpp::wrap(get_gdal_config_cpp(option));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -590,8 +590,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_vapour_gdal_set_config_option", (DL_FUNC) &_vapour_gdal_set_config_option, 2},
-    {"_vapour_gdal_get_config_option", (DL_FUNC) &_vapour_gdal_get_config_option, 1},
+    {"_vapour_set_gdal_config_cpp", (DL_FUNC) &_vapour_set_gdal_config_cpp, 2},
+    {"_vapour_get_gdal_config_cpp", (DL_FUNC) &_vapour_get_gdal_config_cpp, 1},
     {"_vapour_cleanup_gdal_cpp", (DL_FUNC) &_vapour_cleanup_gdal_cpp, 0},
     {"_vapour_driver_gdal_cpp", (DL_FUNC) &_vapour_driver_gdal_cpp, 1},
     {"_vapour_driver_id_gdal_cpp", (DL_FUNC) &_vapour_driver_id_gdal_cpp, 1},

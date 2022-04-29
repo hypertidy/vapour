@@ -26,6 +26,26 @@ inline void osr_cleanup() {
   OSRCleanup();
 }
 
+
+inline IntegerVector gdal_set_config_option(CharacterVector option, CharacterVector value) 
+{
+  CPLSetConfigOption( option[0], value[0] );
+  
+  
+  return 1;
+}
+
+inline CharacterVector gdal_get_config_option(CharacterVector option){
+  CharacterVector out(1);
+  const char *str = CPLGetConfigOption(option[0], nullptr);
+  if (str) 
+  {
+    out[0] = str;
+  }
+  return out;
+}
+
+
 inline CharacterVector gdal_layer_geometry_name(OGRLayer *poLayer) {
 
   poLayer->ResetReading();

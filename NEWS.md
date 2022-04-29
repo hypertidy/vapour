@@ -1,5 +1,8 @@
 # vapour dev
 
+* New functions `vapour_set_config()` and `vapour_get_config()` to control configuration 
+options for GDAL. 
+
 * Flushed out memory bugs with valgrind. 
 
 * Refactored read from raster and warp raster. The warping uses the same band reader as the "reader", but could be cleaned 

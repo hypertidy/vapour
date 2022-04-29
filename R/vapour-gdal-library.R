@@ -1,3 +1,47 @@
+#' Set and query GDAL configuration options
+#'
+#' These functions can get and set configuration options for GDAL, for fine
+#' control over specific GDAL behaviours. 
+#' 
+#' Configuration options may also be set as environment variables. 
+#' 
+#' See [https://trac.osgeo.org/gdal/wiki/ConfigOptions](GDAL config options) for
+#' details on available options. 
+#' @param option 
+#' @param value 
+#'
+#' @return character string for `vapour_get_config`, integer 1 for successful `vapour_set_config`
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' (orig <- vapour_get_config("GDAL_CACHEMAX"))
+#' vapour_set_config("GDAL_CACHEMAX", "64")
+#' vapour_get_config("GDAL_CACHEMAX")
+#' vapour_set_config("GDAL_CACHEMAX", orig)
+#' }
+vapour_set_config <- function(option, value) {
+  option <- as.character(option[1L])
+  value <- as.character(value[1])
+  if (length(option) < 1 || nchar(option) < 1 || is.na(option) || is.null(option) ) {
+    stop(sprintf("invalid 'option': %s - must be valid character string"))
+  }
+  if (length(value) < 1 || nchar(value) < 1 || is.na(value) || is.null(value) ) {
+    stop(sprintf("invalid 'value': %s - must be valid character string"))
+  }
+  set_gdal_config_cpp(option, value)
+}
+
+#' @export
+#' @name vapour_set_config
+vapour_get_config  <- function(option) {
+  if (length(option) < 1 || nchar(option) < 1 || is.na(option) || is.null(option) ) {
+    stop(sprintf("invalid 'option': %s - must be valid character string"))
+  }
+  get_gdal_config_cpp(option)
+}
+
+
 #' PROJ4 string to WKT
 #'
 #' Convert a projstring to Well Known Text.
