@@ -72,17 +72,16 @@ The warp specification is provided by 'extent',
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">vapour_warp_raster</span><span class="op">(</span>
   <span class="va">x</span>,
-  bands <span class="op">=</span> <span class="fl">1L</span>,
+  bands <span class="op">=</span> <span class="cn">NULL</span>,
   extent <span class="op">=</span> <span class="cn">NULL</span>,
   dimension <span class="op">=</span> <span class="cn">NULL</span>,
   projection <span class="op">=</span> <span class="st">""</span>,
   set_na <span class="op">=</span> <span class="cn">TRUE</span>,
-  source_wkt <span class="op">=</span> <span class="cn">NULL</span>,
+  source_projection <span class="op">=</span> <span class="cn">NULL</span>,
   source_extent <span class="op">=</span> <span class="fl">0</span>,
   resample <span class="op">=</span> <span class="st">"near"</span>,
   silent <span class="op">=</span> <span class="cn">TRUE</span>,
   <span class="va">...</span>,
-  source_geotransform <span class="op">=</span> <span class="fl">0</span>,
   geotransform <span class="op">=</span> <span class="cn">NULL</span>,
   band_output_type <span class="op">=</span> <span class="st">""</span>,
   warp_options <span class="op">=</span> <span class="st">""</span>,
@@ -95,7 +94,7 @@ The warp specification is provided by 'extent',
     <dl><dt>x</dt>
 <dd><p>vector of data source names (file name or URL or database connection string)</p></dd>
 <dt>bands</dt>
-<dd><p>index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used)</p></dd>
+<dd><p>index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used, the default)</p></dd>
 <dt>extent</dt>
 <dd><p>extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'</p></dd>
 <dt>dimension</dt>
@@ -104,7 +103,7 @@ The warp specification is provided by 'extent',
 <dd><p>projection of warped raster (in Well-Known-Text, or any projection string accepted by GDAL)</p></dd>
 <dt>set_na</dt>
 <dd><p>NOT IMPLEMENTED logical, should 'NODATA' values be set to <code>NA</code></p></dd>
-<dt>source_wkt</dt>
+<dt>source_projection</dt>
 <dd><p>optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)</p></dd>
 <dt>source_extent</dt>
 <dd><p>extent of the source raster, used to override/augment incorrect source metadata</p></dd>
@@ -114,8 +113,6 @@ The warp specification is provided by 'extent',
 <dd><p><code>TRUE</code> by default, set to <code>FALSE</code> to report messages</p></dd>
 <dt>...</dt>
 <dd><p>unused</p></dd>
-<dt>source_geotransform</dt>
-<dd><p>DEPRECATED use 'source_extent' (override the native geotransform of the source)</p></dd>
 <dt>geotransform</dt>
 <dd><p>DEPRECATED use 'extent' the affine geotransform of the warped raster</p></dd>
 <dt>band_output_type</dt>
@@ -124,6 +121,8 @@ The warp specification is provided by 'extent',
 <dd><p>character vector of options, as in gdalwarp -wo - see Details</p></dd>
 <dt>transformation_options</dt>
 <dd><p>character vector of options, as in gdalwarp -to</p></dd>
+<dt>source_geotransform</dt>
+<dd><p>DEPRECATED use 'source_extent' (override the native geotransform of the source)</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -140,16 +139,16 @@ double type will be 8Mb.</p>
 can be set with 'band_output_type'.</p>
 <p>'projection' refers to the full Well-Known-Text specification of a coordinate reference
 system. See <code><a href="vapour_srs_wkt.html">vapour_srs_wkt()</a></code> for conversion from PROJ.4 string to WKT. Any string
-accepted by GDAL may be used for 'projection' or 'source_wkt', including EPSG strings, PROJ4 strings, and
+accepted by GDAL may be used for 'projection' or 'source_projection', including EPSG strings, PROJ4 strings, and
 file names. Note that this argument was named 'wkt' up until version 0.8.0.</p>
 <p>'extent' is the four-figure xmin,xmax,ymin,ymax outer corners of corner pixels</p>
 <p>'dimension' is the pixel dimensions of the output, x (ncol) then y (nrow).</p>
 <p>Values for missing data are not yet handled, just returned
 as-is. Note that there may be regions of "zero data" in a warped output,
 separate from propagated missing "NODATA" values in the source.</p>
-<p>Argument 'source_wkt' may be used to assign the projection of the source, 'source_extent'
+<p>Argument 'source_projection' may be used to assign the projection of the source, 'source_extent'
 to assign the extent of the source. Sometimes both are required.</p>
-<p>If multiple sources are specified via 'x' and either 'source_wkt' or 'source_extent' are provided, these
+<p>If multiple sources are specified via 'x' and either 'source_projection' or 'source_extent' are provided, these
 are applied to every source even if they have valid values already. If this is not sensible please use VRT
 to wrap the multiple sources first (see the gdalio package for some in-dev ideas).</p>
 <p>Wild combinations of
@@ -175,13 +174,12 @@ We might add '-oo', '-doo' in future.</p>
 <p>See <a href="https://gdal.org/api/gdal_alg.html#_CPPv432GDALCreateGenImgProjTransformer212GDALDatasetH12GDALDatasetHPPc" class="external-link">GDAL transformation options</a> for '-to'.</p>
 <p>Note we already apply the following gdalwarp arguments based on input R arguments to this function.</p><ul><li><p><strong>-of</strong>      MEM is hardcoded, but may be extended in future</p></li>
 <li><p><strong>-t_srs</strong>   set via 'projection'</p></li>
-<li><p><strong>-s_srs</strong>   set via 'source_wkt'</p></li>
+<li><p><strong>-s_srs</strong>   set via 'source_projection'</p></li>
 <li><p><strong>-te</strong>      set via 'extent'</p></li>
 <li><p><strong>-ts</strong>      set via 'dimension'</p></li>
 <li><p><strong>-r</strong>       set via 'resample'</p></li>
-</ul><p>note that 'source_extent' does nothing atm, there's no -se (you have to use VRT and we'll do that via new /vsivrt/ ...)
-bundle any required options into 'options'.</p>
-    </div>
+<li><p><strong>-a_ullr</strong>  set via 'source_extent'</p></li>
+</ul></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p>vapour_read_raster vapour_read_raster_raw vapour_read_raster_int vapour_read_raster_dbl vapour_read_raster_chr vapour_read_raster_hex</p></div>

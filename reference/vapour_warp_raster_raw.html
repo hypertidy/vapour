@@ -73,7 +73,7 @@
   dimension <span class="op">=</span> <span class="cn">NULL</span>,
   projection <span class="op">=</span> <span class="st">""</span>,
   set_na <span class="op">=</span> <span class="cn">TRUE</span>,
-  source_wkt <span class="op">=</span> <span class="cn">NULL</span>,
+  source_projection <span class="op">=</span> <span class="cn">NULL</span>,
   source_extent <span class="op">=</span> <span class="fl">0</span>,
   resample <span class="op">=</span> <span class="st">"near"</span>,
   silent <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -89,7 +89,7 @@
   dimension <span class="op">=</span> <span class="cn">NULL</span>,
   projection <span class="op">=</span> <span class="st">""</span>,
   set_na <span class="op">=</span> <span class="cn">TRUE</span>,
-  source_wkt <span class="op">=</span> <span class="cn">NULL</span>,
+  source_projection <span class="op">=</span> <span class="cn">NULL</span>,
   source_extent <span class="op">=</span> <span class="fl">0</span>,
   resample <span class="op">=</span> <span class="st">"near"</span>,
   silent <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -105,7 +105,7 @@
   dimension <span class="op">=</span> <span class="cn">NULL</span>,
   projection <span class="op">=</span> <span class="st">""</span>,
   set_na <span class="op">=</span> <span class="cn">TRUE</span>,
-  source_wkt <span class="op">=</span> <span class="cn">NULL</span>,
+  source_projection <span class="op">=</span> <span class="cn">NULL</span>,
   source_extent <span class="op">=</span> <span class="fl">0</span>,
   resample <span class="op">=</span> <span class="st">"near"</span>,
   silent <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -121,7 +121,7 @@
   dimension <span class="op">=</span> <span class="cn">NULL</span>,
   projection <span class="op">=</span> <span class="st">""</span>,
   set_na <span class="op">=</span> <span class="cn">TRUE</span>,
-  source_wkt <span class="op">=</span> <span class="cn">NULL</span>,
+  source_projection <span class="op">=</span> <span class="cn">NULL</span>,
   source_extent <span class="op">=</span> <span class="fl">0</span>,
   resample <span class="op">=</span> <span class="st">"near"</span>,
   silent <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -137,7 +137,7 @@
   dimension <span class="op">=</span> <span class="cn">NULL</span>,
   projection <span class="op">=</span> <span class="st">""</span>,
   set_na <span class="op">=</span> <span class="cn">TRUE</span>,
-  source_wkt <span class="op">=</span> <span class="cn">NULL</span>,
+  source_projection <span class="op">=</span> <span class="cn">NULL</span>,
   source_extent <span class="op">=</span> <span class="fl">0</span>,
   resample <span class="op">=</span> <span class="st">"near"</span>,
   silent <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -152,7 +152,7 @@
     <dl><dt>x</dt>
 <dd><p>vector of data source names (file name or URL or database connection string)</p></dd>
 <dt>bands</dt>
-<dd><p>index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used)</p></dd>
+<dd><p>index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used, the default)</p></dd>
 <dt>extent</dt>
 <dd><p>extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'</p></dd>
 <dt>dimension</dt>
@@ -161,7 +161,7 @@
 <dd><p>projection of warped raster (in Well-Known-Text, or any projection string accepted by GDAL)</p></dd>
 <dt>set_na</dt>
 <dd><p>NOT IMPLEMENTED logical, should 'NODATA' values be set to <code>NA</code></p></dd>
-<dt>source_wkt</dt>
+<dt>source_projection</dt>
 <dd><p>optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)</p></dd>
 <dt>source_extent</dt>
 <dd><p>extent of the source raster, used to override/augment incorrect source metadata</p></dd>
