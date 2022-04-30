@@ -214,7 +214,7 @@ vapour_read_raster_hex <- function(x, band = 1,
 #'
 #' 'projection' refers to the full Well-Known-Text specification of a coordinate reference
 #' system. See [vapour_srs_wkt()] for conversion from PROJ.4 string to WKT. Any string
-#' accepted by GDAL may be used for 'projection' or 'source_wkt', including EPSG strings, PROJ4 strings, and
+#' accepted by GDAL may be used for 'projection' or 'source_projection', including EPSG strings, PROJ4 strings, and
 #' file names. Note that this argument was named 'wkt' up until version 0.8.0. 
 #'
 #' 'extent' is the four-figure xmin,xmax,ymin,ymax outer corners of corner pixels
@@ -225,10 +225,10 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' as-is. Note that there may be regions of "zero data" in a warped output,
 #' separate from propagated missing "NODATA" values in the source.
 #'
-#' Argument 'source_wkt' may be used to assign the projection of the source, 'source_extent'
+#' Argument 'source_projection' may be used to assign the projection of the source, 'source_extent'
 #' to assign the extent of the source. Sometimes both are required.
 #'
-#' If multiple sources are specified via 'x' and either 'source_wkt' or 'source_extent' are provided, these
+#' If multiple sources are specified via 'x' and either 'source_projection' or 'source_extent' are provided, these
 #' are applied to every source even if they have valid values already. If this is not sensible please use VRT
 #' to wrap the multiple sources first (see the gdalio package for some in-dev ideas).
 #'
@@ -263,16 +263,14 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' 
 #' * **-of**      MEM is hardcoded, but may be extended in future
 #' * **-t_srs**   set via 'projection'
-#' * **-s_srs**   set via 'source_wkt'
+#' * **-s_srs**   set via 'source_projection'
 #' * **-te**      set via 'extent'
 #' * **-ts**      set via 'dimension'
 #' * **-r**       set via 'resample'
-#' 
-#' note that 'source_extent' does nothing atm, there's no -se (you have to use VRT and we'll do that via new /vsivrt/ ...)
-#' bundle any required options into 'options'. 
+#' * **-a_ullr**  set via 'source_extent'
 #' 
 #' @param x vector of data source names (file name or URL or database connection string)
-#' @param bands index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used)
+#' @param bands index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used, the default)
 #' @param extent extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'
 #' @param source_extent extent of the source raster, used to override/augment incorrect source metadata
 #' @param geotransform DEPRECATED use 'extent' the affine geotransform of the warped raster
@@ -281,7 +279,7 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' @param set_na NOT IMPLEMENTED logical, should 'NODATA' values be set to `NA`
 #' @param source_geotransform DEPRECATED use 'source_extent' (override the native geotransform of the source)
 #' @param resample resampling method used (see details in [vapour_read_raster])
-#' @param source_wkt optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)
+#' @param source_projection optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)
 #' @param silent `TRUE` by default, set to `FALSE` to report messages
 #' @param band_output_type numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64' but see details in [vapour_read_raster()]
 #' @param ... unused
@@ -303,19 +301,24 @@ vapour_read_raster_hex <- function(x, band = 1,
 #'                              
 #' image(list(x = seq(-b, b, length.out = 187), y = seq(-b, b, length.out = 298),
 #'     z = matrix(unlist(vals, use.names = FALSE), 186)[,298:1]), asp = 1)
-vapour_warp_raster <- function(x, bands = 1L,
+vapour_warp_raster <- function(x, bands = NULL,
                                extent = NULL,
                                dimension = NULL,
                                projection = "",
                                set_na = TRUE,
-                               source_wkt = NULL,
+                               source_projection = NULL,
                                source_extent = 0.0,
                                resample = "near",
                                silent = TRUE, ...,
-                               source_geotransform = 0.0, geotransform = NULL,
+                                geotransform = NULL,
                                band_output_type = "", 
                                warp_options = "", 
                                transformation_options = "") {
+  ## deprecated arguments
+  if (!is.null(list(...)$source_wkt)) stop("'source_wkt' is defunct, please use 'source_projection'")
+  if(!is.null(list(...)$source_geotransform)) stop("'source_geotransform' is defunct and now ignored, please use 'source_extent'")
+  if (!is.null(list(...)$geotransform)) stop("'geotransform' is defunct and now ignored, used 'extent'")
+  
   if (band_output_type == "vrt") {
     ## special case, do nothing
   } else {
@@ -387,18 +390,16 @@ vapour_warp_raster <- function(x, bands = 1L,
   if (dud_dimension) dimension <- 0
   
   
-  if(!(length(source_geotransform) == 1 && source_geotransform == 0.0)) message("'source geotransform' is deprecated and now ignored, please use 'extent'")
   if (length(source_extent) > 1) {
     if (!is.numeric(source_extent)) {
       stop("'source_extent' must be numeric, of length 4 c(xmin, xmax, ymin, ymax)")
     }
     if (!all(is.finite(source_extent))) stop("'source_extent' values must be finite and non missing")
   }
-  if (!is.null(geotransform)) message("'geotransform' is deprecated and now ignored, used 'extent'")
-  if(!is.null(source_wkt)) {
-    if (!is.character(source_wkt)) stop("source_wkt must be character")
+  if(!is.null(source_projection)) {
+    if (!is.character(source_projection)) stop("source_projection must be character")
     if(!silent) {
-      if(!nchar(source_wkt) > 10) message("short 'source_wkt', possibly invalid?")
+      if(!nchar(source_projection) > 10) message("short 'source_projection', possibly invalid?")
     }
   }
   
@@ -406,7 +407,7 @@ vapour_warp_raster <- function(x, bands = 1L,
     if(!nchar(projection) > 0) message("target 'projection' not provided, read will occur from from source in native projection")
   }
   
-  if (is.null(source_wkt)) source_wkt <-  ""
+  if (is.null(source_projection)) source_projection <-  ""
   
   resample <- tolower(resample[1L])
   if (resample == "gauss") {
@@ -427,7 +428,7 @@ vapour_warp_raster <- function(x, bands = 1L,
   transformation_options <- transformation_options[!is.na(transformation_options)]
   if (length(transformation_options) < 1) transformation_options <- ""
   
-  vals <- warp_in_memory_gdal_cpp(x, source_WKT = source_wkt,
+  vals <- warp_in_memory_gdal_cpp(x, source_WKT = source_projection,
                                   target_WKT = projection,
                                   target_extent = as.numeric(extent),
                                   target_dim = as.integer(dimension),
@@ -481,7 +482,7 @@ vapour_warp_raster_raw <- function(x, bands = 1L,
                                    dimension = NULL,
                                    projection = "",
                                    set_na = TRUE,
-                                   source_wkt = NULL,
+                                   source_projection = NULL,
                                    source_extent = 0.0,
                                    resample = "near",
                                    silent = TRUE, ...,
@@ -495,7 +496,7 @@ vapour_warp_raster_raw <- function(x, bands = 1L,
                      dimension = dimension, 
                      projection = projection, 
                      set_na = set_na, 
-                     source_wkt = source_wkt, 
+                     source_projection = source_projection, 
                      source_extent = source_extent, 
                      resample = resample, 
                      silent = silent, 
@@ -509,7 +510,7 @@ vapour_warp_raster_vrt <- function(x, bands = 1L,
                                    dimension = NULL,
                                    projection = "",
                                    set_na = TRUE,
-                                   source_wkt = NULL,
+                                   source_projection = NULL,
                                    source_extent = 0.0,
                                    resample = "near",
                                    silent = TRUE, ...,
@@ -522,7 +523,7 @@ vapour_warp_raster_vrt <- function(x, bands = 1L,
                      dimension = dimension, 
                      projection = projection, 
                      set_na = set_na, 
-                     source_wkt = source_wkt, 
+                     source_projection = source_projection, 
                      source_extent = source_extent, 
                      resample = resample, 
                      silent = silent, 
@@ -538,7 +539,7 @@ vapour_warp_raster_int <- function(x, bands = 1L,
                                    dimension = NULL,
                                    projection = "",
                                    set_na = TRUE,
-                                   source_wkt = NULL,
+                                   source_projection = NULL,
                                    source_extent = 0.0,
                                    resample = "near",
                                    silent = TRUE, ...,
@@ -552,7 +553,7 @@ vapour_warp_raster_int <- function(x, bands = 1L,
                      dimension = dimension, 
                      projection = projection, 
                      set_na = set_na, 
-                     source_wkt = source_wkt, 
+                     source_projection = source_projection, 
                      source_extent = source_extent, 
                      resample = resample, 
                      silent = silent, 
@@ -568,7 +569,7 @@ vapour_warp_raster_dbl <- function(x, bands = 1L,
                                    dimension = NULL,
                                    projection = "",
                                    set_na = TRUE,
-                                   source_wkt = NULL,
+                                   source_projection = NULL,
                                    source_extent = 0.0,
                                    resample = "near",
                                    silent = TRUE, ...,
@@ -582,7 +583,7 @@ vapour_warp_raster_dbl <- function(x, bands = 1L,
                      dimension = dimension, 
                      projection = projection, 
                      set_na = set_na, 
-                     source_wkt = source_wkt, 
+                     source_projection = source_projection, 
                      source_extent = source_extent, 
                      resample = resample, 
                      silent = silent, 
@@ -599,7 +600,7 @@ vapour_warp_raster_chr <- function(x, bands = 1L,
                                    dimension = NULL,
                                    projection = "",
                                    set_na = TRUE,
-                                   source_wkt = NULL,
+                                   source_projection = NULL,
                                    source_extent = 0.0,
                                    resample = "near",
                                    silent = TRUE, ...,
@@ -615,7 +616,7 @@ vapour_warp_raster_chr <- function(x, bands = 1L,
                                dimension = dimension, 
                                projection = projection, 
                                set_na = set_na, 
-                               source_wkt = source_wkt, 
+                               source_projection = source_projection, 
                                source_extent = source_extent, 
                                resample = resample, 
                                silent = silent, 
@@ -635,7 +636,7 @@ vapour_warp_raster_hex <- function(x, bands = 1L,
                                    dimension = NULL,
                                    projection = "",
                                    set_na = TRUE,
-                                   source_wkt = NULL,
+                                   source_projection = NULL,
                                    source_extent = 0.0,
                                    resample = "near",
                                    silent = TRUE, ...,
@@ -647,7 +648,7 @@ vapour_warp_raster_hex <- function(x, bands = 1L,
                          dimension = dimension, 
                          projection = projection, 
                          set_na = set_na, 
-                         source_wkt = source_wkt, 
+                         source_projection = source_projection, 
                          source_extent = source_extent, 
                          resample = resample, 
                          silent = silent, 

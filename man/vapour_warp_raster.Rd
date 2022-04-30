@@ -6,17 +6,16 @@
 \usage{
 vapour_warp_raster(
   x,
-  bands = 1L,
+  bands = NULL,
   extent = NULL,
   dimension = NULL,
   projection = "",
   set_na = TRUE,
-  source_wkt = NULL,
+  source_projection = NULL,
   source_extent = 0,
   resample = "near",
   silent = TRUE,
   ...,
-  source_geotransform = 0,
   geotransform = NULL,
   band_output_type = "",
   warp_options = "",
@@ -26,7 +25,7 @@ vapour_warp_raster(
 \arguments{
 \item{x}{vector of data source names (file name or URL or database connection string)}
 
-\item{bands}{index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used)}
+\item{bands}{index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used, the default)}
 
 \item{extent}{extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'}
 
@@ -36,7 +35,7 @@ vapour_warp_raster(
 
 \item{set_na}{NOT IMPLEMENTED logical, should 'NODATA' values be set to \code{NA}}
 
-\item{source_wkt}{optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)}
+\item{source_projection}{optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)}
 
 \item{source_extent}{extent of the source raster, used to override/augment incorrect source metadata}
 
@@ -46,8 +45,6 @@ vapour_warp_raster(
 
 \item{...}{unused}
 
-\item{source_geotransform}{DEPRECATED use 'source_extent' (override the native geotransform of the source)}
-
 \item{geotransform}{DEPRECATED use 'extent' the affine geotransform of the warped raster}
 
 \item{band_output_type}{numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64' but see details in \code{\link[=vapour_read_raster]{vapour_read_raster()}}}
@@ -55,6 +52,8 @@ vapour_warp_raster(
 \item{warp_options}{character vector of options, as in gdalwarp -wo - see Details}
 
 \item{transformation_options}{character vector of options, as in gdalwarp -to}
+
+\item{source_geotransform}{DEPRECATED use 'source_extent' (override the native geotransform of the source)}
 }
 \value{
 list of vectors (only 1 for 'band') of numeric values, in raster order
@@ -77,7 +76,7 @@ can be set with 'band_output_type'.
 
 'projection' refers to the full Well-Known-Text specification of a coordinate reference
 system. See \code{\link[=vapour_srs_wkt]{vapour_srs_wkt()}} for conversion from PROJ.4 string to WKT. Any string
-accepted by GDAL may be used for 'projection' or 'source_wkt', including EPSG strings, PROJ4 strings, and
+accepted by GDAL may be used for 'projection' or 'source_projection', including EPSG strings, PROJ4 strings, and
 file names. Note that this argument was named 'wkt' up until version 0.8.0.
 
 'extent' is the four-figure xmin,xmax,ymin,ymax outer corners of corner pixels
@@ -88,10 +87,10 @@ Values for missing data are not yet handled, just returned
 as-is. Note that there may be regions of "zero data" in a warped output,
 separate from propagated missing "NODATA" values in the source.
 
-Argument 'source_wkt' may be used to assign the projection of the source, 'source_extent'
+Argument 'source_projection' may be used to assign the projection of the source, 'source_extent'
 to assign the extent of the source. Sometimes both are required.
 
-If multiple sources are specified via 'x' and either 'source_wkt' or 'source_extent' are provided, these
+If multiple sources are specified via 'x' and either 'source_projection' or 'source_extent' are provided, these
 are applied to every source even if they have valid values already. If this is not sensible please use VRT
 to wrap the multiple sources first (see the gdalio package for some in-dev ideas).
 
@@ -126,14 +125,12 @@ Note we already apply the following gdalwarp arguments based on input R argument
 \itemize{
 \item \strong{-of}      MEM is hardcoded, but may be extended in future
 \item \strong{-t_srs}   set via 'projection'
-\item \strong{-s_srs}   set via 'source_wkt'
+\item \strong{-s_srs}   set via 'source_projection'
 \item \strong{-te}      set via 'extent'
 \item \strong{-ts}      set via 'dimension'
 \item \strong{-r}       set via 'resample'
+\item \strong{-a_ullr}  set via 'source_extent'
 }
-
-note that 'source_extent' does nothing atm, there's no -se (you have to use VRT and we'll do that via new /vsivrt/ ...)
-bundle any required options into 'options'.
 }
 
 \examples{

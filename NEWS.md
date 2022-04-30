@@ -1,5 +1,7 @@
 # vapour dev
 
+* `vapour_warp_raster()` default has changed for `bands`, it's now NULL which means "all bands", not `1L`. 
+
 * New functions `vapour_set_config()` and `vapour_get_config()` to control configuration 
 options for GDAL. 
 

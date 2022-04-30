@@ -15,7 +15,7 @@ vapour_warp_raster_raw(
   dimension = NULL,
   projection = "",
   set_na = TRUE,
-  source_wkt = NULL,
+  source_projection = NULL,
   source_extent = 0,
   resample = "near",
   silent = TRUE,
@@ -31,7 +31,7 @@ vapour_warp_raster_int(
   dimension = NULL,
   projection = "",
   set_na = TRUE,
-  source_wkt = NULL,
+  source_projection = NULL,
   source_extent = 0,
   resample = "near",
   silent = TRUE,
@@ -47,7 +47,7 @@ vapour_warp_raster_dbl(
   dimension = NULL,
   projection = "",
   set_na = TRUE,
-  source_wkt = NULL,
+  source_projection = NULL,
   source_extent = 0,
   resample = "near",
   silent = TRUE,
@@ -63,7 +63,7 @@ vapour_warp_raster_chr(
   dimension = NULL,
   projection = "",
   set_na = TRUE,
-  source_wkt = NULL,
+  source_projection = NULL,
   source_extent = 0,
   resample = "near",
   silent = TRUE,
@@ -79,7 +79,7 @@ vapour_warp_raster_hex(
   dimension = NULL,
   projection = "",
   set_na = TRUE,
-  source_wkt = NULL,
+  source_projection = NULL,
   source_extent = 0,
   resample = "near",
   silent = TRUE,
@@ -91,7 +91,7 @@ vapour_warp_raster_hex(
 \arguments{
 \item{x}{vector of data source names (file name or URL or database connection string)}
 
-\item{bands}{index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used)}
+\item{bands}{index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used, the default)}
 
 \item{extent}{extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'}
 
@@ -101,7 +101,7 @@ vapour_warp_raster_hex(
 
 \item{set_na}{NOT IMPLEMENTED logical, should 'NODATA' values be set to \code{NA}}
 
-\item{source_wkt}{optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)}
+\item{source_projection}{optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)}
 
 \item{source_extent}{extent of the source raster, used to override/augment incorrect source metadata}
 

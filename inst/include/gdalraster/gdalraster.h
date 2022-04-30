@@ -143,7 +143,17 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn, NumericVector extent, Chara
     }
   }  
   GDALTranslateOptions* psTransOptions = GDALTranslateOptionsNew(translate_argv.List(), nullptr);
-  GDALDatasetH a_DS = GDALTranslate("", (GDALDataset*)gdalH_open_dsn(dsn, sds), psTransOptions, nullptr);
+  GDALDataset* oDS = (GDALDataset*)gdalH_open_dsn(dsn, sds);
+    int nBands = oDS->GetRasterCount();
+  for (int i = 0; i < bands.size(); i++) {
+    if (bands[i] > nBands) {
+      //Rprintf("mismatch bands\n"); // FIXME: do a standard test/message here
+      
+      Rprintf("mismatch bands\n");
+      return nullptr;
+    }
+  }
+  GDALDatasetH a_DS = GDALTranslate("", oDS, psTransOptions, nullptr);
   GDALTranslateOptionsFree( psTransOptions );
   return a_DS;
 }
@@ -199,9 +209,11 @@ inline CharacterVector gdal_dsn_vrt(CharacterVector dsn, NumericVector extent, C
   for (int i = 0; i < out.size(); i++) {
     if (extent.size() == 4 || (!projection[0].empty()) || bands[0] > 0) {
       DS = gdalH_open_avrt(dsn[i], extent, projection, sds, bands);
+      
     } else {
       DS = gdalH_open_dsn(dsn[i], sds);
     }
+    
     out[i] = gdal_vrt_text((GDALDataset*) DS);
     GDALClose(DS);
   }
