@@ -477,7 +477,7 @@ vapour_warp_raster <- function(x, bands = NULL,
 #'                              projection = prj)
 #' # not useful given source type floating point, but works
 #' str(bytes)
-vapour_warp_raster_raw <- function(x, bands = 1L,
+vapour_warp_raster_raw <- function(x, bands = NULL,
                                    extent = NULL,
                                    dimension = NULL,
                                    projection = "",
@@ -505,7 +505,7 @@ vapour_warp_raster_raw <- function(x, bands = 1L,
                      transformation_options = transformation_options, ...)[[1L]]
 }
 
-vapour_warp_raster_vrt <- function(x, bands = 1L,
+vapour_warp_raster_vrt <- function(x, bands = NULL,
                                    extent = NULL,
                                    dimension = NULL,
                                    projection = "",
@@ -534,7 +534,7 @@ vapour_warp_raster_vrt <- function(x, bands = 1L,
 
 #' @name vapour_warp_raster_raw
 #' @export
-vapour_warp_raster_int <- function(x, bands = 1L,
+vapour_warp_raster_int <- function(x, bands = NULL,
                                    extent = NULL,
                                    dimension = NULL,
                                    projection = "",
@@ -564,7 +564,7 @@ vapour_warp_raster_int <- function(x, bands = 1L,
 
 #' @name vapour_warp_raster_raw
 #' @export
-vapour_warp_raster_dbl <- function(x, bands = 1L,
+vapour_warp_raster_dbl <- function(x, bands = NULL,
                                    extent = NULL,
                                    dimension = NULL,
                                    projection = "",
@@ -595,7 +595,7 @@ vapour_warp_raster_dbl <- function(x, bands = 1L,
 
 #' @name vapour_warp_raster_raw
 #' @export
-vapour_warp_raster_chr <- function(x, bands = 1L,
+vapour_warp_raster_chr <- function(x, bands = NULL,
                                    extent = NULL,
                                    dimension = NULL,
                                    projection = "",
@@ -631,7 +631,7 @@ vapour_warp_raster_chr <- function(x, bands = 1L,
 
 #' @name vapour_warp_raster_raw
 #' @export
-vapour_warp_raster_hex <- function(x, bands = 1L,
+vapour_warp_raster_hex <- function(x, bands = NULL,
                                    extent = NULL,
                                    dimension = NULL,
                                    projection = "",

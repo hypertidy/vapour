@@ -10,7 +10,7 @@
 \usage{
 vapour_warp_raster_raw(
   x,
-  bands = 1L,
+  bands = NULL,
   extent = NULL,
   dimension = NULL,
   projection = "",
@@ -26,7 +26,7 @@ vapour_warp_raster_raw(
 
 vapour_warp_raster_int(
   x,
-  bands = 1L,
+  bands = NULL,
   extent = NULL,
   dimension = NULL,
   projection = "",
@@ -42,7 +42,7 @@ vapour_warp_raster_int(
 
 vapour_warp_raster_dbl(
   x,
-  bands = 1L,
+  bands = NULL,
   extent = NULL,
   dimension = NULL,
   projection = "",
@@ -58,7 +58,7 @@ vapour_warp_raster_dbl(
 
 vapour_warp_raster_chr(
   x,
-  bands = 1L,
+  bands = NULL,
   extent = NULL,
   dimension = NULL,
   projection = "",
@@ -74,7 +74,7 @@ vapour_warp_raster_chr(
 
 vapour_warp_raster_hex(
   x,
-  bands = 1L,
+  bands = NULL,
   extent = NULL,
   dimension = NULL,
   projection = "",

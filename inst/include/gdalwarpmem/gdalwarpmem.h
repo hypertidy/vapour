@@ -32,13 +32,14 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   GDALDatasetH *poSrcDS;
   poSrcDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * source_filename.size()));
   bool augment;  
-  augment = !source_WKT[0].empty() || source_extent.size() == 4 || bands[0] > 0;
+  augment = !source_WKT[0].empty() || source_extent.size() == 4;
   
   
   for (int i = 0; i < source_filename.size(); i++) {
     if (augment) {
       // not dealing with subdatasets here atm
-      poSrcDS[i] = gdalraster::gdalH_open_avrt(source_filename[i],   source_extent, source_WKT, 0, bands);
+      // not dealing with source bands here, bands applies at read beloew
+      poSrcDS[i] = gdalraster::gdalH_open_avrt(source_filename[i],   source_extent, source_WKT, 0, 0);
     } else {
       poSrcDS[i] = gdalraster::gdalH_open_dsn(source_filename[i],   0); 
       
@@ -48,14 +49,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       if (i > 0) {
         for (int j = 0; j < i; j++) GDALClose((GDALDataset *)poSrcDS[j]);
       }
-      if (augment) {
-        Rprintf("input source not readable with chosen options options: %s\n", (char *)source_filename[i]);
-        if (bands.size()>1 || bands[0] > 0) {
-          Rprintf("perhaps specified band number is not available?\n"); 
-        }
-      } else {
-       Rprintf("input source not readable: %s\n", (char *)source_filename[i]); 
-      }
+     Rprintf("input source not readable: %s\n", (char *)source_filename[i]); 
+    
       CPLFree(poSrcDS);
       Rcpp::stop(""); 
     }
