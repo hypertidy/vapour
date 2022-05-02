@@ -95,7 +95,8 @@ inline CharacterVector gdal_list_subdatasets(GDALDataset *poDataset) {
 
 // open the DSN, open a subdataset if sds > 0 (else you get the outer shell)
 inline GDALDatasetH gdalH_open_dsn(const char * dsn, IntegerVector sds) {
-  GDALDatasetH DS = GDALOpen(dsn, GA_ReadOnly);
+  GDALDatasetH DS; 
+  DS = GDALOpen(dsn, GA_ReadOnly);
   if (sds[0] > 0 && gdal_has_subdataset((GDALDataset*) DS)) {
     CharacterVector sdsnames = gdal_subdataset_1((GDALDataset*)DS, sds[0]);
     if (sdsnames.length() > 0 && !sdsnames[0].empty()) {

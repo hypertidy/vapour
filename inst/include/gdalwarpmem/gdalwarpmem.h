@@ -49,13 +49,13 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       if (i > 0) {
         for (int j = 0; j < i; j++) GDALClose((GDALDataset *)poSrcDS[j]);
       }
-     Rprintf("input source not readable: %s\n", (char *)source_filename[i]); 
-    
+      Rprintf("input source not readable: %s\n", (char *)source_filename[i]); 
+      
       CPLFree(poSrcDS);
       Rcpp::stop(""); 
     }
   }
-
+  
   // handle warp settings and options
   char** papszArg = nullptr;
   
@@ -64,8 +64,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   //   papszArg = CSLAddString(papszArg, "VRT");
   // } else {
   papszArg = CSLAddString(papszArg, "MEM");
-    
-   
+  
+  
   // if we don't supply it don't try to set it!
   if (!target_WKT[0].empty()){
     // if supplied check that it's valid
@@ -117,9 +117,9 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   CSLDestroy(papszArg);
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
   
- GDALDatasetH hRet = GDALWarp( "", nullptr,
-                        source_filename.size(), poSrcDS,
-                        psOptions, nullptr);
+  GDALDatasetH hRet = GDALWarp( "", nullptr,
+                                source_filename.size(), poSrcDS,
+                                psOptions, nullptr);
   
   
   CPLAssert( hRet != NULL );
@@ -128,7 +128,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     GDALClose( (GDALDataset *)poSrcDS[si] );
   }
   CPLFree(poSrcDS);
-
+  
   
   
   /// this doesn't work because we don't keep the file name/s
@@ -136,8 +136,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     // GDALDriver * vDriver = (GDALDriver *)GDALGetDriverByName("VRT");
     // GDALDatasetH VRTDS = vDriver->CreateCopy("", (GDALDataset *) hRet, 0, nullptr, nullptr, nullptr);
     //
-
-
+    
+    
     CharacterVector oof(1);
     CharacterVector infile(1);
     LogicalVector filein(1);
@@ -148,10 +148,20 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   
   
   // Prepare to read bands
-  const int nBands = GDALGetRasterCount(hRet);// GDALGetRasterCount(poSrcDS[dsi0]);
+  int nBands;
+  if (bands[0] == 0) {
+    nBands = GDALGetRasterCount(hRet);
+  } else {
+    nBands = bands.size();
+  }
   std::vector<int> bands_to_read(nBands);
-  for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
-  
+  for (int i = 0; i < nBands; i++) {
+    if (bands[0] == 0) {
+      bands_to_read[i] = i + 1;
+    } else {
+      bands_to_read[i] = bands[i];
+    }
+  }
   LogicalVector unscale = true;
   IntegerVector window(6);
   // default window with all zeroes results in entire read (for warp)
@@ -159,26 +169,26 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   for (int i  = 0; i < window.size(); i++) window[i] = 0;
   
   
- // we can't do  gdal_warped_vrt here ... was just trying something and realized 
- // that cant work
- // 
- // GDALRasterIOExtraArg psExtraArg;
- // psExtraArg = gdallibrary::init_resample_alg(resample);
- // 
- // std::vector<double> values( GDALGetRasterXSize(hRet) * GDALGetRasterYSize(hRet) * nBands );
- // CPLErr err = 
- // GDALDataset::FromHandle(hRet)->RasterIO(GF_Read, 0, 0, GDALGetRasterXSize(hRet), GDALGetRasterYSize(hRet),
- //                         &values[0],   GDALGetRasterXSize(hRet), GDALGetRasterYSize(hRet), GDT_Float64,
- //                         nBands, &bands_to_read[0],
- //                         0, 0, 0, &psExtraArg);
+  // we can't do  gdal_warped_vrt here ... was just trying something and realized 
+  // that cant work
+  // 
+  // GDALRasterIOExtraArg psExtraArg;
+  // psExtraArg = gdallibrary::init_resample_alg(resample);
+  // 
+  // std::vector<double> values( GDALGetRasterXSize(hRet) * GDALGetRasterYSize(hRet) * nBands );
+  // CPLErr err = 
+  // GDALDataset::FromHandle(hRet)->RasterIO(GF_Read, 0, 0, GDALGetRasterXSize(hRet), GDALGetRasterYSize(hRet),
+  //                         &values[0],   GDALGetRasterXSize(hRet), GDALGetRasterYSize(hRet), GDT_Float64,
+  //                         nBands, &bands_to_read[0],
+  //                         0, 0, 0, &psExtraArg);
  
- List outlist = gdallibrary::gdal_read_band_values(GDALDataset::FromHandle(hRet),
-                                                   window,
-                                                   bands_to_read,
-                                                   band_output_type,
-                                                   resample,
-                                                   unscale);
- 
+  List outlist = gdallibrary::gdal_read_band_values(GDALDataset::FromHandle(hRet),
+                                                    window,
+                                                    bands_to_read,
+                                                    band_output_type,
+                                                    resample,
+                                                    unscale);
+  
   GDALClose( hRet );
   return outlist;
 }
