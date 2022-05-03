@@ -19,7 +19,7 @@ The warp specification is provided by 'extent',
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.8.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.8.9004</span>
       </span>
     </div>
 
@@ -82,7 +82,6 @@ The warp specification is provided by 'extent',
   resample <span class="op">=</span> <span class="st">"near"</span>,
   silent <span class="op">=</span> <span class="cn">TRUE</span>,
   <span class="va">...</span>,
-  geotransform <span class="op">=</span> <span class="cn">NULL</span>,
   band_output_type <span class="op">=</span> <span class="st">""</span>,
   warp_options <span class="op">=</span> <span class="st">""</span>,
   transformation_options <span class="op">=</span> <span class="st">""</span>
@@ -113,16 +112,12 @@ The warp specification is provided by 'extent',
 <dd><p><code>TRUE</code> by default, set to <code>FALSE</code> to report messages</p></dd>
 <dt>...</dt>
 <dd><p>unused</p></dd>
-<dt>geotransform</dt>
-<dd><p>DEPRECATED use 'extent' the affine geotransform of the warped raster</p></dd>
 <dt>band_output_type</dt>
 <dd><p>numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64' but see details in <code><a href="vapour_read_raster.html">vapour_read_raster()</a></code></p></dd>
 <dt>warp_options</dt>
 <dd><p>character vector of options, as in gdalwarp -wo - see Details</p></dd>
 <dt>transformation_options</dt>
 <dd><p>character vector of options, as in gdalwarp -to</p></dd>
-<dt>source_geotransform</dt>
-<dd><p>DEPRECATED use 'source_extent' (override the native geotransform of the source)</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -179,7 +174,17 @@ We might add '-oo', '-doo' in future.</p>
 <li><p><strong>-ts</strong>      set via 'dimension'</p></li>
 <li><p><strong>-r</strong>       set via 'resample'</p></li>
 <li><p><strong>-a_ullr</strong>  set via 'source_extent'</p></li>
-</ul></div>
+</ul><p>In the past this argument had arguments 'geotransform', the affine geotransform of the warped raster now please use 'extent'
+and 'source_geotransform' (override the native geotransform of the source) please use 'source_extent'.</p>
+<p>In future all 'source_*' arguments will probably be deprecated in favour of augmentation by 'vapour_vrt()'.</p>
+<p>Common inputs for <code>projection</code> are WKT variants,
+'AUTH:CODE's e.g. 'EPSG:3031', the 'OGC:CRS84' for lon,lat WGS84, 'ESRI:&lt;code&gt;' and other authority variants, and
+datum names such as 'WGS84','NAD27' recognized by PROJ itself.</p>
+<p>See help for 'SetFromUserInput' in 'OGRSpatialReference', and 'proj_create_crs_to_crs'.</p>
+<p><a href="https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs" class="external-link">c.proj_create_crs_to_crs</a></p>
+<p><a href="https://proj.org/development/reference/functions.html#c.proj_create" class="external-link">c.proj_create</a></p>
+<p><a href="https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796" class="external-link">SetFromUserInput</a></p>
+    </div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p>vapour_read_raster vapour_read_raster_raw vapour_read_raster_int vapour_read_raster_dbl vapour_read_raster_chr vapour_read_raster_hex</p></div>
