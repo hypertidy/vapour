@@ -421,7 +421,7 @@ inline CharacterVector gdal_driver(CharacterVector dsn)
 {
   
   GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GA_ReadOnly, NULL, NULL, NULL );
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GA_ReadOnly, NULL, NULL, NULL );  // gdal_driver(<any-type>)
   if( poDS == NULL )
   {
     Rcpp::stop("Open failed.\n");
@@ -956,7 +956,7 @@ inline CharacterVector gdal_sds_list(const char* pszFilename)
 {
   GDALDataset  *poDataset;
   
-  poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
+  poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );  // gdal_sds_list()
   if( poDataset == NULL )
   {
     Rcpp::stop("cannot open dataset");
@@ -978,7 +978,7 @@ inline CharacterVector gdal_sds_list(const char* pszFilename)
 inline NumericVector gdal_extent_only(CharacterVector dsn) {
   GDALDatasetH hDataset;
   
-  hDataset = GDALOpenEx(dsn[0], GA_ReadOnly, nullptr, NULL, nullptr);
+  hDataset = GDALOpen(dsn[0], GA_ReadOnly); //gdal_extent_only()
   
   if( hDataset == nullptr )
   {
@@ -1003,7 +1003,7 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
 {
   GDALDatasetH hDataset;
   
-  hDataset = GDALOpenEx(dsn[0], GA_ReadOnly, nullptr, NULL, nullptr);
+  hDataset = GDALOpen(dsn[0], GA_ReadOnly); // gdal_raster_info()
   
   if( hDataset == nullptr )
   {
@@ -1160,7 +1160,7 @@ inline List gdal_raster_gcp(CharacterVector dsn) {
   GDALDatasetH hDataset;
   //GDALDataset  *poDataset;
   
-  hDataset = GDALOpenEx( dsn[0], GA_ReadOnly, nullptr, NULL, nullptr);
+  hDataset = GDALOpen( dsn[0], GA_ReadOnly); // gdal_raster_gcp()
   if( hDataset == nullptr )
   {
     Rcpp::stop("cannot open dataset");
@@ -1629,7 +1629,7 @@ inline List gdal_raster_dataset_io(CharacterVector dsn,
 {
   
   GDALDataset  *poDataset;
-  poDataset = (GDALDataset *) GDALOpen(dsn[0], GA_ReadOnly );
+  poDataset = (GDALDataset *) GDALOpen(dsn[0], GA_ReadOnly ); // gdal_raster_dataset_io
   if( poDataset == NULL )
   {
     Rcpp::stop("cannot open dataset");
@@ -1658,7 +1658,7 @@ inline List gdal_raster_io(CharacterVector dsn,
 {
   
   GDALDataset  *poDataset;
-  poDataset = (GDALDataset *) GDALOpen(dsn[0], GA_ReadOnly );
+  poDataset = (GDALDataset *) GDALOpen(dsn[0], GA_ReadOnly );  // gdal_raster_io()
   if( poDataset == NULL )
   {
     Rcpp::stop("cannot open dataset");

@@ -133,27 +133,34 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn, NumericVector extent, Chara
       translate_argv.AddString(projection[0]);
     }
   }
+  
+  GDALDataset* oDS = (GDALDataset*)gdalH_open_dsn(dsn, sds);
+  if (oDS == nullptr) return(nullptr);
+  int nBands = oDS->GetRasterCount();
+  // Rprintf("%i\n", nBands);
+  //  if (bands[0] > 0) {
+  //    for (int iband = 0; iband < bands.size(); iband++ ) {
+  //      if (bands[iband] > nBands) {
+  //        Rprintf("%i\n", bands[iband]);
+  //        Rprintf("mismatch bands\n");
+  //      }
+  //      }
+  //  }
   if (bands[0] > 0) {
     for (int iband = 0; iband < bands.size(); iband++ ) {
-      if (bands[iband] <= 0) {
-        // nothing
+      if (bands[iband] > nBands) {
+        // FIXME: here consider just dropping bands that arne't available, that's what gdal_translate does
+        return nullptr;
       } else {
         translate_argv.AddString("-b");
         translate_argv.AddString(CPLSPrintf("%i", bands[iband]));
       }
     }
-  }  
-  GDALTranslateOptions* psTransOptions = GDALTranslateOptionsNew(translate_argv.List(), nullptr);
-  GDALDataset* oDS = (GDALDataset*)gdalH_open_dsn(dsn, sds);
-    int nBands = oDS->GetRasterCount();
-  for (int i = 0; i < bands.size(); i++) {
-    if (bands[i] > nBands) {
-      //Rprintf("mismatch bands\n"); // FIXME: do a standard test/message here
-      
-      Rprintf("mismatch bands\n");
-      return nullptr;
-    }
   }
+
+  
+  GDALTranslateOptions* psTransOptions = GDALTranslateOptionsNew(translate_argv.List(), nullptr);
+
   GDALDatasetH a_DS = GDALTranslate("", oDS, psTransOptions, nullptr);
   GDALTranslateOptionsFree( psTransOptions );
   return a_DS;
@@ -215,8 +222,12 @@ inline CharacterVector gdal_dsn_vrt(CharacterVector dsn, NumericVector extent, C
       DS = gdalH_open_dsn(dsn[i], sds);
     }
     
-    out[i] = gdal_vrt_text((GDALDataset*) DS);
-    GDALClose(DS);
+    if (DS == nullptr) {
+     out[i] = NA_STRING;  
+    } else {
+      out[i] = gdal_vrt_text((GDALDataset*) DS);
+      GDALClose(DS);
+    }
   }
   return out;
 }

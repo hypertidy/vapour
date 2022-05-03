@@ -47,7 +47,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     // unwind everything, and stop
     if (poSrcDS[i] == nullptr) {
       if (i > 0) {
-        for (int j = 0; j < i; j++) GDALClose((GDALDataset *)poSrcDS[j]);
+        for (int j = 0; j < i; j++) GDALClose(poSrcDS[j]);
       }
       Rprintf("input source not readable: %s\n", (char *)source_filename[i]); 
       
@@ -161,6 +161,12 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     } else {
       bands_to_read[i] = bands[i];
     }
+    
+    if (bands_to_read[i] > GDALGetRasterCount(hRet)) {
+      GDALClose( hRet );
+      stop("band number is not available: %i", bands_to_read[i]);
+    }
+    
   }
   LogicalVector unscale = true;
   IntegerVector window(6);
@@ -181,7 +187,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   //                         &values[0],   GDALGetRasterXSize(hRet), GDALGetRasterYSize(hRet), GDT_Float64,
   //                         nBands, &bands_to_read[0],
   //                         0, 0, 0, &psExtraArg);
- 
+  
   List outlist = gdallibrary::gdal_read_band_values(GDALDataset::FromHandle(hRet),
                                                     window,
                                                     bands_to_read,
