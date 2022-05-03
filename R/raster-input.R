@@ -116,7 +116,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 #'
 #' These wrappers around [vapour_read_raster()] guarantee single vector output of the nominated type.
 #'
-#' _hex and _chr are aliases of each other.
+#' `*_hex` and `*_chr` are aliases of each other.
 #' @inheritParams vapour_read_raster
 #' @aliases vapour_read_raster_raw vapour_read_raster_int vapour_read_raster_dbl vapour_read_raster_chr vapour_read_raster_hex
 #' @export
@@ -269,15 +269,30 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' * **-r**       set via 'resample'
 #' * **-a_ullr**  set via 'source_extent'
 #' 
+#' In the past this argument had arguments 'geotransform', the affine geotransform of the warped raster now please use 'extent'
+#' and 'source_geotransform' (override the native geotransform of the source) please use 'source_extent'. 
+#' 
+#' In future all 'source_*' arguments will probably be deprecated in favour of augmentation by 'vapour_vrt()'. 
+#' 
+#' Common inputs for `projection` are WKT variants,
+#' 'AUTH:CODE's e.g. 'EPSG:3031', the 'OGC:CRS84' for lon,lat WGS84, 'ESRI:<code>' and other authority variants, and
+#' datum names such as 'WGS84','NAD27' recognized by PROJ itself.
+#'
+#' See help for 'SetFromUserInput' in 'OGRSpatialReference', and 'proj_create_crs_to_crs'.
+#' 
+#' [c.proj_create_crs_to_crs](https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs) 
+#' 
+#' [c.proj_create](https://proj.org/development/reference/functions.html#c.proj_create)
+#' 
+#' [SetFromUserInput](https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796)
+#' 
 #' @param x vector of data source names (file name or URL or database connection string)
 #' @param bands index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used, the default)
 #' @param extent extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'
 #' @param source_extent extent of the source raster, used to override/augment incorrect source metadata
-#' @param geotransform DEPRECATED use 'extent' the affine geotransform of the warped raster
 #' @param dimension dimensions in pixels of the warped raster (x, y)
 #' @param projection projection of warped raster (in Well-Known-Text, or any projection string accepted by GDAL)
 #' @param set_na NOT IMPLEMENTED logical, should 'NODATA' values be set to `NA`
-#' @param source_geotransform DEPRECATED use 'source_extent' (override the native geotransform of the source)
 #' @param resample resampling method used (see details in [vapour_read_raster])
 #' @param source_projection optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)
 #' @param silent `TRUE` by default, set to `FALSE` to report messages
@@ -310,7 +325,6 @@ vapour_warp_raster <- function(x, bands = NULL,
                                source_extent = 0.0,
                                resample = "near",
                                silent = TRUE, ...,
-                                geotransform = NULL,
                                band_output_type = "", 
                                warp_options = "", 
                                transformation_options = "") {

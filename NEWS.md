@@ -1,5 +1,7 @@
 # vapour dev
 
+* New function `vapour_vrt()`. 
+
 * `vapour_warp_raster()` default has changed for `bands`, it's now NULL which means "all bands", not `1L`. 
 
 * New functions `vapour_set_config()` and `vapour_get_config()` to control configuration 
@@ -7,8 +9,8 @@ options for GDAL.
 
 * Flushed out memory bugs with valgrind. 
 
-* Refactored read from raster and warp raster. The warping uses the same band reader as the "reader", but could be cleaned 
-up some more still. 
+* Refactored read from raster and warp raster. The warping uses the same band reader as the RasterIO reader, and more cases of 'GDALOpen()' for
+rasters go via the underlying 'gdalraster' namespace pathway. 
 
 * Faster layer extent determination in `vapour_layer_info()`, new function `vapour_layer_extent()`. 
 
@@ -17,12 +19,12 @@ up some more still.
 
 # vapour 0.8.8
 
+(This never made it to CRAN.)
+
 * Patch release for R UCRT changes. Applied patch provided by CRAN. 
 
 * Removed invalid missing value setting for type raw and int in the warper, causing 
  representable range errors on cran. 
- 
- 
  
  
 # vapour 0.8.5

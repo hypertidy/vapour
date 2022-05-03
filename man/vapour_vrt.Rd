@@ -19,7 +19,7 @@ vapour_vrt(
 
 \item{extent}{(optional) numeric extent, xmin,xmax,ymin,ymax}
 
-\item{projection}{(optional) character string, projection string ("auth:code", proj4, or WKT, or anything understood by PROJ)}
+\item{projection}{(optional) character string, projection string ("auth:code", proj4, or WKT, or anything understood by PROJ, see Details)}
 
 \item{sds}{which subdataset to select from a source with more than one}
 
@@ -46,6 +46,19 @@ If 'extent', 'projection' is provided this is applied to override the source's e
 
 If 'bands' is provided this is used to select a set of bands (numbered from 1), which might be repeated, or
 in any order.
+
+Common inputs for \code{projection} are WKT variants, 'AUTH:CODE's e.g.
+'EPSG:3031', the 'OGC:CRS84' for long,lat WGS84, 'ESRI:<code>' and other
+authority variants, and datum names such as 'WGS84','NAD27' recognized by
+PROJ itself.
+
+See help for 'SetFromUserInput' in 'OGRSpatialReference', and 'proj_create_crs_to_crs'.
+
+\href{https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs}{c.proj_create_crs_to_crs}
+
+\href{https://proj.org/development/reference/functions.html#c.proj_create}{c.proj_create}
+
+\href{https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796}{SetFromUserInput}
 }
 \examples{
 tif <- system.file("extdata", "sst.tif", package = "vapour", mustWork = TRUE)

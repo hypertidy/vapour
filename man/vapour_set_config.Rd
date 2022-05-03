@@ -10,12 +10,12 @@ vapour_set_config(option, value)
 vapour_get_config(option)
 }
 \arguments{
-\item{option}{}
+\item{option}{GDAL config name (see Details), character string}
 
-\item{value}{}
+\item{value}{value for config option, character string}
 }
 \value{
-character string for \code{vapour_get_config}, integer 1 for successful \code{vapour_set_config}
+character string for \code{vapour_get_config}, integer 1 for successful \code{vapour_set_config()}
 }
 \description{
 These functions can get and set configuration options for GDAL, for fine
@@ -24,7 +24,7 @@ control over specific GDAL behaviours.
 \details{
 Configuration options may also be set as environment variables.
 
-See \link{https://trac.osgeo.org/gdal/wiki/ConfigOptions}(GDAL config options) for
+See \href{https://trac.osgeo.org/gdal/wiki/ConfigOptions}{GDAL config options} for
 details on available options.
 }
 \examples{

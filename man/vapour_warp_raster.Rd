@@ -16,7 +16,6 @@ vapour_warp_raster(
   resample = "near",
   silent = TRUE,
   ...,
-  geotransform = NULL,
   band_output_type = "",
   warp_options = "",
   transformation_options = ""
@@ -45,15 +44,11 @@ vapour_warp_raster(
 
 \item{...}{unused}
 
-\item{geotransform}{DEPRECATED use 'extent' the affine geotransform of the warped raster}
-
 \item{band_output_type}{numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64' but see details in \code{\link[=vapour_read_raster]{vapour_read_raster()}}}
 
 \item{warp_options}{character vector of options, as in gdalwarp -wo - see Details}
 
 \item{transformation_options}{character vector of options, as in gdalwarp -to}
-
-\item{source_geotransform}{DEPRECATED use 'source_extent' (override the native geotransform of the source)}
 }
 \value{
 list of vectors (only 1 for 'band') of numeric values, in raster order
@@ -131,6 +126,23 @@ Note we already apply the following gdalwarp arguments based on input R argument
 \item \strong{-r}       set via 'resample'
 \item \strong{-a_ullr}  set via 'source_extent'
 }
+
+In the past this argument had arguments 'geotransform', the affine geotransform of the warped raster now please use 'extent'
+and 'source_geotransform' (override the native geotransform of the source) please use 'source_extent'.
+
+In future all 'source_*' arguments will probably be deprecated in favour of augmentation by 'vapour_vrt()'.
+
+Common inputs for \code{projection} are WKT variants,
+'AUTH:CODE's e.g. 'EPSG:3031', the 'OGC:CRS84' for lon,lat WGS84, 'ESRI:<code>' and other authority variants, and
+datum names such as 'WGS84','NAD27' recognized by PROJ itself.
+
+See help for 'SetFromUserInput' in 'OGRSpatialReference', and 'proj_create_crs_to_crs'.
+
+\href{https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs}{c.proj_create_crs_to_crs}
+
+\href{https://proj.org/development/reference/functions.html#c.proj_create}{c.proj_create}
+
+\href{https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796}{SetFromUserInput}
 }
 
 \examples{

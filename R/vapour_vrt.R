@@ -25,12 +25,22 @@
 #' If 'bands' is provided this is used to select a set of bands (numbered from 1), which might be repeated, or
 #' in any order.
 #' 
-#' 
-#' 
+#' Common inputs for `projection` are WKT variants, 'AUTH:CODE's e.g.
+#' 'EPSG:3031', the 'OGC:CRS84' for long,lat WGS84, 'ESRI:<code>' and other
+#' authority variants, and datum names such as 'WGS84','NAD27' recognized by
+#' PROJ itself.
 #'
+#' See help for 'SetFromUserInput' in 'OGRSpatialReference', and 'proj_create_crs_to_crs'.
+#' 
+#' [c.proj_create_crs_to_crs](https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs) 
+#' 
+#' [c.proj_create](https://proj.org/development/reference/functions.html#c.proj_create)
+#' 
+#' [SetFromUserInput](https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796)
+#'  
 #' @param dsn data source name, filepath, url, database connection string, or VRT text
 #' @param extent (optional) numeric extent, xmin,xmax,ymin,ymax
-#' @param projection (optional) character string, projection string ("auth:code", proj4, or WKT, or anything understood by PROJ)
+#' @param projection (optional) character string, projection string ("auth:code", proj4, or WKT, or anything understood by PROJ, see Details)
 #' @param bands (optional) which band/s to include from the source
 #' @param sds which subdataset to select from a source with more than one
 #' @param ... ignored

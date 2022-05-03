@@ -87,7 +87,7 @@ atomic vector of the nominated type raw, int, dbl, or character (hex)
 These wrappers around \code{\link[=vapour_read_raster]{vapour_read_raster()}} guarantee single vector output of the nominated type.
 }
 \details{
-_hex and _chr are aliases of each other.
+\verb{*_hex} and \verb{*_chr} are aliases of each other.
 }
 \examples{
 f <- system.file("extdata", "sst.tif", package = "vapour")
