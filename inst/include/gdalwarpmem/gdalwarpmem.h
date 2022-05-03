@@ -5,7 +5,6 @@
 #include "gdal_priv.h"
 #include "gdalwarper.h"
 #include "gdal_utils.h"  // for GDALWarpAppOptions
-#include "gdallibrary/gdallibrary.h"
 #include "gdalraster/gdalraster.h"
 
 using namespace std;
@@ -188,7 +187,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   //                         nBands, &bands_to_read[0],
   //                         0, 0, 0, &psExtraArg);
   
-  List outlist = gdallibrary::gdal_read_band_values(GDALDataset::FromHandle(hRet),
+  List outlist = gdalraster::gdal_read_band_values(GDALDataset::FromHandle(hRet),
                                                     window,
                                                     bands_to_read,
                                                     band_output_type,

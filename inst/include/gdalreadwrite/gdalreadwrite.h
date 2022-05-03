@@ -21,7 +21,7 @@ inline List gdal_read_block(CharacterVector dsn, IntegerVector offset,
   window[3] = dimension[1];
   window[4] = dimension[0];
   window[5] = dimension[1];
-  return   gdallibrary::gdal_raster_io(dsn, window, band, "nearestneighbour", band_output_type);
+  return   gdalraster::gdal_raster_io(dsn, window, band, "nearestneighbour", band_output_type);
 }
 
 inline LogicalVector gdal_write_block(CharacterVector dsn, NumericVector data,

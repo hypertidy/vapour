@@ -78,15 +78,12 @@ vapour_vrt <- function(dsn, extent = NULL, projection = NULL,  sds = 1L, bands =
   if (is.null(extent)) {
     extent <- 1.0
   }
+
   if (!is.numeric(extent)) {
     #message("vapour_vrt(): extent must be a valid numeric vector of xmin,xmax,ymin,ymax")
     extent <- 1.0
   }
-  if (!length(extent) == 1 || !length(extent) == 4) {
-   # message("vapour_vrt(): extent must be a valid numeric vector of xmin,xmax,ymin,ymax")
-  }
-  
-  if (is.null(projection)) {
+  if (is.null(projection) || is.na(projection)) {
     projection <- ""
   }
   if (!is.character(projection)) {
@@ -96,15 +93,14 @@ vapour_vrt <- function(dsn, extent = NULL, projection = NULL,  sds = 1L, bands =
   if (is.null(bands)) {
     bands <- 0
   }
+  if (length(sds) < 1 || !is.numeric(sds) || is.null(sds) || is.na(sds)) {
+    sds <- 1L
+  }
+  if (!is.null(bands) && (length(bands) < 1 || !is.numeric(sds) || is.na(sds))) {
+    sds <- 1L
+  }
+  
   raster_vrt_cpp(dsn, extent, projection[1L], sds, bands)
 }
 
-
-vapour_warp_vrt <- function(dsn, extent = NULL, projection = NULL, bands = NULL, sds = 1L) {
-  if (file.exists(dsn)) {
-    dsn <- path.expand(dsn)
-  }
   
-  
-  
-}

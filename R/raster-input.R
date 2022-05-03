@@ -199,67 +199,76 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' Raster warper (reprojection)
 #'
 #' Read a window of data from a GDAL raster source through a warp specification.
-#'  The warp specification is provided by 'extent',
-#' 'dimension', and 'projection' properties of the transformed output.
+#' The warp specification is provided by 'extent', 'dimension', and 'projection'
+#' properties of the transformed output.
 #'
 #' Any bands may be read, including repeats. 
 #' 
 #' This function is not memory safe, the source is left on disk but the output
 #' raster is all computed in memory so please be careful with very large values
-#' for 'dimension'. `1000 * 1000 * 8` for 1000 columns, 1000 rows and floating point
-#' double type will be 8Mb.
+#' for 'dimension'. `1000 * 1000 * 8` for 1000 columns, 1000 rows and floating
+#' point double type will be 8Mb.
 #'
-#' There's control over the output type, and is auto-detected from the source (raw/Byte, integer/Int32, numeric/Float64) or
-#' can be set with 'band_output_type'. 
+#' There's control over the output type, and is auto-detected from the source
+#' (raw/Byte, integer/Int32, numeric/Float64) or can be set with
+#' 'band_output_type'.
 #'
-#' 'projection' refers to the full Well-Known-Text specification of a coordinate reference
-#' system. See [vapour_srs_wkt()] for conversion from PROJ.4 string to WKT. Any string
-#' accepted by GDAL may be used for 'projection' or 'source_projection', including EPSG strings, PROJ4 strings, and
-#' file names. Note that this argument was named 'wkt' up until version 0.8.0. 
+#' 'projection' refers to the full Well-Known-Text specification of a coordinate
+#' reference system. See [vapour_srs_wkt()] for conversion from PROJ.4 string to
+#' WKT. Any string accepted by GDAL may be used for 'projection' or
+#' 'source_projection', including EPSG strings, PROJ4 strings, and file names.
+#' Note that this argument was named 'wkt' up until version 0.8.0.
 #'
 #' 'extent' is the four-figure xmin,xmax,ymin,ymax outer corners of corner pixels
 #'
 #' 'dimension' is the pixel dimensions of the output, x (ncol) then y (nrow).
 #'
-#' Values for missing data are not yet handled, just returned
-#' as-is. Note that there may be regions of "zero data" in a warped output,
-#' separate from propagated missing "NODATA" values in the source.
+#' Values for missing data are not yet handled, just returned as-is. Note that
+#' there may be regions of "zero data" in a warped output, separate from
+#' propagated missing "NODATA" values in the source.
 #'
-#' Argument 'source_projection' may be used to assign the projection of the source, 'source_extent'
-#' to assign the extent of the source. Sometimes both are required.
+#' Argument 'source_projection' may be used to assign the projection of the
+#' source, 'source_extent' to assign the extent of the source. Sometimes both
+#' are required.
 #'
-#' If multiple sources are specified via 'x' and either 'source_projection' or 'source_extent' are provided, these
-#' are applied to every source even if they have valid values already. If this is not sensible please use VRT
-#' to wrap the multiple sources first (see the gdalio package for some in-dev ideas).
+#' If multiple sources are specified via 'x' and either 'source_projection' or
+#' 'source_extent' are provided, these are applied to every source even if they
+#' have valid values already. If this is not sensible please use VRT to wrap the
+#' multiple sources first (see the gdalio package for some in-dev ideas).
 #'
-#' Wild combinations of
-#' 'source_extent' and/or 'extent' may be used for arbitrary flip orientations, scale and offset. For
-#' expert usage only. Old versions allowed transform input for target and source but this is now disabled (maybe we'll write
-#'  a new wrapper for that).
-#'
+#' Wild combinations of 'source_extent' and/or 'extent' may be used for
+#' arbitrary flip orientations, scale and offset. For expert usage only. Old
+#' versions allowed transform input for target and source but this is now
+#' disabled (maybe we'll write a new wrapper for that).
+#' 
 #' @section Options: 
 #' 
 #' The 'warp_options' arguments are for 'warp options -wo', 
 #' 
-#' 'transformation options -to', 'creation options -co', 
-#' 'open options -oo', or 'dataset open options -doo', and other arguments that use named options in gdalwarp. 
-#' 
-#' To input use the appropriate argument 'warp_options' for '-wo', 'transformation_options' for '-to'. 
-#' 
+#' 'transformation options -to', 'creation options -co', 'open options -oo', or
+#' 'dataset open options -doo', and other arguments that use named options in
+#' gdalwarp.
+#'
+#' To input use the appropriate argument 'warp_options' for '-wo',
+#' 'transformation_options' for '-to'.
+#'
 #' 'warp_options = c("SAMPLE_GRID=YES", "SAMPLE_STEPS=30") '
+#'
+#' Do not include the '-wo' or the '-to', and make sure each is a separate
+#' character element. These are added in turn with '-wo' or '-to' prepended to
+#' the string list in the implementation.
+#'
+#' There are no creation options '-co' available, because the MEM driver is
+#' used. This might changed, see for example 'vapour_write_raster_block'. We
+#' might add '-oo', '-doo' in future.
 #' 
-#'  Do not include the '-wo' or the '-to', and make sure each is a separate character element. These are added in turn
-#'  with '-wo' or '-to' prepended to the string list in the implementation. 
-#'  
-#' There are no creation options '-co' available, because the MEM driver is used. This might changed, see for example 'vapour_write_raster_block'. 
-#' We might add '-oo', '-doo' in future. 
-#'  
 #' 
 #' See [GDALWarpOptions](https://gdal.org/api/gdalwarp_cpp.html#_CPPv4N15GDALWarpOptions16papszWarpOptionsE) for '-wo'. 
 #' 
 #' See [GDAL transformation options](https://gdal.org/api/gdal_alg.html#_CPPv432GDALCreateGenImgProjTransformer212GDALDatasetH12GDALDatasetHPPc) for '-to'. 
 #' 
-#' Note we already apply the following gdalwarp arguments based on input R arguments to this function. 
+#' Note we already apply the following gdalwarp arguments based on input R
+#' arguments to this function.
 #' 
 #' * **-of**      MEM is hardcoded, but may be extended in future
 #' * **-t_srs**   set via 'projection'
@@ -269,16 +278,21 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' * **-r**       set via 'resample'
 #' * **-a_ullr**  set via 'source_extent'
 #' 
-#' In the past this argument had arguments 'geotransform', the affine geotransform of the warped raster now please use 'extent'
-#' and 'source_geotransform' (override the native geotransform of the source) please use 'source_extent'. 
-#' 
-#' In future all 'source_*' arguments will probably be deprecated in favour of augmentation by 'vapour_vrt()'. 
-#' 
-#' Common inputs for `projection` are WKT variants,
-#' 'AUTH:CODE's e.g. 'EPSG:3031', the 'OGC:CRS84' for lon,lat WGS84, 'ESRI:<code>' and other authority variants, and
-#' datum names such as 'WGS84','NAD27' recognized by PROJ itself.
+#' In the past this argument had arguments 'geotransform', the affine
+#' geotransform of the warped raster now please use 'extent' and
+#' 'source_geotransform' (override the native geotransform of the source) please
+#' use 'source_extent'.
 #'
-#' See help for 'SetFromUserInput' in 'OGRSpatialReference', and 'proj_create_crs_to_crs'.
+#' In future all 'source_*' arguments will probably be deprecated in favour of
+#' augmentation by 'vapour_vrt()'.
+#'
+#' Common inputs for `projection` are WKT variants, 'AUTH:CODE's e.g.
+#' 'EPSG:3031', the 'OGC:CRS84' for lon,lat WGS84, 'ESRI:<code>' and other
+#' authority variants, and datum names such as 'WGS84','NAD27' recognized by
+#' PROJ itself.
+#'
+#' See help for 'SetFromUserInput' in 'OGRSpatialReference', and
+#' 'proj_create_crs_to_crs'.
 #' 
 #' [c.proj_create_crs_to_crs](https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs) 
 #' 

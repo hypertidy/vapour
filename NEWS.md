@@ -1,5 +1,8 @@
 # vapour dev
 
+* Moved C++ functions `gdal_sds_list()`, `gdal_extent_only()` `gdal_raster_info()`, `gdal_raster_gcp()`, `init_resample_alg()`, `gdal_read_band_values()`, `gdal_read_dataset_values()`, `gdal_raster_dataset_io()`, `gdal_raster_io()` to *gdalraster* namespace from *gdallibrary* namespace. (Some of these will get refactored out). 
+
+
 * New function `vapour_vrt()`. 
 
 * `vapour_warp_raster()` default has changed for `bands`, it's now NULL which means "all bands", not `1L`. 

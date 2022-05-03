@@ -233,6 +233,728 @@ inline CharacterVector gdal_dsn_vrt(CharacterVector dsn, NumericVector extent, C
 }
 
 
+
+
+// move from gdallibrary:: 2022-03-05
+inline CharacterVector gdal_sds_list(const char* pszFilename)
+{
+  GDALDataset  *poDataset;
+  
+  poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );  // gdal_sds_list()
+  if( poDataset == NULL )
+  {
+    Rcpp::stop("cannot open dataset");
+  }
+  
+  Rcpp::CharacterVector ret; 
+  if (gdalraster::gdal_has_subdataset(poDataset)) {
+    ret = gdalraster::gdal_list_subdatasets(poDataset);
+  } else {
+    CharacterVector a(1);
+    a[0] = pszFilename;
+    ret = a;
+  }
+  GDALClose( (GDALDatasetH) poDataset );
+  return ret;
+}
+
+
+// move from gdallibrary:: 2022-03-05
+inline NumericVector gdal_extent_only(CharacterVector dsn) {
+  GDALDatasetH hDataset;
+  
+  hDataset = GDALOpen(dsn[0], GA_ReadOnly); //gdal_extent_only()
+  
+  if( hDataset == nullptr )
+  {
+    Rcpp::stop("cannot open dataset");
+  }
+  
+  double        adfGeoTransform[6];
+  //poDataset->GetGeoTransform( adfGeoTransform );
+  GDALGetGeoTransform(hDataset, adfGeoTransform );
+  int nXSize = GDALGetRasterXSize(hDataset);
+  int nYSize = GDALGetRasterYSize(hDataset);
+  
+  GDALClose( hDataset );
+  NumericVector extent(4); 
+  extent[0] = adfGeoTransform[0];
+  extent[1] = adfGeoTransform[0] + nXSize * adfGeoTransform[1];
+  extent[3] = adfGeoTransform[3]; 
+  extent[2] = adfGeoTransform[3] + nYSize * adfGeoTransform[5]; 
+  return extent; 
+}
+
+// moved from gdallibrary:: 2022-03-05
+inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
+  {
+    GDALDatasetH hDataset;
+    
+    hDataset = GDALOpen(dsn[0], GA_ReadOnly); // gdal_raster_info()
+    
+    if( hDataset == nullptr )
+    {
+      Rcpp::stop("cannot open dataset");
+    }
+    int nXSize = GDALGetRasterXSize(hDataset);
+    int nYSize = GDALGetRasterYSize(hDataset);
+    
+    
+    double        adfGeoTransform[6];
+    
+    //poDataset->GetGeoTransform( adfGeoTransform );
+    GDALGetGeoTransform(hDataset, adfGeoTransform );
+    
+    
+    // bail out NOW (we have no SDS and/or no rasters)
+    // #f <- system.file("h5ex_t_enum.h5", package = "h5")
+    if (GDALGetRasterCount(hDataset) < 1) {
+      Rcpp::stop("no rasters found in dataset");
+    }
+    
+    Rcpp::DoubleVector trans(6);
+    for (int ii = 0; ii < 6; ii++) trans[ii] = adfGeoTransform[ii];
+    
+    char **pfilelist = GDALGetFileList(hDataset);
+    int fdi = 0;
+    while (pfilelist && pfilelist[fdi] != NULL) {
+      fdi++; // count
+    }
+    int ilist = fdi;
+    if (ilist < 1) {
+      ilist = 1; 
+    }
+    CharacterVector FileList(ilist);
+    // might be no files, because image server
+    if (pfilelist == nullptr) {
+      FileList[0] = NA_STRING;
+    } else {
+      for (int ifile = 0; ifile < fdi; ifile++) {
+        FileList[ifile] = pfilelist[ifile]; 
+      }
+    }
+    CSLDestroy(pfilelist);
+    GDALRasterBandH  hBand;
+    int             nBlockXSize, nBlockYSize;
+    //int             bGotMin, bGotMax;
+    double          adfMinMax[2];
+    
+    hBand = GDALGetRasterBand(hDataset, 1);
+    // if we don't bail out above with no rasters things go bad here
+    GDALGetBlockSize(hBand, &nBlockXSize, &nBlockYSize);
+    if (min_max[0]) {
+      GDALComputeRasterMinMax(hBand, TRUE, adfMinMax);
+    }
+    
+    int nn = 11;
+    Rcpp::List out(nn);
+    Rcpp::CharacterVector names(nn);
+    out[0] = trans;
+    names[0] = "geotransform";
+    out[1] = Rcpp::IntegerVector::create(nXSize, nYSize);
+    names[1] = "dimXY";
+    //GDALGetMetadataDomainList(hBand,  )
+    
+    
+    
+    
+    DoubleVector vmmx(2);
+    if (min_max[0]) {
+      vmmx[0] = adfMinMax[0];
+      vmmx[1] = adfMinMax[1];
+    } else {
+      vmmx[0] = NA_REAL;
+      vmmx[1] = NA_REAL;
+    }
+    out[2] = vmmx;
+    names[2] = "minmax";
+    
+    out[3] = Rcpp::IntegerVector::create(nBlockXSize, nBlockYSize);
+    names[3] = "tilesXY";
+    
+    const char *proj;
+    proj = GDALGetProjectionRef(hDataset);
+    //https://gis.stackexchange.com/questions/164279/how-do-i-create-ogrspatialreference-from-raster-files-georeference-c
+    out[4] = Rcpp::CharacterVector::create(proj);
+    names[4] = "projection";
+    
+    // get band number
+    int nBands = GDALGetRasterCount(hDataset);
+    out[5] = nBands;
+    names[5] = "bands";
+    
+    char *stri;
+    OGRSpatialReference oSRS;
+    const char *proj2;
+    proj2 = GDALGetProjectionRef(hDataset);
+    char **cwkt = (char **) &proj2;
+    
+#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
+    oSRS.importFromWkt(cwkt);
+#else
+    oSRS.importFromWkt( (const char**) cwkt);
+#endif
+    oSRS.exportToProj4(&stri);
+    out[6] =  Rcpp::CharacterVector::create(stri); //Rcpp::CharacterVector::create(stri);
+    names[6] = "projstring";
+    CPLFree(stri);
+    
+    int succ;
+    out[7] = GDALGetRasterNoDataValue(hBand, &succ);
+    names[7] = "nodata_value";
+    
+    int ocount = GDALGetOverviewCount(hBand);
+    // f <- system.file("extdata/volcano_overview.tif", package = "vapour", mustWork = TRUE)
+    IntegerVector oviews = IntegerVector(ocount * 2);
+    //oviews[0] = ocount;
+    if (ocount > 0) {
+      GDALRasterBandH  oBand;
+      for (int ii = 0; ii < ocount; ii++) {
+        oBand = GDALGetOverview(hBand, ii);
+        
+        
+        int xsize = GDALGetRasterBandXSize(oBand);
+        int ysize = GDALGetRasterBandYSize(oBand);
+        
+        oviews[(ii * 2) + 0 ] = xsize;
+        oviews[(ii * 2) + 1 ] = ysize;
+        
+        
+        
+      }
+    }
+    out[8] = oviews;
+    names[8] = "overviews";
+    
+    out[9] = FileList;
+    names[9] = "filelist";
+    
+    
+    out[10] = CharacterVector::create(GDALGetDataTypeName(GDALGetRasterDataType(hBand))); 
+    names[10] = "datatype"; 
+    
+    out.attr("names") = names;
+    
+    // close up
+    GDALClose( hDataset );
+    return out;
+    
+  }
+
+// moved from gdallibrary:: 2022-03-05
+inline List gdal_raster_gcp(CharacterVector dsn) {
+  // get GCPs if any
+  GDALDatasetH hDataset;
+  //GDALDataset  *poDataset;
+  
+  hDataset = GDALOpen( dsn[0], GA_ReadOnly); // gdal_raster_gcp()
+  if( hDataset == nullptr )
+  {
+    Rcpp::stop("cannot open dataset");
+  }
+  
+  int gcp_count;
+  gcp_count = GDALGetGCPCount(hDataset);
+  const char *srcWKT = GDALGetGCPProjection(hDataset);
+  Rcpp::List gcpout(6);
+  Rcpp::CharacterVector gcpnames(6);
+  Rcpp::CharacterVector gcpCRS(1);
+  gcpCRS[0] = srcWKT;
+  gcpnames[0] = "Pixel";
+  gcpnames[1] = "Line";
+  gcpnames[2] = "X";
+  gcpnames[3] = "Y";
+  gcpnames[4] = "Z";
+  gcpnames[5] = "CRS";
+  gcpout.attr("names") = gcpnames;
+  if (gcp_count > 0) {
+    Rcpp::NumericVector GCPPixel(gcp_count);
+    Rcpp::NumericVector GCPLine(gcp_count);
+    Rcpp::NumericVector GCPX(gcp_count);
+    Rcpp::NumericVector GCPY(gcp_count);
+    Rcpp::NumericVector GCPZ(gcp_count);
+    for (int igcp = 0; igcp < gcp_count; ++igcp) {
+      const GDAL_GCP *gcp = GDALGetGCPs( hDataset ) + igcp;
+      //const GDAL_GCP *gcp = poDataset->GetGCPs() + igcp;
+      GCPPixel[igcp] = gcp->dfGCPPixel;
+      GCPLine[igcp] = gcp->dfGCPLine;
+      GCPX[igcp] = gcp->dfGCPX;
+      GCPY[igcp] = gcp->dfGCPY;
+      GCPZ[igcp] = gcp->dfGCPZ;
+    }
+    gcpout[0] = GCPPixel;
+    gcpout[1] = GCPLine;
+    gcpout[2] = GCPX;
+    gcpout[3] = GCPY;
+    gcpout[4] = GCPZ;
+    gcpout[5] = gcpCRS;
+    //gcp_proj = poDataset->GetGCPProjection();
+  } else {
+    Rprintf("No GCP (ground control points) found.\n");
+  }
+  GDALClose( hDataset );
+  return gcpout;
+}
+
+// moved from gdallibrary:: 2022-03-05
+inline GDALRasterIOExtraArg init_resample_alg(CharacterVector resample) {
+  GDALRasterIOExtraArg psExtraArg;
+  INIT_RASTERIO_EXTRA_ARG(psExtraArg);
+  if (resample[0] == "average") {
+    psExtraArg.eResampleAlg = GRIORA_Average;
+  }
+  if (resample[0] == "bilinear") {
+    psExtraArg.eResampleAlg = GRIORA_Bilinear;
+  }
+  if (resample[0] == "cubic") {
+    psExtraArg.eResampleAlg = GRIORA_Cubic;
+  }
+  if (resample[0] == "cubicspline") {
+    psExtraArg.eResampleAlg = GRIORA_CubicSpline;
+  }
+  if (resample[0] == "gauss") {
+    psExtraArg.eResampleAlg = GRIORA_Gauss;
+  }
+  if (resample[0] == "lanczos") {
+    psExtraArg.eResampleAlg = GRIORA_Lanczos;
+  }
+  if (resample[0] == "mode") {
+    psExtraArg.eResampleAlg = GRIORA_Mode;
+  }
+  if (resample[0] == "nearestneighbour") {
+    psExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
+  }
+  return psExtraArg;
+}
+
+// moved from gdallibrary:: 2022-03-05
+inline List gdal_read_band_values(GDALDataset *hRet, 
+                                  IntegerVector window,
+                                  std::vector<int> bands_to_read, 
+                                  CharacterVector band_output_type, 
+                                  CharacterVector resample,
+                                  LogicalVector unscale) 
+{
+  int Xoffset = window[0];
+  int Yoffset = window[1];
+  int nXSize = window[2];
+  int nYSize = window[3];
+  
+  int outXSize = window[4];
+  int outYSize = window[5];
+  
+  
+  // double scale, double offset, 
+  // int hasScale, int hasOffset, int hasNA,
+  // GDALDataType src_band_type) {
+  // if band_output_type is not empty, possible override:
+  // complex types not supported Byte, UInt16, Int16, UInt32, Int32, Float32, Float64
+  GDALDataType src_band_type =  GDALGetRasterDataType(GDALGetRasterBand(hRet, bands_to_read[0])); 
+  //bool output_type_set = false; 
+  
+  if (!band_output_type[0].empty()) {
+    if (band_output_type[0] == "Byte")   src_band_type = GDT_Byte;
+    if (band_output_type[0] == "UInt16") src_band_type = GDT_UInt16;
+    if (band_output_type[0] == "Int16")  src_band_type = GDT_Int16;
+    
+    if (band_output_type[0] == "UInt32") src_band_type = GDT_UInt32;
+    if (band_output_type[0] == "Int32") src_band_type = GDT_Int32;
+    
+    if (band_output_type[0] == "Float32") src_band_type = GDT_Float32;
+    if (band_output_type[0] == "Float64") src_band_type = GDT_Float64;
+    
+    //output_type_set = true;
+  }
+  
+  int sbands = (int)bands_to_read.size();
+  Rcpp::List outlist(bands_to_read.size());
+  
+  bool band_type_not_supported = true;
+  
+  GDALRasterBand *rasterBand; 
+  int hasNA;
+  int hasScale, hasOffset;
+  double scale, offset;
+  int actual_XSize = -1; //GDALGetRasterBandXSize(hRet);
+  int actual_YSize = -1; //GDALGetRasterBandYSize(hRet);
+  
+  GDALRasterIOExtraArg psExtraArg;
+  psExtraArg = init_resample_alg(resample);
+  CPLErr err;
+  
+  for (int iband = 0; iband < sbands; iband++) {
+    rasterBand = GDALDataset::FromHandle(hRet)->GetRasterBand(bands_to_read[iband]);
+    //rasterBand = GDALGetRasterBand(hRet, bands_to_read[iband]);
+    if (iband < 1) {
+      // actual_XSize = GDALGetRasterBandXSize(rasterBand); 
+      // actual_YSize = GDALGetRasterBandYSize(rasterBand); 
+      actual_XSize = rasterBand->GetXSize();
+      actual_YSize = rasterBand->GetYSize();
+      
+      if (nXSize < 1) nXSize = actual_XSize;
+      if (nYSize < 1) nYSize = actual_YSize;
+      if (outXSize < 1) outXSize = actual_XSize;
+      if (outYSize < 1) outYSize = actual_YSize;
+      
+      
+    }
+    
+    scale = rasterBand->GetScale(&hasScale);
+    offset = rasterBand->GetOffset(&hasOffset);
+    
+    // if scale is 1 or 0 then don't override the type
+    if (abs(scale - 1.0) <= 1.0e-05 || abs(scale) < 1.0e-05) {
+      hasScale = 0; 
+    }
+    // if hasScale we ignore integer or byte and go with float
+    if ((src_band_type == GDT_Float64) | (src_band_type == GDT_Float32) | hasScale) {
+      std::vector<double> double_scanline( outXSize * outYSize );
+      err = rasterBand->RasterIO(GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+                                 &double_scanline[0], outXSize, outYSize, GDT_Float64,
+                                 0, 0, &psExtraArg);
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      NumericVector res(outXSize * outYSize  );
+      
+      // consider doing at R level, at least for MEM
+      double dval;
+      double naflag = rasterBand->GetNoDataValue(&hasNA);// GDALGetRasterNoDataValue(rasterBand, &hasNA);
+      if (hasNA && (!std::isnan(naflag))) {
+        if (naflag < -3.4e+37) {
+          naflag = -3.4e+37;
+          
+          for (size_t i=0; i< double_scanline.size(); i++) {
+            if (double_scanline[i] <= naflag) {
+              double_scanline[i] = NA_REAL; 
+            }
+          }
+        } else {
+          
+          std::replace(double_scanline.begin(), double_scanline.end(), naflag, (double) NAN);
+        }
+      }
+      long unsigned int isi;
+      for (isi = 0; isi < (double_scanline.size()); isi++) {
+        dval = double_scanline[isi];
+        if (hasScale) dval = dval * scale;
+        if (hasOffset) dval = dval + offset;
+        res[isi] = dval;
+      }
+      
+      outlist[iband] = res;
+      band_type_not_supported = false;
+    }
+    // if hasScale we assume to never use scale/offset in integer case (see block above we already dealt)
+    if ((!hasScale) & 
+        ((src_band_type == GDT_Int16) |
+        (src_band_type == GDT_Int32) |
+        (src_band_type == GDT_UInt16) |
+        (src_band_type == GDT_UInt32)))  {
+      std::vector<int32_t> integer_scanline( outXSize * outYSize );
+      err = rasterBand->RasterIO(GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+                                 &integer_scanline[0], outXSize, outYSize, GDT_Int32,
+                                 0, 0, &psExtraArg);
+      
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      IntegerVector res(outXSize * outYSize );
+      
+      // consider doing at R level, at least for MEM
+      int dval;
+      int naflag = GDALGetRasterNoDataValue(rasterBand, &hasNA);
+      
+      if (hasNA && (!std::isnan(naflag))) {
+        std::replace(integer_scanline.begin(), integer_scanline.end(), naflag, (int) NAN);
+        
+      }
+      long unsigned int isi;
+      for (isi = 0; isi < (integer_scanline.size()); isi++) {
+        dval = integer_scanline[isi];
+        if (hasScale) dval = dval * scale;
+        if (hasOffset) dval = dval + offset;
+        res[isi] = dval;
+      }
+      outlist[iband] = res;
+      band_type_not_supported = false;
+    }
+    
+    // if hasScale we assume to never use scale/offset in integer case (see block above we already dealt)
+    
+    if (!hasScale & (src_band_type == GDT_Byte)) {
+      std::vector<uint8_t> byte_scanline( outXSize * outYSize );
+      err = rasterBand->RasterIO(GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+                                 &byte_scanline[0], outXSize, outYSize, GDT_Byte,
+                                 0, 0, &psExtraArg);
+      
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      RawVector res(outXSize * outYSize );
+      uint8_t naflag = GDALGetRasterNoDataValue(rasterBand, &hasNA);
+      
+      if (hasNA && (!std::isnan(naflag))) {
+        std::replace(byte_scanline.begin(), byte_scanline.end(), naflag, (uint8_t) NAN);
+        
+      }
+      long unsigned int isi;
+      for (isi = 0; isi < (byte_scanline.size()); isi++) {
+        res[isi] = byte_scanline[isi];
+      }
+      outlist[iband] = res;
+      band_type_not_supported = false;
+    }
+    
+    
+    
+  }
+  // safe but lazy way of not supporting Complex, TypeCount or Unknown types
+  // (see GDT_ checks above)
+  if (band_type_not_supported) {
+    GDALClose(hRet); 
+    Rcpp::stop("band type not supported (is it Complex? report at hypertidy/vapour/issues)");
+  }
+  
+  return outlist; 
+}
+
+
+
+
+  inline List gdal_read_dataset_values(GDALDataset *hRet, 
+                                       IntegerVector window,
+                                       std::vector<int> bands_to_read, 
+                                       CharacterVector band_output_type, 
+                                       CharacterVector resample,
+                                       LogicalVector unscale) 
+  {
+    int Xoffset = window[0];
+    int Yoffset = window[1];
+    int nXSize = window[2];
+    int nYSize = window[3];
+    
+    int outXSize = window[4];
+    int outYSize = window[5];
+    
+    
+    // double scale, double offset, 
+    // int hasScale, int hasOffset, int hasNA,
+    // GDALDataType src_band_type) {
+    // if band_output_type is not empty, possible override:
+    // complex types not supported Byte, UInt16, Int16, UInt32, Int32, Float32, Float64
+    GDALDataType src_band_type =  GDALGetRasterDataType(GDALGetRasterBand(hRet, bands_to_read[0])); 
+    //bool output_type_set = false; 
+    
+    if (!band_output_type[0].empty()) {
+      if (band_output_type[0] == "Byte")   src_band_type = GDT_Byte;
+      if (band_output_type[0] == "UInt16") src_band_type = GDT_UInt16;
+      if (band_output_type[0] == "Int16")  src_band_type = GDT_Int16;
+      
+      if (band_output_type[0] == "UInt32") src_band_type = GDT_UInt32;
+      if (band_output_type[0] == "Int32") src_band_type = GDT_Int32;
+      
+      if (band_output_type[0] == "Float32") src_band_type = GDT_Float32;
+      if (band_output_type[0] == "Float64") src_band_type = GDT_Float64;
+      
+      //output_type_set = true;
+    }
+    
+    // int sbands = (int)bands_to_read.size();
+    Rcpp::List outlist(1);
+    
+    bool band_type_not_supported = true;
+    
+    GDALRasterBand *rasterBand; 
+    int hasNA;
+    int hasScale, hasOffset;
+    double scale, offset;
+    int actual_XSize = -1; //GDALGetRasterBandXSize(hRet);
+    int actual_YSize = -1; //GDALGetRasterBandYSize(hRet);
+    
+    GDALRasterIOExtraArg psExtraArg;
+    psExtraArg = init_resample_alg(resample);
+    CPLErr err;
+    
+    rasterBand = GDALDataset::FromHandle(hRet)->GetRasterBand(bands_to_read[0]);
+    actual_XSize = rasterBand->GetXSize();
+    actual_YSize = rasterBand->GetYSize();
+    
+    if (nXSize < 1) nXSize = actual_XSize;
+    if (nYSize < 1) nYSize = actual_YSize;
+    if (outXSize < 1) outXSize = actual_XSize;
+    if (outYSize < 1) outYSize = actual_YSize;
+    
+    int n_values_out = outXSize * outYSize * bands_to_read.size();
+    
+    scale = rasterBand->GetScale(&hasScale);
+    offset = rasterBand->GetOffset(&hasOffset);
+    
+    // if scale is 1 or 0 then don't override the type
+    if (abs(scale - 1.0) <= 1.0e-09 || abs(scale) < 1.0e-09) {
+      hasScale = 0; 
+    }
+    // if hasScale we ignore integer or byte and go with float
+    if ((src_band_type == GDT_Float64) | (src_band_type == GDT_Float32) | hasScale) {
+      std::vector<double> double_scanline( n_values_out);
+      err = ((GDALDataset*)hRet)->RasterIO(GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+             &double_scanline[0], outXSize, outYSize, GDT_Float64,
+             0, 0, 
+             0, 0, 0, &psExtraArg);
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      NumericVector res(n_values_out);
+      
+      // consider doing at R level, at least for MEM
+      double dval;
+      double naflag = rasterBand->GetNoDataValue(&hasNA);// GDALGetRasterNoDataValue(rasterBand, &hasNA);
+      if (hasNA && (!std::isnan(naflag))) {
+        if (naflag < -3.4e+37) {
+          naflag = -3.4e+37;
+          
+          for (size_t i=0; i< double_scanline.size(); i++) {
+            if (double_scanline[i] <= naflag) {
+              double_scanline[i] = NA_REAL; 
+            }
+          }
+        } else {
+          
+          std::replace(double_scanline.begin(), double_scanline.end(), naflag, (double) NAN);
+        }
+      }
+      long unsigned int isi;
+      for (isi = 0; isi < (double_scanline.size()); isi++) {
+        dval = double_scanline[isi];
+        if (hasScale) dval = dval * scale;
+        if (hasOffset) dval = dval + offset;
+        res[isi] = dval;
+      }
+      outlist[0] = res;
+      band_type_not_supported = false;
+    }
+    // if hasScale we assume to never use scale/offset in integer case (see block above we already dealt)
+    if ((!hasScale) & 
+        ((src_band_type == GDT_Int16) |
+        (src_band_type == GDT_Int32) |
+        (src_band_type == GDT_UInt16) |
+        (src_band_type == GDT_UInt32)))  {
+      std::vector<int32_t> integer_scanline( n_values_out);
+      err = ((GDALDataset*)hRet)->RasterIO(GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+             &integer_scanline[0], outXSize, outYSize, GDT_Int32,
+             0, 0, 
+             0, 0, 0, &psExtraArg);
+      
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      IntegerVector res(n_values_out );
+      
+      // consider doing at R level, at least for MEM
+      int dval;
+      int naflag = GDALGetRasterNoDataValue(rasterBand, &hasNA);
+      
+      if (hasNA && (!std::isnan(naflag))) {
+        std::replace(integer_scanline.begin(), integer_scanline.end(), naflag, (int) NAN);
+        
+      }
+      long unsigned int isi;
+      for (isi = 0; isi < (integer_scanline.size()); isi++) {
+        dval = integer_scanline[isi];
+        if (hasScale) dval = dval * scale;
+        if (hasOffset) dval = dval + offset;
+        res[isi] = dval;
+      }
+      outlist[0] = res;
+      band_type_not_supported = false;
+    }
+    
+    // if hasScale we assume to never use scale/offset in integer case (see block above we already dealt)
+    
+    if (!hasScale & (src_band_type == GDT_Byte)) {
+      std::vector<uint8_t> byte_scanline( n_values_out );
+      err = ((GDALDataset *)hRet)->RasterIO(GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+             &byte_scanline[0], outXSize, outYSize, GDT_Byte,
+             0, 0, 
+             0, 0, 0, 
+             &psExtraArg);
+      
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      RawVector res(n_values_out);
+      uint8_t naflag = GDALGetRasterNoDataValue(rasterBand, &hasNA);
+      
+      if (hasNA && (!std::isnan(naflag))) {
+        std::replace(byte_scanline.begin(), byte_scanline.end(), naflag, (uint8_t) NAN);
+        
+      }
+      long unsigned int isi;
+      for (isi = 0; isi < (byte_scanline.size()); isi++) {
+        res[isi] = byte_scanline[isi];
+      }
+      outlist[0] = res;
+      band_type_not_supported = false;
+    }
+    
+    // safe but lazy way of not supporting Complex, TypeCount or Unknown types
+    // (see GDT_ checks above)
+    if (band_type_not_supported) {
+      GDALClose(hRet); 
+      Rcpp::stop("band type not supported (is it Complex? report at hypertidy/vapour/issues)");
+    }
+    
+    return outlist; 
+  }
+
+
+inline List gdal_raster_dataset_io(CharacterVector dsn,
+                                   IntegerVector window,
+                                   IntegerVector band,
+                                   CharacterVector resample,
+                                   CharacterVector band_output_type)
+{
+  
+  GDALDataset  *poDataset;
+  poDataset = (GDALDataset *) GDALOpen(dsn[0], GA_ReadOnly ); // gdal_raster_dataset_io
+  if( poDataset == NULL )
+  {
+    Rcpp::stop("cannot open dataset");
+  }
+  if (band[0] < 1) { GDALClose(poDataset);  Rcpp::stop("requested band %i should be 1 or greater", band[0]);  }
+  int nBands = poDataset->GetRasterCount();
+  if (band[0] > nBands) { GDALClose(poDataset);   Rcpp::stop("requested band %i should be equal to or less than number of bands: %i", band[0], nBands); }
+  int band_length = band.size();
+  std::vector<int> bands_to_read(band_length);
+  if (band.size() == 1 && band[0] == 0) {
+    for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
+  } else {
+    for (int i = 0; i < band.size(); i++) bands_to_read[i] = band[i];
+  }
+  List out = gdal_read_dataset_values(poDataset, window, bands_to_read, band_output_type, resample, false);
+  // close up
+  GDALClose(poDataset );
+  return out;
+}
+
+inline List gdal_raster_io(CharacterVector dsn,
+                           IntegerVector window,
+                           IntegerVector band,
+                           CharacterVector resample,
+                           CharacterVector band_output_type)
+{
+  
+  GDALDataset  *poDataset;
+  poDataset = (GDALDataset *) GDALOpen(dsn[0], GA_ReadOnly );  // gdal_raster_io()
+  if( poDataset == NULL )
+  {
+    Rcpp::stop("cannot open dataset");
+  }
+  if (band[0] < 1) { GDALClose(poDataset);  Rcpp::stop("requested band %i should be 1 or greater", band[0]);  }
+  int nBands = poDataset->GetRasterCount();
+  if (band[0] > nBands) { GDALClose(poDataset);   Rcpp::stop("requested band %i should be equal to or less than number of bands: %i", band[0], nBands); }
+  int band_length = band.size();
+  std::vector<int> bands_to_read(band_length);
+  if (band.size() == 1 && band[0] == 0) {
+    for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
+  } else {
+    for (int i = 0; i < band.size(); i++) bands_to_read[i] = band[i];
+  }
+  List out = gdal_read_band_values(poDataset, window, bands_to_read, band_output_type, resample, false);
+  // close up
+  GDALClose(poDataset );
+  return out;
+}
+
+
 // -------------------------------------------------------------------
 // these were the original workers in the gdalraster namespace, these pre-date
 // CRAN version 0.8.5 and so have not been released, but vapour_sds_names 
