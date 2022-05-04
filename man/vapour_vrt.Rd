@@ -5,7 +5,7 @@
 \title{Virtual raster}
 \usage{
 vapour_vrt(
-  dsn,
+  x,
   extent = NULL,
   projection = NULL,
   sds = 1L,
@@ -15,7 +15,7 @@ vapour_vrt(
 )
 }
 \arguments{
-\item{dsn}{data source name, filepath, url, database connection string, or VRT text}
+\item{x}{data source name, filepath, url, database connection string, or VRT text}
 
 \item{extent}{(optional) numeric extent, xmin,xmax,ymin,ymax}
 
@@ -33,11 +33,15 @@ vapour_vrt(
 VRT character string (for use by GDAL-capable tools, i.e. reading raster)
 }
 \description{
-Simple VRT creation of a GDAL virtual raster.
+Simple VRT creation of a GDAL virtual raster. The data source string is
+\strong{augmented} by input of other optional arguments. That means it \strong{overrides}
+their values provided by the source data, or stands in place of this information if
+it is missing.
 }
 \details{
 Create a GDAL data source string (to be used like a filename) with various helpers.
-VRT stands for 'ViRTual'.
+VRT stands for 'ViRTual'. A VRT string then acts as a representative of a data source for
+further use (to read or warp it).
 
 An input string will be converted to a single subdataset, use 'sds' argument to select.
 
@@ -45,21 +49,46 @@ If 'extent', 'projection' is provided this is applied to override the source's e
 (These might be invalid, or missing, so we facilitate correcting this).
 
 If 'bands' is provided this is used to select a set of bands (numbered from 1), which might be repeated, or
-in any order.
+in any order and contain repetitions.
 
-Common inputs for \code{projection} are WKT variants, 'AUTH:CODE's e.g.
-'EPSG:3031', the 'OGC:CRS84' for long,lat WGS84, 'ESRI:<code>' and other
+\code{vapour_vrt()} is vectorized, it will return multiple VRT strings for multiple inputs in
+a "length > 1" character vector. These are all independent, this is different to the function
+\code{vapour_warp_raster()} where multiple inputs are merged (possibly by sequential overlapping).
+}
+\section{Rationale}{
+
+
+For a raster, the basic essentials we can specify or modify for a source  are
+\enumerate{
+\item the source, 2) the extent, 3) the projection 4) what subdataset (these are
+variables from NetCDF and the like that contain multiple datasets) and 5)
+which band/s to provided. For extent and projection we are simply providing
+or correcting complete information about how to interpret the georeferencing,
+with subdatasets and bands this is more like a query of which ones we want.
+If we only wanted band 5, then the output data would have one band only (and
+we we read it we need \code{band = 1}).
+}
+
+We don't provide ability override the dimension, but that is possible as
+well. More features may come with a 'VRTBuilder' interface.
+}
+
+\section{Projections}{
+
+Common inputs for \code{projection} are WKT variants, "AUTH:CODE"s e.g.
+"EPSG:3031", the "OGC:CRS84" for long,lat WGS84, "ESRI:<code>" and other
 authority variants, and datum names such as 'WGS84','NAD27' recognized by
 PROJ itself.
 
-See help for 'SetFromUserInput' in 'OGRSpatialReference', and 'proj_create_crs_to_crs'.
+See the following links to GDAL and PROJ documentation:
 
-\href{https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs}{c.proj_create_crs_to_crs}
+\href{https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs}{PROJ documentation: c.proj_create_crs_to_crs}
 
-\href{https://proj.org/development/reference/functions.html#c.proj_create}{c.proj_create}
+\href{https://proj.org/development/reference/functions.html#c.proj_create}{PROJ documentation: c.proj_create}
 
-\href{https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796}{SetFromUserInput}
+\href{https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796}{GDAL documentation: SetFromUserInput}
 }
+
 \examples{
 tif <- system.file("extdata", "sst.tif", package = "vapour", mustWork = TRUE)
 vapour_vrt(tif)

@@ -63,7 +63,10 @@
 #' str(matrix(vapour_read_raster(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 #'
 vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL, native = FALSE, set_na = TRUE, band_output_type = "") {
-  
+  .check_dsn_single(x)
+  if (!length(native) == 1L || is.na(native[1]) || !is.logical(native)) {
+    stop("'native' must be a single 'TRUE' or 'FALSE'")
+  }
   band_output_type <- .r_to_gdal_datatype(band_output_type)
   datasourcename <- sds_boilerplate_checks(x, sds = sds)
   resample <- tolower(resample)  ## ensure check internally is lower case
@@ -342,6 +345,14 @@ vapour_warp_raster <- function(x, bands = NULL,
                                band_output_type = "", 
                                warp_options = "", 
                                transformation_options = "") {
+  x <- .check_dsn_multiple(x)
+  if (!is.null(bands) && (anyNA(bands) || length(bands) < 1 || !is.numeric(bands))) {
+    stop("'bands' must be a valid set of band integers (1-based)")
+  }
+  if (is.null(projection) || is.na(projection[1]) || length(projection) != 1L || !is.character(projection)) {
+    stop("'projection' must be a valid character string for a GDAL/PROJ coordinate reference system (map projection)")
+  }
+  
   ## deprecated arguments
   if (!is.null(list(...)$source_wkt)) stop("'source_wkt' is defunct, please use 'source_projection'")
   if(!is.null(list(...)$source_geotransform)) stop("'source_geotransform' is defunct and now ignored, please use 'source_extent'")
@@ -363,7 +374,7 @@ vapour_warp_raster <- function(x, bands = NULL,
   ## bands
   if (is.numeric(bands) && any(bands < 1)) stop("all 'bands' index must be >= 1")
   if (is.null(bands)) bands <- 0
-  if(!is.numeric(bands)) stop("'bands' must be numeric (integer), start at 1")
+  if(length(bands) < 1 || anyNA(bands) || !is.numeric(bands)) stop("'bands' must be numeric (integer), start at 1")
   bands <- as.integer(bands)
   ##if ("projection" %in% names(list(...))) message("argument 'projection' input is ignored, warper functions use 'wkt = ' to specify target projection (any format is ok)")
   # dud_extent <- FALSE

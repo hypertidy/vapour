@@ -168,8 +168,7 @@ vapour_all_drivers <- function() {
 #' @export
 #' @param dsource data source string (i.e. file name or URL or database connection string)
 vapour_driver <- function(dsource) {
-  if (!is.character(dsource)) stop("'dsource' must be a character vector")
-  if (!nchar(dsource) > 0) stop("'dsource' is an empty string")
+  dsource <- .check_dsn_single(dsource)
   driver_id_gdal_cpp(dsource);
 }
 

@@ -81,6 +81,7 @@ UCRT
 UInt
 Ucar
 VRT
+VRTBuilder
 VSI
 ViRTual
 WGS
@@ -122,11 +123,13 @@ fv
 gdal
 gdalheaders
 gdalio
+gdallibrary
 gdalmin
 gdalraster
 gdalwarp
 geo
 georeferenced
+georeferencing
 geospatial
 geotransform
 ghrsst

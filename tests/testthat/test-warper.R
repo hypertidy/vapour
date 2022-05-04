@@ -86,10 +86,11 @@ expect_named(
 )
 })
 test_that("robust to bad inputs", {
-  expect_error(vapour_warp_raster(c(f, "afile"), extent = c(0, 1, 0, 1),
-                                  projection = "+proj=laea", source_projection = "+proj=longlat", dimension = c(10, 10))
-  )
-
+  
+ expect_output( expect_error(vapour_warp_raster(c(f, "afile"), extent = c(0, 1, 0, 1),
+                                   projection = "+proj=laea", source_projection = "+proj=longlat", dimension = c(10, 10))
+   )
+ )
   expect_error(vapour_warp_raster(c(f, f), extent = c(0, 1, 0, 1),
                      projection = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10)), "'source_wkt' is defunct")
 

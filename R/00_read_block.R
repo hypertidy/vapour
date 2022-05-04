@@ -15,6 +15,7 @@
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' v <- vapour_read_raster_block(f, c(0L, 0L), dimension = c(2L, 3L), band = 1L)
 vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band_output_type = "") {
+  dsource <- .check_dsn_single(dsource)
   if (anyNA(band) || length(band) < 1L) stop("missing band value")
   if (file.exists(dsource)) {
     dsource <- normalizePath(dsource)

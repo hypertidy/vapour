@@ -139,6 +139,7 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' vapour_raster_info(f)
 vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
+  x <- .check_dsn_single(x)
   datasourcename <- sds_boilerplate_checks(x, sds = sds)
   info <- raster_info_gdal_cpp(dsn = datasourcename, min_max = min_max)
   info[["extent"]] <- .gt_dim_to_extent(info$geotransform, info$dimXY)
@@ -178,6 +179,7 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
 #' vapour_raster_gcp(f1)
 #'
 vapour_raster_gcp <- function(x, ...) {
+  x <- .check_dsn_single(x)
   if (file.exists(x)) x <- normalizePath(x)
   raster_gcp_gdal_cpp(x)
 }
@@ -208,12 +210,8 @@ vapour_raster_gcp <- function(x, ...) {
 #' }
 #' vapour_sds_names(system.file("extdata", "sst.tif", package = "vapour"))
 vapour_sds_names <- function(x) {
-  if(!length(x) == 1L) {
-    if (length(x) < 1) stop("no input 'x' value")
-    message("'x' expected as a single string value, ignoring all but the first")
-    x <- x[1L]
-  }
-  if (file.exists(x)) x <- normalizePath(x)
+  x <- .check_dsn_single(x)
+  ##if (file.exists(x)) x <- normalizePath(x)
   
   sources <- sds_list_gdal_cpp(x)
   if (length(sources) < 2L && nchar(sources[1L]) < 1L) sources <- x
