@@ -1,3 +1,38 @@
+vapour_create_copy <- function(dsource, filename, overwrite = FALSE, driver = "GTiff") {
+  ##tf <- tempfile(fileext = ".tif")
+  # f <- "inst/extdata/sst.tif"
+  
+  ## FIXME: we need to remove the SourceFilename element, else the data gets copied
+  #vapour:::vapour_create_copy_cpp(gsub(f, "", vrt), tf, driver = "GTiff")
+  ## tif has empty size
+  #file.info(tf)$size
+  #[1] 824
+
+  ## but not (FIXME) cleared metadata, I think this is where we need to clear the PAM  
+  # terra::rast(tf)
+  # class       : SpatRaster 
+  # dimensions  : 286, 143, 1  (nrow, ncol, nlyr)
+  # resolution  : 0.07, 0.07000389  (x, y)
+  # extent      : 140, 150.01, -60.01833, -39.99722  (xmin, xmax, ymin, ymax)
+  # coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+  # source      : filefaae639737aad.tif 
+  # name        : filefaae639737aad 
+  # min value   :            271.35 
+  # max value   :           289.859 
+  # 
+  if (!overwrite && file.exists(filename)) stop("'filename' exists")
+  vapour:::.check_dsn_single(dsource)
+  
+  ## 1) convert to VRT
+  ## vrt <- vapour_vrt(dsource)
+  ## 2) clear SourceFilename
+  ## vrt <- vapour_create_copy_cpp(gsub(f, "", vrt), tf, driver = "GTiff")
+  ##vapour_create_copy_cpp(vrt, tf, driver = driver)
+  stop("not implemented")
+}
+
+
+
 #' Read or write raster block
 #'
 #' Read a 'block' from raster.

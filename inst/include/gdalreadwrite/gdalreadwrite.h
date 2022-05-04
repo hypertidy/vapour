@@ -6,11 +6,44 @@
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
 #include "gdallibrary/gdallibrary.h"
+#include "gdal_utils.h"  // for GDALWarpAppOptions
 
 namespace gdalreadwrite{
 
 using namespace Rcpp;
 
+inline CharacterVector gdal_create_copy(CharacterVector dsource, CharacterVector dtarget, CharacterVector driver) {
+  
+  const char *pszFormat;
+  pszFormat = (const char *)driver[0];
+  GDALDriver *poDriver;
+  //char **papszMetadata;
+  poDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
+    
+    
+  GDALDataset *poSrcDS = (GDALDataset *) GDALOpen( dsource[0], GA_ReadOnly );
+  if (poSrcDS == NULL ) stop("unable to open raster source for reading: %s", (char *)dsource[0]);
+
+  // 
+   GDALDataset *poDstDS;
+   char **papszOptions = NULL;
+   papszOptions = CSLSetNameValue( papszOptions, "SPARSE_OK", "YES" );
+  poDstDS = poDriver->CreateCopy( dtarget[0], poSrcDS, FALSE,
+                                  papszOptions, NULL, NULL );
+
+  /* Once we're done, close properly the dataset */
+  if( poDstDS == NULL ) {
+    GDALClose( (GDALDatasetH) poSrcDS );
+     Rprintf("unable to open raster source for CreateCopy: %s", dtarget[0]);
+     return CharacterVector::create("");
+  } else {
+    GDALClose( (GDALDatasetH) poDstDS );
+  }
+  GDALClose( (GDALDatasetH) poSrcDS );
+
+
+  return dtarget;
+}
 inline List gdal_read_block(CharacterVector dsn, IntegerVector offset,
                             IntegerVector dimension, IntegerVector band,
                             CharacterVector band_output_type) {

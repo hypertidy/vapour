@@ -165,6 +165,10 @@ vapour_write_raster_block_cpp <- function(dsource, data, offset, dimension, band
     .Call('_vapour_vapour_write_raster_block_cpp', PACKAGE = 'vapour', dsource, data, offset, dimension, band)
 }
 
+vapour_create_copy_cpp <- function(dsource, dtarget, driver) {
+    .Call('_vapour_vapour_create_copy_cpp', PACKAGE = 'vapour', dsource, dtarget, driver)
+}
+
 raster_vrt_cpp <- function(dsn, extent, projection, sds, bands) {
     .Call('_vapour_raster_vrt_cpp', PACKAGE = 'vapour', dsn, extent, projection, sds, bands)
 }
