@@ -1,3 +1,34 @@
+#' Create raster file
+#'
+#' This is in an incomplete interface to raster writing, for exploring. 
+#' 
+#' If GeoTIFF is used (`driver = "GTiff"`, recommended) then the output is tiled 512x512, and has DEFLATE compression, and
+#' is sparse when created (no values are initiated, so the file is tiny). 
+#' 
+#' Note that there is no restriction on where you can read or write from, the responsiblity is yours. In future we will 
+#' allow control of output tiling and data type etc. 
+#' 
+#' @param filename filename to created
+#' @param driver GDAL driver to use (GTiff is default, and recommended)
+#' @param extent xmin,xmax,ymin,ymax 4-element vector
+#' @param dimension dimension of the output, X * Y
+#' @param projection projection of the output, best to use a full WKT but any string accepted
+#' @param n_bands number of bands in the output, default is 1
+#' @param overwrite not TRUE by default
+#'
+#' @return
+#' @export
+#'
+#' @examples
+vapour_create <- function(filename, driver = "GTiff", extent = c(-180, 180, -90, 90), 
+                          dimension = c(2048, 1024), projection = "OGC:CRS84", n_bands = 1L, overwrite = FALSE) {
+
+  if (!overwrite && file.exists(filename)) stop("'filename' exists")
+ 
+  vapour_create_cpp(filename, driver, extent, dimension, projection, n_bands)
+}
+
+
 vapour_create_copy <- function(dsource, filename, overwrite = FALSE, driver = "GTiff") {
   ##tf <- tempfile(fileext = ".tif")
   # f <- "inst/extdata/sst.tif"
@@ -21,7 +52,7 @@ vapour_create_copy <- function(dsource, filename, overwrite = FALSE, driver = "G
   # max value   :           289.859 
   # 
   if (!overwrite && file.exists(filename)) stop("'filename' exists")
-  vapour:::.check_dsn_single(dsource)
+  .check_dsn_single(dsource)
   
   ## 1) convert to VRT
   ## vrt <- vapour_vrt(dsource)
@@ -63,7 +94,7 @@ vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band
 #'
 #' Be careful! The write function doesn't create a file, you have to use an existing one.
 #' Don't write to a file you don't want to update by mistake.
-#' @noRd
+#' @export
 #' @return for vapour_write_raster_block a logical indicating success or failure to write
 #' @param data data vector, length should match  `prod(dimension)` or length 1 allowed
 #' @param overwrite set to FALSE as a safety valve to not overwrite an existing file

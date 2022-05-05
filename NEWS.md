@@ -1,5 +1,8 @@
 # vapour dev
 
+* New functions `vapour_create()` `vapour_read_raster_block()` and `vapour_read_raster_block()` for creating and writing 
+to files. 
+
 * Moved C++ functions `gdal_sds_list()`, `gdal_extent_only()` `gdal_raster_info()`, `gdal_raster_gcp()`, `init_resample_alg()`, `gdal_read_band_values()`, `gdal_read_dataset_values()`, `gdal_raster_dataset_io()`, `gdal_raster_io()` to *gdalraster* namespace from *gdallibrary* namespace. (Some of these will get refactored out). 
 
 

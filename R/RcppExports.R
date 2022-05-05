@@ -169,6 +169,10 @@ vapour_create_copy_cpp <- function(dsource, dtarget, driver) {
     .Call('_vapour_vapour_create_copy_cpp', PACKAGE = 'vapour', dsource, dtarget, driver)
 }
 
+vapour_create_cpp <- function(filename, driver, extent, dimension, projection, n_bands) {
+    .Call('_vapour_vapour_create_cpp', PACKAGE = 'vapour', filename, driver, extent, dimension, projection, n_bands)
+}
+
 raster_vrt_cpp <- function(dsn, extent, projection, sds, bands) {
     .Call('_vapour_raster_vrt_cpp', PACKAGE = 'vapour', dsn, extent, projection, sds, bands)
 }
