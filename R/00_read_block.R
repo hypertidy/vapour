@@ -103,7 +103,7 @@ vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' v <- vapour_read_raster_block(f, c(0L, 0L), dimension = c(2L, 3L), band = 1L)
 #' file.copy(f, tf <- tempfile(fileext = ".tif"))
-#' vapour_write_raster_block(tf, data = v[[1]], offset = c(0L, 0L), dimension = c(2L, 3L), band = 1L)
+#' try(vapour_write_raster_block(tf, data = v[[1]], offset = c(0L, 0L), dimension = c(2L, 3L), band = 1L))
 #' file.remove(tf)
 vapour_write_raster_block <- function(dsource, data, offset, dimension, band = 1L, overwrite = FALSE) {
   if (!file.exists(dsource)) stop("file dsource must exist")
