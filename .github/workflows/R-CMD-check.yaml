@@ -114,14 +114,7 @@ jobs:
           sudo apt update
           sudo -s eval "$sysreqs"
 
-      - name: Cache R package dependencies
-        if: runner.os != 'Windows'
-        uses: actions/cache@v1
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ hashFiles('depends.Rds') }}
-          restore-keys: ${{ runner.os }}-r-${{ matrix.config.r }}-
-
+ 
       - name: Install R package dependencies
         run: |
           library(remotes)
