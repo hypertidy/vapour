@@ -173,6 +173,10 @@ vapour_create_cpp <- function(filename, driver, extent, dimension, projection, n
     .Call('_vapour_vapour_create_cpp', PACKAGE = 'vapour', filename, driver, extent, dimension, projection, n_bands)
 }
 
+raster_gdalinfo_app_cpp <- function(dsn, options) {
+    .Call('_vapour_raster_gdalinfo_app_cpp', PACKAGE = 'vapour', dsn, options)
+}
+
 raster_vrt_cpp <- function(dsn, extent, projection, sds, bands) {
     .Call('_vapour_raster_vrt_cpp', PACKAGE = 'vapour', dsn, extent, projection, sds, bands)
 }

@@ -1,5 +1,13 @@
 # vapour dev
 
+* Now depend on GDAL 2.2.3 as a minimum, because ubuntu 18.04 is still in wide use. GDALInfo() lib needs
+ GDAL 2.1 as minimum. Some info features need later, but do not fail (AFAIK). 
+ 
+* New namespace 'gdalapplib' with one utility for GDALInfo(), this is vectorized at the cpp level and includes
+ subdataset handling. It does not include listing of TAR and ZIP archives. Currently just internal function
+ ` gdalinfo_internal` for exploration, we can move to JSON parsing of the GDALInfo output rather than running
+ all the of the API directly. 
+ 
 * New functions `vapour_create()` `vapour_read_raster_block()` and `vapour_read_raster_block()` for creating and writing 
 to files. 
 

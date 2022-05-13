@@ -602,6 +602,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// raster_gdalinfo_app_cpp
+CharacterVector raster_gdalinfo_app_cpp(CharacterVector dsn, CharacterVector options);
+RcppExport SEXP _vapour_raster_gdalinfo_app_cpp(SEXP dsnSEXP, SEXP optionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type options(optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_gdalinfo_app_cpp(dsn, options));
+    return rcpp_result_gen;
+END_RCPP
+}
 // raster_vrt_cpp
 CharacterVector raster_vrt_cpp(CharacterVector dsn, NumericVector extent, CharacterVector projection, IntegerVector sds, IntegerVector bands);
 RcppExport SEXP _vapour_raster_vrt_cpp(SEXP dsnSEXP, SEXP extentSEXP, SEXP projectionSEXP, SEXP sdsSEXP, SEXP bandsSEXP) {
@@ -662,6 +674,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_vapour_write_raster_block_cpp", (DL_FUNC) &_vapour_vapour_write_raster_block_cpp, 5},
     {"_vapour_vapour_create_copy_cpp", (DL_FUNC) &_vapour_vapour_create_copy_cpp, 3},
     {"_vapour_vapour_create_cpp", (DL_FUNC) &_vapour_vapour_create_cpp, 6},
+    {"_vapour_raster_gdalinfo_app_cpp", (DL_FUNC) &_vapour_raster_gdalinfo_app_cpp, 2},
     {"_vapour_raster_vrt_cpp", (DL_FUNC) &_vapour_raster_vrt_cpp, 5},
     {NULL, NULL, 0}
 };
