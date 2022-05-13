@@ -1,3 +1,9 @@
+## this is ongoing work to replace the innards of GDALInfo for vapour_raster_info and others
+## for example, instead of
+## f1 <- system.file("extdata/gcps", "volcano_gcp.tif", package = "vapour")
+## vapour_raster_gcp(f1)
+## we can now do
+## jsonlite::fromJSON(vapour:::gdalinfo_internal(f1))$gcps
 gdalinfo_internal <- function(x, json = TRUE,
                                   stats = FALSE,
                                   sd = 0,
