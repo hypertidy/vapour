@@ -30,7 +30,7 @@ vapour_create(
 \item{overwrite}{not TRUE by default}
 }
 \value{
-
+the file name that was created
 }
 \description{
 This is in an incomplete interface to raster writing, for exploring.

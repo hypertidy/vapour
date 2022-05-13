@@ -14,7 +14,13 @@ vapour_write_raster_block(
 )
 }
 \arguments{
+\item{dsource}{data source name}
+
 \item{data}{data vector, length should match  \code{prod(dimension)} or length 1 allowed}
+
+\item{offset}{offset to start}
+
+\item{dimension}{dimension to write}
 
 \item{band}{which band to write to (1-based)}
 
@@ -31,6 +37,7 @@ Don't write to a file you don't want to update by mistake.
 f <- system.file("extdata", "sst.tif", package = "vapour")
 v <- vapour_read_raster_block(f, c(0L, 0L), dimension = c(2L, 3L), band = 1L)
 file.copy(f, tf <- tempfile(fileext = ".tif"))
-try(vapour_write_raster_block(tf, data = v[[1]], offset = c(0L, 0L), dimension = c(2L, 3L), band = 1L))
+try(vapour_write_raster_block(tf, data = v[[1]], offset = c(0L, 0L), 
+               dimension = c(2L, 3L), band = 1L))
 file.remove(tf)
 }

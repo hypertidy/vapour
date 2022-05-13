@@ -16,7 +16,7 @@
 #' @param n_bands number of bands in the output, default is 1
 #' @param overwrite not TRUE by default
 #'
-#' @return
+#' @return the file name that was created
 #' @export
 #'
 #' @examples
@@ -96,14 +96,20 @@ vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band
 #' Don't write to a file you don't want to update by mistake.
 #' @export
 #' @return for vapour_write_raster_block a logical indicating success or failure to write
+#'
 #' @param data data vector, length should match  `prod(dimension)` or length 1 allowed
 #' @param overwrite set to FALSE as a safety valve to not overwrite an existing file
+#' @param dsource data source name
+#' @param offset offset to start
+#' @param dimension dimension to write
 #' @param band which band to write to (1-based)
+#'
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' v <- vapour_read_raster_block(f, c(0L, 0L), dimension = c(2L, 3L), band = 1L)
 #' file.copy(f, tf <- tempfile(fileext = ".tif"))
-#' try(vapour_write_raster_block(tf, data = v[[1]], offset = c(0L, 0L), dimension = c(2L, 3L), band = 1L))
+#' try(vapour_write_raster_block(tf, data = v[[1]], offset = c(0L, 0L), 
+#'                dimension = c(2L, 3L), band = 1L))
 #' file.remove(tf)
 vapour_write_raster_block <- function(dsource, data, offset, dimension, band = 1L, overwrite = FALSE) {
   if (!file.exists(dsource)) stop("file dsource must exist")
