@@ -42,9 +42,9 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' \describe{
 #' \item{extent}{the extent of the data, xmin, xmax, ymin, ymax - these are the lower left and upper right corners of pixels}
 #' \item{geotransform}{the affine transform}
-#' \item{dimXY}{dimensions x-y, columns*rows}
+#' \item{dimension}{dimensions x-y, columns*rows}
 #' \item{minmax}{numeric values of the computed min and max from the first band (optional)}
-#' \item{tilesXY}{dimensions x-y of internal tiling scheme}
+#' \item{block}{dimensions x-y of internal tiling scheme}
 #' \item{projection}{text version of map projection parameter string}
 #' \item{bands}{number of bands in the dataset}
 #' \item{projstring}{the proj string version of 'projection'}
@@ -139,6 +139,27 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' vapour_raster_info(f)
 vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
+  sd <- if (is.null(sds)) 0 else sds
+  info <- gdalinfo_internal(x[1L], json  = TRUE, stats = min_max, sd = sd, ...)
+  json <- jsonlite::fromJSON(info)
+  list(geotransform = json$geoTransform, 
+       dimension = json$size,  ## or/and dimXY
+       dimXY = json$size,
+       ## this needs to be per band
+       minmax = c(json$bands$min[1L], json$bands$max[1L]), 
+       block = json$bands$block[[1L]],  ## or/and dimXY
+       projection = json$coordinateSystem$wkt, 
+       bands = dim(json$bands)[1L], 
+       projstring = json$coordinateSystem$proj4, 
+       nodata_value = json$bands$noDataValue[1L], 
+       overviews = unlist(json$bands$overviews[[1]], use.names = FALSE), ## NULL if there aren't any (was integer(0)), 
+       filelist = json$files, 
+       datatype = json$bands$type[1L], 
+       extent = c(json$cornerCoordinates$upperLeft, json$cornerCoordinates$lowerRight)[c(1, 3, 4, 2)])
+}
+
+
+old_vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
   x <- .check_dsn_single(x)
   datasourcename <- sds_boilerplate_checks(x, sds = sds)
   info <- raster_info_gdal_cpp(dsn = datasourcename, min_max = min_max)

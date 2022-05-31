@@ -33,21 +33,4 @@ gdalinfo_internal <- function(x, json = TRUE,
   info
 }
 
-new_vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
-  sd <- if (is.null(sds)) 0 else sds
-  info <- gdalinfo_internal(x[1L], json  = TRUE, stats = min_max, sd = sd, ...)
-  json <- jsonlite::fromJSON(info)
-  list(geotransform = json$geoTransform, 
-       dimension = json$size,  ## or/and dimXY
-       ## this needs to be per band
-       minmax = c(json$bands$min[1L], json$bands$max[1L]), 
-       block = json$bands$block[[1L]],  ## or/and dimXY
-       projection = json$coordinateSystem$wkt, 
-       bands = dim(json$bands)[1L], 
-       projstring = json$coordinateSystem$proj4, 
-       nodata_value = json$bands$noDataValue[1L], 
-       overviews = unlist(json$bands$overviews[[1]], use.names = FALSE), ## NULL if there aren't any (was integer(0)), 
-       filelist = json$files, 
-       datatype = json$bands$type[1L], 
-       extent = c(json$cornerCoordinates$upperLeft, json$cornerCoordinates$lowerRight)[c(1, 3, 4, 2)])
-}
+
