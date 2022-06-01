@@ -8,7 +8,10 @@ using namespace Rcpp;
 List raster_gcp_gdal_cpp(CharacterVector dsn) {
   return gdalraster::gdal_raster_gcp(dsn);
 }
-
+// [[Rcpp::export]]
+LogicalVector raster_has_geolocation_gdal_cpp(CharacterVector dsn, IntegerVector sds) {
+  return gdalraster::gdal_has_geolocation(dsn, sds);
+}
 // [[Rcpp::export]]
 List raster_info_gdal_cpp(CharacterVector dsn, LogicalVector min_max) {
   return gdalraster::gdal_raster_info(dsn, min_max);

@@ -10,6 +10,7 @@ vapour_vrt(
   projection = NULL,
   sds = 1L,
   bands = NULL,
+  geolocation = NULL,
   ...,
   relative_to_vrt = FALSE
 )

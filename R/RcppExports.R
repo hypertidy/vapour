@@ -133,6 +133,10 @@ raster_gcp_gdal_cpp <- function(dsn) {
     .Call('_vapour_raster_gcp_gdal_cpp', PACKAGE = 'vapour', dsn)
 }
 
+raster_has_geolocation_gdal_cpp <- function(dsn, sds) {
+    .Call('_vapour_raster_has_geolocation_gdal_cpp', PACKAGE = 'vapour', dsn, sds)
+}
+
 raster_info_gdal_cpp <- function(dsn, min_max) {
     .Call('_vapour_raster_info_gdal_cpp', PACKAGE = 'vapour', dsn, min_max)
 }
@@ -177,7 +181,7 @@ raster_gdalinfo_app_cpp <- function(dsn, options) {
     .Call('_vapour_raster_gdalinfo_app_cpp', PACKAGE = 'vapour', dsn, options)
 }
 
-raster_vrt_cpp <- function(dsn, extent, projection, sds, bands) {
-    .Call('_vapour_raster_vrt_cpp', PACKAGE = 'vapour', dsn, extent, projection, sds, bands)
+raster_vrt_cpp <- function(dsn, extent, projection, sds, bands, geolocation) {
+    .Call('_vapour_raster_vrt_cpp', PACKAGE = 'vapour', dsn, extent, projection, sds, bands, geolocation)
 }
 

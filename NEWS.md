@@ -1,5 +1,10 @@
 # vapour dev
 
+* New internal function `raster_has_geolocation_gdal_cpp()`, early begin of does this datasource have geolocation arrays (because if it does we can just push it through the warper, otherwise nominate them with `vapour_vrt(geolocation = )`). 
+
+* `vapour_vrt()` gains geolocation argument, which can be named dsns for each of longitude,latitude. Currently assumed to be 
+ 'OGC:CRS84'. 
+
 * Now depend on GDAL 2.2.3 as a minimum, because ubuntu 18.04 is still in wide use. GDALInfo() lib needs
  GDAL 2.1 as minimum. Some info features need later, but do not fail (AFAIK). 
  

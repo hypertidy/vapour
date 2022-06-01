@@ -110,7 +110,10 @@ inline GDALDatasetH gdalH_open_dsn(const char * dsn, IntegerVector sds) {
 
 
 // open the DSN with gdalH_open_dsn() but translate it to VRT with extent (=a_ullr) and/or projection (=a_srs)
-inline GDALDatasetH gdalH_open_avrt(const char* dsn, NumericVector extent, CharacterVector projection, IntegerVector sds, IntegerVector bands) {
+inline GDALDatasetH gdalH_open_avrt(const char* dsn, 
+                                    NumericVector extent, 
+                                    CharacterVector projection, 
+                                    IntegerVector sds, IntegerVector bands, CharacterVector geolocation) {
   
   CPLStringList translate_argv;
   translate_argv.AddString("-of");
@@ -135,6 +138,27 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn, NumericVector extent, Chara
   }
   
   GDALDataset* oDS = (GDALDataset*)gdalH_open_dsn(dsn, sds);
+
+  
+  if (geolocation.size() == 2) {
+      // OGRSpatialReference* geolsrs = nullptr;
+      // geolsrs = new OGRSpatialReference;
+      // OGRErr chk = geolsrs->SetFromUserInput("OGC:CRS84"); 
+      oDS->SetMetadataItem( "SRS", "OGC:CRS84", "GEOLOCATION" ); 
+      oDS->SetMetadataItem( "X_DATASET", geolocation[0], "GEOLOCATION" );
+        oDS->SetMetadataItem( "X_BAND", "1" , "GEOLOCATION" );
+        oDS->SetMetadataItem( "Y_DATASET", geolocation[1], "GEOLOCATION" );
+        oDS->SetMetadataItem( "Y_BAND", "1" , "GEOLOCATION" );
+
+
+        oDS->SetMetadataItem( "PIXEL_OFFSET", "0", "GEOLOCATION" );
+        oDS->SetMetadataItem( "PIXEL_STEP", "1", "GEOLOCATION" );
+        oDS->SetMetadataItem( "LINE_OFFSET", "0", "GEOLOCATION" );
+        oDS->SetMetadataItem( "LINE_STEP", "1", "GEOLOCATION" );
+  }
+  
+  
+  
   if (oDS == nullptr) return(nullptr);
   int nBands = oDS->GetRasterCount();
   // Rprintf("%i\n", nBands);
@@ -176,12 +200,13 @@ inline GDALDatasetH* gdalH_open_multiple(CharacterVector dsn, IntegerVector sds)
   for (int i = 0; i < dsn.size(); i++) poHDS[i] = gdalH_open_dsn(dsn[i], sds);
   return poHDS;
 }
-inline GDALDatasetH* gdalH_open_avrt_multiple(CharacterVector dsn, NumericVector extent, CharacterVector projection, IntegerVector sds, IntegerVector bands) {
+inline GDALDatasetH* gdalH_open_avrt_multiple(CharacterVector dsn, NumericVector extent, 
+                                              CharacterVector projection, IntegerVector sds, IntegerVector bands) {
   
   GDALDatasetH* poHDS;
   // whoever calls this will have to CPLFree() this
   poHDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * dsn.size()));
-  for (int i = 0; i < dsn.size(); i++) poHDS[i] = gdalH_open_avrt(dsn[i],  extent, projection, sds, bands);
+  for (int i = 0; i < dsn.size(); i++) poHDS[i] = gdalH_open_avrt(dsn[i],  extent, projection, sds, bands, "");
   return poHDS;
 }
 // convert an opened GDALDataset to chunk-of-text VRT, if it is VRT you get it direct
@@ -211,12 +236,14 @@ inline const char* gdal_vrt_text(GDALDataset* poSrcDS) {
 // open any DSN/ss (files,urls,sdsstrings,etc.) to chunk-of-VRT text vector
 // optionally with extent(=a_ullr) and/or projection(=a_srs) augmented
 // [[Rcpp::export]]
-inline CharacterVector gdal_dsn_vrt(CharacterVector dsn, NumericVector extent, CharacterVector projection, IntegerVector sds, IntegerVector bands) {
+inline CharacterVector gdal_dsn_vrt(CharacterVector dsn, NumericVector extent, CharacterVector projection, 
+                                    IntegerVector sds, IntegerVector bands, 
+                                    CharacterVector geolocation) {
   CharacterVector out(dsn.size());
   GDALDatasetH DS;
   for (int i = 0; i < out.size(); i++) {
     if (extent.size() == 4 || (!projection[0].empty()) || bands[0] > 0) {
-      DS = gdalH_open_avrt(dsn[i], extent, projection, sds, bands);
+      DS = gdalH_open_avrt(dsn[i], extent, projection, sds, bands, geolocation);
       
     } else {
       DS = gdalH_open_dsn(dsn[i], sds);
@@ -953,6 +980,26 @@ inline List gdal_raster_io(CharacterVector dsn,
   GDALClose(poDataset );
   return out;
 }
+
+
+
+// does it have geolocation arrays?
+inline LogicalVector gdal_has_geolocation(CharacterVector dsn, IntegerVector sds) {
+  
+  GDALDataset* poDataset;
+  poDataset = (GDALDataset*)gdalH_open_dsn(dsn[0], sds);
+  
+  bool has_geol = false;
+  char **papszGeolocationInfo = poDataset->GetMetadata("GEOLOCATION");
+  if( papszGeolocationInfo != nullptr ) {
+    has_geol = true;
+  }
+  GDALClose(poDataset);
+  LogicalVector out(1);
+  out[0] = has_geol;
+  return out;
+}
+
 
 
 // -------------------------------------------------------------------

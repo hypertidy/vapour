@@ -65,7 +65,7 @@
 #' 
 #' vapour_vrt(tif, bands = c(1, 1))
 #' 
-vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = NULL, ..., relative_to_vrt = FALSE) {
+vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = NULL, geolocation = NULL, ..., relative_to_vrt = FALSE) {
   x <- .check_dsn_multiple_naok(x)
   if (!relative_to_vrt) { 
     ## GDAL does its hardest to use relative paths, so either implemente Even's proposal or force alway absolute (but allow turn that off)
@@ -94,7 +94,10 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
     extent <- 1.0
   }
 
-  if (!is.numeric(extent)) {
+  if (is.null(geolocation)) {
+    geolocation <- ""
+  }
+   if (!is.numeric(extent)) {
     #message("vapour_vrt(): extent must be a valid numeric vector of xmin,xmax,ymin,ymax")
     extent <- 1.0
   }
@@ -114,8 +117,10 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
   if (!is.null(bands) && (length(bands) < 1 || !is.numeric(sds) || is.na(sds))) {
     sds <- 1L
   }
-  
-  raster_vrt_cpp(x, extent, projection[1L], sds, bands)
+   if (!is.null(geolocation) && (length(geolocation) != 2 || !is.character(geolocation) || anyNA(geolocation))) {
+    sds <- 1L
+  }
+  raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation)
 }
 
   

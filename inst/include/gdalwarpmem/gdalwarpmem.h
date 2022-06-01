@@ -38,7 +38,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     if (augment) {
       // not dealing with subdatasets here atm
       // not dealing with source bands here, bands applies at read beloew
-      poSrcDS[i] = gdalraster::gdalH_open_avrt(source_filename[i],   source_extent, source_WKT, 0, 0);
+      poSrcDS[i] = gdalraster::gdalH_open_avrt(source_filename[i],   source_extent, source_WKT, 0, 0, "");
     } else {
       poSrcDS[i] = gdalraster::gdalH_open_dsn(source_filename[i],   0); 
       

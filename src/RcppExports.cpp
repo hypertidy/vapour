@@ -461,6 +461,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// raster_has_geolocation_gdal_cpp
+LogicalVector raster_has_geolocation_gdal_cpp(CharacterVector dsn, IntegerVector sds);
+RcppExport SEXP _vapour_raster_has_geolocation_gdal_cpp(SEXP dsnSEXP, SEXP sdsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type sds(sdsSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_has_geolocation_gdal_cpp(dsn, sds));
+    return rcpp_result_gen;
+END_RCPP
+}
 // raster_info_gdal_cpp
 List raster_info_gdal_cpp(CharacterVector dsn, LogicalVector min_max);
 RcppExport SEXP _vapour_raster_info_gdal_cpp(SEXP dsnSEXP, SEXP min_maxSEXP) {
@@ -615,8 +627,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // raster_vrt_cpp
-CharacterVector raster_vrt_cpp(CharacterVector dsn, NumericVector extent, CharacterVector projection, IntegerVector sds, IntegerVector bands);
-RcppExport SEXP _vapour_raster_vrt_cpp(SEXP dsnSEXP, SEXP extentSEXP, SEXP projectionSEXP, SEXP sdsSEXP, SEXP bandsSEXP) {
+CharacterVector raster_vrt_cpp(CharacterVector dsn, NumericVector extent, CharacterVector projection, IntegerVector sds, IntegerVector bands, CharacterVector geolocation);
+RcppExport SEXP _vapour_raster_vrt_cpp(SEXP dsnSEXP, SEXP extentSEXP, SEXP projectionSEXP, SEXP sdsSEXP, SEXP bandsSEXP, SEXP geolocationSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -625,7 +637,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type projection(projectionSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type sds(sdsSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type bands(bandsSEXP);
-    rcpp_result_gen = Rcpp::wrap(raster_vrt_cpp(dsn, extent, projection, sds, bands));
+    Rcpp::traits::input_parameter< CharacterVector >::type geolocation(geolocationSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_vrt_cpp(dsn, extent, projection, sds, bands, geolocation));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -664,6 +677,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_vapour_geom_name_cpp", (DL_FUNC) &_vapour_vapour_geom_name_cpp, 4},
     {"_vapour_vapour_layer_extent_cpp", (DL_FUNC) &_vapour_vapour_layer_extent_cpp, 4},
     {"_vapour_raster_gcp_gdal_cpp", (DL_FUNC) &_vapour_raster_gcp_gdal_cpp, 1},
+    {"_vapour_raster_has_geolocation_gdal_cpp", (DL_FUNC) &_vapour_raster_has_geolocation_gdal_cpp, 2},
     {"_vapour_raster_info_gdal_cpp", (DL_FUNC) &_vapour_raster_info_gdal_cpp, 2},
     {"_vapour_raster_extent_cpp", (DL_FUNC) &_vapour_raster_extent_cpp, 1},
     {"_vapour_raster_io_gdal_cpp", (DL_FUNC) &_vapour_raster_io_gdal_cpp, 5},
@@ -675,7 +689,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_vapour_create_copy_cpp", (DL_FUNC) &_vapour_vapour_create_copy_cpp, 3},
     {"_vapour_vapour_create_cpp", (DL_FUNC) &_vapour_vapour_create_cpp, 6},
     {"_vapour_raster_gdalinfo_app_cpp", (DL_FUNC) &_vapour_raster_gdalinfo_app_cpp, 2},
-    {"_vapour_raster_vrt_cpp", (DL_FUNC) &_vapour_raster_vrt_cpp, 5},
+    {"_vapour_raster_vrt_cpp", (DL_FUNC) &_vapour_raster_vrt_cpp, 6},
     {NULL, NULL, 0}
 };
 
