@@ -642,6 +642,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// raster_warp_file_cpp
+List raster_warp_file_cpp(CharacterVector source_filename, CharacterVector target_crs, NumericVector target_extent, IntegerVector target_dim, CharacterVector target_filename, IntegerVector bands, CharacterVector resample, LogicalVector silent, CharacterVector band_output_type, CharacterVector warp_options, CharacterVector transformation_options);
+RcppExport SEXP _vapour_raster_warp_file_cpp(SEXP source_filenameSEXP, SEXP target_crsSEXP, SEXP target_extentSEXP, SEXP target_dimSEXP, SEXP target_filenameSEXP, SEXP bandsSEXP, SEXP resampleSEXP, SEXP silentSEXP, SEXP band_output_typeSEXP, SEXP warp_optionsSEXP, SEXP transformation_optionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type source_filename(source_filenameSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type target_crs(target_crsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type target_extent(target_extentSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type target_dim(target_dimSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type target_filename(target_filenameSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type bands(bandsSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type resample(resampleSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type silent(silentSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type band_output_type(band_output_typeSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type warp_options(warp_optionsSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type transformation_options(transformation_optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_warp_file_cpp(source_filename, target_crs, target_extent, target_dim, target_filename, bands, resample, silent, band_output_type, warp_options, transformation_options));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_vapour_set_gdal_config_cpp", (DL_FUNC) &_vapour_set_gdal_config_cpp, 2},
@@ -690,6 +711,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_vapour_create_cpp", (DL_FUNC) &_vapour_vapour_create_cpp, 6},
     {"_vapour_raster_gdalinfo_app_cpp", (DL_FUNC) &_vapour_raster_gdalinfo_app_cpp, 2},
     {"_vapour_raster_vrt_cpp", (DL_FUNC) &_vapour_raster_vrt_cpp, 6},
+    {"_vapour_raster_warp_file_cpp", (DL_FUNC) &_vapour_raster_warp_file_cpp, 11},
     {NULL, NULL, 0}
 };
 
