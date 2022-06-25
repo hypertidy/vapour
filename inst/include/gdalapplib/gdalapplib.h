@@ -243,6 +243,19 @@ inline List gdalwarp_applib(CharacterVector source_filename,
     
     // FIXME: here we need to check the celestial body thing, can we transform from source to target or not?
     if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
+    
+       // make sure the transformation is possible, see #154
+    OGRSpatialReference* oSourceSRS; 
+    oSourceSRS = (OGRSpatialReference *)((GDALDataset*) poSrcDS[0])->GetSpatialRef();
+    
+    OGRCoordinateTransformation *poCT;
+		poCT = OGRCreateCoordinateTransformation(oSourceSRS, oTargetSRS);
+
+		if( poCT == NULL )	{
+			Rcpp::stop("cannot transform source to \n\n%s\n\n", (const char *)target_crs[0]);
+		}
+    
+		delete oSourceSRS;
     delete oTargetSRS;
     papszArg = CSLAddString(papszArg, "-t_srs");
     papszArg = CSLAddString(papszArg, target_crs[0]);
