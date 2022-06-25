@@ -5,6 +5,7 @@
 #include "gdal_utils.h"  // for GDALTranslateOptions
 #include "vrtdataset.h"
 #include "cpl_string.h"
+#include "ogr_spatialref.h"  // for OGRCreateCoordinateTransformation
 
 
 #include "gdalwarper.h"
@@ -237,27 +238,30 @@ inline List gdalwarp_applib(CharacterVector source_filename,
   // if we don't supply it don't try to set it!
   if (!target_crs[0].empty()){
     // if supplied check that it's valid
-    OGRSpatialReference* oTargetSRS = nullptr;
-    oTargetSRS = new OGRSpatialReference;
-    OGRErr target_chk =  oTargetSRS->SetFromUserInput(target_crs[0]);
-    
-    // FIXME: here we need to check the celestial body thing, can we transform from source to target or not?
-    if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
-    
-       // make sure the transformation is possible, see #154
-    OGRSpatialReference* oSourceSRS; 
-    oSourceSRS = (OGRSpatialReference *)((GDALDataset*) poSrcDS[0])->GetSpatialRef();
-    
-    OGRCoordinateTransformation *poCT;
-		poCT = OGRCreateCoordinateTransformation(oSourceSRS, oTargetSRS);
+     OGRSpatialReference* oTargetSRS = nullptr;
+     oTargetSRS = new OGRSpatialReference;
+     OGRErr target_chk =  oTargetSRS->SetFromUserInput(target_crs[0]);
+//     
+//     // FIXME: here we need to check the celestial body thing, can we transform from source to target or not?
+     if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
+//     
+//        // make sure the transformation is possible, see #154
+     OGRSpatialReference* oSourceSRS; 
+     //GDALDataset* DS = (GDALDataset *) poSrcDS[0]; 
+     
+     //oSourceSRS = (OGRSpatialReference *)DS->GetSpatialRef();
+     
+//     OGRCoordinateTransformation *poCT;
+// 		poCT = OGRCreateCoordinateTransformation(oSourceSRS, oTargetSRS);
+// 
+// 		if( poCT == NULL )	{
+// 			Rcpp::stop("cannot transform source to \n\n%s\n\n", (const char *)target_crs[0]);
+// 		}
+//     
+    //delete oTargetSRS;
+ 		//delete oSourceSRS;
 
-		if( poCT == NULL )	{
-			Rcpp::stop("cannot transform source to \n\n%s\n\n", (const char *)target_crs[0]);
-		}
-    
-		delete oSourceSRS;
-    delete oTargetSRS;
-    papszArg = CSLAddString(papszArg, "-t_srs");
+     papszArg = CSLAddString(papszArg, "-t_srs");
     papszArg = CSLAddString(papszArg, target_crs[0]);
   }
   
