@@ -26,6 +26,8 @@ vapour_vrt(
 
 \item{bands}{(optional) which band/s to include from the source}
 
+\item{geolocation}{vector of 2 dsn to longitude, latitude geoloation array sources}
+
 \item{...}{ignored}
 
 \item{relative_to_vrt}{default \code{FALSE}, if \code{TRUE} input strings that identify as files on the system are left as-is (by default they are made absolute at the R level)}
