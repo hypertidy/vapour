@@ -68,11 +68,36 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   // if we don't supply it don't try to set it!
   if (!target_WKT[0].empty()){
     // if supplied check that it's valid
-    OGRSpatialReference* oTargetSRS = nullptr;
+    OGRSpatialReference *oTargetSRS = nullptr;
     oTargetSRS = new OGRSpatialReference;
     OGRErr target_chk =  oTargetSRS->SetFromUserInput(target_WKT[0]);
     if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
+    
+
+//    const OGRSpatialReference *oSourceSRS = ((GDALDataset *)poSrcDS[0])->GetSpatialRef();
+    
+    OGRSpatialReference *oSourceSRS = nullptr;
+    oSourceSRS = new OGRSpatialReference;
+    char *st = NULL;
+    ((GDALDataset *)poSrcDS[0])->GetSpatialRef()->exportToWkt(&st);
+    
+    OGRErr source_chk =  oSourceSRS->SetFromUserInput(st);
+    if (source_chk != OGRERR_NONE) Rcpp::stop("cannot initialize source projection");
+    // 
+    // 
+    OGRCoordinateTransformation *poCT;
+    poCT = OGRCreateCoordinateTransformation(oSourceSRS, oTargetSRS);
+    if( poCT == NULL )	{
+      delete oTargetSRS;
+      delete oSourceSRS;
+      
+      Rcpp::stop( "Transformation to this target CRS not possible from this source dataset, target CRS given: \n\n %s \n\n", 
+                  (char *)  target_WKT[0] );
+
+    }
     delete oTargetSRS;
+    delete oSourceSRS;
+    
     papszArg = CSLAddString(papszArg, "-t_srs");
     papszArg = CSLAddString(papszArg, target_WKT[0]);
   }
