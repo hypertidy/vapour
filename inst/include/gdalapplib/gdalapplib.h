@@ -5,6 +5,7 @@
 #include "gdal_utils.h"  // for GDALTranslateOptions
 #include "vrtdataset.h"
 #include "cpl_string.h"
+#include "ogr_spatialref.h"  // for OGRCreateCoordinateTransformation
 
 
 #include "gdalwarper.h"
@@ -268,7 +269,7 @@ inline List gdalwarp_applib(CharacterVector source_filename,
     delete oSourceSRS;
     
     papszArg = CSLAddString(papszArg, "-t_srs");
-    papszArg = CSLAddString(papszArg, target_crs[0]);
+ papszArg = CSLAddString(papszArg, target_crs[0]);
     
  }
   

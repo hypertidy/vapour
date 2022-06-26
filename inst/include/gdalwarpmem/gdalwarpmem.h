@@ -6,7 +6,7 @@
 #include "gdalwarper.h"
 #include "gdal_utils.h"  // for GDALWarpAppOptions
 #include "gdalraster/gdalraster.h"
-
+#include "ogr_spatialref.h"  // for OGRCreateCoordinateTransformation
 using namespace std;
 
 namespace gdalwarpmem{
