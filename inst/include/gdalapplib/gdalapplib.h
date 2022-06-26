@@ -237,16 +237,40 @@ inline List gdalwarp_applib(CharacterVector source_filename,
   // if we don't supply it don't try to set it!
   if (!target_crs[0].empty()){
     // if supplied check that it's valid
-    OGRSpatialReference* oTargetSRS = nullptr;
+    OGRSpatialReference *oTargetSRS = nullptr;
     oTargetSRS = new OGRSpatialReference;
     OGRErr target_chk =  oTargetSRS->SetFromUserInput(target_crs[0]);
-    
-    // FIXME: here we need to check the celestial body thing, can we transform from source to target or not?
     if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
+    
+    
+    //    const OGRSpatialReference *oSourceSRS = ((GDALDataset *)poSrcDS[0])->GetSpatialRef();
+    
+    OGRSpatialReference *oSourceSRS = nullptr;
+    oSourceSRS = new OGRSpatialReference;
+    char *st = NULL;
+    ((GDALDataset *)poSrcDS[0])->GetSpatialRef()->exportToWkt(&st);
+    
+    OGRErr source_chk =  oSourceSRS->SetFromUserInput(st);
+    if (source_chk != OGRERR_NONE) Rcpp::stop("cannot initialize source projection");
+    // 
+    // 
+    OGRCoordinateTransformation *poCT;
+    poCT = OGRCreateCoordinateTransformation(oSourceSRS, oTargetSRS);
+    if( poCT == NULL )	{
+      delete oTargetSRS;
+      delete oSourceSRS;
+      
+      Rcpp::stop( "Transformation to this target CRS not possible from this source dataset, target CRS given: \n\n %s \n\n", 
+                  (char *)  target_crs[0] );
+      
+    }
     delete oTargetSRS;
+    delete oSourceSRS;
+    
     papszArg = CSLAddString(papszArg, "-t_srs");
     papszArg = CSLAddString(papszArg, target_crs[0]);
-  }
+    
+ }
   
   // we always provide extent and dimension, crs is optional and just means subset/decimate
   double dfMinX = target_extent[0];
