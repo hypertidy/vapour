@@ -1,37 +1,62 @@
 # vapour dev
 
-* New internal function `raster_has_geolocation_gdal_cpp()`, early begin of does this datasource have geolocation arrays (because if it does we can just push it through the warper, otherwise nominate them with `vapour_vrt(geolocation = )`). 
+* Setting options for the 'vapour_warp_raster()' has been reconfigured.
+Arguments 'warp_options', 'transformation_options', 'open_options', and
+'dataset_output_options' correspond to the 'NAME=VALUE' configuration provided
+by gdalwap as '-wo', '-to', '-oo', and '-doo'. All of these should be entered in
+bare form (without the '-wo', '-to' etc) but for 'options' these must be entered
+as per standard gdalwarp options. Some are disallowed and are checked for,
+triggering an error because we either set them via other arguments, or they
+can't be supported atm.
 
-* `vapour_vrt()` gains geolocation argument, which can be named dsns for each of longitude,latitude. Currently assumed to be 
- 'OGC:CRS84'. 
+* New options setting support means we can support all gdalwarp options, notably
+'-cutline', '-csql', '-cwhere', and '-crop_to_cutline' which allow masking by a
+a polygon layer from a vector data source. Thanks to Hugh Graham for the motivation for this. :)
 
-* Now depend on GDAL 2.2.3 as a minimum, because ubuntu 18.04 is still in wide use. GDALInfo() lib needs
- GDAL 2.1 as minimum. Some info features need later, but do not fail (AFAIK). 
- 
-* `vapour_raster_info()` now has `dimension` element, intended for use instead of `dimXY` (for standard idiom like
- {gdalio} uses with 'extent', 'dimension', 'projection' as the basis of what a raster is).  `dimXY` will be removed
-  in future. 
- 
-* New namespace 'gdalapplib' with one utility for GDALInfo(), this is vectorized at the cpp level and includes
- subdataset handling. It does not include listing of TAR and ZIP archives. `vapour_raster_info()` now uses this. 
- 
-* New functions `vapour_create()` `vapour_read_raster_block()` and `vapour_read_raster_block()` for creating and writing 
-to files. 
 
-* Moved C++ functions `gdal_sds_list()`, `gdal_extent_only()` `gdal_raster_info()`, `gdal_raster_gcp()`, `init_resample_alg()`, `gdal_read_band_values()`, `gdal_read_dataset_values()`, `gdal_raster_dataset_io()`, `gdal_raster_io()` to *gdalraster* namespace from *gdallibrary* namespace. (Some of these will get refactored out). 
+* New internal function `raster_has_geolocation_gdal_cpp()`, early begin of does
+this datasource have geolocation arrays (because if it does we can just push it
+through the warper, otherwise nominate them with `vapour_vrt(geolocation = )`).
+
+* `vapour_vrt()` gains geolocation argument, which can be named dsns for each of
+longitude,latitude. Currently assumed to be 'OGC:CRS84'.
+
+* Now depend on GDAL 2.2.3 as a minimum, because ubuntu 18.04 is still in wide
+use. GDALInfo() lib needs GDAL 2.1 as minimum. Some info features need later,
+but do not fail (AFAIK).
+ 
+* `vapour_raster_info()` now has `dimension` element, intended for use instead
+of `dimXY` (for standard idiom like {gdalio} uses with 'extent', 'dimension',
+'projection' as the basis of what a raster is).  `dimXY` will be removed in
+future.
+ 
+* New namespace 'gdalapplib' with one utility for GDALInfo(), this is vectorized
+at the cpp level and includes subdataset handling. It does not include listing
+of TAR and ZIP archives. `vapour_raster_info()` now uses this.
+ 
+* New functions `vapour_create()` `vapour_read_raster_block()` and
+`vapour_read_raster_block()` for creating and writing to files.
+
+* Moved C++ functions `gdal_sds_list()`, `gdal_extent_only()`
+`gdal_raster_info()`, `gdal_raster_gcp()`, `init_resample_alg()`,
+`gdal_read_band_values()`, `gdal_read_dataset_values()`,
+`gdal_raster_dataset_io()`, `gdal_raster_io()` to *gdalraster* namespace from
+*gdallibrary* namespace. (Some of these will get refactored out).
 
 
 * New function `vapour_vrt()`. 
 
-* `vapour_warp_raster()` default has changed for `bands`, it's now NULL which means "all bands", not `1L`. 
+* `vapour_warp_raster()` default has changed for `bands`, it's now NULL which
+means "all bands", not `1L`.
 
 * New functions `vapour_set_config()` and `vapour_get_config()` to control configuration 
 options for GDAL. 
 
 * Flushed out memory bugs with valgrind. 
 
-* Refactored read from raster and warp raster. The warping uses the same band reader as the RasterIO reader, and more cases of 'GDALOpen()' for
-rasters go via the underlying 'gdalraster' namespace pathway. 
+* Refactored read from raster and warp raster. The warping uses the same band
+reader as the RasterIO reader, and more cases of 'GDALOpen()' for rasters go via
+the underlying 'gdalraster' namespace pathway.
 
 * Faster layer extent determination in `vapour_layer_info()`, new function `vapour_layer_extent()`. 
 

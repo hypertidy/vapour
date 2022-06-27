@@ -25,7 +25,10 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 LogicalVector silent,
                                 CharacterVector band_output_type, 
                                 CharacterVector warp_options, 
-                                CharacterVector transformation_options) {
+                                CharacterVector transformation_options, 
+                                //CharacterVector open_options, 
+                               // CharacterVector output_dataset_options,
+                                CharacterVector options) {
   
   
   GDALDatasetH *poSrcDS;
@@ -56,25 +59,19 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   }
   
   // handle warp settings and options
+  // we manually handle -r, -te, -t_srs, -ts, -of,
+  // but the rest passed in as wo, to, oo, doo, or general (non general ones get -wo/-to/-oo/-doo prepended in R)
   char** papszArg = nullptr;
   
   papszArg = CSLAddString(papszArg, "-of");
-  // if (band_output_type[0] == "vrt") {
-  //   papszArg = CSLAddString(papszArg, "VRT");
-  // } else {
   papszArg = CSLAddString(papszArg, "MEM");
   
-  
-  // if we don't supply it don't try to set it!
   if (!target_WKT[0].empty()){
     // if supplied check that it's valid
     OGRSpatialReference *oTargetSRS = nullptr;
     oTargetSRS = new OGRSpatialReference;
     OGRErr target_chk =  oTargetSRS->SetFromUserInput(target_WKT[0]);
     if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
-    
-
-//    const OGRSpatialReference *oSourceSRS = ((GDALDataset *)poSrcDS[0])->GetSpatialRef();
     
     OGRSpatialReference *oSourceSRS = nullptr;
     oSourceSRS = new OGRSpatialReference;
@@ -83,8 +80,6 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     
     OGRErr source_chk =  oSourceSRS->SetFromUserInput(st);
     if (source_chk != OGRERR_NONE) Rcpp::stop("cannot initialize source projection");
-    // 
-    // 
     OGRCoordinateTransformation *poCT;
     poCT = OGRCreateCoordinateTransformation(oSourceSRS, oTargetSRS);
     if( poCT == NULL )	{
@@ -127,16 +122,9 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   papszArg = CSLAddString(papszArg, "-r");
   papszArg = CSLAddString(papszArg, resample[0]);
   
-  // bundle on all user-added options
-  for (int wopt = 0; wopt < warp_options.length(); wopt++) {
-    papszArg = CSLAddString(papszArg, "-wo");
-    papszArg = CSLAddString(papszArg, warp_options[wopt]);
+  for (int gwopt = 0; gwopt < options.length(); gwopt++) {
+    papszArg = CSLAddString(papszArg, options[gwopt]);
   }
-  for (int topt = 0; topt < transformation_options.length(); topt++) {
-    papszArg = CSLAddString(papszArg, "-to");
-    papszArg = CSLAddString(papszArg, transformation_options[topt]);
-  }
-  
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
@@ -145,7 +133,6 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 source_filename.size(), poSrcDS,
                                 psOptions, nullptr);
   
-  
   CPLAssert( hRet != NULL );
   GDALWarpAppOptionsFree(psOptions);
   for (int si = 0; si < source_filename.size(); si++) {
@@ -153,8 +140,11 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   }
   CPLFree(poSrcDS);
   
+  if (hRet == nullptr) {
+    Rcpp::stop("something went wrong!");
+  }
   
-  
+
   /// this doesn't work because we don't keep the file name/s
   if (band_output_type[0] == "vrt") {
     // GDALDriver * vDriver = (GDALDriver *)GDALGetDriverByName("VRT");

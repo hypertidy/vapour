@@ -18,7 +18,10 @@ vapour_warp_raster(
   ...,
   band_output_type = "",
   warp_options = "",
-  transformation_options = ""
+  transformation_options = "",
+  open_options = "",
+  dataset_output_options = "",
+  options = ""
 )
 }
 \arguments{
@@ -133,7 +136,8 @@ arguments to this function.
 \item \strong{-te}      set via 'extent'
 \item \strong{-ts}      set via 'dimension'
 \item \strong{-r}       set via 'resample'
-\item \strong{-a_ullr}  set via 'source_extent'
+\item \strong{-te_srs} not supported
+\item \strong{-a_ullr}  (not a gdalwarp argument, but we do analog) set via 'source_extent'
 }
 
 In the past this argument had arguments 'geotransform', the affine

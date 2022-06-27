@@ -279,7 +279,8 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' * **-te**      set via 'extent'
 #' * **-ts**      set via 'dimension'
 #' * **-r**       set via 'resample'
-#' * **-a_ullr**  set via 'source_extent'
+#' * **-te_srs** not supported
+#' * **-a_ullr**  (not a gdalwarp argument, but we do analog) set via 'source_extent'
 #' 
 #' In the past this argument had arguments 'geotransform', the affine
 #' geotransform of the warped raster now please use 'extent' and
@@ -344,7 +345,10 @@ vapour_warp_raster <- function(x, bands = NULL,
                                silent = TRUE, ...,
                                band_output_type = "", 
                                warp_options = "", 
-                               transformation_options = "") {
+                               transformation_options = "", 
+                               open_options = "",
+                               dataset_output_options = "",
+                               options = "") {
   x <- .check_dsn_multiple(x)
   if (!is.null(bands) && (anyNA(bands) || length(bands) < 1 || !is.numeric(bands))) {
     stop("'bands' must be a valid set of band integers (1-based)")
@@ -463,9 +467,35 @@ vapour_warp_raster <- function(x, bands = NULL,
   }
   
   warp_options <- warp_options[!is.na(warp_options)]
-  if (length(warp_options) < 1) warp_options <- ""
+  #if (length(warp_options) < 1) warp_options <- ""
   transformation_options <- transformation_options[!is.na(transformation_options)]
-  if (length(transformation_options) < 1) transformation_options <- ""
+  #if (length(transformation_options) < 1) transformation_options <- ""
+  open_options <- open_options[!is.na(open_options)]
+ # if (length(open_options) < 1) open_options <- ""
+  dataset_output_options <- dataset_output_options[!is.na(dataset_output_options)]
+  
+  
+  ## process all options into one big string list
+  
+  if (nchar(warp_options)[1L] > 0) options <- c(options, rbind("-wo", warp_options))
+  if (nchar(transformation_options)[1L] > 0)  options <- c(rbind("-to", transformation_options))
+  if (nchar(open_options)[1L] > 0) options <- c(options, rbind("-wo", open_options))
+  if (nchar(dataset_output_options)[1L] > 0)  options <- c(rbind("-to", dataset_output_options))
+
+  options <- options[!is.na(options)]
+  options <- options[nchar(options) > 0]
+  if (length(options) < 1) options <- ""
+  
+  ## no -r, -te, -t_srs, -ts, -of, -s_srs, -te_srs we set them manually
+  if (any(grepl("-r", options) |
+      grepl("-te", options) | 
+      grepl("-t_srs", options) | 
+      grepl("-ts", options) |
+      grepl("-of", options) |
+      grepl("-s_srs", options))) {
+    stop("manually setting -r, -te, -t_srs, -of, -s_srs options not allowed \n ( these controlled by arguments 'resample', 'target_extent', 'target_projection', '<MEM>', 'source_projection')")
+  } 
+  if (any(grepl("-te_srs", options))) stop("setting '-te_srs' projection of target extent is not supported") 
   
   vals <- warp_in_memory_gdal_cpp(x, source_WKT = source_projection,
                                   target_WKT = projection,
@@ -477,7 +507,10 @@ vapour_warp_raster <- function(x, bands = NULL,
                                   silent = silent,
                                   band_output_type = band_output_type, 
                                   warp_options = warp_options, 
-                                  transformation_options = transformation_options)
+                                  transformation_options = transformation_options,
+                                #  open_options = open_options,
+                                #  dataset_output_options = dataset_output_options,
+                                  options = options)
   # ##// if we Dataset->RasterIO we don't have separated bands'
   # nbands <- length(vals[[1L]]) / prod(as.integer(dimension))
   # if (nbands > 1) vals <- split(vals[[1L]], rep(seq_len(nbands), each = prod(as.integer(dimension))))
