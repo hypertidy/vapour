@@ -20,6 +20,16 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' \donttest{
+#' tfile <- tempfile(fileext = ".tif")
+#' if (!file.exists(tfile)) {
+#' vapour_create(tfile, extent = c(-1, 1, -1, 1) * 1e6, dimension = c(128, 128), projection = "+proj=laea")
+#' file.remove(tfile)
+#' }
+#' 
+#' }
+#' }
 vapour_create <- function(filename, driver = "GTiff", extent = c(-180, 180, -90, 90), 
                           dimension = c(2048, 1024), projection = "OGC:CRS84", n_bands = 1L, overwrite = FALSE) {
 
@@ -105,12 +115,16 @@ vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band
 #' @param band which band to write to (1-based)
 #'
 #' @examples
+#' \dontrun{
+#' \donttest{
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' v <- vapour_read_raster_block(f, c(0L, 0L), dimension = c(2L, 3L), band = 1L)
 #' file.copy(f, tf <- tempfile(fileext = ".tif"))
 #' try(vapour_write_raster_block(tf, data = v[[1]], offset = c(0L, 0L), 
 #'                dimension = c(2L, 3L), band = 1L))
 #' file.remove(tf)
+#' }
+#' }
 vapour_write_raster_block <- function(dsource, data, offset, dimension, band = 1L, overwrite = FALSE) {
   if (!file.exists(dsource)) stop("file dsource must exist")
   if (!overwrite) stop(sprintf("set 'overwrite' to TRUE if you really mean to write to file %s", dsource))

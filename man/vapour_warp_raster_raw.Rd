@@ -21,7 +21,9 @@ vapour_warp_raster_raw(
   silent = TRUE,
   ...,
   warp_options = "",
-  transformation_options = ""
+  transformation_options = "",
+  open_options = "",
+  options = ""
 )
 
 vapour_warp_raster_int(
@@ -37,7 +39,9 @@ vapour_warp_raster_int(
   silent = TRUE,
   ...,
   warp_options = "",
-  transformation_options = ""
+  transformation_options = "",
+  open_options = "",
+  options = ""
 )
 
 vapour_warp_raster_dbl(
@@ -53,7 +57,9 @@ vapour_warp_raster_dbl(
   silent = TRUE,
   ...,
   warp_options = "",
-  transformation_options = ""
+  transformation_options = "",
+  open_options = "",
+  options = ""
 )
 
 vapour_warp_raster_chr(
@@ -69,7 +75,9 @@ vapour_warp_raster_chr(
   silent = TRUE,
   ...,
   warp_options = "",
-  transformation_options = ""
+  transformation_options = "",
+  open_options = "",
+  options = ""
 )
 
 vapour_warp_raster_hex(
@@ -85,7 +93,9 @@ vapour_warp_raster_hex(
   silent = TRUE,
   ...,
   warp_options = "",
-  transformation_options = ""
+  transformation_options = "",
+  open_options = "",
+  options = ""
 )
 }
 \arguments{
@@ -113,7 +123,9 @@ vapour_warp_raster_hex(
 
 \item{warp_options}{character vector of options, as in gdalwarp -wo - see Details}
 
-\item{transformation_options}{character vector of options, as in gdalwarp -to}
+\item{transformation_options}{character vector of options, as in gdalwarp -to see Details}
+
+\item{open_options}{character vector of options, as in gdalwarp -oo - see Details}
 }
 \value{
 atomic vector of the nominated type raw, int, dbl, or character (hex)

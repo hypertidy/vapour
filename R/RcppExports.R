@@ -157,8 +157,8 @@ sds_list_list_gdal_cpp <- function(dsn) {
     .Call('_vapour_sds_list_list_gdal_cpp', PACKAGE = 'vapour', dsn)
 }
 
-warp_in_memory_gdal_cpp <- function(dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent, band_output_type, warp_options, transformation_options, options) {
-    .Call('_vapour_warp_in_memory_gdal_cpp', PACKAGE = 'vapour', dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent, band_output_type, warp_options, transformation_options, options)
+warp_in_memory_gdal_cpp <- function(dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent, band_output_type, options) {
+    .Call('_vapour_warp_in_memory_gdal_cpp', PACKAGE = 'vapour', dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent, band_output_type, options)
 }
 
 vapour_read_raster_block_cpp <- function(dsource, offset, dimension, band, band_output_type) {

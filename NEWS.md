@@ -1,5 +1,8 @@
 # vapour dev
 
+* 'warp_options' and 'transformation_options' has been removed from the 'gdalwarpmem' namespace, and from the R and Rcpp
+ wrappers.  All options are now assumed to be bundled into one string list (CharacterVector). 
+ 
 * Setting options for the 'vapour_warp_raster()' has been reconfigured.
 Arguments 'warp_options', 'transformation_options', 'open_options', and
 'dataset_output_options' correspond to the 'NAME=VALUE' configuration provided

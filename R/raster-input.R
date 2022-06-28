@@ -210,34 +210,39 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' This function is not memory safe, the source is left on disk but the output
 #' raster is all computed in memory so please be careful with very large values
 #' for 'dimension'. `1000 * 1000 * 8` for 1000 columns, 1000 rows and floating
-#' point double type will be 8Mb.
+#' point double type will be 8Mb. 
 #'
 #' There's control over the output type, and is auto-detected from the source
 #' (raw/Byte, integer/Int32, numeric/Float64) or can be set with
 #' 'band_output_type'.
 #'
-#' 'projection' refers to the full Well-Known-Text specification of a coordinate
-#' reference system. See [vapour_srs_wkt()] for conversion from PROJ.4 string to
-#' WKT. Any string accepted by GDAL may be used for 'projection' or
-#' 'source_projection', including EPSG strings, PROJ4 strings, and file names.
-#' Note that this argument was named 'wkt' up until version 0.8.0.
+#' 'projection' refers to any projection string for a CRS understood by GDAL.
+#' This includes the full Well-Known-Text specification of a coordinate
+#' reference system, PROJ strings, "AUTH:CODE" types, and others. See
+#' [vapour_srs_wkt()] for conversion from PROJ.4 string to WKT, and
+#' [vapour_raster_info()] and [vapour_layer_info()] for various formats
+#' available from a data source. Any string accepted by GDAL may be used for
+#' 'projection' or 'source_projection', including EPSG strings, PROJ4 strings,
+#' and file names. Note that this argument was named 'wkt' up until version
+#' 0.8.0.
 #'
 #' 'extent' is the four-figure xmin,xmax,ymin,ymax outer corners of corner pixels
 #'
 #' 'dimension' is the pixel dimensions of the output, x (ncol) then y (nrow).
 #'
-#' Values for missing data are not yet handled, just returned as-is. Note that
+#' Options for missing data are not yet handled, just returned as-is. Note that
 #' there may be regions of "zero data" in a warped output, separate from
 #' propagated missing "NODATA" values in the source.
 #'
 #' Argument 'source_projection' may be used to assign the projection of the
 #' source, 'source_extent' to assign the extent of the source. Sometimes both
-#' are required.
+#' are required. Note, this is now better done by creating 'VRT', see [vapour_vrt()]
+#' for assigning the source projection, extent, and some other options. 
 #'
 #' If multiple sources are specified via 'x' and either 'source_projection' or
 #' 'source_extent' are provided, these are applied to every source even if they
 #' have valid values already. If this is not sensible please use VRT to wrap the
-#' multiple sources first (see the gdalio package for some in-dev ideas).
+#' multiple sources first.
 #'
 #' Wild combinations of 'source_extent' and/or 'extent' may be used for
 #' arbitrary flip orientations, scale and offset. For expert usage only. Old
@@ -246,48 +251,41 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' 
 #' @section Options: 
 #' 
-#' The 'warp_options' arguments are for 'warp options -wo', 
-#' 
-#' 'transformation options -to', 'creation options -co', 'open options -oo', or
-#' 'dataset open options -doo', and other arguments that use named options in
-#' gdalwarp.
+#' The various options are convenience arguments  for 'warp options -wo',
+#' transformation options -to', 'open options -oo', and 'options' for any other
+#' arguments in gdalwarp. There are no 'creation options -co' or 'dataset output
+#' options -doo', because these are not supported by the MEM driver.
 #'
-#' To input use the appropriate argument 'warp_options' for '-wo',
-#' 'transformation_options' for '-to'.
+#' All 'warp_options' are paired with a '-wo' declaration and similarly for '-to', and '-oo', 
+#' this is purely a convenience, since 'options' itself can be used for these as well but we recommend using
+#' the individual arguments. 
+#' An example for warp options is  `warp_options = c("SAMPLE_GRID=YES", "SAMPLE_STEPS=30")` and one for
+#' general arguments might be 'options = c("-ovr", "AUTO", "-nomd")'.  If they would separated by spaces on 
+#' the command line then include as separate elements in the options character vector. 
 #'
-#' 'warp_options = c("SAMPLE_GRID=YES", "SAMPLE_STEPS=30") '
-#'
-#' Do not include the '-wo' or the '-to', and make sure each is a separate
-#' character element. These are added in turn with '-wo' or '-to' prepended to
-#' the string list in the implementation.
-#'
-#' There are no creation options '-co' available, because the MEM driver is
-#' used. This might changed, see for example 'vapour_write_raster_block'. We
-#' might add '-oo', '-doo' in future.
-#' 
 #' 
 #' See [GDALWarpOptions](https://gdal.org/api/gdalwarp_cpp.html#_CPPv4N15GDALWarpOptions16papszWarpOptionsE) for '-wo'. 
 #' 
 #' See [GDAL transformation options](https://gdal.org/api/gdal_alg.html#_CPPv432GDALCreateGenImgProjTransformer212GDALDatasetH12GDALDatasetHPPc) for '-to'. 
 #' 
+#' See [GDALWARP command line app](https://gdal.org/programs/gdalwarp.html) for further details. 
+#' 
 #' Note we already apply the following gdalwarp arguments based on input R
 #' arguments to this function.
 #' 
-#' * **-of**      MEM is hardcoded, but may be extended in future
-#' * **-t_srs**   set via 'projection'
-#' * **-s_srs**   set via 'source_projection'
-#' * **-te**      set via 'extent'
-#' * **-ts**      set via 'dimension'
-#' * **-r**       set via 'resample'
-#' * **-te_srs** not supported
-#' * **-a_ullr**  (not a gdalwarp argument, but we do analog) set via 'source_extent'
+#' \describe{
+#' \item{-of}{MEM is hardcoded, but may be extended in future}
+#' \item{-t_srs}{set via 'projection'}
+#' \item{-s_srs}{set via 'source_projection'}
+#' \item{-te}{set via 'extent'}
+#' \item{-ts}{set via 'dimension'}
+#' \item{-r}{set via 'resample'}
+#' \item{-ot}{set via 'band_output_type'}
+#' \item{-te_srs}{ not supported}
+#' \item{-a_ullr}{(not a gdalwarp argument, but we do analog) set via 'source_extent' use [vapour_vrt()] instead} 
+#' }
 #' 
-#' In the past this argument had arguments 'geotransform', the affine
-#' geotransform of the warped raster now please use 'extent' and
-#' 'source_geotransform' (override the native geotransform of the source) please
-#' use 'source_extent'.
-#'
-#' In future all 'source_*' arguments will probably be deprecated in favour of
+#' In future all 'source_*' arguments may be deprecated in favour of
 #' augmentation by 'vapour_vrt()'.
 #'
 #' Common inputs for `projection` are WKT variants, 'AUTH:CODE's e.g.
@@ -317,7 +315,8 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' @param band_output_type numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64' but see details in [vapour_read_raster()]
 #' @param ... unused
 #' @param warp_options character vector of options, as in gdalwarp -wo - see Details
-#' @param transformation_options character vector of options, as in gdalwarp -to
+#' @param transformation_options character vector of options, as in gdalwarp -to see Details
+#' @param open_options character vector of options, as in gdalwarp -oo - see Details
 #' @export
 #' @seealso vapour_read_raster vapour_read_raster_raw vapour_read_raster_int vapour_read_raster_dbl vapour_read_raster_chr vapour_read_raster_hex
 #' @return list of vectors (only 1 for 'band') of numeric values, in raster order
@@ -347,7 +346,6 @@ vapour_warp_raster <- function(x, bands = NULL,
                                warp_options = "", 
                                transformation_options = "", 
                                open_options = "",
-                               dataset_output_options = "",
                                options = "") {
   x <- .check_dsn_multiple(x)
   if (!is.null(bands) && (anyNA(bands) || length(bands) < 1 || !is.numeric(bands))) {
@@ -472,28 +470,35 @@ vapour_warp_raster <- function(x, bands = NULL,
   #if (length(transformation_options) < 1) transformation_options <- ""
   open_options <- open_options[!is.na(open_options)]
  # if (length(open_options) < 1) open_options <- ""
-  dataset_output_options <- dataset_output_options[!is.na(dataset_output_options)]
+ # dataset_output_options <- dataset_output_options[!is.na(dataset_output_options)]
   
   
   ## process all options into one big string list
   
+  if (any(grepl("-wo", options) |
+          grepl("-to", options) | 
+          grepl("-oo", options))) {
+    ##message("manually setting -wo, -to, -oo options detected, prefer use of 'warp_options', 'transformation_options', 'open_options'")
+  } 
+  
   if (nchar(warp_options)[1L] > 0) options <- c(options, rbind("-wo", warp_options))
   if (nchar(transformation_options)[1L] > 0)  options <- c(rbind("-to", transformation_options))
-  if (nchar(open_options)[1L] > 0) options <- c(options, rbind("-wo", open_options))
-  if (nchar(dataset_output_options)[1L] > 0)  options <- c(rbind("-to", dataset_output_options))
+  if (nchar(open_options)[1L] > 0) options <- c(options, rbind("-oo", open_options))
+  #if (nchar(dataset_output_options)[1L] > 0)  options <- c(rbind("-doo", dataset_output_options))
 
   options <- options[!is.na(options)]
   options <- options[nchar(options) > 0]
   if (length(options) < 1) options <- ""
   
-  ## no -r, -te, -t_srs, -ts, -of, -s_srs, -te_srs we set them manually
+  ## no -r, -te, -t_srs, -ts, -of, -s_srs, -ot, -te_srs we set them manually
   if (any(grepl("-r", options) |
       grepl("-te", options) | 
       grepl("-t_srs", options) | 
       grepl("-ts", options) |
       grepl("-of", options) |
-      grepl("-s_srs", options))) {
-    stop("manually setting -r, -te, -t_srs, -of, -s_srs options not allowed \n ( these controlled by arguments 'resample', 'target_extent', 'target_projection', '<MEM>', 'source_projection')")
+      grepl("-s_srs", options) | 
+      grepl("-ot", options))) {
+    stop("manually setting -r, -te, -t_srs, -of, -s_srs, -ot options not allowed \n ( these controlled by arguments 'resample', 'target_extent', 'target_projection', '<MEM>', 'source_projection', 'band_output_type')")
   } 
   if (any(grepl("-te_srs", options))) stop("setting '-te_srs' projection of target extent is not supported") 
   
@@ -506,10 +511,6 @@ vapour_warp_raster <- function(x, bands = NULL,
                                   resample = resample,
                                   silent = silent,
                                   band_output_type = band_output_type, 
-                                  warp_options = warp_options, 
-                                  transformation_options = transformation_options,
-                                #  open_options = open_options,
-                                #  dataset_output_options = dataset_output_options,
                                   options = options)
   # ##// if we Dataset->RasterIO we don't have separated bands'
   # nbands <- length(vals[[1L]]) / prod(as.integer(dimension))
@@ -556,7 +557,9 @@ vapour_warp_raster_raw <- function(x, bands = NULL,
                                    resample = "near",
                                    silent = TRUE, ...,
                                    warp_options = "", 
-                                   transformation_options = "") {
+                                   transformation_options = "", 
+                                   open_options = "",
+                                   options = "") {
   if (length(bands) > 1 ) message("_raw output implies one band, ignoring all but the first")
   
   vapour_warp_raster(x, 
@@ -569,9 +572,11 @@ vapour_warp_raster_raw <- function(x, bands = NULL,
                      source_extent = source_extent, 
                      resample = resample, 
                      silent = silent, 
-                     band_output_type = "Byte",
+                     band_output_type = "Byte", 
                      warp_options = warp_options, 
-                     transformation_options = transformation_options, ...)[[1L]]
+                     transformation_options = transformation_options,
+                     open_options = open_options, 
+                     options = options,...)[[1L]]
 }
 
 vapour_warp_raster_vrt <- function(x, bands = NULL,
@@ -582,9 +587,11 @@ vapour_warp_raster_vrt <- function(x, bands = NULL,
                                    source_projection = NULL,
                                    source_extent = 0.0,
                                    resample = "near",
-                                   silent = TRUE, ...,
+                                   silent = TRUE, ..., 
                                    warp_options = "", 
-                                   transformation_options = "") {
+                                   transformation_options = "", 
+                                   open_options = "",
+                                   options = "") {
   
   vapour_warp_raster(x, 
                      bands = bands, 
@@ -598,7 +605,9 @@ vapour_warp_raster_vrt <- function(x, bands = NULL,
                      silent = silent, 
                      band_output_type = "vrt",
                      warp_options = warp_options, 
-                     transformation_options = transformation_options, ...)[[1L]]
+                     transformation_options = transformation_options,
+                     open_options = open_options, 
+                     options = options,...)[[1L]]
 }
 
 #' @name vapour_warp_raster_raw
@@ -611,9 +620,11 @@ vapour_warp_raster_int <- function(x, bands = NULL,
                                    source_projection = NULL,
                                    source_extent = 0.0,
                                    resample = "near",
-                                   silent = TRUE, ...,
+                                   silent = TRUE, ..., 
                                    warp_options = "", 
-                                   transformation_options = "")  {
+                                   transformation_options = "", 
+                                   open_options = "",
+                                   options = "")  {
   if (length(bands) > 1 ) message("_int output implies one band, ignoring all but the first")
   
   vapour_warp_raster(x, 
@@ -628,7 +639,9 @@ vapour_warp_raster_int <- function(x, bands = NULL,
                      silent = silent, 
                      band_output_type = "Int32",
                      warp_options = warp_options, 
-                     transformation_options = transformation_options, ...)[[1L]]
+                     transformation_options = transformation_options,
+                     open_options = open_options, 
+                     options = options,...)[[1L]]
 }
 
 #' @name vapour_warp_raster_raw
@@ -641,9 +654,11 @@ vapour_warp_raster_dbl <- function(x, bands = NULL,
                                    source_projection = NULL,
                                    source_extent = 0.0,
                                    resample = "near",
-                                   silent = TRUE, ...,
+                                   silent = TRUE, ..., 
                                    warp_options = "", 
-                                   transformation_options = "") {
+                                   transformation_options = "", 
+                                   open_options = "",
+                                   options = "") {
   if (length(bands) > 1 ) message("_dbl output implies one band, ignoring all but the first")
   
   vapour_warp_raster(x, 
@@ -658,7 +673,9 @@ vapour_warp_raster_dbl <- function(x, bands = NULL,
                      silent = silent, 
                      band_output_type = "Float64",
                      warp_options = warp_options, 
-                     transformation_options = transformation_options, ...)[[1L]]
+                     transformation_options = transformation_options,
+                     open_options = open_options, 
+                     options = options,...)[[1L]]
 }
 
 
@@ -672,9 +689,11 @@ vapour_warp_raster_chr <- function(x, bands = NULL,
                                    source_projection = NULL,
                                    source_extent = 0.0,
                                    resample = "near",
-                                   silent = TRUE, ...,
+                                   silent = TRUE, ..., 
                                    warp_options = "", 
-                                   transformation_options = "") {
+                                   transformation_options = "", 
+                                   open_options = "",
+                                   options = "") {
   ## band must be length 1, 3 or 4
   if (length(bands) == 2 || length(bands) > 4) message("_chr output implies one, three or four bands ...")
   if (length(bands) == 2L) bands <- bands[1L]
@@ -691,7 +710,9 @@ vapour_warp_raster_chr <- function(x, bands = NULL,
                                silent = silent, 
                                band_output_type = "Byte",
                                warp_options = warp_options, 
-                               transformation_options = transformation_options, ...)
+                               transformation_options = transformation_options,
+                               open_options = open_options, 
+                               options = options,...)
   ## note that we replicate out *3 if we only have one band ... (annoying of as.raster)
   as.vector(grDevices::as.raster(array(unlist(bytes, use.names = FALSE), c(length(bytes[[1]]), 1, max(c(3, length(bytes)))))))
   
@@ -708,9 +729,11 @@ vapour_warp_raster_hex <- function(x, bands = NULL,
                                    source_projection = NULL,
                                    source_extent = 0.0,
                                    resample = "near",
-                                   silent = TRUE, ...,
+                                   silent = TRUE, ..., 
                                    warp_options = "", 
-                                   transformation_options = "") {
+                                   transformation_options = "", 
+                                   open_options = "",
+                                   options = "") {
   vapour_warp_raster_chr(x, 
                          bands = bands, 
                          extent = extent, 
@@ -722,5 +745,7 @@ vapour_warp_raster_hex <- function(x, bands = NULL,
                          resample = resample, 
                          silent = silent, 
                          warp_options = warp_options, 
-                         transformation_options = transformation_options, ...)
+                         transformation_options = transformation_options,
+                         open_options = open_options, 
+                         options = options,...)
 }

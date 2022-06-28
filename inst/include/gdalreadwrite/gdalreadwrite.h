@@ -38,8 +38,7 @@ inline CharacterVector gdal_create(CharacterVector filename, CharacterVector dri
   }
  
  
-  
-  GDALDriver *poDriver;
+    GDALDriver *poDriver;
   poDriver = GetGDALDriverManager()->GetDriverByName(driver[0]);
   if( poDriver == NULL ) {
     return Rcpp::CharacterVector::create(NA_STRING); 
@@ -69,6 +68,7 @@ inline CharacterVector gdal_create(CharacterVector filename, CharacterVector dri
   poDstDS->SetSpatialRef(oTargetSRS);
   
   GDALClose(poDstDS);
+  
   delete oTargetSRS;
   return Rcpp::CharacterVector::create(filename[0]);
 }
