@@ -1,5 +1,6 @@
 
 PKG_CPPFLAGS = \
+        -I../inst/include \
 	-DHAVE_PROJ_H
 
 PKG_LIBS =  \
