@@ -77,17 +77,20 @@ inline CharacterVector gdal_list_subdatasets(GDALDataset *poDataset) {
   if (sdi < 1) return "";
   if (!(sdi % 2 == 0)) return "";
   // we only want the first of each pair
-  int dscount = sdi / 2;
-  Rcpp::CharacterVector ret(dscount);
+
+  Rcpp::CharacterVector ret(sdi/2);
+  int dscount = ret.size();
+  int cnt = 0;
   if (dscount > 0) {
     // we have subdatasets, so list them all
     // owned by the object
     char **SDS2 = GDALGetMetadata(poDataset, "SUBDATASETS");
-    for (int ii = 0; ii < dscount; ii++) {
-      // ii*2 because SDS tokens come in pairs
-      char  **papszTokens = CSLTokenizeString2(SDS2[ii * 2], "=", 0);
-      ret(ii) = papszTokens[1];
-      CSLDestroy( papszTokens );
+    for (int ii = 0; ii <  sdi; ii++) {
+      // SDS tokens come in pairs
+      if (ii % 2 == 0) {
+        ret(cnt) = SDS2[ii];
+       cnt++;
+      }
     }
   }
   return ret;

@@ -53,6 +53,8 @@ vapour_warp_raster(
 \item{transformation_options}{character vector of options, as in gdalwarp -to see Details}
 
 \item{open_options}{character vector of options, as in gdalwarp -oo - see Details}
+
+\item{options}{character vectors of options as per the gdalwarp command line utiliy}
 }
 \value{
 list of vectors (only 1 for 'band') of numeric values, in raster order
@@ -119,8 +121,9 @@ All 'warp_options' are paired with a '-wo' declaration and similarly for '-to', 
 this is purely a convenience, since 'options' itself can be used for these as well but we recommend using
 the individual arguments.
 An example for warp options is  \code{warp_options = c("SAMPLE_GRID=YES", "SAMPLE_STEPS=30")} and one for
-general arguments might be 'options = c("-ovr", "AUTO", "-nomd")'.  If they would separated by spaces on
-the command line then include as separate elements in the options character vector.
+general arguments might be
+'options = c("-ovr", "AUTO", "-nomd", "-cutline", "/path/to/cut.gpkg", "-crop_to_cutline")'.  If they would
+be separated by spaces on the command line then include as separate elements in the options character vector.
 
 See \href{https://gdal.org/api/gdalwarp_cpp.html#_CPPv4N15GDALWarpOptions16papszWarpOptionsE}{GDALWarpOptions} for '-wo'.
 

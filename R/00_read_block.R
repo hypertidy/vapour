@@ -24,7 +24,9 @@
 #' \donttest{
 #' tfile <- tempfile(fileext = ".tif")
 #' if (!file.exists(tfile)) {
-#' vapour_create(tfile, extent = c(-1, 1, -1, 1) * 1e6, dimension = c(128, 128), projection = "+proj=laea")
+#' vapour_create(tfile, extent = c(-1, 1, -1, 1) * 1e6, 
+#'                      dimension = c(128, 128), 
+#'                      projection = "+proj=laea")
 #' file.remove(tfile)
 #' }
 #' 

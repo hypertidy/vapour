@@ -126,6 +126,8 @@ vapour_warp_raster_hex(
 \item{transformation_options}{character vector of options, as in gdalwarp -to see Details}
 
 \item{open_options}{character vector of options, as in gdalwarp -oo - see Details}
+
+\item{options}{character vectors of options as per the gdalwarp command line utiliy}
 }
 \value{
 atomic vector of the nominated type raw, int, dbl, or character (hex)

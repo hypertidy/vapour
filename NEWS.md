@@ -1,5 +1,16 @@
 # vapour dev
 
+
+## BREAKING CHANGES
+
+* 'vapour_sds_names()' now returns a character vector not a list. 
+
+* 'gdalraster::gdal_list_subdatasets' now returns unprocessed subdataset strings, of the form 'SUBDATASET_{i}_NAME={DRIVER}:{URI}:layer', and the strings are cleaned in R. 
+
+
+--------------
+
+
 * 'warp_options' and 'transformation_options' has been removed from the 'gdalwarpmem' namespace, and from the R and Rcpp
  wrappers.  All options are now assumed to be bundled into one string list (CharacterVector). 
  

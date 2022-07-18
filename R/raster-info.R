@@ -4,7 +4,7 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
   ## but also don't prevent access to non-files
   if (file.exists(x)) x <- base::normalizePath(x, mustWork = FALSE)
   ## use sds wrapper to target the first by default
-  datavars <- as.data.frame(vapour_sds_names(x), stringsAsFactors = FALSE)
+  datavars <- data.frame(datsource = x, subdataset = vapour_sds_names(x), stringsAsFactors = FALSE)
 
   ## catch for l1b where we end up with the GCP conflated with the data set #48
   if (nrow(datavars) < 2) return(x)  ## shortcut to avoid #48
@@ -214,12 +214,18 @@ vapour_raster_gcp <- function(x, ...) {
 #' variable, so we always treat a source as a subdataset, even if there's only
 #' one.
 #'
-#' Returns a list of `datasource` and `subdataset`. In the case of a normal data
-#' source, with no subdatasets the value of both entries is the `datasource`.
+#' Returns a character vector of 'subdatasets`. In the case of a normal data
+#' source, with no subdatasets the value is simply  the `datasource`.
 #'
-#' @param x a data source string, filename, database connection string, Thredds or other URL
+#' If the raw SDS names contain spaces these are replaced by '%20' escape strings. A specific example is  
+#' "WCS:https://elevation.nationalmap.gov:443" with request
+#' "arcgis/services/3DEPElevation/ImageServer/WCSServer?version=2.0.1&coverage=DEP3Elevation_Hillshade Gray". 
+#' This function will return "..DEP3Elevation_Hillshade%20Gray".  
+#' See [wiki post](https://github.com/hypertidy/vapour/wiki/Examples-of-subdatasets) for more details. 
+#' 
+#' @param x a data source string, filename, database connection string,  or other URL
 #'
-#' @return list of character vectors, see Details
+#' @return character vector of subdataset names, or just the original source 
 #' @export
 #'
 #' @examples
@@ -230,13 +236,21 @@ vapour_raster_gcp <- function(x, ...) {
 #'   print(result)
 #' }
 #' vapour_sds_names(system.file("extdata", "sst.tif", package = "vapour"))
+#' 
 vapour_sds_names <- function(x) {
   x <- .check_dsn_single(x)
   ##if (file.exists(x)) x <- normalizePath(x)
   
   sources <- sds_list_gdal_cpp(x)
-  if (length(sources) < 2L && nchar(sources[1L]) < 1L) sources <- x
-  list(datasource = rep(x, length(sources)), subdataset = sources)
+  if (length(sources) < 2L && nchar(sources[1L]) < 1L) {
+    sources <- x
+  } else {
+    sources <- gsub("^SUBDATASET_.*_NAME=", "", sources)
+    
+    ## if there are spaces, escape them
+    sources <- gsub(" ", "%20", sources)
+  }
+ sources
 }
 
 

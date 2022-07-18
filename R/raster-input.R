@@ -260,8 +260,9 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' this is purely a convenience, since 'options' itself can be used for these as well but we recommend using
 #' the individual arguments. 
 #' An example for warp options is  `warp_options = c("SAMPLE_GRID=YES", "SAMPLE_STEPS=30")` and one for
-#' general arguments might be 'options = c("-ovr", "AUTO", "-nomd")'.  If they would separated by spaces on 
-#' the command line then include as separate elements in the options character vector. 
+#' general arguments might be 
+#' 'options = c("-ovr", "AUTO", "-nomd", "-cutline", "/path/to/cut.gpkg", "-crop_to_cutline")'.  If they would 
+#' be separated by spaces on the command line then include as separate elements in the options character vector. 
 #'
 #' 
 #' See [GDALWarpOptions](https://gdal.org/api/gdalwarp_cpp.html#_CPPv4N15GDALWarpOptions16papszWarpOptionsE) for '-wo'. 
@@ -317,6 +318,7 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' @param warp_options character vector of options, as in gdalwarp -wo - see Details
 #' @param transformation_options character vector of options, as in gdalwarp -to see Details
 #' @param open_options character vector of options, as in gdalwarp -oo - see Details
+#' @param options character vectors of options as per the gdalwarp command line utiliy
 #' @export
 #' @seealso vapour_read_raster vapour_read_raster_raw vapour_read_raster_int vapour_read_raster_dbl vapour_read_raster_chr vapour_read_raster_hex
 #' @return list of vectors (only 1 for 'band') of numeric values, in raster order

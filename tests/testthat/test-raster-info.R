@@ -15,8 +15,7 @@ test_that("sds checks work", {
   expect_silent(sds_boilerplate_checks(f1))
   fsds <- system.file("extdata/gdal/sds.nc", package = "vapour", mustWork = TRUE)
   fsds <- normalizePath(fsds)
-  ## expectations not met 2019-06-12, why?
-  expect_message(sds_boilerplate_checks(fsds))
+ 
   expect_error(sds_boilerplate_checks(fsds, "vv"), "sds must be specified by number, starting from 1")
  ##expect_error(sds_boilerplate_checks(fsds, 0))  ## does not error on windows atm
   expect_error(sds_boilerplate_checks(fsds, 0:1))
