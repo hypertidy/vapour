@@ -5,11 +5,13 @@
 
 * 'vapour_sds_names()' now returns a character vector not a list. 
 
-* 'gdalraster::gdal_list_subdatasets' now returns unprocessed subdataset strings, of the form 'SUBDATASET_{i}_NAME={DRIVER}:{URI}:layer', and the strings are cleaned in R. 
+* 'gdalraster::gdal_list_subdatasets' now returns unprocessed subdataset strings, of the form 'SUBDATASET_{i}_NAME={DRIVER}:{URI}:layer', and the strings are cleaned in R (but, can use `vapour_raster_info`, `vapour_sds_names()` for a separate pathway to this.) 
 
 
 --------------
 
+
+* `vapour_raster_info()` gains a subdatasets vector, this is just the source input if subdatasets are not present. 
 
 * Subdatasets can now be named by variable name or by index in 'vapour_vrt()'. Note this can't always work as some
  services don't have names in the sense that classic subdataset sources (like netcdf) do. 

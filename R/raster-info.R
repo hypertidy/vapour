@@ -142,6 +142,10 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
   sd <- if (is.null(sds)) 0 else sds
   info <- gdalinfo_internal(x[1L], json  = TRUE, stats = min_max, sd = sd, ...)
   json <- jsonlite::fromJSON(info)
+  sds <- NULL
+  if (!is.null(json$metadata$SUBDATASETS)) {
+    sds <- unlist(json$metadata$SUBDATASETS[grep("NAME$", names(json$metadata$SUBDATASETS))], use.names = FALSE)
+  }
   list(geotransform = json$geoTransform, 
        dimension = json$size,  ## or/and dimXY
        dimXY = json$size,
@@ -155,7 +159,8 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
        overviews = unlist(json$bands$overviews[[1]], use.names = FALSE), ## NULL if there aren't any (was integer(0)), 
        filelist = json$files, 
        datatype = json$bands$type[1L], 
-       extent = c(json$cornerCoordinates$upperLeft, json$cornerCoordinates$lowerRight)[c(1, 3, 4, 2)])
+       extent = c(json$cornerCoordinates$upperLeft, json$cornerCoordinates$lowerRight)[c(1, 3, 4, 2)], 
+       subdatasets = sds)
 }
 
 
@@ -225,7 +230,7 @@ vapour_raster_gcp <- function(x, ...) {
 #' 
 #' @param x a data source string, filename, database connection string,  or other URL
 #'
-#' @return character vector of subdataset names, or just the original source 
+#' @return character vector of subdataset names, or just the source itself if no SDS are present
 #' @export
 #'
 #' @examples
@@ -239,16 +244,13 @@ vapour_raster_gcp <- function(x, ...) {
 #' 
 vapour_sds_names <- function(x) {
   x <- .check_dsn_single(x)
-  ##if (file.exists(x)) x <- normalizePath(x)
-  
-  sources <- sds_list_gdal_cpp(x)
-  if (length(sources) < 2L && nchar(sources[1L]) < 1L) {
-    sources <- x
+  info <- gdalinfo_internal(x[1L], json  = TRUE)
+  json <- jsonlite::fromJSON(info)
+  if (!is.null(json$metadata$SUBDATASETS)) {
+   sources <- unlist(json$metadata$SUBDATASETS[grep("NAME$", 
+                                                    names(json$metadata$SUBDATASETS))], use.names = FALSE)
   } else {
-    sources <- gsub("^SUBDATASET_.*_NAME=", "", sources)
-    
-    ## if there are spaces, escape them
-    sources <- gsub(" ", "%20", sources)
+    sources <- x[1L]  ## should return 0-vector, or NULL I think
   }
  sources
 }
