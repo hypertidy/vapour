@@ -11,6 +11,9 @@
 --------------
 
 
+* Subdatasets can now be named by variable name or by index in 'vapour_vrt()'. Note this can't always work as some
+ services don't have names in the sense that classic subdataset sources (like netcdf) do. 
+ 
 * 'warp_options' and 'transformation_options' has been removed from the 'gdalwarpmem' namespace, and from the R and Rcpp
  wrappers.  All options are now assumed to be bundled into one string list (CharacterVector). 
  
