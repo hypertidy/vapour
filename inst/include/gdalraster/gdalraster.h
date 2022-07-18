@@ -52,6 +52,8 @@ inline CharacterVector gdal_subdataset_1(GDALDataset *poDataset, int i_sds) {
   
   char **SDS2 = poDataset->GetMetadata("SUBDATASETS");
   while (SDS2 && SDS2[sdi] != NULL) {
+   // Rprintf("%i\n", sdi/2);
+  //  Rprintf("%i\n\n", i_sds - 1);
     if (sdi / 2 == (i_sds -1 )) {
       char  **papszTokens = CSLTokenizeString2(SDS2[sdi ], "=", 0);
       ret[0] = papszTokens[1];

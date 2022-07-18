@@ -67,6 +67,7 @@
 #' 
 vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = NULL, geolocation = NULL, ..., relative_to_vrt = FALSE) {
   x <- .check_dsn_multiple_naok(x)
+  
   if (!relative_to_vrt) { 
     ## GDAL does its hardest to use relative paths, so either implemente Even's proposal or force alway absolute (but allow turn that off)
     ## https://lists.osgeo.org/pipermail/gdal-dev/2022-April/055739.html
@@ -74,8 +75,13 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
     fe <- file.exists(x)
     if (any(fe)) x[fe] <- normalizePath(x[fe])
   }
+  if (is.character(sds)) {
+    sdsnames <- vapour_sds_names(x)
+    #browser()
+    sds <- which(unlist(lapply(sdsnames, function(.x) grepl(sprintf("%s$", sds[1L]), .x))))[1]
+  }
   if (is.na(sds[1]) || length(sds) > 1L || !is.numeric(sds) || sds < 1) {
-    stop("'sds' must be a valid integer for a GDAL-subdataset (1-based)")
+    stop("'sds' must be a valid name or integer for a GDAL-subdataset (1-based)")
   }
   
   ## FIXME: we can't do bands atm, also what else does boilerplate checks do that the new C++ in gdalraster doesn't do?
@@ -114,11 +120,11 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
   if (length(sds) < 1 || !is.numeric(sds) || is.null(sds) || is.na(sds)) {
     sds <- 1L
   }
-  if (!is.null(bands) && (length(bands) < 1 || !is.numeric(sds) || is.na(sds))) {
-    sds <- 1L
+  if (!is.null(bands) && (length(bands) < 1 || !is.numeric(bands) || is.na(bands))) {
+    bands <- 1L
   }
    if (!is.null(geolocation) && (length(geolocation) != 2 || !is.character(geolocation) || anyNA(geolocation))) {
-    sds <- 1L
+    geolocation <- ""
   }
   raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation)
 }
