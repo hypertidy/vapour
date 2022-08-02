@@ -227,7 +227,7 @@ inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
     // work through format
     // FIXME: get rid of "geometry"
-    if ((format[0] == "wkb") | (format[0] == "geometry")) {
+    if ((format[0] == "wkb") || (format[0] == "geometry")) {
       out[ii] = gdal_geometry_raw(poFeature);
     }
     if (format[0] == "wkt") {
@@ -238,7 +238,7 @@ inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
       out[ii] = gdal_geometry_extent(poFeature);
     }
     // these are all just text variants (wkt uses a different mech)
-    if ((format[0] == "gml") | (format[0] == "json") | (format[0] == "kml")) {
+    if ((format[0] == "gml") || (format[0] == "json") || (format[0] == "kml")) {
       out[ii] = gdal_geometry_txt(poFeature, format);
     }
     if (format[0] == "type") {
@@ -288,7 +288,7 @@ inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, Numeri
 
       // work through format
       // FIXME: get rid of "geometry"
-      if ((format[0] == "wkb") | (format[0] == "geometry")) {
+      if ((format[0] == "wkb") || (format[0] == "geometry")) {
         out[cnt] = gdal_geometry_raw(poFeature);
       }
       if (format[0] == "wkt") {
@@ -299,7 +299,7 @@ inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, Numeri
         out[cnt] = gdal_geometry_extent(poFeature);
       }
       // these are all just text variants (wkt uses a different mech)
-      if ((format[0] == "gml") | (format[0] == "json") | (format[0] == "kml")) {
+      if ((format[0] == "gml") || (format[0] == "json") || (format[0] == "kml")) {
         out[cnt] = gdal_geometry_txt(poFeature, format);
       }
       if (format[0] == "type") {
@@ -351,7 +351,7 @@ inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, Numeri
 
       // work through format
       // FIXME: get rid of "geometry"
-      if ((format[0] == "wkb") | (format[0] == "geometry")) {
+      if ((format[0] == "wkb") || (format[0] == "geometry")) {
         out[cnt] = gdal_geometry_raw(poFeature);
       }
       if (format[0] == "wkt") {
@@ -362,7 +362,7 @@ inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, Numeri
         out[cnt] = gdal_geometry_extent(poFeature);
       }
       // these are all just text variants (wkt uses a different mech)
-      if ((format[0] == "gml") | (format[0] == "json") | (format[0] == "kml")) {
+      if ((format[0] == "gml") || (format[0] == "json") || (format[0] == "kml")) {
         out[cnt] = gdal_geometry_txt(poFeature, format);
       }
       if (format[0] == "type") {
@@ -418,7 +418,7 @@ inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, Numeri
     poFeature = poLayer->GetFeature(feature_id);
     // work through format
     // FIXME: get rid of "geometry"
-    if ((format[0] == "wkb") | (format[0] == "geometry")) {
+    if ((format[0] == "wkb") || (format[0] == "geometry")) {
       out[ii] = gdal_geometry_raw(poFeature);
     }
     if (format[0] == "wkt") {
@@ -429,7 +429,7 @@ inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, Numeri
       out[ii] = gdal_geometry_extent(poFeature);
     }
     // these are all just text variants (wkt uses a different mech)
-    if ((format[0] == "gml") | (format[0] == "json") | (format[0] == "kml")) {
+    if ((format[0] == "gml") || (format[0] == "json") || (format[0] == "kml")) {
       out[ii] = gdal_geometry_txt(poFeature, format);
     }
     if (format[0] == "type") {

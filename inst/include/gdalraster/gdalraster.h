@@ -639,7 +639,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
       hasScale = 0; 
     }
     // if hasScale we ignore integer or byte and go with float
-    if ((src_band_type == GDT_Float64) | (src_band_type == GDT_Float32) | hasScale) {
+    if ((src_band_type == GDT_Float64) || (src_band_type == GDT_Float32) || hasScale) {
       std::vector<double> double_scanline( outXSize * outYSize );
       err = rasterBand->RasterIO(GF_Read, Xoffset, Yoffset, nXSize, nYSize,
                                  &double_scanline[0], outXSize, outYSize, GDT_Float64,
@@ -821,7 +821,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
       hasScale = 0; 
     }
     // if hasScale we ignore integer or byte and go with float
-    if ((src_band_type == GDT_Float64) | (src_band_type == GDT_Float32) | hasScale) {
+    if ((src_band_type == GDT_Float64) || (src_band_type == GDT_Float32) || hasScale) {
       std::vector<double> double_scanline( n_values_out);
       err = ((GDALDataset*)hRet)->RasterIO(GF_Read, Xoffset, Yoffset, nXSize, nYSize,
              &double_scanline[0], outXSize, outYSize, GDT_Float64,
