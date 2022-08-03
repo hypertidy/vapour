@@ -145,9 +145,9 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, ski
 #' ## modified by sql argument
 #' vapour_report_fields(mvfile,
 #'   sql = "SELECT POSTCODE, NAME FROM list_locality_postcode_meander_valley")
-vapour_report_fields <- function(dsource, layer = 0L, sql = "") {
+vapour_report_fields <- function(dsource, layer = 0L, sql = "", dialect  = "") {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
-  report_fields_gdal_cpp(dsource, layer, sql = sql)
+  report_fields_gdal_cpp(dsource, layer, sql = sql, dialect = dialect)
 }
 
 #' @name vapour_report_fields
@@ -176,14 +176,14 @@ vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
 #' SQL <- "SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7300"
 #' vapour_read_fields(dsource, sql = SQL)
 #' @export
-vapour_read_fields <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+vapour_read_fields <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA, dialect = "") {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
 
   read_fields_gdal_cpp(dsn = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n,
                        ex = extent,
-                       fid_column_name = character(0))
+                       fid_column_name = character(0), dialect = dialect)
 }
 
 #' @name vapour_read_fields

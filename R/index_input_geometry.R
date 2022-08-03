@@ -28,19 +28,19 @@ validate_limit_fa <- function(x) {
 
 #' @name vapour_read_geometry
 #' @export
-vapour_read_geometry_ia <- function(dsource, layer = 0L, sql = "", extent = NA, ia = NULL) {
+vapour_read_geometry_ia <- function(dsource, layer = 0L, sql = "", extent = NA, ia = NULL, dialect = "") {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   ia <- validate_limit_ia(ia)
   extent <- validate_extent(extent, sql)
-  gdal_dsn_read_geom_ia( dsn = dsource, layer = layer, sql = sql, ex = extent, format = "wkb",  ia = ia)
+  gdal_dsn_read_geom_ia( dsn = dsource, layer = layer, sql = sql, ex = extent, format = "wkb",  ia = ia, dialect = dialect)
 }
 #' @name vapour_read_geometry
 #' @export
-vapour_read_geometry_ij <- function(dsource, layer = 0L, sql = "", extent = NA, ij = NULL) {
+vapour_read_geometry_ij <- function(dsource, layer = 0L, sql = "", extent = NA, ij = NULL, dialect = "") {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   ij <- validate_limit_ij(ij)
   extent <- validate_extent(extent, sql)
-  gdal_dsn_read_geom_ij( dsn = dsource, layer = layer, sql = sql, ex = extent, format = "wkb",  ij = ij)
+  gdal_dsn_read_geom_ij( dsn = dsource, layer = layer, sql = sql, ex = extent, format = "wkb",  ij = ij, dialect = dialect)
 }
 
 ## this one will crash if fa not in 1:length(nfeatures) - these are 1-based (or arbitrary)

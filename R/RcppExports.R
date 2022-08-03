@@ -45,88 +45,88 @@ vsi_list_gdal_cpp <- function(dsn) {
     .Call('_vapour_vsi_list_gdal_cpp', PACKAGE = 'vapour', dsn)
 }
 
-feature_count_gdal_cpp <- function(dsn, layer, sql, ex) {
-    .Call('_vapour_feature_count_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, ex)
+feature_count_gdal_cpp <- function(dsn, layer, sql, ex, dialect) {
+    .Call('_vapour_feature_count_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, ex, dialect)
 }
 
-gdal_dsn_read_geom_all <- function(dsn, layer, sql, ex, format) {
-    .Call('_vapour_gdal_dsn_read_geom_all', PACKAGE = 'vapour', dsn, layer, sql, ex, format)
+gdal_dsn_read_geom_all <- function(dsn, layer, sql, ex, format, dialect) {
+    .Call('_vapour_gdal_dsn_read_geom_all', PACKAGE = 'vapour', dsn, layer, sql, ex, format, dialect)
 }
 
-gdal_dsn_read_geom_ij <- function(dsn, layer, sql, ex, format, ij) {
-    .Call('_vapour_gdal_dsn_read_geom_ij', PACKAGE = 'vapour', dsn, layer, sql, ex, format, ij)
+gdal_dsn_read_geom_ij <- function(dsn, layer, sql, ex, format, ij, dialect) {
+    .Call('_vapour_gdal_dsn_read_geom_ij', PACKAGE = 'vapour', dsn, layer, sql, ex, format, ij, dialect)
 }
 
-gdal_dsn_read_geom_ia <- function(dsn, layer, sql, ex, format, ia) {
-    .Call('_vapour_gdal_dsn_read_geom_ia', PACKAGE = 'vapour', dsn, layer, sql, ex, format, ia)
+gdal_dsn_read_geom_ia <- function(dsn, layer, sql, ex, format, ia, dialect) {
+    .Call('_vapour_gdal_dsn_read_geom_ia', PACKAGE = 'vapour', dsn, layer, sql, ex, format, ia, dialect)
 }
 
-gdal_dsn_read_geom_fa <- function(dsn, layer, sql, ex, format, fa) {
-    .Call('_vapour_gdal_dsn_read_geom_fa', PACKAGE = 'vapour', dsn, layer, sql, ex, format, fa)
+gdal_dsn_read_geom_fa <- function(dsn, layer, sql, ex, format, fa, dialect) {
+    .Call('_vapour_gdal_dsn_read_geom_fa', PACKAGE = 'vapour', dsn, layer, sql, ex, format, fa, dialect)
 }
 
-gdal_dsn_read_fields_all <- function(dsn, layer, sql, ex, fid_column_name) {
-    .Call('_vapour_gdal_dsn_read_fields_all', PACKAGE = 'vapour', dsn, layer, sql, ex, fid_column_name)
+gdal_dsn_read_fields_all <- function(dsn, layer, sql, ex, fid_column_name, dialect) {
+    .Call('_vapour_gdal_dsn_read_fields_all', PACKAGE = 'vapour', dsn, layer, sql, ex, fid_column_name, dialect)
 }
 
-gdal_dsn_read_fields_ij <- function(dsn, layer, sql, ex, fid_column_name, ij) {
-    .Call('_vapour_gdal_dsn_read_fields_ij', PACKAGE = 'vapour', dsn, layer, sql, ex, fid_column_name, ij)
+gdal_dsn_read_fields_ij <- function(dsn, layer, sql, ex, fid_column_name, ij, dialect) {
+    .Call('_vapour_gdal_dsn_read_fields_ij', PACKAGE = 'vapour', dsn, layer, sql, ex, fid_column_name, ij, dialect)
 }
 
-gdal_dsn_read_fields_ia <- function(dsn, layer, sql, ex, fid_column_name, ia) {
-    .Call('_vapour_gdal_dsn_read_fields_ia', PACKAGE = 'vapour', dsn, layer, sql, ex, fid_column_name, ia)
+gdal_dsn_read_fields_ia <- function(dsn, layer, sql, ex, fid_column_name, ia, dialect) {
+    .Call('_vapour_gdal_dsn_read_fields_ia', PACKAGE = 'vapour', dsn, layer, sql, ex, fid_column_name, ia, dialect)
 }
 
-gdal_dsn_read_fields_fa <- function(dsn, layer, sql, ex, fid_column_name, fa) {
-    .Call('_vapour_gdal_dsn_read_fields_fa', PACKAGE = 'vapour', dsn, layer, sql, ex, fid_column_name, fa)
+gdal_dsn_read_fields_fa <- function(dsn, layer, sql, ex, fid_column_name, fa, dialect) {
+    .Call('_vapour_gdal_dsn_read_fields_fa', PACKAGE = 'vapour', dsn, layer, sql, ex, fid_column_name, fa, dialect)
 }
 
-gdal_read_fids_all <- function(dsn, layer, sql, ex) {
-    .Call('_vapour_gdal_read_fids_all', PACKAGE = 'vapour', dsn, layer, sql, ex)
+gdal_read_fids_all <- function(dsn, layer, sql, ex, dialect) {
+    .Call('_vapour_gdal_read_fids_all', PACKAGE = 'vapour', dsn, layer, sql, ex, dialect)
 }
 
-gdal_read_fids_ij <- function(dsn, layer, sql, ex, ij) {
-    .Call('_vapour_gdal_read_fids_ij', PACKAGE = 'vapour', dsn, layer, sql, ex, ij)
+gdal_read_fids_ij <- function(dsn, layer, sql, ex, ij, dialect) {
+    .Call('_vapour_gdal_read_fids_ij', PACKAGE = 'vapour', dsn, layer, sql, ex, ij, dialect)
 }
 
-gdal_read_fids_ia <- function(dsn, layer, sql, ex, ia) {
-    .Call('_vapour_gdal_read_fids_ia', PACKAGE = 'vapour', dsn, layer, sql, ex, ia)
+gdal_read_fids_ia <- function(dsn, layer, sql, ex, ia, dialect) {
+    .Call('_vapour_gdal_read_fids_ia', PACKAGE = 'vapour', dsn, layer, sql, ex, ia, dialect)
 }
 
-geometry_cpp <- function(dsn, layer, sql, ex, format, fid) {
-    .Call('_vapour_geometry_cpp', PACKAGE = 'vapour', dsn, layer, sql, ex, format, fid)
+geometry_cpp <- function(dsn, layer, sql, ex, format, fid, dialect) {
+    .Call('_vapour_geometry_cpp', PACKAGE = 'vapour', dsn, layer, sql, ex, format, fid, dialect)
 }
 
-geometry_cpp_limit_skip <- function(dsn, layer, sql, ex, format, limit_n, skip_n) {
-    .Call('_vapour_geometry_cpp_limit_skip', PACKAGE = 'vapour', dsn, layer, sql, ex, format, limit_n, skip_n)
+geometry_cpp_limit_skip <- function(dsn, layer, sql, ex, format, limit_n, skip_n, dialect) {
+    .Call('_vapour_geometry_cpp_limit_skip', PACKAGE = 'vapour', dsn, layer, sql, ex, format, limit_n, skip_n, dialect)
 }
 
-projection_info_gdal_cpp <- function(dsn, layer, sql) {
-    .Call('_vapour_projection_info_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql)
+projection_info_gdal_cpp <- function(dsn, layer, sql, dialect) {
+    .Call('_vapour_projection_info_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, dialect)
 }
 
-read_fields_gdal_cpp <- function(dsn, layer, sql, limit_n, skip_n, ex, fid_column_name) {
-    .Call('_vapour_read_fields_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, limit_n, skip_n, ex, fid_column_name)
+read_fields_gdal_cpp <- function(dsn, layer, sql, limit_n, skip_n, ex, fid_column_name, dialect) {
+    .Call('_vapour_read_fields_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, limit_n, skip_n, ex, fid_column_name, dialect)
 }
 
-read_geometry_gdal_cpp <- function(dsn, layer, sql, what, textformat, limit_n, skip_n, ex) {
-    .Call('_vapour_read_geometry_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, what, textformat, limit_n, skip_n, ex)
+read_geometry_gdal_cpp <- function(dsn, layer, sql, what, textformat, limit_n, skip_n, ex, dialect) {
+    .Call('_vapour_read_geometry_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, what, textformat, limit_n, skip_n, ex, dialect)
 }
 
-read_names_gdal_cpp <- function(dsn, layer, sql, limit_n, skip_n, ex) {
-    .Call('_vapour_read_names_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, limit_n, skip_n, ex)
+read_names_gdal_cpp <- function(dsn, layer, sql, limit_n, skip_n, ex, dialect) {
+    .Call('_vapour_read_names_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, limit_n, skip_n, ex, dialect)
 }
 
-report_fields_gdal_cpp <- function(dsn, layer, sql) {
-    .Call('_vapour_report_fields_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql)
+report_fields_gdal_cpp <- function(dsn, layer, sql, dialect) {
+    .Call('_vapour_report_fields_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, dialect)
 }
 
-vapour_geom_name_cpp <- function(dsource, layer, sql, ex) {
-    .Call('_vapour_vapour_geom_name_cpp', PACKAGE = 'vapour', dsource, layer, sql, ex)
+vapour_geom_name_cpp <- function(dsource, layer, sql, ex, dialect) {
+    .Call('_vapour_vapour_geom_name_cpp', PACKAGE = 'vapour', dsource, layer, sql, ex, dialect)
 }
 
-vapour_layer_extent_cpp <- function(dsource, layer, sql, ex) {
-    .Call('_vapour_vapour_layer_extent_cpp', PACKAGE = 'vapour', dsource, layer, sql, ex)
+vapour_layer_extent_cpp <- function(dsource, layer, sql, ex, dialect) {
+    .Call('_vapour_vapour_layer_extent_cpp', PACKAGE = 'vapour', dsource, layer, sql, ex, dialect)
 }
 
 raster_gcp_gdal_cpp <- function(dsn) {

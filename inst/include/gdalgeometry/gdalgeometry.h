@@ -103,7 +103,7 @@ inline NumericVector layer_read_fids_all(OGRLayer *poLayer) {
 }
 
 inline NumericVector dsn_read_fids_all(CharacterVector dsn, IntegerVector layer,
-                                       CharacterVector sql, NumericVector ex) {
+                                       CharacterVector sql, NumericVector ex, CharacterVector dialect) {
 
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -111,7 +111,7 @@ inline NumericVector dsn_read_fids_all(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex, dialect);
   NumericVector out = layer_read_fids_all(poLayer);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -145,7 +145,8 @@ inline NumericVector layer_read_fids_ij(OGRLayer *poLayer, NumericVector ij) {
 
 inline NumericVector dsn_read_fids_ij(CharacterVector dsn, IntegerVector layer,
                                       CharacterVector sql, NumericVector ex,
-                                      NumericVector ij) {
+                                      NumericVector ij, 
+                                      CharacterVector dialect) {
 
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -153,7 +154,7 @@ inline NumericVector dsn_read_fids_ij(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex, dialect);
   NumericVector out = layer_read_fids_ij(poLayer, ij);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -187,7 +188,8 @@ inline NumericVector layer_read_fids_ia(OGRLayer *poLayer, NumericVector ia) {
 
 inline NumericVector dsn_read_fids_ia(CharacterVector dsn, IntegerVector layer,
                                       CharacterVector sql, NumericVector ex,
-                                      NumericVector ia) {
+                                      NumericVector ia, 
+                                      CharacterVector dialect) {
 
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -195,7 +197,7 @@ inline NumericVector dsn_read_fids_ia(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex, dialect);
   NumericVector out = layer_read_fids_ia(poLayer, ia);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -253,7 +255,8 @@ inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
 
 inline List dsn_read_geom_all(CharacterVector dsn, IntegerVector layer,
                               CharacterVector sql, NumericVector ex,
-                              CharacterVector format) {
+                              CharacterVector format, 
+                              CharacterVector dialect) {
 
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -261,7 +264,7 @@ inline List dsn_read_geom_all(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex, dialect);
   List out = layer_read_geom_all(poLayer, format);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -316,7 +319,8 @@ inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, Numeri
 
 inline List dsn_read_geom_ij(CharacterVector dsn, IntegerVector layer,
                              CharacterVector sql, NumericVector ex,
-                             CharacterVector format, NumericVector ij) {
+                             CharacterVector format, NumericVector ij, 
+                             CharacterVector dialect) {
 
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -324,7 +328,7 @@ inline List dsn_read_geom_ij(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex, dialect);
   List out = layer_read_geom_ij(poLayer, format, ij);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -387,7 +391,8 @@ inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, Numeri
 
 inline List dsn_read_geom_ia(CharacterVector dsn, IntegerVector layer,
                              CharacterVector sql, NumericVector ex,
-                             CharacterVector format, NumericVector ia) {
+                             CharacterVector format, NumericVector ia, 
+                             CharacterVector dialect) {
 
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -395,7 +400,7 @@ inline List dsn_read_geom_ia(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex, dialect);
   List out = layer_read_geom_ia(poLayer, format, ia);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -442,7 +447,8 @@ inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, Numeri
 
 inline List dsn_read_geom_fa(CharacterVector dsn, IntegerVector layer,
                              CharacterVector sql, NumericVector ex,
-                             CharacterVector format, NumericVector fa) {
+                             CharacterVector format, NumericVector fa, 
+                             CharacterVector dialect) {
 
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -450,7 +456,7 @@ inline List dsn_read_geom_fa(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex, dialect);
   List out = layer_read_geom_fa(poLayer, format, fa);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -515,7 +521,8 @@ inline List layer_read_fields_all(OGRLayer *poLayer, CharacterVector fid_column_
 
 inline List dsn_read_fields_all(CharacterVector dsn, IntegerVector layer,
                                 CharacterVector sql, NumericVector ex,
-                                CharacterVector fid_column_name) {
+                                CharacterVector fid_column_name, 
+                                CharacterVector dialect) {
 
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -523,7 +530,7 @@ inline List dsn_read_fields_all(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex, dialect);
   List out = layer_read_fields_all(poLayer, fid_column_name);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -587,7 +594,8 @@ inline List layer_read_fields_ij(OGRLayer *poLayer, CharacterVector fid_column_n
 
 inline List dsn_read_fields_ij(CharacterVector dsn, IntegerVector layer,
                                CharacterVector sql, NumericVector ex,
-                               CharacterVector fid_column_name, NumericVector ij) {
+                               CharacterVector fid_column_name, NumericVector ij, 
+                               CharacterVector dialect) {
 
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -595,7 +603,7 @@ inline List dsn_read_fields_ij(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex, dialect);
   List out = layer_read_fields_ij(poLayer, fid_column_name, ij);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -660,7 +668,8 @@ inline List layer_read_fields_ia(OGRLayer *poLayer, CharacterVector fid_column_n
 
 inline List dsn_read_fields_ia(CharacterVector dsn, IntegerVector layer,
                                CharacterVector sql, NumericVector ex,
-                               CharacterVector fid_column_name, NumericVector ia) {
+                               CharacterVector fid_column_name, NumericVector ia, 
+                               CharacterVector dialect) {
 
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -668,7 +677,7 @@ inline List dsn_read_fields_ia(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex, dialect);
   List out = layer_read_fields_ia(poLayer, fid_column_name, ia);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -731,7 +740,8 @@ inline List layer_read_fields_fa(OGRLayer *poLayer, CharacterVector fid_column_n
 
 inline List dsn_read_fields_fa(CharacterVector dsn, IntegerVector layer,
                                CharacterVector sql, NumericVector ex,
-                               CharacterVector fid_column_name, NumericVector fa) {
+                               CharacterVector fid_column_name, NumericVector fa, 
+                               CharacterVector dialect) {
 
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -739,7 +749,7 @@ inline List dsn_read_fields_fa(CharacterVector dsn, IntegerVector layer,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex, dialect);
   List out = layer_read_fields_fa(poLayer, fid_column_name, fa);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {

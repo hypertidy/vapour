@@ -106,11 +106,11 @@ inline CharacterVector gdal_version()
 }
 
 
-inline OGRLayer *gdal_layer(GDALDataset *poDS, IntegerVector layer, CharacterVector sql, NumericVector ex) {
+inline OGRLayer *gdal_layer(GDALDataset *poDS, IntegerVector layer, CharacterVector sql, NumericVector ex, CharacterVector dialect) {
   OGRLayer  *poLayer;
   OGRPolygon poly;
   OGRLinearRing ring;
-  
+
   if (ex.length() == 4) {
     ring.addPoint(ex[0], ex[2]); //xmin, ymin
     ring.addPoint(ex[0], ex[3]); //xmin, ymax
@@ -120,15 +120,20 @@ inline OGRLayer *gdal_layer(GDALDataset *poDS, IntegerVector layer, CharacterVec
     poly.addRing(&ring);
   }
   
+  const char *sql_dialect = (const char *) dialect[0];
+  
   if (sql[0] != "") {
     if (ex.length() == 4) {
+      
+      //  but for now applications should always pass an empty (not NULL) 
+      // string to get the default dialect.
       poLayer =  poDS->ExecuteSQL(sql[0],
                                   &poly,
-                                  NULL );
+                                  sql_dialect);
     } else {
       poLayer =  poDS->ExecuteSQL(sql[0],
                                   NULL,
-                                  NULL );
+                                  sql_dialect );
     }
     
     if (poLayer == NULL) {
@@ -267,7 +272,8 @@ inline List gdal_read_fields(CharacterVector dsn,
                              IntegerVector limit_n,
                              IntegerVector skip_n,
                              NumericVector ex,
-                             CharacterVector fid_column_name)
+                             CharacterVector fid_column_name, 
+                             CharacterVector dialect)
 {
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -275,7 +281,7 @@ inline List gdal_read_fields(CharacterVector dsn,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex, dialect);
   
   OGRFeature *poFeature;
   
@@ -386,7 +392,8 @@ inline List gdal_read_fields(CharacterVector dsn,
 
 
 inline DoubleVector gdal_feature_count(CharacterVector dsn,
-                                       IntegerVector layer, CharacterVector sql, NumericVector ex) {
+                                       IntegerVector layer, CharacterVector sql, NumericVector ex, 
+                                       CharacterVector dialect) {
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
@@ -394,7 +401,7 @@ inline DoubleVector gdal_feature_count(CharacterVector dsn,
     Rcpp::stop("Open failed.\n");
   }
   
-  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex, dialect);
   
   poLayer->ResetReading();
   //  double nFeature = force_layer_feature_count(poLayer);
@@ -464,7 +471,8 @@ inline List gdal_read_geometry(CharacterVector dsn,
                                CharacterVector textformat,
                                IntegerVector limit_n,
                                IntegerVector skip_n,
-                               NumericVector ex)
+                               NumericVector ex, 
+                               CharacterVector dialect)
 {
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -472,7 +480,7 @@ inline List gdal_read_geometry(CharacterVector dsn,
   {
     Rcpp::stop("Open failed.\n");
   }
-  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex, dialect);
   
   OGRFeature *poFeature;
   poLayer->ResetReading();
@@ -633,7 +641,8 @@ inline List gdal_read_names(CharacterVector dsn,
                             CharacterVector sql,
                             IntegerVector limit_n,
                             IntegerVector skip_n,
-                            NumericVector ex)
+                            NumericVector ex, 
+                            CharacterVector dialect)
 {
   
   GDALDataset       *poDS;
@@ -646,7 +655,7 @@ inline List gdal_read_names(CharacterVector dsn,
   }
   
   
-  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
+  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex, dialect);
   
   OGRFeature *poFeature;
   poLayer->ResetReading();
@@ -733,7 +742,8 @@ inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
 
 inline List gdal_projection_info(CharacterVector dsn,
                                  IntegerVector layer,
-                                 CharacterVector sql)
+                                 CharacterVector sql, 
+                                 CharacterVector dialect)
 {
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -743,7 +753,7 @@ inline List gdal_projection_info(CharacterVector dsn,
   }
   NumericVector zero(1);
   zero[0] = 0.0;
-  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, zero);
+  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, zero, dialect);
   
   OGRSpatialReference *SRS =  poLayer->GetSpatialRef();
   
@@ -820,7 +830,8 @@ inline List gdal_projection_info(CharacterVector dsn,
 
 inline CharacterVector gdal_report_fields(Rcpp::CharacterVector dsource,
                                           Rcpp::IntegerVector layer = 0,
-                                          Rcpp::CharacterVector sql = "")
+                                          Rcpp::CharacterVector sql = "", 
+                                          CharacterVector dialect = "")
 {
   
   GDALDataset       *poDS;
@@ -830,7 +841,7 @@ inline CharacterVector gdal_report_fields(Rcpp::CharacterVector dsource,
     Rcpp::stop("Open failed.\n");
   }
   
-  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, NumericVector::create(0));
+  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, NumericVector::create(0), dialect);
   
   OGRFeature *poFeature;
   poLayer->ResetReading();
