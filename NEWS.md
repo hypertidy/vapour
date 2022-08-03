@@ -10,6 +10,7 @@
 
 --------------
 
+* Fixed CRAN warnings due to incorrect use of boolean operator, #158. 
 
 * `vapour_raster_info()` gains a subdatasets vector, this is just the source input if subdatasets are not present. 
 
