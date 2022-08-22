@@ -20,7 +20,7 @@ it is missing."><meta property="og:image" content="/logo.png"><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.8.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.8.9010</span>
       </span>
     </div>
 
@@ -72,37 +72,57 @@ it is missing.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">vapour_vrt</span><span class="op">(</span>
-  <span class="va">x</span>,
-  extent <span class="op">=</span> <span class="cn">NULL</span>,
-  projection <span class="op">=</span> <span class="cn">NULL</span>,
-  sds <span class="op">=</span> <span class="fl">1L</span>,
-  bands <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>,
-  relative_to_vrt <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vapour_vrt</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  extent <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  projection <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sds <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  bands <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  geolocation <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  relative_to_vrt <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>data source name, filepath, url, database connection string, or VRT text</p></dd>
+
+
 <dt>extent</dt>
 <dd><p>(optional) numeric extent, xmin,xmax,ymin,ymax</p></dd>
+
+
 <dt>projection</dt>
 <dd><p>(optional) character string, projection string ("auth:code", proj4, or WKT, or anything understood by PROJ, see Details)</p></dd>
+
+
 <dt>sds</dt>
 <dd><p>which subdataset to select from a source with more than one</p></dd>
+
+
 <dt>bands</dt>
 <dd><p>(optional) which band/s to include from the source</p></dd>
+
+
+<dt>geolocation</dt>
+<dd><p>vector of 2 dsn to longitude, latitude geoloation array sources</p></dd>
+
+
 <dt>...</dt>
 <dd><p>ignored</p></dd>
+
+
 <dt>relative_to_vrt</dt>
 <dd><p>default <code>FALSE</code>, if <code>TRUE</code> input strings that identify as files on the system are left as-is (by default they are made absolute at the R level)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>VRT character string (for use by GDAL-capable tools, i.e. reading raster)</p>
+    
+
+<p>VRT character string (for use by GDAL-capable tools, i.e. reading raster)</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -149,13 +169,14 @@ PROJ itself.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">tif</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sst.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">vapour_vrt</span><span class="op">(</span><span class="va">tif</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">tif</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sst.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">vapour_vrt</span><span class="op">(</span><span class="va">tif</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "&lt;VRTDataset rasterXSize=\"143\" rasterYSize=\"286\"&gt;\n  &lt;SRS dataAxisToSRSAxisMapping=\"2,1\"&gt;GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]&lt;/SRS&gt;\n  &lt;GeoTransform&gt;  1.4000000000000000e+02,  6.9999999999999937e-02,  0.0000000000000000e+00, -3.9997222067892665e+01,  0.0000000000000000e+00, -7.0003889104950298e-02&lt;/GeoTransform&gt;\n  &lt;Metadata&gt;\n    &lt;MDI key=\"AREA_OR_POINT\"&gt;Area&lt;/MDI&gt;\n  &lt;/Metadata&gt;\n  &lt;Metadata domain=\"IMAGE_STRUCTURE\"&gt;\n    &lt;MDI key=\"COMPRESSION\"&gt;LZW&lt;/MDI&gt;\n    &lt;MDI key=\"INTERLEAVE\"&gt;BAND&lt;/MDI&gt;\n  &lt;/Metadata&gt;\n  &lt;VRTRasterBand dataType=\"Float32\" band=\"1\" blockYSize=\"14\"&gt;\n    &lt;Metadata&gt;\n      &lt;MDI key=\"STATISTICS_MAXIMUM\"&gt;289.859&lt;/MDI&gt;\n      &lt;MDI key=\"STATISTICS_MEAN\"&gt;279.8360951673&lt;/MDI&gt;\n      &lt;MDI key=\"STATISTICS_MINIMUM\"&gt;271.35&lt;/MDI&gt;\n      &lt;MDI key=\"STATISTICS_STDDEV\"&gt;4.9558170498586&lt;/MDI&gt;\n    &lt;/Metadata&gt;\n    &lt;NoDataValue&gt;-3.399999952144364e+38&lt;/NoDataValue&gt;\n    &lt;ColorInterp&gt;Gray&lt;/ColorInterp&gt;\n    &lt;SimpleSource&gt;\n      &lt;SourceFilename relativeToVRT=\"0\"&gt;/Users/runner/work/_temp/Library/vapour/extdata/sst.tif&lt;/SourceFilename&gt;\n      &lt;SourceBand&gt;1&lt;/SourceBand&gt;\n      &lt;SourceProperties RasterXSize=\"143\" RasterYSize=\"286\" DataType=\"Float32\" BlockXSize=\"143\" BlockYSize=\"14\" /&gt;\n      &lt;SrcRect xOff=\"0\" yOff=\"0\" xSize=\"143\" ySize=\"286\" /&gt;\n      &lt;DstRect xOff=\"0\" yOff=\"0\" xSize=\"143\" ySize=\"286\" /&gt;\n    &lt;/SimpleSource&gt;\n  &lt;/VRTRasterBand&gt;\n&lt;/VRTDataset&gt;\n"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">vapour_vrt</span><span class="op">(</span><span class="va">tif</span>, bands <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">vapour_vrt</span><span class="op">(</span><span class="va">tif</span>, bands <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'length(x) = 2 &gt; 1' in coercion to 'logical(1)'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "&lt;VRTDataset rasterXSize=\"143\" rasterYSize=\"286\"&gt;\n  &lt;SRS dataAxisToSRSAxisMapping=\"2,1\"&gt;GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]&lt;/SRS&gt;\n  &lt;GeoTransform&gt;  1.4000000000000000e+02,  6.9999999999999937e-02,  0.0000000000000000e+00, -3.9997222067892665e+01,  0.0000000000000000e+00, -7.0003889104950298e-02&lt;/GeoTransform&gt;\n  &lt;Metadata&gt;\n    &lt;MDI key=\"AREA_OR_POINT\"&gt;Area&lt;/MDI&gt;\n  &lt;/Metadata&gt;\n  &lt;Metadata domain=\"IMAGE_STRUCTURE\"&gt;\n    &lt;MDI key=\"COMPRESSION\"&gt;LZW&lt;/MDI&gt;\n    &lt;MDI key=\"INTERLEAVE\"&gt;BAND&lt;/MDI&gt;\n  &lt;/Metadata&gt;\n  &lt;VRTRasterBand dataType=\"Float32\" band=\"1\" blockYSize=\"14\"&gt;\n    &lt;Metadata&gt;\n      &lt;MDI key=\"STATISTICS_MAXIMUM\"&gt;289.859&lt;/MDI&gt;\n      &lt;MDI key=\"STATISTICS_MEAN\"&gt;279.8360951673&lt;/MDI&gt;\n      &lt;MDI key=\"STATISTICS_MINIMUM\"&gt;271.35&lt;/MDI&gt;\n      &lt;MDI key=\"STATISTICS_STDDEV\"&gt;4.9558170498586&lt;/MDI&gt;\n    &lt;/Metadata&gt;\n    &lt;NoDataValue&gt;-3.399999952144364e+38&lt;/NoDataValue&gt;\n    &lt;ColorInterp&gt;Gray&lt;/ColorInterp&gt;\n    &lt;SimpleSource&gt;\n      &lt;SourceFilename relativeToVRT=\"0\"&gt;/Users/runner/work/_temp/Library/vapour/extdata/sst.tif&lt;/SourceFilename&gt;\n      &lt;SourceBand&gt;1&lt;/SourceBand&gt;\n      &lt;SourceProperties RasterXSize=\"143\" RasterYSize=\"286\" DataType=\"Float32\" BlockXSize=\"143\" BlockYSize=\"14\" /&gt;\n      &lt;SrcRect xOff=\"0\" yOff=\"0\" xSize=\"143\" ySize=\"286\" /&gt;\n      &lt;DstRect xOff=\"0\" yOff=\"0\" xSize=\"143\" ySize=\"286\" /&gt;\n    &lt;/SimpleSource&gt;\n  &lt;/VRTRasterBand&gt;\n  &lt;VRTRasterBand dataType=\"Float32\" band=\"2\" blockYSize=\"14\"&gt;\n    &lt;Metadata&gt;\n      &lt;MDI key=\"STATISTICS_MAXIMUM\"&gt;289.859&lt;/MDI&gt;\n      &lt;MDI key=\"STATISTICS_MEAN\"&gt;279.8360951673&lt;/MDI&gt;\n      &lt;MDI key=\"STATISTICS_MINIMUM\"&gt;271.35&lt;/MDI&gt;\n      &lt;MDI key=\"STATISTICS_STDDEV\"&gt;4.9558170498586&lt;/MDI&gt;\n    &lt;/Metadata&gt;\n    &lt;NoDataValue&gt;-3.399999952144364e+38&lt;/NoDataValue&gt;\n    &lt;ColorInterp&gt;Gray&lt;/ColorInterp&gt;\n    &lt;SimpleSource&gt;\n      &lt;SourceFilename relativeToVRT=\"0\"&gt;/Users/runner/work/_temp/Library/vapour/extdata/sst.tif&lt;/SourceFilename&gt;\n      &lt;SourceBand&gt;1&lt;/SourceBand&gt;\n      &lt;SourceProperties RasterXSize=\"143\" RasterYSize=\"286\" DataType=\"Float32\" BlockXSize=\"143\" BlockYSize=\"14\" /&gt;\n      &lt;SrcRect xOff=\"0\" yOff=\"0\" xSize=\"143\" ySize=\"286\" /&gt;\n      &lt;DstRect xOff=\"0\" yOff=\"0\" xSize=\"143\" ySize=\"286\" /&gt;\n    &lt;/SimpleSource&gt;\n  &lt;/VRTRasterBand&gt;\n&lt;/VRTDataset&gt;\n"</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -170,7 +191,7 @@ PROJ itself.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

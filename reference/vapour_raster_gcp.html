@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.8.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.8.9010</span>
       </span>
     </div>
 
@@ -66,19 +66,24 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">vapour_raster_gcp</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vapour_raster_gcp</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>data source string (i.e. file name or URL or database connection string)</p></dd>
+
+
 <dt>...</dt>
 <dd><p>ignored currently</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>list with</p><ul><li><p><code>Pixel</code> the pixel coordinate</p></li>
+    
+
+<p>list with</p><ul><li><p><code>Pixel</code> the pixel coordinate</p></li>
 <li><p><code>Line</code> the line coordinate</p></li>
 <li><p><code>X</code> the X coordinate of the GCP</p></li>
 <li><p><code>Y</code> the Y coordinate of the GCP</p></li>
@@ -94,10 +99,10 @@ the grid and may not align with the grid spacing itself (though they often do in
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## this file has no ground control points</span></span>
-<span class="r-in"><span class="co">## they are rare, and tend to be in large files</span></span>
-<span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sst.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">vapour_raster_gcp</span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## this file has no ground control points</span></span></span>
+<span class="r-in"><span><span class="co">## they are rare, and tend to be in large files</span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sst.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">vapour_raster_gcp</span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No GCP (ground control points) found.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Pixel</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
@@ -117,10 +122,10 @@ the grid and may not align with the grid spacing itself (though they often do in
 <span class="r-out co"><span class="r-pr">#&gt;</span> $CRS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## a very made-up example with no real use</span></span>
-<span class="r-in"><span class="va">f1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/gcps"</span>, <span class="st">"volcano_gcp.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">vapour_raster_gcp</span><span class="op">(</span><span class="va">f1</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## a very made-up example with no real use</span></span></span>
+<span class="r-in"><span><span class="va">f1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/gcps"</span>, <span class="st">"volcano_gcp.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">vapour_raster_gcp</span><span class="op">(</span><span class="va">f1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Pixel</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0  5 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -139,7 +144,7 @@ the grid and may not align with the grid spacing itself (though they often do in
 <span class="r-out co"><span class="r-pr">#&gt;</span> $CRS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] ""</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -154,7 +159,7 @@ the grid and may not align with the grid spacing itself (though they often do in
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

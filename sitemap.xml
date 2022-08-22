@@ -40,6 +40,9 @@
     <loc>/reference/vapour-package.html</loc>
   </url>
   <url>
+    <loc>/reference/vapour_create.html</loc>
+  </url>
+  <url>
     <loc>/reference/vapour_geom_name.html</loc>
   </url>
   <url>
@@ -101,5 +104,8 @@
   </url>
   <url>
     <loc>/reference/vapour_warp_raster_raw.html</loc>
+  </url>
+  <url>
+    <loc>/reference/vapour_write_raster_block.html</loc>
   </url>
 </urlset>

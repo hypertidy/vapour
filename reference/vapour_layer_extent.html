@@ -18,7 +18,7 @@ input extent filter."><meta property="og:image" content="/logo.png"><!-- mathjax
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.8.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.8.9010</span>
       </span>
     </div>
 
@@ -68,25 +68,36 @@ input extent filter.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">vapour_layer_extent</span><span class="op">(</span><span class="va">dsource</span>, layer <span class="op">=</span> <span class="fl">0L</span>, sql <span class="op">=</span> <span class="st">""</span>, extent <span class="op">=</span> <span class="fl">0</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vapour_layer_extent</span><span class="op">(</span><span class="va">dsource</span>, layer <span class="op">=</span> <span class="fl">0L</span>, sql <span class="op">=</span> <span class="st">""</span>, extent <span class="op">=</span> <span class="fl">0</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>dsource</dt>
 <dd><p>data source name (path to file, connection string, URL)</p></dd>
+
+
 <dt>layer</dt>
 <dd><p>integer of layer to work with, defaults to the first (0) or the name of the layer</p></dd>
+
+
 <dt>sql</dt>
 <dd><p>if not empty this is executed against the data source (layer will be ignored)</p></dd>
+
+
 <dt>extent</dt>
 <dd><p>optional extent (xmin,xmax,ymin,ymax)</p></dd>
+
+
 <dt>...</dt>
 <dd><p>unused</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>vector of numeric values xmin,xmax,ymin,ymax</p>
+    
+
+<p>vector of numeric values xmin,xmax,ymin,ymax</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -95,10 +106,10 @@ input extent filter.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">file</span> <span class="op">&lt;-</span> <span class="st">"list_locality_postcode_meander_valley.tab"</span></span>
-<span class="r-in"><span class="co">## A MapInfo TAB file with polygons</span></span>
-<span class="r-in"><span class="va">mvfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"extdata/tab"</span>, <span class="va">file</span><span class="op">)</span>, package<span class="op">=</span><span class="st">"vapour"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">vapour_layer_extent</span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">file</span> <span class="op">&lt;-</span> <span class="st">"list_locality_postcode_meander_valley.tab"</span></span></span>
+<span class="r-in"><span><span class="co">## A MapInfo TAB file with polygons</span></span></span>
+<span class="r-in"><span><span class="va">mvfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"extdata/tab"</span>, <span class="va">file</span><span class="op">)</span>, package<span class="op">=</span><span class="st">"vapour"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">vapour_layer_extent</span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  412718.7  511687.5 5352612.8 5425154.3</span>
 </code></pre></div>
     </div>
@@ -114,7 +125,7 @@ input extent filter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

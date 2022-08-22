@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.8.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.8.9010</span>
       </span>
     </div>
 
@@ -66,84 +66,101 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">vapour_read_raster_raw</span><span class="op">(</span>
-  <span class="va">x</span>,
-  band <span class="op">=</span> <span class="fl">1</span>,
-  <span class="va">window</span>,
-  resample <span class="op">=</span> <span class="st">"nearestneighbour"</span>,
-  <span class="va">...</span>,
-  sds <span class="op">=</span> <span class="cn">NULL</span>,
-  native <span class="op">=</span> <span class="cn">FALSE</span>,
-  set_na <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="fu">vapour_read_raster_int</span><span class="op">(</span>
-  <span class="va">x</span>,
-  band <span class="op">=</span> <span class="fl">1</span>,
-  <span class="va">window</span>,
-  resample <span class="op">=</span> <span class="st">"nearestneighbour"</span>,
-  <span class="va">...</span>,
-  sds <span class="op">=</span> <span class="cn">NULL</span>,
-  native <span class="op">=</span> <span class="cn">FALSE</span>,
-  set_na <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="fu">vapour_read_raster_dbl</span><span class="op">(</span>
-  <span class="va">x</span>,
-  band <span class="op">=</span> <span class="fl">1</span>,
-  <span class="va">window</span>,
-  resample <span class="op">=</span> <span class="st">"nearestneighbour"</span>,
-  <span class="va">...</span>,
-  sds <span class="op">=</span> <span class="cn">NULL</span>,
-  native <span class="op">=</span> <span class="cn">FALSE</span>,
-  set_na <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="fu">vapour_read_raster_chr</span><span class="op">(</span>
-  <span class="va">x</span>,
-  band <span class="op">=</span> <span class="fl">1</span>,
-  <span class="va">window</span>,
-  resample <span class="op">=</span> <span class="st">"nearestneighbour"</span>,
-  <span class="va">...</span>,
-  sds <span class="op">=</span> <span class="cn">NULL</span>,
-  native <span class="op">=</span> <span class="cn">FALSE</span>,
-  set_na <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="fu">vapour_read_raster_hex</span><span class="op">(</span>
-  <span class="va">x</span>,
-  band <span class="op">=</span> <span class="fl">1</span>,
-  <span class="va">window</span>,
-  resample <span class="op">=</span> <span class="st">"nearestneighbour"</span>,
-  <span class="va">...</span>,
-  sds <span class="op">=</span> <span class="cn">NULL</span>,
-  native <span class="op">=</span> <span class="cn">FALSE</span>,
-  set_na <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vapour_read_raster_raw</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  band <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">window</span>,</span>
+<span>  resample <span class="op">=</span> <span class="st">"nearestneighbour"</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  sds <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  native <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  set_na <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">vapour_read_raster_int</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  band <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">window</span>,</span>
+<span>  resample <span class="op">=</span> <span class="st">"nearestneighbour"</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  sds <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  native <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  set_na <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">vapour_read_raster_dbl</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  band <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">window</span>,</span>
+<span>  resample <span class="op">=</span> <span class="st">"nearestneighbour"</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  sds <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  native <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  set_na <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">vapour_read_raster_chr</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  band <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">window</span>,</span>
+<span>  resample <span class="op">=</span> <span class="st">"nearestneighbour"</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  sds <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  native <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  set_na <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">vapour_read_raster_hex</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  band <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">window</span>,</span>
+<span>  resample <span class="op">=</span> <span class="st">"nearestneighbour"</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  sds <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  native <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  set_na <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>data source</p></dd>
+
+
 <dt>band</dt>
 <dd><p>index of which band to read (1-based)</p></dd>
+
+
 <dt>window</dt>
 <dd><p>src_offset, src_dim, out_dim</p></dd>
+
+
 <dt>resample</dt>
 <dd><p>resampling method used (see details)</p></dd>
+
+
 <dt>...</dt>
 <dd><p>reserved</p></dd>
+
+
 <dt>sds</dt>
 <dd><p>index of subdataset to read (usually 1)</p></dd>
+
+
 <dt>native</dt>
 <dd><p>apply the full native window for read, <code>FALSE</code> by default</p></dd>
+
+
 <dt>set_na</dt>
 <dd><p>specify whether NA values should be set for the NODATA</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>atomic vector of the nominated type raw, int, dbl, or character (hex)</p>
+    
+
+<p>atomic vector of the nominated type raw, int, dbl, or character (hex)</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -152,17 +169,17 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sst.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">vapour_read_raster_int</span><span class="op">(</span><span class="va">f</span>, window <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sst.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">vapour_read_raster_int</span><span class="op">(</span><span class="va">f</span>, window <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 286 286 286 286 286 286 286 286 286 286 286 286 286 286 286 286 286 286 286</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [20] 286</span>
-<span class="r-in"><span class="fu">vapour_read_raster_raw</span><span class="op">(</span><span class="va">f</span>, window <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">vapour_read_raster_raw</span><span class="op">(</span><span class="va">f</span>, window <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff</span>
-<span class="r-in"><span class="fu">vapour_read_raster_chr</span><span class="op">(</span><span class="va">f</span>, window <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">vapour_read_raster_chr</span><span class="op">(</span><span class="va">f</span>, window <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [15] "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF"</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">vapour_read_raster_dbl</span><span class="op">(</span><span class="va">f</span>, native <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, pch <span class="op">=</span> <span class="st">"."</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">273</span>, <span class="fl">300</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">vapour_read_raster_dbl</span><span class="op">(</span><span class="va">f</span>, native <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, pch <span class="op">=</span> <span class="st">"."</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">273</span>, <span class="fl">300</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="vapour_read_raster_raw-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -178,7 +195,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

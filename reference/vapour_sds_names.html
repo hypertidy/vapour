@@ -23,7 +23,7 @@ one."><meta property="og:image" content="/logo.png"><!-- mathjax --><script src=
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.8.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.8.9010</span>
       </span>
     </div>
 
@@ -78,47 +78,44 @@ one.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">vapour_sds_names</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vapour_sds_names</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>a data source string, filename, database connection string, Thredds or other URL</p></dd>
+<dd><p>a data source string, filename, database connection string,  or other URL</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>list of character vectors, see Details</p>
+    
+
+<p>character vector of subdataset names, or just the original source</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Returns a list of <code>datasource</code> and <code>subdataset</code>. In the case of a normal data
-source, with no subdatasets the value of both entries is the <code>datasource</code>.</p>
+    <p>Returns a character vector of 'subdatasets<code>. In the case of a normal data source, with no subdatasets the value is simply  the </code>datasource`.</p>
+<p>If the raw SDS names contain spaces these are replaced by '%20' escape strings. A specific example is
+"WCS:https://elevation.nationalmap.gov:443" with request
+"arcgis/services/3DEPElevation/ImageServer/WCSServer?version=2.0.1&amp;coverage=DEP3Elevation_Hillshade Gray".
+This function will return "..DEP3Elevation_Hillshade%20Gray".
+See <a href="https://github.com/hypertidy/vapour/wiki/Examples-of-subdatasets" class="external-link">wiki post</a> for more details.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/gdal"</span>, <span class="st">"sds.nc"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co">## protect from error with netcdf problems</span></span>
-<span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">vapour_sds_names</span><span class="op">(</span><span class="va">f</span><span class="op">)</span>, silent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"try-error"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $datasource</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/Users/runner/work/_temp/Library/vapour/extdata/gdal/sds.nc"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/Users/runner/work/_temp/Library/vapour/extdata/gdal/sds.nc"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $subdataset</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/gdal"</span>, <span class="st">"sds.nc"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## protect from error with netcdf problems</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">vapour_sds_names</span><span class="op">(</span><span class="va">f</span><span class="op">)</span>, silent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"try-error"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "NETCDF:\"/Users/runner/work/_temp/Library/vapour/extdata/gdal/sds.nc\":vv" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2] "NETCDF:\"/Users/runner/work/_temp/Library/vapour/extdata/gdal/sds.nc\":vv2"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="fu">vapour_sds_names</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sst.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $datasource</span>
+<span class="r-in"><span><span class="fu">vapour_sds_names</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sst.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/Users/runner/work/_temp/Library/vapour/extdata/sst.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $subdataset</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/Users/runner/work/_temp/Library/vapour/extdata/sst.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -133,7 +130,7 @@ source, with no subdatasets the value of both entries is the <code>datasource</c
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

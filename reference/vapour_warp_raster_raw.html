@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.8.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.8.9010</span>
       </span>
     </div>
 
@@ -66,119 +66,164 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">vapour_warp_raster_raw</span><span class="op">(</span>
-  <span class="va">x</span>,
-  bands <span class="op">=</span> <span class="cn">NULL</span>,
-  extent <span class="op">=</span> <span class="cn">NULL</span>,
-  dimension <span class="op">=</span> <span class="cn">NULL</span>,
-  projection <span class="op">=</span> <span class="st">""</span>,
-  set_na <span class="op">=</span> <span class="cn">TRUE</span>,
-  source_projection <span class="op">=</span> <span class="cn">NULL</span>,
-  source_extent <span class="op">=</span> <span class="fl">0</span>,
-  resample <span class="op">=</span> <span class="st">"near"</span>,
-  silent <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>,
-  warp_options <span class="op">=</span> <span class="st">""</span>,
-  transformation_options <span class="op">=</span> <span class="st">""</span>
-<span class="op">)</span>
-
-<span class="fu">vapour_warp_raster_int</span><span class="op">(</span>
-  <span class="va">x</span>,
-  bands <span class="op">=</span> <span class="cn">NULL</span>,
-  extent <span class="op">=</span> <span class="cn">NULL</span>,
-  dimension <span class="op">=</span> <span class="cn">NULL</span>,
-  projection <span class="op">=</span> <span class="st">""</span>,
-  set_na <span class="op">=</span> <span class="cn">TRUE</span>,
-  source_projection <span class="op">=</span> <span class="cn">NULL</span>,
-  source_extent <span class="op">=</span> <span class="fl">0</span>,
-  resample <span class="op">=</span> <span class="st">"near"</span>,
-  silent <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>,
-  warp_options <span class="op">=</span> <span class="st">""</span>,
-  transformation_options <span class="op">=</span> <span class="st">""</span>
-<span class="op">)</span>
-
-<span class="fu">vapour_warp_raster_dbl</span><span class="op">(</span>
-  <span class="va">x</span>,
-  bands <span class="op">=</span> <span class="cn">NULL</span>,
-  extent <span class="op">=</span> <span class="cn">NULL</span>,
-  dimension <span class="op">=</span> <span class="cn">NULL</span>,
-  projection <span class="op">=</span> <span class="st">""</span>,
-  set_na <span class="op">=</span> <span class="cn">TRUE</span>,
-  source_projection <span class="op">=</span> <span class="cn">NULL</span>,
-  source_extent <span class="op">=</span> <span class="fl">0</span>,
-  resample <span class="op">=</span> <span class="st">"near"</span>,
-  silent <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>,
-  warp_options <span class="op">=</span> <span class="st">""</span>,
-  transformation_options <span class="op">=</span> <span class="st">""</span>
-<span class="op">)</span>
-
-<span class="fu">vapour_warp_raster_chr</span><span class="op">(</span>
-  <span class="va">x</span>,
-  bands <span class="op">=</span> <span class="cn">NULL</span>,
-  extent <span class="op">=</span> <span class="cn">NULL</span>,
-  dimension <span class="op">=</span> <span class="cn">NULL</span>,
-  projection <span class="op">=</span> <span class="st">""</span>,
-  set_na <span class="op">=</span> <span class="cn">TRUE</span>,
-  source_projection <span class="op">=</span> <span class="cn">NULL</span>,
-  source_extent <span class="op">=</span> <span class="fl">0</span>,
-  resample <span class="op">=</span> <span class="st">"near"</span>,
-  silent <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>,
-  warp_options <span class="op">=</span> <span class="st">""</span>,
-  transformation_options <span class="op">=</span> <span class="st">""</span>
-<span class="op">)</span>
-
-<span class="fu">vapour_warp_raster_hex</span><span class="op">(</span>
-  <span class="va">x</span>,
-  bands <span class="op">=</span> <span class="cn">NULL</span>,
-  extent <span class="op">=</span> <span class="cn">NULL</span>,
-  dimension <span class="op">=</span> <span class="cn">NULL</span>,
-  projection <span class="op">=</span> <span class="st">""</span>,
-  set_na <span class="op">=</span> <span class="cn">TRUE</span>,
-  source_projection <span class="op">=</span> <span class="cn">NULL</span>,
-  source_extent <span class="op">=</span> <span class="fl">0</span>,
-  resample <span class="op">=</span> <span class="st">"near"</span>,
-  silent <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>,
-  warp_options <span class="op">=</span> <span class="st">""</span>,
-  transformation_options <span class="op">=</span> <span class="st">""</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vapour_warp_raster_raw</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  bands <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  extent <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dimension <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  projection <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  set_na <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  source_projection <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  source_extent <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  resample <span class="op">=</span> <span class="st">"near"</span>,</span>
+<span>  silent <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  warp_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  transformation_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  open_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  options <span class="op">=</span> <span class="st">""</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">vapour_warp_raster_int</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  bands <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  extent <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dimension <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  projection <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  set_na <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  source_projection <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  source_extent <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  resample <span class="op">=</span> <span class="st">"near"</span>,</span>
+<span>  silent <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  warp_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  transformation_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  open_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  options <span class="op">=</span> <span class="st">""</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">vapour_warp_raster_dbl</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  bands <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  extent <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dimension <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  projection <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  set_na <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  source_projection <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  source_extent <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  resample <span class="op">=</span> <span class="st">"near"</span>,</span>
+<span>  silent <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  warp_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  transformation_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  open_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  options <span class="op">=</span> <span class="st">""</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">vapour_warp_raster_chr</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  bands <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  extent <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dimension <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  projection <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  set_na <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  source_projection <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  source_extent <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  resample <span class="op">=</span> <span class="st">"near"</span>,</span>
+<span>  silent <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  warp_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  transformation_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  open_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  options <span class="op">=</span> <span class="st">""</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">vapour_warp_raster_hex</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  bands <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  extent <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dimension <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  projection <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  set_na <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  source_projection <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  source_extent <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  resample <span class="op">=</span> <span class="st">"near"</span>,</span>
+<span>  silent <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  warp_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  transformation_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  open_options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  options <span class="op">=</span> <span class="st">""</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>vector of data source names (file name or URL or database connection string)</p></dd>
+
+
 <dt>bands</dt>
 <dd><p>index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used, the default)</p></dd>
+
+
 <dt>extent</dt>
 <dd><p>extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'</p></dd>
+
+
 <dt>dimension</dt>
 <dd><p>dimensions in pixels of the warped raster (x, y)</p></dd>
+
+
 <dt>projection</dt>
 <dd><p>projection of warped raster (in Well-Known-Text, or any projection string accepted by GDAL)</p></dd>
+
+
 <dt>set_na</dt>
 <dd><p>NOT IMPLEMENTED logical, should 'NODATA' values be set to <code>NA</code></p></dd>
+
+
 <dt>source_projection</dt>
 <dd><p>optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)</p></dd>
+
+
 <dt>source_extent</dt>
 <dd><p>extent of the source raster, used to override/augment incorrect source metadata</p></dd>
+
+
 <dt>resample</dt>
 <dd><p>resampling method used (see details in <a href="vapour_read_raster.html">vapour_read_raster</a>)</p></dd>
+
+
 <dt>silent</dt>
 <dd><p><code>TRUE</code> by default, set to <code>FALSE</code> to report messages</p></dd>
+
+
 <dt>...</dt>
 <dd><p>unused</p></dd>
+
+
 <dt>warp_options</dt>
 <dd><p>character vector of options, as in gdalwarp -wo - see Details</p></dd>
+
+
 <dt>transformation_options</dt>
-<dd><p>character vector of options, as in gdalwarp -to</p></dd>
+<dd><p>character vector of options, as in gdalwarp -to see Details</p></dd>
+
+
+<dt>open_options</dt>
+<dd><p>character vector of options, as in gdalwarp -oo - see Details</p></dd>
+
+
+<dt>options</dt>
+<dd><p>character vectors of options as per the gdalwarp command line utiliy</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>atomic vector of the nominated type raw, int, dbl, or character (hex)</p>
+    
+
+<p>atomic vector of the nominated type raw, int, dbl, or character (hex)</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -187,15 +232,15 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fl">4e5</span></span>
-<span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sst.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">prj</span> <span class="op">&lt;-</span> <span class="st">"+proj=aeqd +lon_0=147 +lat_0=-42"</span></span>
-<span class="r-in"><span class="va">bytes</span> <span class="op">&lt;-</span> <span class="fu">vapour_warp_raster_raw</span><span class="op">(</span><span class="va">f</span>, extent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="va">b</span>, <span class="va">b</span>, <span class="op">-</span><span class="va">b</span>, <span class="va">b</span><span class="op">)</span>,</span>
-<span class="r-in">                             dimension <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in">                             bands <span class="op">=</span> <span class="fl">1</span>, </span>
-<span class="r-in">                             projection <span class="op">=</span> <span class="va">prj</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># not useful given source type floating point, but works</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">bytes</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fl">4e5</span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sst.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">prj</span> <span class="op">&lt;-</span> <span class="st">"+proj=aeqd +lon_0=147 +lat_0=-42"</span></span></span>
+<span class="r-in"><span><span class="va">bytes</span> <span class="op">&lt;-</span> <span class="fu">vapour_warp_raster_raw</span><span class="op">(</span><span class="va">f</span>, extent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="va">b</span>, <span class="va">b</span>, <span class="op">-</span><span class="va">b</span>, <span class="va">b</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                             dimension <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                             bands <span class="op">=</span> <span class="fl">1</span>, </span></span>
+<span class="r-in"><span>                             projection <span class="op">=</span> <span class="va">prj</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># not useful given source type floating point, but works</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">bytes</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  raw [1:36] ff ff ff ff ...</span>
 </code></pre></div>
     </div>
@@ -211,7 +256,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
