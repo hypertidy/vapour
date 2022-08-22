@@ -37,7 +37,7 @@
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' info <- vapour_layer_info(mvfile)
 #' names(info$projection)
-vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE, count = TRUE) {
+vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE, count = TRUE, dialect = "") {
 
   layer_names <- vapour_layer_names(dsource)
   layer_name <- layer
@@ -46,14 +46,14 @@ vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE,
   if (is.na(layer)) stop(sprintf("layer: %s not found", layer_name))
 
   driver <- vapour_driver(dsource)
-  geom_name <- vapour_geom_name(dsource, layer, sql)
+  geom_name <- vapour_geom_name(dsource, layer, sql, dialect = dialect)
 
-  fields <- vapour_report_fields(dsource, layer, sql)
+  fields <- vapour_report_fields(dsource, layer, sql, dialect = dialect)
   
   if (count) {
-    cnt <- try(vapour_read_fields(dsource, sql = sprintf("SELECT COUNT(*) FROM \"%s\"", layer_name))[[1]], silent = TRUE)
+    cnt <- try(vapour_read_fields(dsource, sql = sprintf("SELECT COUNT(*) FROM \"%s\"", layer_name), , dialect = dialect)[[1]], silent = TRUE)
 
-    if (inherits(cnt, "try-error")) cnt <- length(vapour_read_names(dsource, layer, sql))
+    if (inherits(cnt, "try-error")) cnt <- length(vapour_read_names(dsource, layer, sql, dialect = dialect))
   } else {
     cnt <- NA_integer_
   }
