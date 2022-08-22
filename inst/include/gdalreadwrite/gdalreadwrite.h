@@ -94,7 +94,7 @@ inline CharacterVector gdal_create_copy(CharacterVector dsource, CharacterVector
   /* Once we're done, close properly the dataset */
   if( poDstDS == NULL ) {
     GDALClose( (GDALDatasetH) poSrcDS );
-    Rprintf("unable to open raster source for CreateCopy: %s", dtarget[0]);
+    Rprintf("unable to open raster source for CreateCopy: %s", (char *)dtarget[0]);
     return CharacterVector::create("");
   } else {
     GDALClose( (GDALDatasetH) poDstDS );
