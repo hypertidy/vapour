@@ -318,7 +318,7 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' @param warp_options character vector of options, as in gdalwarp -wo - see Details
 #' @param transformation_options character vector of options, as in gdalwarp -to see Details
 #' @param open_options character vector of options, as in gdalwarp -oo - see Details
-#' @param options character vectors of options as per the gdalwarp command line utiliy
+#' @param options character vectors of options as per the gdalwarp command line 
 #' @export
 #' @seealso vapour_read_raster vapour_read_raster_raw vapour_read_raster_int vapour_read_raster_dbl vapour_read_raster_chr vapour_read_raster_hex
 #' @return list of vectors (only 1 for 'band') of numeric values, in raster order

@@ -13,10 +13,11 @@ Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c(
              person("Joseph", "Stachelek", role = "ctb"), 
              person("Even", "Rouault", role = "ctb", comment = "primary author of the COG format and its use of the GDALwarp app-library, example code used by the warper function here"), 
              person("Robert", "Hijmans", role = "ctb", comment = "code in terra package used as example/inspiration"))
-Description: Provides low-level access to 'GDAL' functionality for R packages.  
+Description: Provides low-level access to 'GDAL' functionality.  
   'GDAL' is the 'Geospatial Data Abstraction Library' a translator for raster and vector geospatial data formats 
   that presents a single raster abstract data model and single vector abstract data model to the calling application 
-  for all supported formats <https://gdal.org/>. Other packages in R use aspects of GDAL, but 
+  for all supported formats <https://gdal.org/>. This package is focussed on providing exactly and only what GDAL does, to enable
+  developing further tools. 
 Depends: R (>= 3.3.0)
 License: GPL-3
 Encoding: UTF-8
@@ -26,7 +27,7 @@ Imports:
     jsonlite,
     Rcpp,
     utils
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Roxygen: list(markdown = TRUE)
 Suggests:
     testthat,

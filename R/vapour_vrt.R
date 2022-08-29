@@ -117,10 +117,10 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
   if (is.null(bands) || !is.numeric(bands)) {
     bands <- 0
   }
-  if (length(sds) < 1 || !is.numeric(sds) || is.null(sds) || is.na(sds)) {
+  if (length(sds) < 1 || !is.numeric(sds) || is.null(sds) || anyNA(sds)) {
     sds <- 1L
   }
-  if (!is.null(bands) && (length(bands) < 1 || !is.numeric(bands) || is.na(bands))) {
+  if (!is.null(bands) && (length(bands) < 1 || !is.numeric(bands) || anyNA(bands))) {
     bands <- 1L
   }
    if (!is.null(geolocation) && (length(geolocation) != 2 || !is.character(geolocation) || anyNA(geolocation))) {

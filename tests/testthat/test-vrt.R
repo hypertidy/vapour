@@ -21,3 +21,4 @@ vrthdf <- vapour_vrt(hdf)
 #   expect_equal(vapour_raster_info(vapour_vrt(tif, projection = prj))$projection, vapour_srs_wkt(prj))
 #   
 # })
+

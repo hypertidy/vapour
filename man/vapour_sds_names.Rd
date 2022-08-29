@@ -10,7 +10,7 @@ vapour_sds_names(x)
 \item{x}{a data source string, filename, database connection string,  or other URL}
 }
 \value{
-character vector of subdataset names, or just the original source
+character vector of subdataset names, or just the source itself if no SDS are present
 }
 \description{
 A \strong{subdataset} is a collection abstraction for a number of \strong{variables}

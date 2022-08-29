@@ -20,7 +20,7 @@
 #' @param ymax 
 #' @param silent 
 #'
-#' @return
+#' @return GDAL xml text string for a tiled xyz service
 #' @noRd
 #'
 #' @examples
