@@ -146,7 +146,14 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
   if (!is.null(json$metadata$SUBDATASETS)) {
     sds <- unlist(json$metadata$SUBDATASETS[grep("NAME$", names(json$metadata$SUBDATASETS))], use.names = FALSE)
   }
-  list(geotransform = json$geoTransform, 
+  extent <- c(json$cornerCoordinates$upperLeft, json$cornerCoordinates$lowerRight)[c(1, 3, 4, 2)]
+  if (is.null(json$geoTransform)) {
+    geoTransform <- c(extent[1], diff(extent[c(1,2)])/json$size[1], 0, 
+                      extent[4], 0, diff(extent[c(4:3)])/json$size[2])
+  } else {
+    geoTransform <- json$geoTransform
+  }
+  list(geotransform = geoTransform, 
        dimension = json$size,  ## or/and dimXY
        dimXY = json$size,
        ## this needs to be per band
@@ -159,7 +166,7 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
        overviews = unlist(json$bands$overviews[[1]], use.names = FALSE), ## NULL if there aren't any (was integer(0)), 
        filelist = json$files, 
        datatype = json$bands$type[1L], 
-       extent = c(json$cornerCoordinates$upperLeft, json$cornerCoordinates$lowerRight)[c(1, 3, 4, 2)], 
+       extent = extent, 
        subdatasets = sds)
 }
 

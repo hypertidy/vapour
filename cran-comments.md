@@ -15,6 +15,8 @@ Attempt fix current UBSAN issue in CRAN version 0.8.7.
 There is a note about the size of installed directories  because 
  of the GDAL and PROJ folders. 
 
+## Reverse dependenices
 
+The single revdep 'lazyraster' passes check with this version. 
 
 
