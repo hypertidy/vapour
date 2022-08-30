@@ -1,12 +1,12 @@
-## vapour 0.8.8
-
-Applied CRAN-provided patch for UCRT. 
+## vapour 0.8.81
 
 Attempt fix current UBSAN issue in CRAN version 0.8.7. 
 
 ## Test environments
 
 * win-builder (devel)
+* Linux ubuntu 4.2.1
+* Github actions, mac, windows. 
 
 ## R CMD check results
 

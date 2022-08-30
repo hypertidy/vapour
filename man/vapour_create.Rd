@@ -39,7 +39,7 @@ This is in an incomplete interface to raster writing, for exploring.
 If GeoTIFF is used (\code{driver = "GTiff"}, recommended) then the output is tiled 512x512, and has DEFLATE compression, and
 is sparse when created (no values are initiated, so the file is tiny).
 
-Note that there is no restriction on where you can read or write from, the responsiblity is yours. In future we will
+Note that there is no restriction on where you can read or write from, the responsibility is yours. In future we will
 allow control of output tiling and data type etc.
 }
 \examples{

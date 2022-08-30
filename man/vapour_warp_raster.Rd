@@ -54,7 +54,7 @@ vapour_warp_raster(
 
 \item{open_options}{character vector of options, as in gdalwarp -oo - see Details}
 
-\item{options}{character vectors of options as per the gdalwarp command line utiliy}
+\item{options}{character vectors of options as per the gdalwarp command line}
 }
 \value{
 list of vectors (only 1 for 'band') of numeric values, in raster order
