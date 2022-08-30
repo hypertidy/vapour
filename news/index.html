@@ -61,6 +61,34 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.8.81" id="vapour-0881">vapour 0.8.81<a class="anchor" aria-label="anchor" href="#vapour-0881"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-0-8-81">BREAKING CHANGES<a class="anchor" aria-label="anchor" href="#breaking-changes-0-8-81"></a></h3>
+<ul><li><p>‘vapour_sds_names()’ now returns a character vector not a list.</p></li>
+<li><p>‘gdalraster::gdal_list_subdatasets’ now returns unprocessed subdataset strings, of the form ’SUBDATASET_{i}_NAME={DRIVER}:{URI}:layer’, and the strings are cleaned in R (but, can use <code>vapour_raster_info</code>, <code><a href="../reference/vapour_sds_names.html">vapour_sds_names()</a></code> for a separate pathway to this.)</p></li>
+</ul><hr><ul><li><p>Fixed CRAN warnings due to incorrect use of boolean operator, <a href="https://github.com/hypertidy/vapour/issues/158" class="external-link">#158</a>.</p></li>
+<li><p><code><a href="../reference/vapour_raster_info.html">vapour_raster_info()</a></code> gains a subdatasets vector, this is just the source input if subdatasets are not present.</p></li>
+<li><p>Subdatasets can now be named by variable name or by index in ‘vapour_vrt()’. Note this can’t always work as some services don’t have names in the sense that classic subdataset sources (like netcdf) do.</p></li>
+<li><p>‘warp_options’ and ‘transformation_options’ has been removed from the ‘gdalwarpmem’ namespace, and from the R and Rcpp wrappers. All options are now assumed to be bundled into one string list (CharacterVector).</p></li>
+<li><p>Setting options for the ‘vapour_warp_raster()’ has been reconfigured. Arguments ‘warp_options’, ‘transformation_options’, ‘open_options’, and ‘dataset_output_options’ correspond to the ‘NAME=VALUE’ configuration provided by gdalwap as ‘-wo’, ‘-to’, ‘-oo’, and ‘-doo’. All of these should be entered in bare form (without the ‘-wo’, ‘-to’ etc) but for ‘options’ these must be entered as per standard gdalwarp options. Some are disallowed and are checked for, triggering an error because we either set them via other arguments, or they can’t be supported atm.</p></li>
+<li><p>New options setting support means we can support all gdalwarp options, notably ‘-cutline’, ‘-csql’, ‘-cwhere’, and ‘-crop_to_cutline’ which allow masking by a a polygon layer from a vector data source. Thanks to Hugh Graham for the motivation for this. :)</p></li>
+<li><p>New internal function <code>raster_has_geolocation_gdal_cpp()</code>, early begin of does this datasource have geolocation arrays (because if it does we can just push it through the warper, otherwise nominate them with <code>vapour_vrt(geolocation = )</code>).</p></li>
+<li><p><code><a href="../reference/vapour_vrt.html">vapour_vrt()</a></code> gains geolocation argument, which can be named dsns for each of longitude,latitude. Currently assumed to be ‘OGC:CRS84’.</p></li>
+<li><p>Now depend on GDAL 2.2.3 as a minimum, because ubuntu 18.04 is still in wide use. GDALInfo() lib needs GDAL 2.1 as minimum. Some info features need later, but do not fail (AFAIK).</p></li>
+<li><p><code><a href="../reference/vapour_raster_info.html">vapour_raster_info()</a></code> now has <code>dimension</code> element, intended for use instead of <code>dimXY</code> (for standard idiom like {gdalio} uses with ‘extent’, ‘dimension’, ‘projection’ as the basis of what a raster is). <code>dimXY</code> will be removed in future.</p></li>
+<li><p>New namespace ‘gdalapplib’ with one utility for GDALInfo(), this is vectorized at the cpp level and includes subdataset handling. It does not include listing of TAR and ZIP archives. <code><a href="../reference/vapour_raster_info.html">vapour_raster_info()</a></code> now uses this.</p></li>
+<li><p>New functions <code><a href="../reference/vapour_create.html">vapour_create()</a></code> <code><a href="../reference/vapour_read_raster_block.html">vapour_read_raster_block()</a></code> and <code><a href="../reference/vapour_read_raster_block.html">vapour_read_raster_block()</a></code> for creating and writing to files.</p></li>
+<li><p>Moved C++ functions <code>gdal_sds_list()</code>, <code>gdal_extent_only()</code> <code>gdal_raster_info()</code>, <code>gdal_raster_gcp()</code>, <code>init_resample_alg()</code>, <code>gdal_read_band_values()</code>, <code>gdal_read_dataset_values()</code>, <code>gdal_raster_dataset_io()</code>, <code>gdal_raster_io()</code> to <em>gdalraster</em> namespace from <em>gdallibrary</em> namespace. (Some of these will get refactored out).</p></li>
+<li><p>New function <code><a href="../reference/vapour_vrt.html">vapour_vrt()</a></code>.</p></li>
+<li><p><code><a href="../reference/vapour_warp_raster.html">vapour_warp_raster()</a></code> default has changed for <code>bands</code>, it’s now NULL which means “all bands”, not <code>1L</code>.</p></li>
+<li><p>New functions <code><a href="../reference/vapour_set_config.html">vapour_set_config()</a></code> and <code><a href="../reference/vapour_set_config.html">vapour_get_config()</a></code> to control configuration options for GDAL.</p></li>
+<li><p>Flushed out memory bugs with valgrind.</p></li>
+<li><p>Refactored read from raster and warp raster. The warping uses the same band reader as the RasterIO reader, and more cases of ‘GDALOpen()’ for rasters go via the underlying ‘gdalraster’ namespace pathway.</p></li>
+<li><p>Faster layer extent determination in <code><a href="../reference/vapour_layer_info.html">vapour_layer_info()</a></code>, new function <code><a href="../reference/vapour_layer_extent.html">vapour_layer_extent()</a></code>.</p></li>
+<li><p>Better escaping for layer name, needed quotes around layer ‘SELECT’ when counting features with SQL for FlatGeoBuf.</p></li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.8.8" id="vapour-088">vapour 0.8.8<a class="anchor" aria-label="anchor" href="#vapour-088"></a></h2>
 <p>(This never made it to CRAN.)</p>
 <ul><li><p>Patch release for R UCRT changes. Applied patch provided by CRAN.</p></li>
