@@ -146,13 +146,19 @@
 <dd><p>indicate text output format, available are "json" (default), "gml", "kml", "wkt"</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>for <code>vapour_read_geometry()</code>, <code>vapour_read_geometry_ia()</code> and <code>vapour_read_geometry_ij()</code> a raw vector of
+geometry, for <code>vapour_read_extent()</code> a list of numeric vectors each with 'xmin,xmax,ymin,ymax' respectively for each geometry,
+for <code>vapour_read_type()</code> a character vector. See Details for more information.</p>
+    </div>
     <div id="details">
     <h2>Details</h2>
-    <p><code>vapour_read_geometry</code> will read features as binary WKB, <code>vapour_read_geometry_text</code> as various text formats (geo-json, wkt, kml, gml),
-<code>vapour_read_extent</code> a numeric extent which is the native bounding box, the four numbers (in this order) <code>xmin, xmax, ymin, ymax</code>.
+    <p><code>vapour_read_geometry</code> will read features as binary WKB, <code>vapour_read_geometry_text</code> as various text formats (geo-json, wkt, kml, gml),</p>
+<p><code>vapour_read_extent</code> a numeric extent which is the native bounding box, the four numbers (in this order) <code>xmin, xmax, ymin, ymax</code>.
 For each function an optional SQL string will be evaluated against the data source before reading.</p>
-<p><code>vapour_read_geometry_cpp</code> will read a feature for each of the ways listed above and is used by those functions. It's recommended
-to use the more specialist functions rather than this more general one.</p>
 <p><code>vapour_read_geometry_ia</code> will read features by <em>arbitrary index</em>, so any integer between 0 and one less than the number of
 features. These may be duplicated. If 'ia' is greater than the highest index NULL is returned, but if less than 0 the function will error.</p>
 <p><code>vapour_read_geometry_ij</code> will read features by <em>index range</em>, so two numbers to read ever feature between those limits inclusively.
