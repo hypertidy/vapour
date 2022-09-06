@@ -15,7 +15,7 @@ vapour_create(
 )
 }
 \arguments{
-\item{filename}{filename to created}
+\item{filename}{filename/path to create}
 
 \item{driver}{GDAL driver to use (GTiff is default, and recommended)}
 
@@ -30,7 +30,7 @@ vapour_create(
 \item{overwrite}{not TRUE by default}
 }
 \value{
-the file name that was created
+the file path that was created
 }
 \description{
 This is in an incomplete interface to raster writing, for exploring.
@@ -43,16 +43,11 @@ Note that there is no restriction on where you can read or write from, the respo
 allow control of output tiling and data type etc.
 }
 \examples{
-\dontrun{
-\donttest{
 tfile <- tempfile(fileext = ".tif")
 if (!file.exists(tfile)) {
-vapour_create(tfile, extent = c(-1, 1, -1, 1) * 1e6, 
+ vapour_create(tfile, extent = c(-1, 1, -1, 1) * 1e6, 
                      dimension = c(128, 128), 
                      projection = "+proj=laea")
-file.remove(tfile)
-}
-
-}
+ file.remove(tfile)
 }
 }

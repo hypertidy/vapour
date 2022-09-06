@@ -164,6 +164,12 @@ vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
 #' returned as character, and Integer64 is returned as numeric.
 #'
 #' @inheritParams vapour_read_geometry
+#' 
+#' @return list of vectors one for each field in the source, each will be the same length which will
+#' depend on the values of 'skip_n', 'limit_n', 'sql', and the available records in the source. The
+#' types will be raw, numeric, integer, character, logical depending on the available mapping to the types
+#' in the source for the data there to R's native vectors. 
+#' 
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")

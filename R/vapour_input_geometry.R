@@ -106,11 +106,9 @@ vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ...) 
 #' Read GDAL geometry as binary blob, text, or numeric extent.
 #'
 #' `vapour_read_geometry` will read features as binary WKB, `vapour_read_geometry_text` as various text formats (geo-json, wkt, kml, gml),
+#' 
 #' `vapour_read_extent` a numeric extent which is the native bounding box, the four numbers (in this order) `xmin, xmax, ymin, ymax`.
 #' For each function an optional SQL string will be evaluated against the data source before reading.
-#'
-#' `vapour_read_geometry_cpp` will read a feature for each of the ways listed above and is used by those functions. It's recommended
-#' to use the more specialist functions rather than this more general one.
 #'
 #' `vapour_read_geometry_ia` will read features by *arbitrary index*, so any integer between 0 and one less than the number of
 #' features. These may be duplicated. If 'ia' is greater than the highest index NULL is returned, but if less than 0 the function will error.
@@ -137,6 +135,9 @@ vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ...) 
 #' @param extent apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin, xmax, ymin, ymax)' but sp bbox, sf bbox, and raster extent also accepted)
 #' @param ia an arbitrary index, integer vector with values between 0 and one less the number of features, duplicates allowed and arbitrary order is ok
 #' @param ij an range index, integer vector of length two with values between 0 and one less the number of features, this range of geometries is returned
+#' @return for [vapour_read_geometry()], [vapour_read_geometry_ia()] and [vapour_read_geometry_ij()] a raw vector of
+#'  geometry, for [vapour_read_extent()] a list of numeric vectors each with 'xmin,xmax,ymin,ymax' respectively for each geometry, 
+#'  for [vapour_read_type()] a character vector. See Details for more information. 
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' ## A MapInfo TAB file with polygons

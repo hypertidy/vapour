@@ -8,7 +8,7 @@
 #' Note that there is no restriction on where you can read or write from, the responsibility is yours. In future we will 
 #' allow control of output tiling and data type etc. 
 #' 
-#' @param filename filename to created
+#' @param filename filename/path to create
 #' @param driver GDAL driver to use (GTiff is default, and recommended)
 #' @param extent xmin,xmax,ymin,ymax 4-element vector
 #' @param dimension dimension of the output, X * Y
@@ -16,21 +16,16 @@
 #' @param n_bands number of bands in the output, default is 1
 #' @param overwrite not TRUE by default
 #'
-#' @return the file name that was created
+#' @return the file path that was created
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' \donttest{
 #' tfile <- tempfile(fileext = ".tif")
 #' if (!file.exists(tfile)) {
-#' vapour_create(tfile, extent = c(-1, 1, -1, 1) * 1e6, 
+#'  vapour_create(tfile, extent = c(-1, 1, -1, 1) * 1e6, 
 #'                      dimension = c(128, 128), 
 #'                      projection = "+proj=laea")
-#' file.remove(tfile)
-#' }
-#' 
-#' }
+#'  file.remove(tfile)
 #' }
 vapour_create <- function(filename, driver = "GTiff", extent = c(-180, 180, -90, 90), 
                           dimension = c(2048, 1024), projection = "OGC:CRS84", n_bands = 1L, overwrite = FALSE) {
@@ -86,7 +81,7 @@ vapour_create_copy <- function(dsource, filename, overwrite = FALSE, driver = "G
 #' @param band_output_type numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'
 #' @param band which band to read (1-based)
 #'
-#' @return for vapour_read_raster_block, a list with vector of data
+#' @return a list with a vector of data from the band read
 #' @export
 #'
 #' @examples
@@ -102,13 +97,11 @@ vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band
                                as.integer(rep(dimension, length.out = 2L)), band = as.integer(band[1L]),
                                band_output_type = band_output_type)
 }
-#'  write data to a block *in an existing file*.
+#' Write data to a block *in an existing file*.
 #'
 #' Be careful! The write function doesn't create a file, you have to use an existing one.
 #' Don't write to a file you don't want to update by mistake.
 #' @export
-#' @return for vapour_write_raster_block a logical indicating success or failure to write
-#'
 #' @param data data vector, length should match  `prod(dimension)` or length 1 allowed
 #' @param overwrite set to FALSE as a safety valve to not overwrite an existing file
 #' @param dsource data source name
@@ -116,17 +109,14 @@ vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band
 #' @param dimension dimension to write
 #' @param band which band to write to (1-based)
 #'
+#' @return a logical value indicating success (or failure) of the write
 #' @examples
-#' \dontrun{
-#' \donttest{
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' v <- vapour_read_raster_block(f, c(0L, 0L), dimension = c(2L, 3L), band = 1L)
 #' file.copy(f, tf <- tempfile(fileext = ".tif"))
 #' try(vapour_write_raster_block(tf, data = v[[1]], offset = c(0L, 0L), 
 #'                dimension = c(2L, 3L), band = 1L))
-#' file.remove(tf)
-#' }
-#' }
+#' if (file.exists(tf)) file.remove(tf)
 vapour_write_raster_block <- function(dsource, data, offset, dimension, band = 1L, overwrite = FALSE) {
   if (!file.exists(dsource)) stop("file dsource must exist")
   if (!overwrite) stop(sprintf("set 'overwrite' to TRUE if you really mean to write to file %s", dsource))

@@ -36,6 +36,12 @@ vapour_read_attributes(
 
 \item{extent}{apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin, xmax, ymin, ymax)' but sp bbox, sf bbox, and raster extent also accepted)}
 }
+\value{
+list of vectors one for each field in the source, each will be the same length which will
+depend on the values of 'skip_n', 'limit_n', 'sql', and the available records in the source. The
+types will be raw, numeric, integer, character, logical depending on the available mapping to the types
+in the source for the data there to R's native vectors.
+}
 \description{
 Read features fields (attributes), optionally after SQL execution.
 }

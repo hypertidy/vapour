@@ -2,7 +2,7 @@
 % Please edit documentation in R/00_read_block.R
 \name{vapour_write_raster_block}
 \alias{vapour_write_raster_block}
-\title{write data to a block \emph{in an existing file}.}
+\title{Write data to a block \emph{in an existing file}.}
 \usage{
 vapour_write_raster_block(
   dsource,
@@ -27,21 +27,17 @@ vapour_write_raster_block(
 \item{overwrite}{set to FALSE as a safety valve to not overwrite an existing file}
 }
 \value{
-for vapour_write_raster_block a logical indicating success or failure to write
+a logical value indicating success (or failure) of the write
 }
 \description{
 Be careful! The write function doesn't create a file, you have to use an existing one.
 Don't write to a file you don't want to update by mistake.
 }
 \examples{
-\dontrun{
-\donttest{
 f <- system.file("extdata", "sst.tif", package = "vapour")
 v <- vapour_read_raster_block(f, c(0L, 0L), dimension = c(2L, 3L), band = 1L)
 file.copy(f, tf <- tempfile(fileext = ".tif"))
 try(vapour_write_raster_block(tf, data = v[[1]], offset = c(0L, 0L), 
                dimension = c(2L, 3L), band = 1L))
-file.remove(tf)
-}
-}
+if (file.exists(tf)) file.remove(tf)
 }
