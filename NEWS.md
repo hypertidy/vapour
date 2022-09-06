@@ -36,7 +36,7 @@
 * Setting options for the 'vapour_warp_raster()' has been reconfigured.
 Arguments 'warp_options', 'transformation_options', 'open_options', and
 'dataset_output_options' correspond to the 'NAME=VALUE' configuration provided
-by gdalwap as '-wo', '-to', '-oo', and '-doo'. All of these should be entered in
+by gdalwarp as '-wo', '-to', '-oo', and '-doo'. All of these should be entered in
 bare form (without the '-wo', '-to' etc) but for 'options' these must be entered
 as per standard gdalwarp options. Some are disallowed and are checked for,
 triggering an error because we either set them via other arguments, or they

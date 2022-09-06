@@ -55,7 +55,7 @@
 #' @param sds which subdataset to select from a source with more than one
 #' @param ... ignored
 #' @param relative_to_vrt default `FALSE`, if `TRUE` input strings that identify as files on the system are left as-is (by default they are made absolute at the R level)
-#' @param geolocation vector of 2 dsn to longitude, latitude geoloation array sources
+#' @param geolocation vector of 2 dsn to longitude, latitude geolocation array sources
 #' @return VRT character string (for use by GDAL-capable tools, i.e. reading raster)
 #' @export
 #'

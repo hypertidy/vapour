@@ -1,6 +1,6 @@
 ## vapour 0.8.83
 
-Resubmission of 0.8.83, fixing documentation and examples thanks to CRAN feeback. 
+Resubmission of 0.8.83, fixing documentation and examples thanks to helpful CRAN feeback. 
 
 * Fixed doc for 'vapour_create()', 'vapour_write_raster_block()'. 
 
@@ -9,6 +9,7 @@ Resubmission of 0.8.83, fixing documentation and examples thanks to CRAN feeback
 * Clarified copyright holder role for Jim Hester in the DESCRIPTION where the authorship of CollectorList.h is noted,
  and removed comment from source in CollectorList.h. 
 
+Thank you! 
 
 ## Test environments
 
