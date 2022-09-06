@@ -56,11 +56,9 @@ The workflows available are intended to support development of applications in R
 
 ## Installation
 
-The package can be installed from CRAN.
+The package ~cannot be installed from CRAN~.
 
 ```{r, install-cran, eval=FALSE}
-## install.packages("remotes")
-remotes::install_cran("vapour")
 ```
 
 The development version can be installed from Github, easiest is via the [hypertidy universe](https://hypertidy.r-universe.dev/ui#builds): 

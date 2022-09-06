@@ -28,3 +28,4 @@
 ^Jenkinsfile$
 ^gdalwmscache$
 ^proj_conf.*$
+^CRAN-SUBMISSION$
