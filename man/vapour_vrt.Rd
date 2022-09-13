@@ -26,7 +26,7 @@ vapour_vrt(
 
 \item{bands}{(optional) which band/s to include from the source}
 
-\item{geolocation}{vector of 2 dsn to longitude, latitude geoloation array sources}
+\item{geolocation}{vector of 2 dsn to longitude, latitude geolocation array sources}
 
 \item{...}{ignored}
 

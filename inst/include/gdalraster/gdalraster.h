@@ -693,8 +693,9 @@ inline List gdal_read_band_values(GDALDataset *hRet,
       int dval;
       int naflag = GDALGetRasterNoDataValue(rasterBand, &hasNA);
       
+      // use NA for int
       if (hasNA && (!std::isnan(naflag))) {
-        std::replace(integer_scanline.begin(), integer_scanline.end(), naflag, (int) NAN);
+        std::replace(integer_scanline.begin(), integer_scanline.end(), naflag, NA_INTEGER);
         
       }
       long unsigned int isi;
@@ -718,12 +719,13 @@ inline List gdal_read_band_values(GDALDataset *hRet,
       
       if (err) Rprintf("we have a problem at RasterIO\n");
       RawVector res(outXSize * outYSize );
-      uint8_t naflag = GDALGetRasterNoDataValue(rasterBand, &hasNA);
-      
-      if (hasNA && (!std::isnan(naflag))) {
-        std::replace(byte_scanline.begin(), byte_scanline.end(), naflag, (uint8_t) NAN);
-        
-      }
+     // uint8_t naflag = GDALGetRasterNoDataValue(rasterBand, &hasNA);
+
+      // can't do this      
+      // if (hasNA && (!std::isnan(naflag))) {
+      //   //std::replace(byte_scanline.begin(), byte_scanline.end(), naflag, (uint8_t) NAN);
+      // }
+      // 
       long unsigned int isi;
       for (isi = 0; isi < (byte_scanline.size()); isi++) {
         res[isi] = byte_scanline[isi];
