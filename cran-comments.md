@@ -1,13 +1,7 @@
-## vapour 0.8.83
+## vapour 0.9.0
 
-Resubmission of 0.8.83, fixing documentation and examples thanks to helpful CRAN feeback. 
-
-* Fixed doc for 'vapour_create()', 'vapour_write_raster_block()'. 
-
-* Fixed doc for 'vapour_read_fields()', 'vapour_read_geometry()'.
-
-* Clarified copyright holder role for Jim Hester in the DESCRIPTION where the authorship of CollectorList.h is noted,
- and removed comment from source in CollectorList.h. 
+Resubmission, failures previous picked up in UBSAN incorrect use of NaN for raw/integer. I think I've fixed it by removing the offending code
+which couldn't have worked and is only relevant when a user specifies an output type - so they get what they ask for. 
 
 Thank you! 
 
