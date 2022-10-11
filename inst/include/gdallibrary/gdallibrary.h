@@ -201,7 +201,7 @@ inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, int n_features, 
   
   // modified MDS
   //int n = poFDefn->GetFieldCount() + poFDefn->GetGeomFieldCount() + fid_column.size();
-  int n = poFDefn->GetFieldCount() + fid_column.size();
+  int n = poFDefn->GetFieldCount() + (int)fid_column.size();
   
   Rcpp::List out(n);
   Rcpp::CharacterVector names(n);
@@ -281,7 +281,7 @@ inline List gdal_read_fields(CharacterVector dsn,
   
   //double  nFeature = force_layer_feature_count(poLayer);
   // trying to fix SQL problem 2020-10-05
-  double nFeature = poLayer->GetFeatureCount();
+  double nFeature = (double)poLayer->GetFeatureCount();
   if (nFeature < 1) {
     //Rprintf("force count\n");
     nFeature = force_layer_feature_count(poLayer);
@@ -312,7 +312,7 @@ inline List gdal_read_fields(CharacterVector dsn,
   
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = false;
-  List out = allocate_fields_list(poFDefn, nFeature, int64_as_string, fid_column_name);
+  List out = allocate_fields_list(poFDefn, (int)nFeature, int64_as_string, fid_column_name);
   int iFeature = 0;  // always increment iFeature, it is position through the loop
   int lFeature = 0; // keep a count of the features we actually send out
   while((poFeature = poLayer->GetNextFeature()) != NULL)
@@ -399,7 +399,7 @@ inline DoubleVector gdal_feature_count(CharacterVector dsn,
   poLayer->ResetReading();
   //  double nFeature = force_layer_feature_count(poLayer);
   // trying to fix SQL problem 2020-10-05
-  double nFeature = poLayer->GetFeatureCount();
+  double nFeature = (double)poLayer->GetFeatureCount();
   if (nFeature < 1) {
     //Rprintf("force count\n");
     nFeature = force_layer_feature_count(poLayer);
@@ -483,7 +483,7 @@ inline List gdal_read_geometry(CharacterVector dsn,
   int lFeature = 0;
   //int   nFeature = force_layer_feature_count(poLayer);
   // trying to fix SQL problem 2020-10-05
-  double nFeature = poLayer->GetFeatureCount();
+  double nFeature = (double)poLayer->GetFeatureCount();
   if (nFeature < 1) {
     //Rprintf("force count\n");
     nFeature = force_layer_feature_count(poLayer);
@@ -657,7 +657,7 @@ inline List gdal_read_names(CharacterVector dsn,
   int lFeature = 0;
   // double   nFeature = force_layer_feature_count(poLayer);
   // trying to fix SQL problem 2020-10-05
-  double nFeature = poLayer->GetFeatureCount();
+  double nFeature = (double)poLayer->GetFeatureCount();
   if (nFeature < 1) {
     //Rprintf("force count\n");
     nFeature = force_layer_feature_count(poLayer);

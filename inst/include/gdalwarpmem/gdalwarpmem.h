@@ -164,9 +164,9 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   // Prepare to read bands
   int nBands;
   if (bands[0] == 0) {
-    nBands = GDALGetRasterCount(hRet);
+    nBands = (int)GDALGetRasterCount(hRet);
   } else {
-    nBands = bands.size();
+    nBands = (int)bands.size();
   }
   std::vector<int> bands_to_read(nBands);
   for (int i = 0; i < nBands; i++) {
@@ -176,7 +176,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       bands_to_read[i] = bands[i];
     }
     
-    if (bands_to_read[i] > GDALGetRasterCount(hRet)) {
+    if (bands_to_read[i] > (int)GDALGetRasterCount(hRet)) {
       GDALClose( hRet );
       stop("band number is not available: %i", bands_to_read[i]);
     }
