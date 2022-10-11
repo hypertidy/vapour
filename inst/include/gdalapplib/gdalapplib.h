@@ -207,7 +207,7 @@ inline List gdalwarp_applib(CharacterVector source_filename,
   
   
   GDALDatasetH *poSrcDS;
-  poSrcDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * source_filename.size()));
+  poSrcDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * (size_t) source_filename.size()));
   
   
   for (int i = 0; i < source_filename.size(); i++) {
@@ -229,7 +229,7 @@ inline List gdalwarp_applib(CharacterVector source_filename,
   char** papszArg = nullptr;
   
   papszArg = CSLAddString(papszArg, "-of");
-  if (target_filename[0].size() == 0) {
+  if (target_filename[0].size() < 1) {
     papszArg = CSLAddString(papszArg, "MEM");
   } else {
     papszArg = CSLAddString(papszArg, "COG");

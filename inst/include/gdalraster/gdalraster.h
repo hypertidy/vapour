@@ -90,7 +90,7 @@ inline CharacterVector gdal_list_subdatasets(GDALDataset *poDataset) {
     for (int ii = 0; ii <  sdi; ii++) {
       // SDS tokens come in pairs
       if (ii % 2 == 0) {
-        ret(cnt) = SDS2[ii];
+        ret[cnt] = SDS2[ii];
        cnt++;
       }
     }
@@ -942,8 +942,8 @@ inline List gdal_raster_dataset_io(CharacterVector dsn,
   if (band[0] < 1) { GDALClose(poDataset);  Rcpp::stop("requested band %i should be 1 or greater", band[0]);  }
   int nBands = poDataset->GetRasterCount();
   if (band[0] > nBands) { GDALClose(poDataset);   Rcpp::stop("requested band %i should be equal to or less than number of bands: %i", band[0], nBands); }
-  int band_length = band.size();
-  std::vector<int> bands_to_read(band_length);
+  
+  std::vector<int> bands_to_read(band.size());
   if (band.size() == 1 && band[0] == 0) {
     for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
   } else {
