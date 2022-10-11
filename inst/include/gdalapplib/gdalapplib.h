@@ -229,7 +229,7 @@ inline List gdalwarp_applib(CharacterVector source_filename,
   char** papszArg = nullptr;
   
   papszArg = CSLAddString(papszArg, "-of");
-  if (target_filename[0].size() < 1) {
+  if (target_filename.size() < 1) {
     papszArg = CSLAddString(papszArg, "MEM");
   } else {
     papszArg = CSLAddString(papszArg, "COG");
@@ -318,7 +318,7 @@ inline List gdalwarp_applib(CharacterVector source_filename,
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
   
   GDALDatasetH hRet = GDALWarp( target_filename[0], nullptr,
-                                source_filename.size(), poSrcDS,
+                                (size_t)source_filename.size(), poSrcDS,
                                 psOptions, nullptr);
   
   
