@@ -178,7 +178,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     
     if (bands_to_read[i] > (int)GDALGetRasterCount(hRet)) {
       GDALClose( hRet );
-      stop("band number is not available: %i", bands_to_read[i]);
+      stop("band number is not available: %l", bands_to_read[i]);
     }
     
   }
