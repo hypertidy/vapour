@@ -809,7 +809,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
     if (outXSize < 1) outXSize = actual_XSize;
     if (outYSize < 1) outYSize = actual_YSize;
     
-    size_t n_values_out = outXSize * outYSize * bands_to_read.size();
+    auto n_values_out = outXSize * outYSize * bands_to_read.size();
     
     scale = rasterBand->GetScale(&hasScale);
     offset = rasterBand->GetOffset(&hasOffset);
