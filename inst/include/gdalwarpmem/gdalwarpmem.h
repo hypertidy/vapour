@@ -32,7 +32,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   
   
   GDALDatasetH *poSrcDS;
-  poSrcDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * source_filename.size()));
+  poSrcDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * static_cast<size_t>(source_filename.size())));
   bool augment;  
   augment = !source_WKT[0].empty() || source_extent.size() == 4;
   
@@ -130,7 +130,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
   
   GDALDatasetH hRet = GDALWarp( "", nullptr,
-                                source_filename.size(), poSrcDS,
+                                static_cast<int>(source_filename.size()), poSrcDS,
                                 psOptions, nullptr);
   
   CPLAssert( hRet != NULL );
@@ -168,17 +168,17 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   } else {
     nBands = (int)bands.size();
   }
-  std::vector<int> bands_to_read(nBands);
+  std::vector<int> bands_to_read(static_cast<size_t>(nBands));
   for (int i = 0; i < nBands; i++) {
     if (bands[0] == 0) {
-      bands_to_read[i] = i + 1;
+      bands_to_read[static_cast<size_t>(i)] = i + 1;
     } else {
-      bands_to_read[i] = bands[i];
+      bands_to_read[static_cast<size_t>(i)] = bands[i];
     }
     
-    if (bands_to_read[i] > (int)GDALGetRasterCount(hRet)) {
+    if (bands_to_read[static_cast<size_t>(i)] > (int)GDALGetRasterCount(hRet)) {
       GDALClose( hRet );
-      stop("band number is not available: %l", bands_to_read[i]);
+      stop("band number is not available: %i", bands_to_read[static_cast<size_t>(i)]);
     }
     
   }

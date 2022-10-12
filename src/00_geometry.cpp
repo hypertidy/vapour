@@ -3,7 +3,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-DoubleVector feature_count_gdal_cpp(CharacterVector dsn,  // double, could be a lot of features
+NumericVector feature_count_gdal_cpp(CharacterVector dsn,  // double, could be a lot of features
                                     IntegerVector layer, CharacterVector sql, NumericVector ex) {
   return gdallibrary::gdal_feature_count(dsn, layer, sql, ex);
 }

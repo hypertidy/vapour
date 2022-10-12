@@ -137,24 +137,19 @@ inline LogicalVector gdal_write_block(CharacterVector dsn, NumericVector data,
     Rcpp::stop("");
   }
   
-  float *pafScanline;
-  pafScanline = (float *) CPLMalloc(sizeof(float)*dimension[0] * dimension[1]);
+  double *padScanline;
+  padScanline = (double *) CPLMalloc(sizeof(double) * static_cast<size_t>(dimension[0] * dimension[1]));
   for (int i = 0; i < data.length(); i++) {
-    pafScanline[i] = data[i];
+    padScanline[i] = data[i];
   }
   CPLErr err;
   err = poBand->RasterIO( GF_Write, offset[0], offset[1], dimension[0], dimension[1],
-                          pafScanline, dimension[0], dimension[1], GDT_Float32,
+                          padScanline, dimension[0], dimension[1], GDT_Float64,
                           0, 0);
   GDALClose(poDataset);
-  CPLFree(pafScanline);
-  bool ok = true;
-  
-  if (err) {
-    ok = false;
-  }
+  CPLFree(padScanline);
   LogicalVector out(1);
-  out[0] = ok;
+  out[0] = err == CE_None;
   return out;
 }
 

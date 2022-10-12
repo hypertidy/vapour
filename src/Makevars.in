@@ -1,3 +1,3 @@
-PKG_CPPFLAGS=@PKG_CPPFLAGS@ -I../inst/include/ -Wfloat-conversion
+PKG_CPPFLAGS=@PKG_CPPFLAGS@ -I../inst/include/ -Wconversion
 PKG_LIBS=@PKG_LIBS@
 CXX_STD=CXX11
