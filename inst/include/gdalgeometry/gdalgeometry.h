@@ -95,7 +95,7 @@ inline NumericVector layer_read_fids_all(OGRLayer *poLayer) {
   OGRFeature *poFeature;
   double ii = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    out[ii] = poFeature->GetFID();
+    out[ii] = (double)poFeature->GetFID();
     OGRFeature::DestroyFeature(poFeature);
     ii++;
   }
@@ -129,7 +129,7 @@ inline NumericVector layer_read_fids_ij(OGRLayer *poLayer, NumericVector ij) {
   double ii = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
     if (ii == ij[0] || (ii > ij[0] && ii <= ij[1])) {
-      out[cnt] = poFeature->GetFID();
+      out[cnt] = (double)poFeature->GetFID();
       cnt++;
     }
     ii++;
@@ -173,7 +173,7 @@ inline NumericVector layer_read_fids_ia(OGRLayer *poLayer, NumericVector ia) {
   double cnt = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
     if (ii == ia[cnt]) {
-      out[cnt] = poFeature->GetFID();
+      out[cnt] = (double)poFeature->GetFID();
       cnt++;
     }
     ii++;
