@@ -19,7 +19,8 @@ jobs:
       matrix:
         config:
           - {os: macOS-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release', binary: 'rtools'}
+          - {os: windows-latest, r: 'release', binary: 'rwinlib'}
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
@@ -45,6 +46,7 @@ jobs:
           needs: check
 
       - name: ZapRtools
+        if: runner.os == 'windows' && matrix.config.binary == 'rwinlib'
         run: rm src/Makevars.ucrt
           
       - uses: r-lib/actions/check-r-package@v2
