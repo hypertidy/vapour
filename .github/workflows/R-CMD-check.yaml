@@ -45,7 +45,7 @@ jobs:
           needs: check
 
       - name: ZapRtools
-          run: rm src/Makevars.ucrt
+        run: rm src/Makevars.ucrt
           
       - uses: r-lib/actions/check-r-package@v2
         with:
