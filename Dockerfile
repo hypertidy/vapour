@@ -1,27 +1,31 @@
-## Emacs, make this -*- mode: sh; -*-
+FROM tuxmake/clang-15
 
-FROM rhub/rocker-gcc-san
+RUN apt-get update -y ; apt-get install -y curl
 
-MAINTAINER "hypertidy admin" mdsumner@gmail.com
+RUN curl -Ls https://github.com/r-lib/rig/releases/download/latest/rig-linux-latest.tar.gz | tar xz -C /usr/local
 
+RUN rig add devel
 
+RUN mkdir ~/.R
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends software-properties-common dirmngr  \
-    && wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc \
-    %% add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" \
-    && add-apt-repository -y ppa:c2d4u.team/c2d4u4.0+ \
-    && apt-get update && apt-get upgrade -y \ 
-    && apt-get install -y r-cran-devtools r-cran-markdown r-cran-spelling 
-    && apt-get install -y  git g++ libproj-dev cmake pkg-config make  libnetcdf-dev  \
-                 libgeos-dev python3-dev libhdf4-dev libhdf5-dev \
-                 && git clone https://github.com/osgeo/gdal \
-                 && cd gdal \
-                 && mkdir build \
-                 && cd build \
-                 && cmake .. \
-                 && cmake --build . --parallel 28 \
-                 && cmake --build . --target install \
-                 && ldconfig 
-                 
-ENV HYPERTIDY_PLATFORM rocker-gcc-san-gdal
+RUN apt-get install -y libc++abi-15-dev libc++-15-dev
+
+RUN printf 'CC = clang\nCXX = clang++ -stdlib=libc++\nCXX11 = clang++ -stdlib=libc++\nCXX14 = clang++ -stdlib=libc++\nCXX17 = clang++ -stdlib=libc++\nCXX20 = clang++ -stdlib=libc++\n' > ~/.R/Makevars
+
+RUN flags="-O2 -g -Wunneeded-internal-declaration -Winvalid-utf8 -Wformat -Wsizeof-pointer-div -Wliteral-conversion -Wempty-body -Wreturn-stack-address -Wnon-c-typedef-for-linkage -Wstrict-prototypes"; \
+    echo "CFLAGS=$flags" >> ~/.R/Makevars; \
+    echo "CXXFLAGS=$flags" >> ~/.R/Makevars; \
+    echo "CXX11FLAGS=$flags" >> ~/.R/Makevars; \
+    echo "CXX14FLAGS=$flags" >> ~/.R/Makevars; \
+    echo "CXX17FLAGS=$flags" >> ~/.R/Makevars; \
+    echo "CXX20FLAGS=$flags" >> ~/.R/Makevars
+
+RUN apt-get install -y nano git libxml2-dev libfontconfig1-dev libharfbuzz-dev  libproj-dev libgeos-dev libgdal-dev
+
+RUN export MAKEFLAGS=-j15
+
+RUN R -e 'options(Ncpus = 15); install.packages("remotes"); remotes::install_cran(c("markdown", "spelling", "jsonlite"));'
+
+## now edit src/Makevars.in to put -Wconversion ito CPPFLAGS, and: 
+#R CMD build vapour --no-build-vignettes
+#R CMD INSTALL vapour_0.9.0.tar.gz > INSTALL.out 2>&1
