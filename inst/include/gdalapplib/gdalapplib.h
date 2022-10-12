@@ -316,9 +316,9 @@ inline List gdalwarp_applib(CharacterVector source_filename,
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
-  auto nSource = source_filename.size(); 
+ 
   GDALDatasetH hRet = GDALWarp( target_filename[0], nullptr,
-                                nSource, poSrcDS,
+                                (int)source_filename.size(), poSrcDS,
                                 psOptions, nullptr);
   
   

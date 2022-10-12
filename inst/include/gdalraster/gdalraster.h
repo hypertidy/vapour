@@ -701,8 +701,8 @@ inline List gdal_read_band_values(GDALDataset *hRet,
       long unsigned int isi;
       for (isi = 0; isi < (integer_scanline.size()); isi++) {
         dval = integer_scanline[isi];
-        if (hasScale) dval = dval * scale;
-        if (hasOffset) dval = dval + offset;
+       // if (hasScale) dval = dval * scale;
+      //  if (hasOffset) dval = dval + offset;
         res[isi] = dval;
       }
       outlist[iband] = res;
@@ -809,7 +809,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
     if (outXSize < 1) outXSize = actual_XSize;
     if (outYSize < 1) outYSize = actual_YSize;
     
-    auto n_values_out = outXSize * outYSize * bands_to_read.size();
+    int n_values_out = outXSize * outYSize * bands_to_read.size();
     
     scale = rasterBand->GetScale(&hasScale);
     offset = rasterBand->GetOffset(&hasOffset);
@@ -881,8 +881,8 @@ inline List gdal_read_band_values(GDALDataset *hRet,
       long unsigned int isi;
       for (isi = 0; isi < (integer_scanline.size()); isi++) {
         dval = integer_scanline[isi];
-        if (hasScale) dval = dval * scale;
-        if (hasOffset) dval = dval + offset;
+        // if (hasScale) dval = dval * scale;
+        // if (hasOffset) dval = dval + offset;
         res[isi] = dval;
       }
       outlist[0] = res;
@@ -940,15 +940,15 @@ inline List gdal_raster_dataset_io(CharacterVector dsn,
     Rcpp::stop("cannot open dataset");
   }
   if (band[0] < 1) { GDALClose(poDataset);  Rcpp::stop("requested band %i should be 1 or greater", band[0]);  }
- size_t nBands = poDataset->GetRasterCount(); 
+  int nBands = poDataset->GetRasterCount(); 
     
-    if ((size_t)band[0] > nBands) { GDALClose(poDataset);   Rcpp::stop("requested band %i should be equal to or less than number of bands: %l", band[0], nBands); }
+    if (band[0] > nBands) { GDALClose(poDataset);   Rcpp::stop("requested band %i should be equal to or less than number of bands: %l", band[0], nBands); }
   
   std::vector<int> bands_to_read(band.size());
   if (band.size() == 1 && band[0] == 0) {
-    for (size_t i = 0; i < (size_t)nBands; i++) bands_to_read[i] = i + 1;
+    for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
   } else {
-    for (size_t i = 0; i < (size_t)band.size(); i++) bands_to_read[i] = band[i];
+    for (int i = 0; i < band.size(); i++) bands_to_read[i] = band[i];
   }
   List out = gdal_read_dataset_values(poDataset, window, bands_to_read, band_output_type, resample, false);
   // close up
@@ -975,9 +975,9 @@ inline List gdal_raster_io(CharacterVector dsn,
 
   std::vector<int> bands_to_read(band.size());
   if (band.size() == 1 && band[0] == 0) {
-    for (size_t i = 0; i < (size_t)nBands; i++) bands_to_read[i] = i + 1;
+    for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
   } else {
-    for (size_t i = 0; i < (size_t)band.size(); i++) bands_to_read[i] = band[i];
+    for (int i = 0; i < band.size(); i++) bands_to_read[i] = band[i];
   }
   List out = gdal_read_band_values(poDataset, window, bands_to_read, band_output_type, resample, false);
   // close up
