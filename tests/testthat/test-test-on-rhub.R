@@ -1,3 +1,3 @@
 test_that("multiplication works", {
-  vapour::vapour_srs_wkt("+proj=longlat +datum=WGS84")
+  expect_type( vapour::vapour_srs_wkt("+proj=longlat +datum=WGS84"), "character")
 })

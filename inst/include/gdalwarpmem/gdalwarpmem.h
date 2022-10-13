@@ -27,7 +27,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 //CharacterVector warp_options, 
                                 //CharacterVector transformation_options, 
                                 //CharacterVector open_options, 
-                               // CharacterVector output_dataset_options,
+                                // CharacterVector output_dataset_options,
                                 CharacterVector options) {
   
   
@@ -73,28 +73,30 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     OGRErr target_chk =  oTargetSRS->SetFromUserInput(target_WKT[0]);
     if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
     
-    OGRSpatialReference *oSourceSRS = nullptr;
-    oSourceSRS = new OGRSpatialReference;
-    char *st = NULL;
-    ((GDALDataset *)poSrcDS[0])->GetSpatialRef()->exportToWkt(&st);
+    const OGRSpatialReference * oSourceSRS = ((GDALDataset *)poSrcDS[0])->GetSpatialRef();
     
-    OGRErr source_chk =  oSourceSRS->SetFromUserInput(st);
-    if (source_chk != OGRERR_NONE) Rcpp::stop("cannot initialize source projection");
-    OGRCoordinateTransformation *poCT;
-    poCT = OGRCreateCoordinateTransformation(oSourceSRS, oTargetSRS);
-    if( poCT == NULL )	{
+    if (oSourceSRS == nullptr) {
+      delete oTargetSRS;
+      delete oSourceSRS;
+      Rcpp::warning("no source crs, target crs is ignored\n");
+    } else {
+      
+      OGRCoordinateTransformation *poCT;
+      poCT = OGRCreateCoordinateTransformation(oSourceSRS, oTargetSRS);
+      if( poCT == NULL )	{
+        delete oTargetSRS;
+        delete oSourceSRS;
+        
+        Rcpp::stop( "Transformation to this target CRS not possible from this source dataset, target CRS given: \n\n %s \n\n", 
+                    (char *)  target_WKT[0] );
+        
+      }
       delete oTargetSRS;
       delete oSourceSRS;
       
-      Rcpp::stop( "Transformation to this target CRS not possible from this source dataset, target CRS given: \n\n %s \n\n", 
-                  (char *)  target_WKT[0] );
-
+      papszArg = CSLAddString(papszArg, "-t_srs");
+      papszArg = CSLAddString(papszArg, target_WKT[0]);
     }
-    delete oTargetSRS;
-    delete oSourceSRS;
-    
-    papszArg = CSLAddString(papszArg, "-t_srs");
-    papszArg = CSLAddString(papszArg, target_WKT[0]);
   }
   
   // we always provide extent and dimension, crs is optional and just means subset/decimate
@@ -144,7 +146,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     Rcpp::stop("something went wrong!");
   }
   
-
+  
   /// this doesn't work because we don't keep the file name/s
   if (band_output_type[0] == "vrt") {
     // GDALDriver * vDriver = (GDALDriver *)GDALGetDriverByName("VRT");
@@ -203,11 +205,11 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   //                         0, 0, 0, &psExtraArg);
   
   List outlist = gdalraster::gdal_read_band_values(GDALDataset::FromHandle(hRet),
-                                                    window,
-                                                    bands_to_read,
-                                                    band_output_type,
-                                                    resample,
-                                                    unscale);
+                                                   window,
+                                                   bands_to_read,
+                                                   band_output_type,
+                                                   resample,
+                                                   unscale);
   
   GDALClose( hRet );
   return outlist;
