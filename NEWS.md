@@ -1,5 +1,7 @@
 # vapour 0.9.0
 
+* Big cleanup. 
+
 * Resubmit after 0.8.82 was rejected. 
 
 * Fix examples  and documentation for 'sst_c', 'vapour_read_geometry', 'vapour_read_fields', 'vapour_create()', 'vapour_read_raster_block()' and 'vapour_write_raster_block()' from  CRAN submission. 
