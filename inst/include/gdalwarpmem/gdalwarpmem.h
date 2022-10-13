@@ -70,11 +70,17 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     // if supplied check that it's valid
     OGRSpatialReference *oTargetSRS = nullptr;
     oTargetSRS = new OGRSpatialReference;
+    Rprintf("before\n");
+    Rprintf("%s\n", (const char *)target_WKT[0]);
+    Rcpp::stop("aa\n");
     OGRErr target_chk =  oTargetSRS->SetFromUserInput(target_WKT[0]);
+  
+    Rprintf("after\n");
+    
     if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
-    
+    Rprintf("before\n");
     const OGRSpatialReference * oSourceSRS = ((GDALDataset *)poSrcDS[0])->GetSpatialRef();
-    
+    Rprintf("after\n");
     if (oSourceSRS == nullptr) {
       delete oTargetSRS;
       delete oSourceSRS;
@@ -82,7 +88,9 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     } else {
       
       OGRCoordinateTransformation *poCT;
+      
       poCT = OGRCreateCoordinateTransformation(oSourceSRS, oTargetSRS);
+      
       if( poCT == NULL )	{
         delete oTargetSRS;
         delete oSourceSRS;
