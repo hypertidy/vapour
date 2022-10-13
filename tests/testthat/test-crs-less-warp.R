@@ -22,7 +22,7 @@ test_that("with with no source crs works", {
   vrt <- vapour_vrt(sds[3], geolocation = sds[2:1], bands = 1)
   info <- vapour_raster_info(vrt)
   expect_silent(im <- vapour_warp_raster_dbl(vrt, extent = ex, dimension = info$dimension, projection = lcc
-                               , transformation_options = c("SRC_METHOD=NO_GEOTRANSFORM")), "no source crs")
+                               , transformation_options = c("SRC_METHOD=NO_GEOTRANSFORM")))
   #ximage::ximage(matrix(im, info$dimension[2L], byrow = TRUE), extent = ex)
   
   ex <- c(-180, 180, -90, 90)
