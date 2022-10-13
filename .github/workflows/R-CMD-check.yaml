@@ -30,6 +30,14 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
 
     steps:
+      - name: Install macOS system dependencies
+        if: runner.os == 'macOS'
+        run: |
+           brew install openssl
+           brew install proj
+           brew install geos
+           brew install gdal
+    
       - uses: actions/checkout@v2
 
       - uses: r-lib/actions/setup-pandoc@v2
