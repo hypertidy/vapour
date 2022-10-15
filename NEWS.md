@@ -1,4 +1,114 @@
-# vapour dev
+# vapour 0.9.0
+
+* Big cleanup. 
+
+* Resubmit after 0.8.82 was rejected. 
+
+* Fix examples  and documentation for 'sst_c', 'vapour_read_geometry', 'vapour_read_fields', 'vapour_create()', 'vapour_read_raster_block()' and 'vapour_write_raster_block()' from  CRAN submission. 
+
+* Clarified authorship for Jim Hester (listed as copyright holder in DESCRIPTION), removed comment from code in CollectorList.h.
+
+* Resubmit after 0.8.8.81 was removed. 
+
+* Remove obscure NetCDF/HDF5 tests that don't work on CRAN macos. 
+
+
+# vapour 0.8.81
+
+
+## BREAKING CHANGES
+
+* 'vapour_sds_names()' now returns a character vector not a list. 
+
+* 'gdalraster::gdal_list_subdatasets' now returns unprocessed subdataset strings, of the form 'SUBDATASET_{i}_NAME={DRIVER}:{URI}:layer', and the strings are cleaned in R (but, can use `vapour_raster_info`, `vapour_sds_names()` for a separate pathway to this.) 
+
+
+--------------
+
+* Fixed CRAN warnings due to incorrect use of boolean operator, #158. 
+
+* `vapour_raster_info()` gains a subdatasets vector, this is just the source input if subdatasets are not present. 
+
+* Subdatasets can now be named by variable name or by index in 'vapour_vrt()'. Note this can't always work as some
+ services don't have names in the sense that classic subdataset sources (like netcdf) do. 
+ 
+* 'warp_options' and 'transformation_options' has been removed from the 'gdalwarpmem' namespace, and from the R and Rcpp
+ wrappers.  All options are now assumed to be bundled into one string list (CharacterVector). 
+ 
+* Setting options for the 'vapour_warp_raster()' has been reconfigured.
+Arguments 'warp_options', 'transformation_options', 'open_options', and
+'dataset_output_options' correspond to the 'NAME=VALUE' configuration provided
+by gdalwarp as '-wo', '-to', '-oo', and '-doo'. All of these should be entered in
+bare form (without the '-wo', '-to' etc) but for 'options' these must be entered
+as per standard gdalwarp options. Some are disallowed and are checked for,
+triggering an error because we either set them via other arguments, or they
+can't be supported atm.
+
+* New options setting support means we can support all gdalwarp options, notably
+'-cutline', '-csql', '-cwhere', and '-crop_to_cutline' which allow masking by a
+a polygon layer from a vector data source. Thanks to Hugh Graham for the motivation for this. :)
+
+
+* New internal function `raster_has_geolocation_gdal_cpp()`, early begin of does
+this datasource have geolocation arrays (because if it does we can just push it
+through the warper, otherwise nominate them with `vapour_vrt(geolocation = )`).
+
+* `vapour_vrt()` gains geolocation argument, which can be named dsns for each of
+longitude,latitude. Currently assumed to be 'OGC:CRS84'.
+
+* Now depend on GDAL 2.2.3 as a minimum, because ubuntu 18.04 is still in wide
+use. GDALInfo() lib needs GDAL 2.1 as minimum. Some info features need later,
+but do not fail (AFAIK).
+ 
+* `vapour_raster_info()` now has `dimension` element, intended for use instead
+of `dimXY` (for standard idiom like {gdalio} uses with 'extent', 'dimension',
+'projection' as the basis of what a raster is).  `dimXY` will be removed in
+future.
+ 
+* New namespace 'gdalapplib' with one utility for GDALInfo(), this is vectorized
+at the cpp level and includes subdataset handling. It does not include listing
+of TAR and ZIP archives. `vapour_raster_info()` now uses this.
+ 
+* New functions `vapour_create()` `vapour_read_raster_block()` and
+`vapour_read_raster_block()` for creating and writing to files.
+
+* Moved C++ functions `gdal_sds_list()`, `gdal_extent_only()`
+`gdal_raster_info()`, `gdal_raster_gcp()`, `init_resample_alg()`,
+`gdal_read_band_values()`, `gdal_read_dataset_values()`,
+`gdal_raster_dataset_io()`, `gdal_raster_io()` to *gdalraster* namespace from
+*gdallibrary* namespace. (Some of these will get refactored out).
+
+
+* New function `vapour_vrt()`. 
+
+* `vapour_warp_raster()` default has changed for `bands`, it's now NULL which
+means "all bands", not `1L`.
+
+* New functions `vapour_set_config()` and `vapour_get_config()` to control configuration 
+options for GDAL. 
+
+* Flushed out memory bugs with valgrind. 
+
+* Refactored read from raster and warp raster. The warping uses the same band
+reader as the RasterIO reader, and more cases of 'GDALOpen()' for rasters go via
+the underlying 'gdalraster' namespace pathway.
+
+* Faster layer extent determination in `vapour_layer_info()`, new function `vapour_layer_extent()`. 
+
+* Better escaping for layer name, needed quotes around layer 'SELECT' when counting features with 
+ SQL for FlatGeoBuf. 
+
+# vapour 0.8.8
+
+(This never made it to CRAN.)
+
+* Patch release for R UCRT changes. Applied patch provided by CRAN. 
+
+* Removed invalid missing value setting for type raw and int in the warper, causing 
+ representable range errors on cran. 
+ 
+ 
+# vapour 0.8.5
 
 ## BREAKING CHANGES
 
@@ -6,14 +116,18 @@
 as per the native type in the source.
 
 * `wkt` argument for the target projection in warper functions is now replaced
-by 'projection'. No change has been made at the C++ level, which still uses the
-original names. If 'wkt' is given it is used to set the value for 'projection'
-and a message emitted.
+by 'projection'.  If 'wkt' is given it is used to set the value for 'projection'
+and a message emitted. No change has been made at the C++ level, which still uses the
+original names.
  
  
 ## BUG FIXES 
 
+* Fixed configure.ac, upgraded syntax causing warnings on CRAN. 
+
 * Fixed huge SDS name wrecking bug. So now works for WMTS sources, for example. 
+
+* Fixed bug in use of scaling, was applied without conversion to floating point type. 
 
 ## NEW FEATURES
 

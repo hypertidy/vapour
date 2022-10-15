@@ -1,7 +1,4 @@
 
-// Authored by Jim Hester
-// https://github.com/r-lib/fs/blob/da8e8fd76520b962c6f552bf91d0053ba18afa04/src/CollectorList.h
-
 #include <Rcpp.h>
 
 using Rcpp::List;

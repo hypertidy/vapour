@@ -1,2 +1,28 @@
-CRT=-ucrt
-include Makevars.win
+
+PKG_CPPFLAGS = \
+        -I../inst/include \
+	-DHAVE_PROJ_H
+
+PKG_LIBS = \
+        -lgdal -lgta -lsqlite3 -lmysqlclient -lspatialite -lproj -lgeos_c -lgeos  \
+        -ljson-c -lnetcdf -lpq \
+        -lpoppler -llcms2 -lfreetype -lharfbuzz -lfreetype -llz4 -lpcre2-8 \
+        -lwebp -lcurl -lidn2 -lunistring -lssh2 -lgcrypt -lgpg-error -lssl \
+        -lhdf5_hl -lhdf5 -lexpat -lfreexl \
+        -lmfhdf -ldf -lportablexdr  -lpcre \
+        -lopenjp2 -ljasper -lpng -ljpeg -ltiff -lwebp -lgeotiff -lgif -lxml2 -llzma \
+        -lodbc32 -lodbccp32 -liconv -lpsapi -lwldap32 -lsecur32 -lgdi32 -lnormaliz \
+        -lbz2 -lzstd -lz -lcrypto -lcrypt32 -lcfitsio -lws2_32
+
+all: clean winlibs
+
+winlibs:
+	cp -r $(R_TOOLS_SOFT)/share/gdal ../inst/
+	cp -r $(R_TOOLS_SOFT)/share/proj ../inst/
+
+CXX_STD = CXX11
+
+clean:
+	rm -f $(SHLIB) $(OBJECTS)
+
+.PHONY: all winlibs clean

@@ -19,6 +19,8 @@ knitr::opts_chunk$set(
 ```
 
 
+The vapour package provides access to some GDAL functionality with minimal overhead. This includes read
+geometry and data ('attributes')
 There's a function `vapour_read_fields` that returns the fields (attributes) as  list of vectors. 
 
 

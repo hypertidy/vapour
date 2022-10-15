@@ -84,18 +84,18 @@ inline NumericVector gdal_geometry_extent(OGRFeature *poFeature) {
 inline NumericVector layer_read_fids_all(OGRLayer *poLayer) {
   //double   nFeature = gdallibrary::force_layer_feature_count(poLayer);
   // trying to fix SQL problem 2020-10-05
-  double nFeature = poLayer->GetFeatureCount();
+  R_xlen_t nFeature = poLayer->GetFeatureCount();
   if (nFeature < 1) {
-    Rprintf("force count\n");
+    //Rprintf("force count\n");
     nFeature = gdallibrary::force_layer_feature_count(poLayer);
   }
 
   NumericVector out(nFeature);
   std::fill( out.begin(), out.end(), NumericVector::get_na() );
   OGRFeature *poFeature;
-  double ii = 0;
+  R_xlen_t ii = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    out[ii] = poFeature->GetFID();
+    out[ii] = (double)poFeature->GetFID();
     OGRFeature::DestroyFeature(poFeature);
     ii++;
   }
@@ -122,14 +122,14 @@ inline NumericVector dsn_read_fids_all(CharacterVector dsn, IntegerVector layer,
 }
 
 inline NumericVector layer_read_fids_ij(OGRLayer *poLayer, NumericVector ij) {
-  NumericVector out(ij[1] - ij[0] + 1);
+  NumericVector out((R_xlen_t)ij[1] - (R_xlen_t)ij[0] + 1);
   std::fill( out.begin(), out.end(), NumericVector::get_na() );
   OGRFeature *poFeature;
-  double cnt = 0;
-  double ii = 0;
+  R_xlen_t cnt = 0;
+  R_xlen_t ii = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    if (ii == ij[0] || (ii > ij[0] && ii <= ij[1])) {
-      out[cnt] = poFeature->GetFID();
+    if (ii == static_cast<R_xlen_t>(ij[0]) || (ii > static_cast<R_xlen_t>(ij[0]) && ii <= static_cast<R_xlen_t>(ij[1]))) {
+      out[cnt] = (double)poFeature->GetFID();
       cnt++;
     }
     ii++;
@@ -169,11 +169,11 @@ inline NumericVector layer_read_fids_ia(OGRLayer *poLayer, NumericVector ia) {
   NumericVector out(ia.length());
   std::fill( out.begin(), out.end(), NumericVector::get_na() );
   OGRFeature *poFeature;
-  double ii = 0;
-  double cnt = 0;
+  R_xlen_t ii = 0;
+  R_xlen_t cnt = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    if (ii == ia[cnt]) {
-      out[cnt] = poFeature->GetFID();
+    if (ii == static_cast<R_xlen_t>(ia[cnt])) {
+      out[cnt] = (double)poFeature->GetFID();
       cnt++;
     }
     ii++;
@@ -216,18 +216,18 @@ inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
   poLayer->ResetReading();
   //int nFeature = gdallibrary::force_layer_feature_count(poLayer);
   // trying to fix SQL problem 2020-10-05
-  double nFeature = poLayer->GetFeatureCount();
+  R_xlen_t nFeature = poLayer->GetFeatureCount();
   if (nFeature < 1) {
-    Rprintf("force count\n");
+    //Rprintf("force count\n");
     nFeature = gdallibrary::force_layer_feature_count(poLayer);
   }
 
   List out(nFeature);
-  double ii = 0;
+  R_xlen_t ii = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
     // work through format
     // FIXME: get rid of "geometry"
-    if ((format[0] == "wkb") | (format[0] == "geometry")) {
+    if ((format[0] == "wkb") || (format[0] == "geometry")) {
       out[ii] = gdal_geometry_raw(poFeature);
     }
     if (format[0] == "wkt") {
@@ -238,7 +238,7 @@ inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
       out[ii] = gdal_geometry_extent(poFeature);
     }
     // these are all just text variants (wkt uses a different mech)
-    if ((format[0] == "gml") | (format[0] == "json") | (format[0] == "kml")) {
+    if ((format[0] == "gml") || (format[0] == "json") || (format[0] == "kml")) {
       out[ii] = gdal_geometry_txt(poFeature, format);
     }
     if (format[0] == "type") {
@@ -279,16 +279,17 @@ inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, Numeri
   OGRFeature *poFeature;
 
   poLayer->ResetReading();
-  int nFeature = ij[1] - ij[0] + 1;
+  R_xlen_t nFeature;
+  nFeature = (R_xlen_t)ij[1] - (R_xlen_t)ij[0] + 1;
   List out(nFeature);
-  double ii = 0;
-  double cnt = 0;
+  R_xlen_t ii = 0;
+  R_xlen_t cnt = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    if (ii == ij[0] || (ii > ij[0] && ii <= ij[1])) {
+    if (ii == static_cast<R_xlen_t>(ij[0]) || (ii > static_cast<R_xlen_t>(ij[0]) && ii <= static_cast<R_xlen_t>(ij[1]))) {
 
       // work through format
       // FIXME: get rid of "geometry"
-      if ((format[0] == "wkb") | (format[0] == "geometry")) {
+      if ((format[0] == "wkb") || (format[0] == "geometry")) {
         out[cnt] = gdal_geometry_raw(poFeature);
       }
       if (format[0] == "wkt") {
@@ -299,7 +300,7 @@ inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, Numeri
         out[cnt] = gdal_geometry_extent(poFeature);
       }
       // these are all just text variants (wkt uses a different mech)
-      if ((format[0] == "gml") | (format[0] == "json") | (format[0] == "kml")) {
+      if ((format[0] == "gml") || (format[0] == "json") || (format[0] == "kml")) {
         out[cnt] = gdal_geometry_txt(poFeature, format);
       }
       if (format[0] == "type") {
@@ -343,15 +344,15 @@ inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, Numeri
   poLayer->ResetReading();
 
   List out(ia.length());
-  double ii = 0;
-  double cnt = 0;
+  R_xlen_t ii = 0;
+  R_xlen_t cnt = 0;
 
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    if (ii == ia[cnt]) {
+    if (ii == static_cast<R_xlen_t>(ia[cnt])) {
 
       // work through format
       // FIXME: get rid of "geometry"
-      if ((format[0] == "wkb") | (format[0] == "geometry")) {
+      if ((format[0] == "wkb") || (format[0] == "geometry")) {
         out[cnt] = gdal_geometry_raw(poFeature);
       }
       if (format[0] == "wkt") {
@@ -362,7 +363,7 @@ inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, Numeri
         out[cnt] = gdal_geometry_extent(poFeature);
       }
       // these are all just text variants (wkt uses a different mech)
-      if ((format[0] == "gml") | (format[0] == "json") | (format[0] == "kml")) {
+      if ((format[0] == "gml") || (format[0] == "json") || (format[0] == "kml")) {
         out[cnt] = gdal_geometry_txt(poFeature, format);
       }
       if (format[0] == "type") {
@@ -413,12 +414,12 @@ inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, Numeri
 
   List out(fa.length());
 
-  for (double ii = 0; ii < fa.length(); ii++) {
+  for (R_xlen_t ii = 0; ii < fa.length(); ii++) {
     GIntBig feature_id = (GIntBig)fa[ii];
     poFeature = poLayer->GetFeature(feature_id);
     // work through format
     // FIXME: get rid of "geometry"
-    if ((format[0] == "wkb") | (format[0] == "geometry")) {
+    if ((format[0] == "wkb") || (format[0] == "geometry")) {
       out[ii] = gdal_geometry_raw(poFeature);
     }
     if (format[0] == "wkt") {
@@ -429,7 +430,7 @@ inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, Numeri
       out[ii] = gdal_geometry_extent(poFeature);
     }
     // these are all just text variants (wkt uses a different mech)
-    if ((format[0] == "gml") | (format[0] == "json") | (format[0] == "kml")) {
+    if ((format[0] == "gml") || (format[0] == "json") || (format[0] == "kml")) {
       out[ii] = gdal_geometry_txt(poFeature, format);
     }
     if (format[0] == "type") {
@@ -467,9 +468,9 @@ inline List dsn_read_geom_fa(CharacterVector dsn, IntegerVector layer,
 inline List layer_read_fields_all(OGRLayer *poLayer, CharacterVector fid_column_name) {
   //double   nFeature = gdallibrary::force_layer_feature_count(poLayer);
   // trying to fix SQL problem 2020-10-05
-  double nFeature = poLayer->GetFeatureCount();
+  R_xlen_t nFeature = poLayer->GetFeatureCount();
   if (nFeature < 0) {
-    Rprintf("force count\n");
+    //Rprintf("force count\n");
     nFeature = gdallibrary::force_layer_feature_count(poLayer);
   }
 
@@ -478,7 +479,7 @@ inline List layer_read_fields_all(OGRLayer *poLayer, CharacterVector fid_column_
   List out = gdallibrary::allocate_fields_list(poFDefn, nFeature, int64_as_string, fid_column_name);
 
   OGRFeature *poFeature;
-  double ii = 0;
+  R_xlen_t ii = 0;
   int iField;
 
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
@@ -536,7 +537,8 @@ inline List dsn_read_fields_all(CharacterVector dsn, IntegerVector layer,
 
 inline List layer_read_fields_ij(OGRLayer *poLayer, CharacterVector fid_column_name,
                                  NumericVector ij) {
-  double   nFeature = ij[1] - ij[0] + 1;
+  R_xlen_t   nFeature;
+  nFeature = (R_xlen_t)ij[1] - (R_xlen_t)ij[0] + 1;
 
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = false;
@@ -544,13 +546,13 @@ inline List layer_read_fields_ij(OGRLayer *poLayer, CharacterVector fid_column_n
 
   OGRFeature *poFeature;
 
-  double ii = 0;
-  double cnt = 0;
+  R_xlen_t ii = 0;
+  R_xlen_t cnt = 0;
   int iField;
 
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 
-    if (ii == ij[0] || (ii > ij[0] && ii <= ij[1])) {
+    if (ii == static_cast<R_xlen_t>(ij[0]) || (ii > static_cast<R_xlen_t>(ij[0]) && ii <= static_cast<R_xlen_t>(ij[1]))) {
 
       // FIXME copy the wider field support from sf (but how to make this a function)
       for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
@@ -609,7 +611,7 @@ inline List dsn_read_fields_ij(CharacterVector dsn, IntegerVector layer,
 
 inline List layer_read_fields_ia(OGRLayer *poLayer, CharacterVector fid_column_name,
                                  NumericVector ia) {
-  double   nFeature = ia.length();
+  R_xlen_t   nFeature = ia.length();
 
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = false;
@@ -617,13 +619,13 @@ inline List layer_read_fields_ia(OGRLayer *poLayer, CharacterVector fid_column_n
 
   OGRFeature *poFeature;
 
-  double ii = 0;
-  double cnt = 0;
+  R_xlen_t ii = 0;
+  R_xlen_t cnt = 0;
   int iField;
 
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 
-    if (ii == ia[cnt]) {
+    if (ii == static_cast<R_xlen_t>(ia[cnt])) {
 
       // FIXME copy the wider field support from sf (but how to make this a function)
       for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
@@ -683,17 +685,17 @@ inline List dsn_read_fields_ia(CharacterVector dsn, IntegerVector layer,
 
 inline List layer_read_fields_fa(OGRLayer *poLayer, CharacterVector fid_column_name,
                                  NumericVector fa) {
-  double   nFeature = fa.length();
+  R_xlen_t   nFeature = fa.length();
 
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = false;
   List out = gdallibrary::allocate_fields_list(poFDefn, nFeature, int64_as_string, fid_column_name);
 
   OGRFeature *poFeature;
-  double cnt = 0;
+  R_xlen_t cnt = 0;
   int iField;
 
-  for (double ii = 0; ii < fa.length(); ii++) {
+  for (R_xlen_t ii = 0; ii < fa.length(); ii++) {
     GIntBig feature_id = (GIntBig)fa[ii];
     poFeature = poLayer->GetFeature(feature_id);
     if (NULL == poFeature) {

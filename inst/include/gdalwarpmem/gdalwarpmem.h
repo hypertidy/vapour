@@ -5,10 +5,14 @@
 #include "gdal_priv.h"
 #include "gdalwarper.h"
 #include "gdal_utils.h"  // for GDALWarpAppOptions
+#include "gdalraster/gdalraster.h"
+#include "ogr_spatialref.h"  // for OGRCreateCoordinateTransformation
+using namespace std;
 
 namespace gdalwarpmem{
 
 using namespace Rcpp;
+
 
 inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 CharacterVector source_WKT,
@@ -20,69 +24,77 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 CharacterVector resample,
                                 LogicalVector silent,
                                 CharacterVector band_output_type, 
-                                CharacterVector warp_options, 
-                                CharacterVector transformation_options) {
-  
+                                //CharacterVector warp_options, 
+                                //CharacterVector transformation_options, 
+                                //CharacterVector open_options, 
+                                // CharacterVector output_dataset_options,
+                                CharacterVector options) {
   
   
   GDALDatasetH *poSrcDS;
-  GDALAllRegister();
-  poSrcDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * source_filename.size()));
+  poSrcDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * static_cast<size_t>(source_filename.size())));
+  bool augment;  
+  augment = !source_WKT[0].empty() || source_extent.size() == 4;
   
-  char** papszArg = nullptr;
-  int dsi0 = 0;
-  for (int si = 0; si < source_filename.size(); si++) {
-    poSrcDS[si] = GDALOpen((const char *) source_filename[si], GA_ReadOnly);
-    
-    if (poSrcDS[si] == NULL) {
-      //Rprintf("cannot open %s\n", source_filename[0]);
-      
-      if (si > 0) {
-        for (int ii = 0; ii < si; ii++) {
-          GDALClose( poSrcDS[ii] );
-        }
-      }
-      Rprintf("failed to open\n");
-      Rcpp::stop("\n");
-    }
-    if (source_extent.length() == 1) {
-      // do nothing
-    } // and else also do nothing (doesn't work how I thought, only VRT can do this so wait for /vrt/)
-    
-    // https://github.com/OSGeo/gdal/blob/fec15b146f8a750c23c5e765cac12ed5fc9c2b85/gdal/frmts/gtiff/cogdriver.cpp#L512
-    papszArg = CSLAddString(papszArg, "-of");
-    papszArg = CSLAddString(papszArg, "MEM");
-    
-    // if we don't supply it don't try to set it!
-    if (!target_WKT[0].empty()){
-      // if supplied check that it's valid
-      OGRSpatialReference oTargetSRS;
-      OGRErr target_chk =  oTargetSRS.SetFromUserInput(target_WKT[0]);
-      if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
-      
-      papszArg = CSLAddString(papszArg, "-t_srs");
-      papszArg = CSLAddString(papszArg, target_WKT[0]);
-    }
-    if (source_WKT[0].empty()) {
-      // TODO check source projection is valid
-      const char* srcproj = nullptr;
-      srcproj = GDALGetProjectionRef(poSrcDS[si]);
-      if ((srcproj != NULL) && (srcproj[0] == '\0') && !target_WKT[0].empty()) {
-        Rcpp::warning("no valid projection in source, specified output projection will have no effect\n (only the extent and dimension will be applied natively)\n use 'source_projection' to apply the correct details for this source");
-      }
+  
+  for (int i = 0; i < source_filename.size(); i++) {
+    if (augment) {
+      // not dealing with subdatasets here atm
+      // not dealing with source bands here, bands applies at read beloew
+      poSrcDS[i] = gdalraster::gdalH_open_avrt(source_filename[i],   source_extent, source_WKT, 0, 0, "");
     } else {
-      if (silent[0] != true) Rprintf("setting projection");
-      if (si == 0) {
-        // if supplied check that it's valid
-        OGRSpatialReference oSourceSRS;
-        OGRErr source_chk =  oSourceSRS.SetFromUserInput(source_WKT[0]);
-        if (source_chk != OGRERR_NONE) Rcpp::stop("cannot initialize source projection");
-        
-        papszArg = CSLAddString(papszArg, "-s_srs");
-        papszArg = CSLAddString(papszArg, source_WKT[0]);
+      poSrcDS[i] = gdalraster::gdalH_open_dsn(source_filename[i],   0); 
+      
+    }
+    // unwind everything, and stop
+    if (poSrcDS[i] == nullptr) {
+      if (i > 0) {
+        for (int j = 0; j < i; j++) GDALClose(poSrcDS[j]);
+      }
+      Rprintf("input source not readable: %s\n", (char *)source_filename[i]); 
+      
+      CPLFree(poSrcDS);
+      Rcpp::stop(""); 
+    }
+  }
+  
+  // handle warp settings and options
+  // we manually handle -r, -te, -t_srs, -ts, -of,
+  // but the rest passed in as wo, to, oo, doo, or general (non general ones get -wo/-to/-oo/-doo prepended in R)
+  char** papszArg = nullptr;
+  
+  papszArg = CSLAddString(papszArg, "-of");
+  papszArg = CSLAddString(papszArg, "MEM");
+  
+  if (!target_WKT[0].empty()) {
+    OGRSpatialReference *oTargetSRS = nullptr;
+    oTargetSRS = new OGRSpatialReference;
+    const char * strforuin = (const char *)target_WKT[0];
+    OGRErr target_chk =  oTargetSRS->SetFromUserInput(strforuin);
+    if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
+    OGRSpatialReference  oSRS;
+    const OGRSpatialReference* poSrcSRS = ((GDALDataset *)poSrcDS[0])->GetSpatialRef();
+    if( poSrcSRS ) {
+      oSRS = *poSrcSRS;
+      if (!oSRS.IsEmpty()) {
+        OGRCoordinateTransformation *poCT;
+        poCT = OGRCreateCoordinateTransformation(&oSRS, oTargetSRS);
+        if( poCT == nullptr )	{
+          delete oTargetSRS;
+          Rcpp::stop( "Transformation to this target CRS not possible from this source dataset, target CRS given: \n\n %s \n\n", 
+                      (char *)  target_WKT[0] );
+        }
+        // we add our target projection iff a) source crs is valid b) target crs is valid c) transformation source->target is valid
+        // user may have augmented the array of datasets with source_projection
+        // if the source is just not defined we ignore the target with a warning
+        papszArg = CSLAddString(papszArg, "-t_srs");
+        papszArg = CSLAddString(papszArg, target_WKT[0]);
+      } else {
+        Rcpp::warning("no source crs, target crs is ignored\n");
       }
     }
-  }//si
+    delete oTargetSRS;
+  }
   // we always provide extent and dimension, crs is optional and just means subset/decimate
   double dfMinX = target_extent[0];
   double dfMaxX = target_extent[1];
@@ -104,188 +116,98 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
   }
   
-  //const auto poFirstBand = GDALGetRasterBand(poSrcDS[dsi0], 1);
   
   papszArg = CSLAddString(papszArg, "-r");
   papszArg = CSLAddString(papszArg, resample[0]);
   
-  // bundle on all user-added options
-  for (int wopt = 0; wopt < warp_options.length(); wopt++) {
-    papszArg = CSLAddString(papszArg, "-wo");
-    papszArg = CSLAddString(papszArg, warp_options[wopt]);
+  for (int gwopt = 0; gwopt < options.length(); gwopt++) {
+    papszArg = CSLAddString(papszArg, options[gwopt]);
   }
-  for (int topt = 0; topt < transformation_options.length(); topt++) {
-    papszArg = CSLAddString(papszArg, "-to");
-    papszArg = CSLAddString(papszArg, transformation_options[topt]);
-  }
-  
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
-  auto hRet = GDALWarp( "", nullptr,
-                        source_filename.size(), poSrcDS,
-                        psOptions, nullptr);
+  
+  GDALDatasetH hRet = GDALWarp( "", nullptr,
+                                static_cast<int>(source_filename.size()), poSrcDS,
+                                psOptions, nullptr);
+  
   CPLAssert( hRet != NULL );
   GDALWarpAppOptionsFree(psOptions);
-  
-  
-  const int nBands = GDALGetRasterCount(poSrcDS[dsi0]);
-  int band_length = bands.size();
-  if (bands.size() == 1 && bands[0] == 0) {
-    band_length = nBands;
-  }
-  
-  std::vector<int> bands_to_read(band_length);
-  if (bands.size() == 1 && bands[0] == 0) {
-    for (int i = 0; i < nBands; i++) bands_to_read[i] = i + 1;
-    // Rprintf("index bands\n");
-  } else {
-    for (int i = 0; i < bands.size(); i++) bands_to_read[i] = bands[i];
-    // Rprintf("input bands\n");
-  }
-  Rcpp::List outlist(bands_to_read.size());
-  
-  double *double_scanline;
-  int    *integer_scanline;
-  uint8_t *byte_scanline;
-  
-  
-  int hasNA;
-  int hasScale, hasOffset;
-  double scale, offset;
-  
-  GDALRasterBandH dstBand, poBand;
-  int sbands = (int)bands_to_read.size();
-  for (int iband = 0; iband < sbands; iband++) {
-    if (bands_to_read[iband] > nBands) {
-      GDALClose( hRet );
-      
-      for (int si = 0; si < source_filename.size(); si++) {
-        GDALClose( poSrcDS[si] );
-      }
-      Rcpp::stop("band requested exceeds bound count: %i (source has %i band/s)", bands[iband], nBands);
-    }
-    //Rprintf("bands_to_read[i] %i\n", bands_to_read[iband]);
-    poBand = GDALGetRasterBand(poSrcDS[dsi0], bands_to_read[iband]);
-    dstBand = GDALGetRasterBand(hRet, bands_to_read[iband]);
-    
-    GDALDataType band_type =  GDALGetRasterDataType(poBand);
-    
-    // if band_output_type is not empty, possible override:
-    if (band_output_type[0] == "Byte") {
-      band_type = GDT_Byte;
-    }
-    if (band_output_type[0] == "Int32" ||
-        band_type == GDT_Int16 ||
-        band_type == GDT_UInt16 ||
-        band_type == GDT_UInt32) {
-      band_type = GDT_Int32;
-    }
-    if (band_output_type[0] == "Float64" ||
-        band_type == GDT_Float32) {
-      band_type = GDT_Float64;
-    }
-    scale = GDALGetRasterScale(poBand, &hasScale);
-    offset = GDALGetRasterOffset(poBand, &hasOffset);
-    
-    int actual_XSize = GDALGetRasterBandXSize(dstBand);
-    int actual_YSize = GDALGetRasterBandYSize(dstBand);
-    if (band_type == GDT_Float64) {
-      std::vector<double> double_scanline( actual_XSize * actual_YSize );
-      CPLErr err;
-      err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,
-                         &double_scanline[0], actual_XSize, actual_YSize, GDT_Float64,
-                         0, 0);
-      if (err) Rprintf("we have a problem at RasterIO\n");
-      NumericVector res(actual_XSize * actual_YSize );
-      
-      // consider doing at R level, at least for MEM
-      double dval;
-      double naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
-      
-      if (hasNA && (!std::isnan(naflag))) {
-        if (naflag < -3.4e+37) {
-          naflag = -3.4e+37;
-          
-          for (size_t i=0; i< double_scanline.size(); i++) {
-            if (double_scanline[i] <= naflag) {
-              double_scanline[i] = NAN;
-            }
-          }
-        } else {
-          
-          std::replace(double_scanline.begin(), double_scanline.end(), naflag, (double) NAN);
-        }
-      }
-      long unsigned int isi;
-      for (isi = 0; isi < (double_scanline.size()); isi++) {
-        dval = double_scanline[isi];
-        if (hasScale) dval = dval * scale;
-        if (hasOffset) dval = dval + offset;
-        res[isi] = dval;
-      }
-      outlist[iband] = res;
-    }
-    if (band_type == GDT_Int32) {
-      std::vector<int32_t> integer_scanline( actual_XSize * actual_YSize );
-      CPLErr err;
-      err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,
-                         &integer_scanline[0], actual_XSize, actual_YSize,
-                         GDT_Int32,
-                         0, 0);
-      if (err) Rprintf("we have a problem at RasterIO\n");
-      IntegerVector res(actual_XSize * actual_YSize );
-      
-      // consider doing at R level, at least for MEM
-      int dval;
-      int naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
-      
-      if (hasNA && (!std::isnan(naflag))) {
-        std::replace(integer_scanline.begin(), integer_scanline.end(), naflag, (int) NAN);
-        
-      }
-      long unsigned int isi;
-      for (isi = 0; isi < (integer_scanline.size()); isi++) {
-        dval = integer_scanline[isi];
-        if (hasScale) dval = dval * scale;
-        if (hasOffset) dval = dval + offset;
-        res[isi] = dval;
-      }
-      outlist[iband] = res;
-    }
-    
-    if (band_type == GDT_Byte) {
-      std::vector<uint8_t> byte_scanline( actual_XSize * actual_YSize );
-      CPLErr err;
-      err = GDALRasterIO(dstBand,  GF_Read, 0, 0, actual_XSize, actual_YSize,
-                         &byte_scanline[0], actual_XSize, actual_YSize,
-                         GDT_Byte,
-                         0, 0);
-      if (err) Rprintf("we have a problem at RasterIO\n");
-      RawVector res(actual_XSize * actual_YSize );
-      uint8_t naflag = GDALGetRasterNoDataValue(dstBand, &hasNA);
-      
-      if (hasNA && (!std::isnan(naflag))) {
-        std::replace(byte_scanline.begin(), byte_scanline.end(), naflag, (uint8_t) NAN);
-        
-      }
-      long unsigned int isi;
-      for (isi = 0; isi < (byte_scanline.size()); isi++) {
-        res[isi] = byte_scanline[isi];
-      }
-      outlist[iband] = res;
-    }
-    
-    
-    
-  }
-  GDALClose( hRet );
   for (int si = 0; si < source_filename.size(); si++) {
-    GDALClose( poSrcDS[si] );
+    GDALClose( (GDALDataset *)poSrcDS[si] );
+  }
+  CPLFree(poSrcDS);
+  
+  if (hRet == nullptr) {
+    Rcpp::stop("something went wrong!");
   }
   
-  //CPLFree(double_scanline);
   
+  /// this doesn't work because we don't keep the file name/s
+  if (band_output_type[0] == "vrt") {
+    // GDALDriver * vDriver = (GDALDriver *)GDALGetDriverByName("VRT");
+    // GDALDatasetH VRTDS = vDriver->CreateCopy("", (GDALDataset *) hRet, 0, nullptr, nullptr, nullptr);
+    //
+    
+    
+    CharacterVector oof(1);
+    CharacterVector infile(1);
+    LogicalVector filein(1);
+    oof[0] = gdalraster::gdal_vrt_text((GDALDataset *) hRet);
+    GDALClose(hRet);
+    return List::create(oof);
+  }
+  
+  
+  // Prepare to read bands
+  int nBands;
+  if (bands[0] == 0) {
+    nBands = (int)GDALGetRasterCount(hRet);
+  } else {
+    nBands = (int)bands.size();
+  }
+  std::vector<int> bands_to_read(static_cast<size_t>(nBands));
+  for (int i = 0; i < nBands; i++) {
+    if (bands[0] == 0) {
+      bands_to_read[static_cast<size_t>(i)] = i + 1;
+    } else {
+      bands_to_read[static_cast<size_t>(i)] = bands[i];
+    }
+    
+    if (bands_to_read[static_cast<size_t>(i)] > (int)GDALGetRasterCount(hRet)) {
+      GDALClose( hRet );
+      stop("band number is not available: %i", bands_to_read[static_cast<size_t>(i)]);
+    }
+    
+  }
+  LogicalVector unscale = true;
+  IntegerVector window(6);
+  // default window with all zeroes results in entire read (for warp)
+  // also supports vapour_raster_read  atm
+  for (int i  = 0; i < window.size(); i++) window[i] = 0;
+  
+  
+  // we can't do  gdal_warped_vrt here ... was just trying something and realized 
+  // that cant work
+  // 
+  // GDALRasterIOExtraArg psExtraArg;
+  // psExtraArg = gdallibrary::init_resample_alg(resample);
+  // 
+  // std::vector<double> values( GDALGetRasterXSize(hRet) * GDALGetRasterYSize(hRet) * nBands );
+  // CPLErr err = 
+  // GDALDataset::FromHandle(hRet)->RasterIO(GF_Read, 0, 0, GDALGetRasterXSize(hRet), GDALGetRasterYSize(hRet),
+  //                         &values[0],   GDALGetRasterXSize(hRet), GDALGetRasterYSize(hRet), GDT_Float64,
+  //                         nBands, &bands_to_read[0],
+  //                         0, 0, 0, &psExtraArg);
+  
+  List outlist = gdalraster::gdal_read_band_values(GDALDataset::FromHandle(hRet),
+                                                   window,
+                                                   bands_to_read,
+                                                   band_output_type,
+                                                   resample,
+                                                   unscale);
+  
+  GDALClose( hRet );
   return outlist;
 }
 

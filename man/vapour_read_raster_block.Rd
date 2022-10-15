@@ -24,7 +24,7 @@ vapour_read_raster_block(
 \item{band_output_type}{numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'}
 }
 \value{
-for vapour_read_raster_block, a list with vector of data
+a list with a vector of data from the band read
 }
 \description{
 Read a 'block' from raster.

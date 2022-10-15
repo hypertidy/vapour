@@ -1,4 +1,4 @@
-f <- system.file("extdata", "sst.tif", package = "vapour")
+f <- system.file("extdata", "sst.tif", package = "vapour", mustWork = TRUE)
 
 #raster::raster(f)
 # class      : RasterLayer
@@ -51,11 +51,14 @@ test_that("warper no transformation and no dimension works", {
 })
 
 test_that("warper bad transformation fails", {
-  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), projection = "aabbcc"), "cannot initialize target projection")
+  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), 
+                                  dimension = c(2, 2), projection = "aabbcc"), "cannot initialize target projection")
 
   ## this should get checked by GDAL itself, else crashy
   expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), projection = "PROJala[kakakaka]"), "cannot initialize target projection")
-  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), source_wkt =   "PROJala[kakakaka]"), "cannot initialize source projection")
+  expect_output(vapour_warp_raster(f, extent = c(145, 146, -50, -48), 
+                                  dimension = c(2, 2), 
+                                  source_projection =   "PROJala[kakakaka]"), "cannot set projection")
 
 })
 
@@ -73,25 +76,31 @@ test_that("warper gives the right number of values", {
 })
 
 test_that("giving source projection works", {
-  expect_named(
+  expect_error(
     vapour_warp_raster(f, extent = c(0, 67, 0, 81),
-                     projection = "+proj=laea", source_wkt = "+proj=laea", dimension = c(10, 10)), "Band1"
-  )
+                     projection = "+proj=laea", source_wkt = "+proj=laea", dimension = c(10, 10)), "'source_wkt' is defunct")
+  
+expect_named(
+  vapour_warp_raster(f, extent = c(0, 67, 0, 81),
+                     projection = "+proj=laea", source_projection = "+proj=laea", dimension = c(10, 10)), "Band1"
+)
 })
 test_that("robust to bad inputs", {
-  expect_error(vapour_warp_raster(c(f, "afile"), extent = c(0, 1, 0, 1),
-                                  projection = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10))
-  )
+  
+ expect_output( expect_error(vapour_warp_raster(c(f, "afile"), extent = c(0, 1, 0, 1),
+                                   projection = "+proj=laea", source_projection = "+proj=longlat", dimension = c(10, 10))
+   )
+ )
+  expect_error(vapour_warp_raster(c(f, f), extent = c(0, 1, 0, 1),
+                     projection = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10)), "'source_wkt' is defunct")
 
   expect_named(vapour_warp_raster(c(f, f), extent = c(0, 1, 0, 1),
-                     projection = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10)), "Band1")
-
+                                  projection = "+proj=laea", source_projection = "+proj=longlat", dimension = c(10, 10)), "Band1")
+  
   expect_named(vapour_warp_raster(f, extent = c(0, 1, 0, 1),
                                   projection = "+proj=laea",  dimension = c(10, 10)))
 
   expect_error(vapour_warp_raster(f, extent = c(0, 1, 0, 1), band = 2,
-                                  projection = "+proj=laea", source_wkt = "+proj=longlat", dimension = c(10, 10)),
-               "band requested exceeds"
-  )
+                                  projection = "+proj=laea", source_projection = "+proj=longlat", dimension = c(10, 10)), "band number is not available")
 
 })

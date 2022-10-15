@@ -1,41 +1,25 @@
-## vapour 0.8.0
+## vapour 0.9.0
 
-Fix for CRAN errors, with broken configure. 
+Resubmission, failures previous picked up in UBSAN incorrect use of NaN for raw/integer. I think I've fixed it by removing the offending code
+which couldn't have worked and is only relevant when a user specifies an output type - so they get what they ask for. 
 
-* had modified sf/configure.ac to remove GEOS, but had remove key AC_SUBST along with that (GDAL_DEP_LIBS was lost, amongst other things)
-* put PROJ_LIBS after PKG_LIBS, as per CRAN advice
-* CRAN notes AC_SUBST should only be called once at the end for clarity, but I've only restored what sf does until I can understand more
-
-Please note that Jeroen Ooms already applied a PR for UCRT, so there's a warning currently on  
- r-devel-windows-x86_64-gcc10-UCRT. 
-
-Thanks very much again, appreciate the patience and detailed feedback.  
+Thank you! 
 
 ## Test environments
 
-* Linux Ubuntu 20.04 R 4.1.0
 * win-builder (devel)
-* mac-os CRAN-alike on github actions
-* fedora-clang-devel      (~= CRAN with config flags: r-devel-linux-x86_64-fedora-clang )
-* fedora-gcc-devel        (~= CRAN with config flags: r-devel-linux-x86_64-fedora-gcc)
-* `rhub::check_for_cran()` (multiple platforms). 
-* ubuntu 18.04    GDAL: 2.2.3, PROJ: 4.9.3
-
+* Linux ubuntu 4.2.1
+* Rhub:  macos-highsierra-release-cran
 
 ## R CMD check results
 
-0 errors | 1 warning | 1 note
+0 errors | 0 warnings | 1 note
 
-There is a note about the size of installed directories on Windows and MacOS because 
+There is a note about the size of installed directories  because 
  of the GDAL and PROJ folders. 
 
-There is a warning on Windows: 
+## Reverse dependenices
 
-r-devel-windows-x86_64-gcc10-UCRT:  WARNING: failed to apply patch patches/CRAN/vapour.diff
-
-## Reverse dependencies
-
-{lazyraster} passes check with this version
-
+The single revdep 'lazyraster' passes check with this version. 
 
 

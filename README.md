@@ -63,12 +63,7 @@ constrained to any particular data model.
 
 ## Installation
 
-The package can be installed from CRAN.
-
-``` r
-## install.packages("remotes")
-remotes::install_cran("vapour")
-```
+The package \~cannot be installed from CRAN\~.
 
 The development version can be installed from Github, easiest is via the
 [hypertidy universe](https://hypertidy.r-universe.dev/ui#builds):

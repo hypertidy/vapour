@@ -1,11 +1,11 @@
 context("test-features.R")
 
 
-f <- system.file("extdata", "sst_c.gpkg", package = "vapour")
+f <- system.file("extdata", "sst_c.gpkg", package = "vapour", mustWork = TRUE)
 f2 <- system.file("extdata/osm/myosmfile.osm", package = "vapour", mustWork = TRUE)
 Sys.setenv(OSM_USE_CUSTOM_INDEXING="NO")
 pfile <- "list_locality_postcode_meander_valley.tab"
-dsource <- system.file(file.path("extdata/tab", pfile), package="vapour")
+dsource <- system.file(file.path("extdata/tab", pfile), package="vapour", mustWork = TRUE)
 
 test_that("geometry read works", {
 
@@ -65,7 +65,7 @@ test_that("OSM read works", {
   skip_on_os("windows")
   ## can't usse sst gpkg because
   ## kml can't be in a projection
-  expect_output(gkml <- vapour_read_geometry_text(f2, textformat = "kml"), "force count")
+  gkml <- vapour_read_geometry_text(f2, textformat = "kml")
   gkml %>% expect_length(1L)
   gkml[[1]] %>% expect_type("character")  %>% grepl("<Point><coordinates>", .) %>% expect_true()
 
@@ -92,9 +92,16 @@ test_that("limit_n works",
             expect_silent(vapour_geom_summary(dsource, limit_n = 1L)) %>% unlist(use.names = FALSE) %>% expect_length(7L)
             av_atts <- vapour_read_attributes(f, limit_n = 1) %>% expect_length(2L) %>% expect_named(c("level", "sst"))
             expect_silent(vapour_read_geometry(f, limit_n = 1L)) %>% expect_length(1L)
-
+            expect_silent(vapour_read_geometry(f, limit_n = 1L, skip_n = 2)) %>% expect_length(1L)
+            
+            expect_silent(vapour_read_type(f, limit_n = 1L, skip_n = 2))  %>% expect_equal(5L)
+            expect_silent(vapour_read_names(f, limit_n = 1L, skip_n = 2)) %>% expect_equal(3L)
+            
+            expect_silent(vapour_read_names(f)) %>% expect_length(7L)
             expect_silent(vapour_read_geometry_text(f, limit_n = 3L)) %>% expect_length(3L)
 
+            expect_named(vapour_layer_info(f), c("dsn", "driver", "layer", "layer_names", "fields", "count", 
+                                                 "extent", "projection"))
             expect_silent(vapour_read_extent(f, limit_n = 3L)) %>% unlist(use.names = FALSE) %>% expect_length(12L)
 
             expect_error(vapour_read_attributes(f, limit_n = 5, skip_n = 7), "is 'skip_n' set too high?")
@@ -182,3 +189,26 @@ test_that("sanity prevails", {
   expect_error(vapour_layer_names(""), "Open failed.")
 })
 
+test_that("index geometry read works", {
+          expect_length(vapour_read_geometry_ia(f, ia = c(0, 1)), 2L)
+          expect_error(vapour_read_geometry_ia(f, ia = c(-1, 1)), "ia values < 0") 
+          expect_error(vapour_read_geometry_ia(f, ia = c(NA, 1)), "missing values ia") 
+          expect_silent(vapour_read_geometry_ia(f, ia = c(7))) %>% expect_equivalent(list(NULL)) 
+          expect_length(vapour_read_geometry_ia(f, ia = c(7, 7)), 2L) 
+          expect_length(vapour_read_geometry_ia(f, ia = c(6, 5)), 2L) 
+          
+          
+          expect_length(vapour_read_geometry_ij(f, ij = c(0, 1)), 2L)
+          expect_length(vapour_read_geometry_ij(f, ij = c(3, 5)), 3L)
+          expect_error(vapour_read_geometry_ij(f, ij = c(-1, 1)), "ij values < 0") 
+          expect_error(vapour_read_geometry_ij(f, ij = c(NA, 1)), "missing values ij") 
+          expect_silent(vapour_read_geometry_ij(f, ij = c(6, 7))[2]) %>% expect_equivalent(list(NULL)) 
+          
+          expect_length(vapour_read_geometry_ij(f, ij = c(0, 6)), 7L)
+          expect_error(vapour_read_geometry_ij(f, ij = c(5, 5)), "ij values must not be duplicated") 
+          expect_error(vapour_read_geometry_ij(f, ij = c(5, 4)), "ij values must be increasing")         
+                       
+                                    
+          }
+)
+          

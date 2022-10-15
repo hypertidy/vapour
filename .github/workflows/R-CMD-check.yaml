@@ -1,46 +1,10 @@
-## Github Actions script, this triggers R CMD check testing on each commit on Windows, Linux, MacOS.
-##
-## This was created primarily to CI test MacOS to compare brew and CRAN installs.
-##
-## @mdsumner
-## substantial assistance was provided by @coatless
-##
-## see https://github.com/r-spatial/discuss/wiki/R-packages-that-use-the-OSGEO-stack-in-System-Requirements: for packages
-## that might need this kind of github actions for gdal, geos, proj, netcdf, hdf4/5, etc.
-##
-## NOTES
-##
-## 'matrix' specifies a set of operating system configurations, these can be turned on or off with with the comment,
-##    it takes time to run so if you are churning a lot turn some off
-##   each carries configuration details to pass to the runner (os: and r: at a minimum)
-##
-##  the options used below allow 'brew install' or 'CRAN install' of the *underlying spatial libs* (gdal, proj, geos at minimum), and
-##   the args provide CRAN-specific configuration to *copy the proj/ and gdal/ data directories into the package itself
-##  with GDAL 3.1.1 (a jump up from 2.4.2 for MacOS on CRAN) this script added hdf4, hdf5, netcdf, sqlite and szip from
-##    https://mac.r-project.org/libs-4/ - see discussion https://github.com/r-spatial/discuss/issues/40
-##
-## under 'run' the args list provides a pattern for each of the pre-built CRAN MacOS binaries, these are system libraries that were
-##  specially built for the MacOS R package version on CRAN, we need enough of the unique file name from the list at
-##  https://mac.r-project.org/libs-4/, to find the file, download it, unpack it *into the system*, and clean up.
-##  Commands to do this for just one file would look like this, but our shell loop and list allows more compactness here:
-##
-## curl -O https://mac.R-project.org/libs-4/gdal-2.4.2-darwin.17-x86_64.tar.gz
-## sudo tar fvxz gdal-2.4.2-darwin.17-x86_64.tar.gz -C /usr/local --strip 2
-## rm gdal-2.4.2-darwin.17-x86_64.tar.gz
-##
-## There are two branches for "CRAN" vs. "brew" with if: runner.os == 'macOS' && matrix.config.binary == CRAN/brew, this
-## means our os matrix above will run different code for each case (get the CRAN binaries, or install with brew). Using brew is
-## not supported or recommended, but is very common - it just could be any old version of things depending on when and who is doing it.
-##
-## Below this stuff is a testing section (I was ensuring that the artefacts in proj/ and gdal/ directories were copied in), and
-##  finally you can get the pkgbuld() to build the arch-specific package (.zip, .tgz) to see if the files are copied in as expected.
-## Windows does this using the tools/ process, it copies the libs from rwinlibs/ on github at package-build.
-
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
+    branches: [main, master]
   pull_request:
-    branches:
-      - master
+    branches: [main, master]
 
 name: R-CMD-check
 
@@ -48,135 +12,53 @@ jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
 
-
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {os: windows-latest, r: 'release'}
-          #- {os: macOS-latest, r: 'release', binary: 'CRAN', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
-          - {os: macOS-latest, r: 'devel',   binary: 'CRAN', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
-          #- {os: macOS-latest, r: 'release', binary: 'brew', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
-          - {os: macOS-latest, r: 'devel',   binary: 'brew', args: '--install-args=\"--configure-args=--with-data-copy=yes --with-proj-data=/usr/local/share/proj\"', build_args: ""}
-          #- {os: ubuntu-16.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
-          - {os: ubuntu-18.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
-
+          - {os: macOS-latest,   r: 'release'}
+          - {os: windows-latest, r: 'release', binary: 'rtools'}
+          - {os: windows-latest, r: 'release', binary: 'rwinlib'}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+          - {os: ubuntu-latest,   r: 'oldrel-1'}
 
     env:
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      RSPM: ${{ matrix.config.rspm }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
 
     steps:
-      - uses: actions/checkout@v1
-
-      - uses: r-lib/actions/setup-r@master
-        with:
-          r-version: ${{ matrix.config.r }}
-
-      - uses: r-lib/actions/setup-pandoc@master
-
-      - name: MacOS CRAN-binary system dependencies
-        if: runner.os == 'macOS' && matrix.config.binary == 'CRAN'
-        run: |
-           args=("gdal-3.2.1-darwin.17" "freexl-1.0.6-darwin.17" "geos-3.8.1-darwin.17"  "hdf4-4.2.15-darwin.17" "hdf5-1.12.0-darwin.17"  "libwebp-1.1.0-darwin.17"  "netcdf-4.7.4-darwin.17"  "openjpeg-2.4.0-darwin.17" "openssl-1.1.1h-darwin.17" "proj-7.2.1-darwin.17" "sqlite3-3.32.3-darwin.17" "szip-2.1.1-darwin.17"   "xz-5.2.5-darwin.17")
-           pat=$(echo ${args[@]}|tr " " "|")
-           curl -sL  https://mac.r-project.org/libs-4/ |
-             sed -n 's/.*href=\([^>]*x86_64.tar.gz\).*/\1/p' |
-             grep -E "$pat" |
-             xargs -I % sh -c 'curl https://mac.r-project.org/libs-4/% --output %; sudo tar fvxz % -C /usr/local --strip 2'
-
-      - name: MacOS brew system dependencies
-        if: runner.os == 'macOS' && matrix.config.binary == 'brew'
+      - name: Install macOS system dependencies
+        if: runner.os == 'macOS'
         run: |
            brew install openssl
            brew install proj
            brew install geos
            brew install gdal
+    
+      - uses: actions/checkout@v2
 
+      - uses: r-lib/actions/setup-pandoc@v2
 
-      - name: Query R package dependencies
-        run: |
-          install.packages('remotes')
-          saveRDS(remotes::dev_package_deps(dependencies = TRUE), "depends.Rds", version = 2)
-        shell: Rscript {0}
-
-      - name: Linux system dependencies
-        if: runner.os == 'Linux'
-        env:
-          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc  ## required for sysreqs call below
-        run: |
-          Rscript -e "remotes::install_github('r-hub/sysreqs')"
-          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
-          sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
-          sudo apt update
-          sudo -s eval "$sysreqs"
-
-      - name: Cache R package dependencies
-        if: runner.os != 'Windows'
-        uses: actions/cache@v1
+      - uses: r-lib/actions/setup-r@v2
         with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ hashFiles('depends.Rds') }}
-          restore-keys: ${{ runner.os }}-r-${{ matrix.config.r }}-
-
-      - name: Install R package dependencies
-        run: |
-          library(remotes)
-          deps <- readRDS("depends.Rds")
-          deps[["installed"]] <- vapply(deps[["package"]], remotes:::local_sha, character(1))
-          update(deps)
-          remotes::install_cran("rcmdcheck")
-        shell: Rscript {0}
-
-      - name: R CMD check windows
-        if: runner.os == 'Windows'
-        run: rcmdcheck::rcmdcheck(args = c("--no-manual"), error_on = "warning", check_dir = "check")
-        shell: Rscript {0}
-
-      - name: R CMD check (not Windows)
-        if: runner.os != 'Windows'
-        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "${{ matrix.config.args }}"), error_on = "warning", check_dir = "check", build_args = "${{ matrix.config.build_args }}")
-        shell: Rscript {0}
-
-      # - name: MacOS Configuration diagnostics (GDAL and PROJ data dirs)
-      #   if: runner.os == 'macOS'
-      #   run: |
-      #     remotes::install_local(".", configure.args = "--with-data-copy=yes --with-proj-data=/usr/local/share/proj", force = TRUE)
-      #     library(vapour)
-      #     gd <- Sys.getenv("GDAL_DATA")
-      #     print(sprintf("GDAL_DATA: %s", gd))
-      #     pd <- Sys.getenv("PROJ_LIB")
-      #     print(sprintf("PROJ_LIB: %s", pd))
-      #     print(list.files(system.file("proj", package = "vapour")))
-      #   shell: Rscript {0}
-      #
-      #
-      # - name: Windows Configuration diagnostics (GDAL and PROJ data dirs)
-      #   if: runner.os == 'Windows'
-      #   run: |
-      #     remotes::install_local(".", force = TRUE)
-      #     library(vapour)
-      #     gd <- Sys.getenv("GDAL_DATA")
-      #     print(sprintf("GDAL_DATA: %s", gd))
-      #     pd <- Sys.getenv("PROJ_LIB")
-      #     print(sprintf("PROJ_LIB: %s", pd))
-      #     print(list.files(system.file("proj", package = "vapour")))
-      #   shell: Rscript {0}
-
-#      - name: Build
-#        run: |
-#          pkg_path <- pkgbuild::build(binary = TRUE)
-#          dir.create("build")
-#          file.copy(pkg_path, "build")
-#        shell: Rscript {0}
-
-
-      - name: Upload check results
-        if: failure() #success()
-        uses: actions/upload-artifact@master
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+          rtools-version: '42'
+          
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-          path: check
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - name: ZapRtools
+        if: runner.os == 'windows' && matrix.config.binary == 'rwinlib'
+        run: rm src/Makevars.ucrt
+        
+  
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true

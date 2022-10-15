@@ -1,31 +1,33 @@
 Package: vapour
-Title: Lightweight Access to the 'Geospatial Data Abstraction Library' ('GDAL')
-Version: 0.8.0.9003
+Title: Access to the 'Geospatial Data Abstraction Library' ('GDAL')
+Version: 0.9.0
 Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-2471-7511")), 
-             person("Simon", "Wotherspoon", role = "ctb", comment = "figured out the mechanism for the resampling algorithm"), 
+             person("Simon", "Wotherspoon", role = "ctb", comment = "RasterIO configuration for resampling options"), 
              person("Mark", "Padgham", role = "ctb", comment = "helped get started :)"), 
              person("Edzer", "Pebesma", role = "ctb", comment = "wrote allocate_attribute, copied here from sf"),
              person("Roger", "Bivand", role = "ctb", comment = "wrote configure.ac, adapted here from rgdal"),
-             person("Jim", "Hester", role = "ctb", comment = "wrote CollectorList.h, copied here from fs package"), 
+             person("Jim", "Hester", role = c("ctb", "cph"), comment = "wrote CollectorList.h, copied here from fs package"), 
              person("Timothy", "Keitt", role = c("ctb"), comment = "wrote GetPointsInternal copied here from rgdal2 package"), 
              person("Jeroen", "Ooms", role = c("ctb"), comment = "tweaked build process, provided Windows build tools"), 
              person("Dale", "Maschette", role = c("ctb"), comment = "created the hex logo"), 
              person("Joseph", "Stachelek", role = "ctb"), 
              person("Even", "Rouault", role = "ctb", comment = "primary author of the COG format and its use of the GDALwarp app-library, example code used by the warper function here"), 
-             person("Robert", "Hijmans", role = "ctb", comment = "wrote some source in the warper, terra package used as example/inspiration"))
-Description: Provides low-level access to 'GDAL' functionality for R packages.  
+             person("Robert", "Hijmans", role = "ctb", comment = "code in terra package used as example/inspiration"))
+Description: Provides low-level access to 'GDAL' functionality.  
   'GDAL' is the 'Geospatial Data Abstraction Library' a translator for raster and vector geospatial data formats 
   that presents a single raster abstract data model and single vector abstract data model to the calling application 
-  for all supported formats <https://gdal.org/>. 
+  for all supported formats <https://gdal.org/>. This package is focussed on providing exactly and only what GDAL does, to enable
+  developing further tools. 
 Depends: R (>= 3.3.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 LinkingTo: Rcpp
 Imports:
+    jsonlite,
     Rcpp,
     utils
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 Roxygen: list(markdown = TRUE)
 Suggests:
     testthat,
@@ -33,7 +35,7 @@ Suggests:
     markdown,
     rmarkdown,
     spelling
-SystemRequirements: GDAL (>= 2.0.1), PROJ.4 (>= 4.8.0), C++11
+SystemRequirements: libgdal-dev, GDAL (>= 2.2.3), PROJ (>= 4.8.0), C++11
 VignetteBuilder: knitr
 URL: https://github.com/hypertidy/vapour
 BugReports: https://github.com/hypertidy/vapour/issues

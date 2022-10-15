@@ -79,11 +79,9 @@ NULL
 #' @docType data
 #' @name sst_c
 #' @examples
-#' ## library(sf)
-#' ## plot(sst_c)
 #' f <- system.file("extdata/sst_c.gpkg", package = "vapour")
 #'
-#' ## create an equivalent but class-less form of sst_c  with GeoJSON rather than sf sfc format
+#' ## create a class-less form of the data in the 'sst_c.gpkg' file  with GeoJSON geometry
 #' atts <- vapour_read_fields(f)
 #' dat <- as.data.frame(atts, stringsAsFactors = FALSE)
 #' dat[["json"]] <- vapour_read_geometry_text(f)

@@ -2049,6 +2049,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+
 # as at 2021-08-12 sf uses the following flags in src/
 #if ((PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 1) || PROJ_VERSION_MAJOR > 7)
 #if (GDAL_VERSION_MINOR >= 2 || GDAL_VERSION_MAJOR > 2)
@@ -3504,7 +3505,7 @@ cat > gdal_test.cpp <<_EOCONF
 #ifdef __cplusplus
 extern "C" {
 #endif
-int main() {
+int main(void) {
 GDALAllRegister();
 }
 #ifdef __cplusplus
@@ -3669,8 +3670,8 @@ $as_echo "$as_me: Install failure: compilation and/or linkage problems." >&6;}
    as_fn_error $? "cannot link projection code" "$LINENO" 5
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: checking whether PROJ is available fur running:" >&5
-$as_echo_n "checking GDAL: checking whether PROJ is available fur running:... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: checking whether PROJ is available for running:" >&5
+$as_echo_n "checking GDAL: checking whether PROJ is available for running:... " >&6; }
 ./gdal_proj
 if test `echo $?` -ne 0 ; then
 gdal_has_proj=no
@@ -3882,7 +3883,7 @@ cat > proj_conf_test.c <<_EOCONF
 #include <stdlib.h>
 #include <proj_api.h>
 
-int main() {
+int main(void) {
     printf("%d\n", PJ_VERSION);
     exit(0);
 }
@@ -3893,7 +3894,7 @@ cat > proj_conf_test.cpp <<_EOCONF
 #include <stdlib.h>
 #include <proj.h>
 
-int main() {
+int main(void) {
 	proj_context_create();
     exit(0);
 }
@@ -3920,7 +3921,7 @@ cat > proj_conf_test.c <<_EOCONF
 #include <stdlib.h>
 #include <proj.h>
 
-int main() {
+int main(void) {
     printf("%d.%d.%d\n", PROJ_VERSION_MAJOR, PROJ_VERSION_MINOR, PROJ_VERSION_PATCH);
     exit(0);
 }
@@ -3953,7 +3954,7 @@ cat > proj_conf_test.c <<_EOCONF
 FILE *pj_open_lib(projCtx, const char *, const char *);
 #endif
 
-int main() {
+int main(void) {
 #if PJ_VERSION <= 480
     FILE *fp;
 #else
@@ -4012,7 +4013,7 @@ cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
 #include <proj_api.h>
 
-int main() {
+int main(void) {
     PAFile fp;
     projCtx ctx;
     ctx = pj_get_default_ctx();
@@ -4060,7 +4061,7 @@ cat > proj_conf_test.c <<_EOCONF
 FILE *pj_open_lib(projCtx, const char *, const char *);
 #endif
 
-int main() {
+int main(void) {
 #if PJ_VERSION <= 480
     FILE *fp;
 #else

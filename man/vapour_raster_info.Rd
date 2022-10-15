@@ -30,9 +30,9 @@ The structural metadata are
 \describe{
 \item{extent}{the extent of the data, xmin, xmax, ymin, ymax - these are the lower left and upper right corners of pixels}
 \item{geotransform}{the affine transform}
-\item{dimXY}{dimensions x-y, columns*rows}
+\item{dimension}{dimensions x-y, columns*rows}
 \item{minmax}{numeric values of the computed min and max from the first band (optional)}
-\item{tilesXY}{dimensions x-y of internal tiling scheme}
+\item{block}{dimensions x-y of internal tiling scheme}
 \item{projection}{text version of map projection parameter string}
 \item{bands}{number of bands in the dataset}
 \item{projstring}{the proj string version of 'projection'}

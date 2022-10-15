@@ -28,3 +28,6 @@
 ^Jenkinsfile$
 ^gdalwmscache$
 ^proj_conf.*$
+^CRAN-SUBMISSION$
+^Dockerfile$
+^inst/ci$
