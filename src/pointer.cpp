@@ -3,6 +3,8 @@ using namespace Rcpp;
 #include "gdal_priv.h"
 #include "ogrsf_frmts.h"
 
+// seee some examples in https://github.com/hypertidy/vapour/issues/127#issuecomment-1279661138
+
 // [[Rcpp::export]]
 SEXP gh_GDALOpenEx(CharacterVector dsn) {
   
