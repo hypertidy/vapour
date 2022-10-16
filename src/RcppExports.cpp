@@ -665,14 +665,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // gh_GDALRasterio
-SEXP gh_GDALRasterio(SEXP xp, IntegerVector window);
-RcppExport SEXP _vapour_gh_GDALRasterio(SEXP xpSEXP, SEXP windowSEXP) {
+SEXP gh_GDALRasterio(SEXP xp, IntegerVector window, CharacterVector resample);
+RcppExport SEXP _vapour_gh_GDALRasterio(SEXP xpSEXP, SEXP windowSEXP, SEXP resampleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type window(windowSEXP);
-    rcpp_result_gen = Rcpp::wrap(gh_GDALRasterio(xp, window));
+    Rcpp::traits::input_parameter< CharacterVector >::type resample(resampleSEXP);
+    rcpp_result_gen = Rcpp::wrap(gh_GDALRasterio(xp, window, resample));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -881,7 +882,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_raster_gdalinfo_app_cpp", (DL_FUNC) &_vapour_raster_gdalinfo_app_cpp, 2},
     {"_vapour_raster_vrt_cpp", (DL_FUNC) &_vapour_raster_vrt_cpp, 6},
     {"_vapour_gh_GDALOpenEx", (DL_FUNC) &_vapour_gh_GDALOpenEx, 1},
-    {"_vapour_gh_GDALRasterio", (DL_FUNC) &_vapour_gh_GDALRasterio, 2},
+    {"_vapour_gh_GDALRasterio", (DL_FUNC) &_vapour_gh_GDALRasterio, 3},
     {"_vapour_gh_GDALGetGeoTransform", (DL_FUNC) &_vapour_gh_GDALGetGeoTransform, 1},
     {"_vapour_gh_GDALGetRasterSize", (DL_FUNC) &_vapour_gh_GDALGetRasterSize, 1},
     {"_vapour_gh_GDALClose", (DL_FUNC) &_vapour_gh_GDALClose, 1},

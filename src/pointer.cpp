@@ -3,6 +3,7 @@ using namespace Rcpp;
 #include "gdal_priv.h"
 #include "ogrsf_frmts.h"
 
+
 // seee some examples in https://github.com/hypertidy/vapour/issues/127#issuecomment-1279661138
 
 // [[Rcpp::export]]
@@ -14,8 +15,7 @@ SEXP gh_GDALOpenEx(CharacterVector dsn) {
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_READONLY, NULL, NULL, NULL);
   //poDS = (GDALDataset*) GDALOpen(dsn[0], GDAL_OF_READONLY);
-  
- 
+
   if( poDS == NULL )
   {
     Rprintf("Problem with 'dsn' input: %s\n", dsn[0]);
@@ -56,7 +56,7 @@ inline GDALRasterIOExtraArg init_resample_alg(CharacterVector resample) {
   return psExtraArg;
 }
 // [[Rcpp::export]]
-SEXP gh_GDALRasterio(SEXP xp, IntegerVector window) {
+SEXP gh_GDALRasterio(SEXP xp, IntegerVector window, CharacterVector resample) {
   
   Rcpp::XPtr<GDALDataset> ptr(xp);  // create pointer to an GDAL object and
 
@@ -91,7 +91,7 @@ SEXP gh_GDALRasterio(SEXP xp, IntegerVector window) {
   size_t n_values_out = static_cast<size_t>(outXSize * outYSize) * nBands;
  
   GDALRasterIOExtraArg psExtraArg;
-  psExtraArg = init_resample_alg("nearestneighbour");
+  psExtraArg = init_resample_alg((char *)resample[0]);
   CPLErr err;
   
   std::vector<double> double_scanline( n_values_out);

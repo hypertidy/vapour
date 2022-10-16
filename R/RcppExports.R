@@ -193,8 +193,8 @@ gh_GDALOpenEx <- function(dsn) {
     .Call('_vapour_gh_GDALOpenEx', PACKAGE = 'vapour', dsn)
 }
 
-gh_GDALRasterio <- function(xp, window) {
-    .Call('_vapour_gh_GDALRasterio', PACKAGE = 'vapour', xp, window)
+gh_GDALRasterio <- function(xp, window, resample) {
+    .Call('_vapour_gh_GDALRasterio', PACKAGE = 'vapour', xp, window, resample)
 }
 
 gh_GDALGetGeoTransform <- function(xp) {

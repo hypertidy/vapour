@@ -2,14 +2,14 @@ library(R6)
 GDALDataset <- R6Class("GDALDataset",
                   public = list(
                     ptr = NULL,
+                    dsn = NULL,
                     meta = NULL,
-                    initialize = function(ptr = new("externalptr"), meta = list()) {
-                      self$ptr <- ptr
+                    initialize = function(dsn = character(), meta = list()) {
+                      self$ptr <- vapour:::gh_GDALOpenEx(dsn)
+                      self$dsn <- dsn
                       self$meta <- meta
                       self$greet()
-                    
                     },
-                    
                     check_ptr = function() {
                       isnull <- function(pointer){
                         a <- attributes(pointer)
@@ -18,16 +18,43 @@ GDALDataset <- R6Class("GDALDataset",
                         attributes(pointer) <- a
                         return(out)
                       }
-                      if (isnull(self$ptr)) stop("pointer is stale")
+                      
+                      ## if we check and the pointer is nil, open it up again
+                      if (isnull(self$ptr)) {
+                        message(sprintf("refreshing external pointer from 'dsn': %s ", 
+                                        self$dsn))
+                        self$ptr <- vapour:::gh_GDALOpenEx(self$dsn)
+                      }
+                        
                     },
-                    set_ptr = function(val) {
+                    Read = function(dimension= NULL, extent = NULL, resample = "nearestneighbour") {
+                      if (!is.null(extent)) {
+                        message("extent argument not yet supported")
+                      }
+                      if (is.null(dimension)) {
+                        ## FIXME: modify to aspect ratio of source
+                        dimension <- c(1024, 1024)
+                      }
+                      srcdim <- self$dimension()
+                      window <- c(0L, 0L, 
+                                  as.integer(c(srcdim[1L], srcdim[2L], dimension[1L], dimension[2L])))
+                      matrix(vapour:::gh_GDALRasterio(self$ptr, window, resample), dimension[2L], byrow = TRUE)
+                                            
+                    },
+                     set_ptr = function(val) {
                       self$ptr <- val
                     },
                     greet = function() {
                       self$check_ptr()
-                      cat(paste0(c(self$size(), self$geotransform()), collapse = ","), "\n")
+                      cat(sprintf("DSN       : %s\n", self$dsn))
+                      dimension <- self$dimension()
+                      cat(sprintf("dimension : %i, %i (ncol, nrow)\n", 
+                                  dimension[1L], dimension[2L]))
+                      ex <- self$extent()
+                      cat(sprintf("extent    : %.1f,%.1f,%.1f,%.1f (xmin, xmax, ymin, ymax) \n", ex[1L], ex[2L], ex[3L], ex[4L]))
+                      
                     },
-                    size = function() {
+                    dimension = function() {
                       self$check_ptr()
                       vapour:::gh_GDALGetRasterSize(self$ptr)
                     },
@@ -35,13 +62,27 @@ GDALDataset <- R6Class("GDALDataset",
                         self$check_ptr()
                         vapour:::gh_GDALGetGeoTransform(self$ptr)
          
+                      },
+                    extent = function() {
+                      x <- self$geotransform()
+                      dim <- self$dimension()
+                      xx <- c(x[1], x[1] + dim[1] * x[2])
+                      yy <- c(x[4] + dim[2] * x[6], x[4])
+                      c(xx, yy)
                     }
                   )
 )
 
 f <- "inst/extdata/volcano.tif"
-ann <- GDALDataset$new(vapour:::gh_GDALOpenEx(f), list())
+ann <- GDALDataset$new(f, list())
 
-
-ann$size()
+dsn <- "NETCDF:/rdsi/PUBLIC/raad/data/www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr/198109/oisst-avhrr-v02r01.19810901.nc:sst"
+ann$dimension()
 ann$geotransform()
+library(vapour)
+
+elev <- "/vsicurl/https://github.com/rspatial/terra/raw/master/inst/ex/elev.tif"
+d <- GDALDataset$new(elev)
+
+
+ximage::ximage(d$Read(d$dimension() * 6, resample = "lanczos"), extent = d$extent(), zlim = c(0, 550))
