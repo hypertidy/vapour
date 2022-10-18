@@ -2,13 +2,20 @@ library(R6)
 GDALDataset <- R6Class("GDALDataset",
                   public = list(
                     ptr = NULL,
-                    dsn = NULL,
+                    dsn = NULL, 
                     meta = NULL,
                     initialize = function(dsn = character(), meta = list()) {
-                      self$ptr <- vapour:::gh_GDALOpenEx(dsn)
-                      self$dsn <- dsn
+                      ## a bit weird but easy for now
+                      if (inherits(dsn, "externalptr")) {
+                        self$ptr <- dsn
+                        self$dsn <- vapour:::gh_GDALGetDescription(self$ptr)
+                      } else {
+                        self$ptr <- vapour:::gh_GDALOpenEx(dsn)
+                        self$dsn <- dsn  ## our description might get lost (?)
+                      }
+                      
                       self$meta <- meta
-                      self$greet()
+                      self$info()
                     },
                     check_ptr = function() {
                       isnull <- function(pointer){
@@ -21,6 +28,9 @@ GDALDataset <- R6Class("GDALDataset",
                       
                       ## if we check and the pointer is nil, open it up again
                       if (isnull(self$ptr)) {
+                        if (self$dsn == "") {
+                          stop("cannot refresh GDALDataset, no DSN/description/file-list")
+                        }
                         message(sprintf("refreshing external pointer from 'dsn': %s ", 
                                         self$dsn))
                         self$ptr <- vapour:::gh_GDALOpenEx(self$dsn)
@@ -44,9 +54,15 @@ GDALDataset <- R6Class("GDALDataset",
                      set_ptr = function(val) {
                       self$ptr <- val
                     },
-                    greet = function() {
+                    info = function() {
                       self$check_ptr()
-                      cat(sprintf("DSN       : %s\n", self$dsn))
+                      lst <- self$dsnlist()
+                      if (length(lst) < 1 || nchar(lst) < 1) {
+                        lst <- "<placeholder: try `$description` for input DSN string>"
+                      } else {
+                        lst <- str(lst,  nchar.max = 378)
+                      }
+                      cat(sprintf("DSN       : %s\n", lst))
                       dimension <- self$dimension()
                       cat(sprintf("dimension : %i, %i (ncol, nrow)\n", 
                                   dimension[1L], dimension[2L]))
@@ -69,12 +85,25 @@ GDALDataset <- R6Class("GDALDataset",
                       xx <- c(x[1], x[1] + dim[1] * x[2])
                       yy <- c(x[4] + dim[2] * x[6], x[4])
                       c(xx, yy)
+                    },
+                    dsnlist = function() {
+                      vapour:::gh_GDALGetFileList(self$ptr)
+                    },
+                    filelist = function() {
+                      self$dsnlist()
+                    },
+                    description = function() {
+                      desc <- vapour:::gh_GDALGetDescription(self$ptr)
+                      if (nchar(desc) > 0) desc else self$dsn
                     }
                   )
 )
+f <- raadfiles::oisst_daily_files()$fullname[1]
 
-f <- "inst/extdata/volcano.tif"
-ann <- GDALDataset$new(f, list())
+sds <- vapour_vrt(f, sds = "sst", projection = "OGC:CRS84")
+
+#f <- "inst/extdata/volcano.tif"
+ann <- GDALDataset$new(sds, list())
 
 dsn <- "NETCDF:/rdsi/PUBLIC/raad/data/www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr/198109/oisst-avhrr-v02r01.19810901.nc:sst"
 ann$dimension()
