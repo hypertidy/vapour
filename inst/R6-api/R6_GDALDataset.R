@@ -92,14 +92,17 @@ GDALDataset <- R6Class("GDALDataset",
                     filelist = function() {
                       self$dsnlist()
                     },
+                    crs = function() {
+                      "nobody knows yet!"
+                    }
                     description = function() {
                       desc <- vapour:::gh_GDALGetDescription(self$ptr)
                       if (nchar(desc) > 0) desc else self$dsn
                     }
                   )
 )
-f <- raadfiles::oisst_daily_files()$fullname[1]
-
+#f <- raadfiles::oisst_daily_files()$fullname[1]
+f <- "/rdsi/PUBLIC/raad/data/www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr/198109/oisst-avhrr-v02r01.19810901.nc"
 sds <- vapour_vrt(f, sds = "sst", projection = "OGC:CRS84")
 
 #f <- "inst/extdata/volcano.tif"

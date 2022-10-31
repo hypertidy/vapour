@@ -28,21 +28,64 @@ SEXP gh_GDALOpenEx(CharacterVector dsn) {
 }
 
 // [[Rcpp::export]]
+SEXP gh_GDALWarpDataset(SEXP xp,  IntegerVector dimension, NumericVector extent, CharacterVector projection) {
+  
+  Rcpp::XPtr<GDALDataset> ptr(xp);  // create pointer to an GDAL object and
+  
+  // we always provide extent and dimension, crs is optional and just means subset/decimate
+  double dfMinX = extent[0];
+  double dfMaxX = extent[1];
+  double dfMinY = extent[2];
+  double dfMaxY = extent[3];
+  
+  char** papszArg = nullptr;
+  
+  papszArg = CSLAddString(papszArg, "-of");
+  papszArg = CSLAddString(papszArg, "VRT");
+  
+  papszArg = CSLAddString(papszArg, "-te");
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
+  
+  // we otherwise set a dud dimension, the user didn't set it (so they get native for the extent)
+  if (dimension.size() > 1) {
+    int nXSize = dimension[0];
+    int nYSize = dimension[1];
+    papszArg = CSLAddString(papszArg, "-ts");
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
+  }
+  
+  // should check the source is ok
+  if (!EQUAL(projection[0], "")) {
+    papszArg = CSLAddString(papszArg, "-t_srs"); 
+    papszArg = CSLAddString(papszArg, (char *) projection[0]); 
+  }
+  // papszArg = CSLAddString(papszArg, "-r");
+  // papszArg = CSLAddString(papszArg, resample[0]);
+  
+  // for (int gwopt = 0; gwopt < options.length(); gwopt++) {
+  //   papszArg = CSLAddString(papszArg, options[gwopt]);
+  // }
+  auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
+  CSLDestroy(papszArg);
+  GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
+  
+  GDALDataset* poDS = (GDALDataset*)GDALWarp( "", nullptr,
+                       static_cast<int>(dsn.size()), poaDS,
+                       psOptions, nullptr);
+  
+  Rcpp::XPtr<GDALDataset> ptr(poDS);
+  
+  return ptr;
+}
+// [[Rcpp::export]]
 SEXP gh_GDALWarp(CharacterVector dsn, IntegerVector sds, IntegerVector dimension, NumericVector extent, CharacterVector projection) {
   
-  // GDALAllRegister();
-  // // create pointer to an GDAL object and
-  // // wrap it as an external pointer
-  // GDALDataset       *poDS;
-  // poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_READONLY, NULL, NULL, NULL);
-  // //poDS = (GDALDataset*) GDALOpen(dsn[0], GDAL_OF_READONLY);
-  GDALDatasetH* poaDS = gdalraster::gdalH_open_multiple(dsn, sds); 
-  // if( poaDS == NULL )
-  // {
-  //   Rprintf("Problem with 'dsn' input: %s\n", (char *)dsn[0]);
-  //   Rcpp::stop("Open failed.\n");
-  // }
-  
+ GDALDatasetH* poaDS = gdalraster::gdalH_open_multiple(dsn, sds); 
+
   // we always provide extent and dimension, crs is optional and just means subset/decimate
   double dfMinX = extent[0];
   double dfMaxX = extent[1];
