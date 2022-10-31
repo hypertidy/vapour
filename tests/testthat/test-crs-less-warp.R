@@ -23,7 +23,6 @@ test_that("with with no source crs works", {
   info <- vapour_raster_info(vrt)
   expect_silent(im <- vapour_warp_raster_dbl(vrt, extent = ex, dimension = info$dimension, projection = lcc
                                , transformation_options = c("SRC_METHOD=NO_GEOTRANSFORM")))
-  ximage::ximage(matrix(im, info$dimension[2L], byrow = TRUE), extent = ex)
   
   ex <- c(-180, 180, -90, 90)
   dm <- c(512, 1024)
@@ -31,8 +30,5 @@ test_that("with with no source crs works", {
   vapour::vapour_set_config("GDAL_NETCDF_BOTTOMUP", 'NO')
   expect_silent(  im <- vapour_warp_raster_dbl(vrt, extent = ex, dimension = dm, projection = "OGC:CRS84"
                               , transformation_options = c("SRC_METHOD=GEOLOC_ARRAY")))
-graphics.off()
-    ximage::ximage(matrix(im, dm[2], byrow = T)[dm[2]:1, ], extent = ex, col = hcl.colors(200))
 
-maps::map(add = TRUE)  
 })
