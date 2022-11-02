@@ -1,15 +1,13 @@
 ## vapour 0.9.0
 
-Resubmission, failures previous picked up in UBSAN incorrect use of NaN for raw/integer. I think I've fixed it by removing the offending code
-which couldn't have worked and is only relevant when a user specifies an output type - so they get what they ask for. 
+Resubmission after archiving. I've tested for lossy casts on clang with -Wconversion. 
 
 Thank you! 
 
 ## Test environments
 
-* win-builder (devel)
+* win-builder (devel and release)
 * Linux ubuntu 4.2.1
-* Rhub:  macos-highsierra-release-cran
 
 ## R CMD check results
 
@@ -17,9 +15,5 @@ Thank you!
 
 There is a note about the size of installed directories  because 
  of the GDAL and PROJ folders. 
-
-## Reverse dependenices
-
-The single revdep 'lazyraster' passes check with this version. 
 
 

@@ -665,7 +665,8 @@ inline List gdal_read_band_values(GDALDataset *hRet,
         }
       }
       R_xlen_t isi;
-      for (isi = 0; isi < (double_scanline.size()); isi++) {
+      
+      for (isi = 0; isi < (static_cast<R_xlen_t>(double_scanline.size())); isi++) {
         dval = double_scanline[static_cast<size_t>(isi)];
         if (hasScale) dval = dval * scale;
         if (hasOffset) dval = dval + offset;
@@ -699,7 +700,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
         
       }
       R_xlen_t isi;
-      for (isi = 0; isi < (integer_scanline.size()); isi++) {
+      for (isi = 0; isi < (static_cast<R_xlen_t>(integer_scanline.size())); isi++) {
         dval = integer_scanline[static_cast<size_t>(isi)];
        // if (hasScale) dval = dval * scale;
       //  if (hasOffset) dval = dval + offset;
@@ -723,7 +724,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
 
    
       R_xlen_t isi;
-      for (isi = 0; isi < (byte_scanline.size()); isi++) {
+      for (isi = 0; isi < (static_cast<R_xlen_t>(byte_scanline.size())); isi++) {
         res[isi] = byte_scanline[static_cast<size_t>(isi)];
       }
       outlist[iband] = res;
@@ -846,7 +847,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
         }
       }
       R_xlen_t isi;
-      for (isi = 0; isi < (double_scanline.size()); isi++) {
+      for (isi = 0; isi < (static_cast<R_xlen_t>(double_scanline.size())); isi++) {
         dval = double_scanline[static_cast<size_t>(isi)];
         if (hasScale) dval = dval * scale;
         if (hasOffset) dval = dval + offset;
@@ -879,7 +880,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
         
       }
       R_xlen_t isi;
-      for (isi = 0; isi < (integer_scanline.size()); isi++) {
+      for (isi = 0; isi < (static_cast<R_xlen_t>(integer_scanline.size())); isi++) {
         dval = integer_scanline[static_cast<size_t>(isi)];
         // if (hasScale) dval = dval * scale;
         // if (hasOffset) dval = dval + offset;
@@ -908,7 +909,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
         
       }
       R_xlen_t isi;
-      for (isi = 0; isi < (byte_scanline.size()); isi++) {
+      for (isi = 0; isi < (static_cast<R_xlen_t>(byte_scanline.size())); isi++) {
         res[isi] = byte_scanline[static_cast<size_t>(isi)];
       }
       outlist[0] = res;
