@@ -663,6 +663,8 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport SEXP _rcpp_module_boot_GDALDataset();
+
 static const R_CallMethodDef CallEntries[] = {
     {"_vapour_set_gdal_config_cpp", (DL_FUNC) &_vapour_set_gdal_config_cpp, 2},
     {"_vapour_get_gdal_config_cpp", (DL_FUNC) &_vapour_get_gdal_config_cpp, 1},
@@ -711,6 +713,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_raster_gdalinfo_app_cpp", (DL_FUNC) &_vapour_raster_gdalinfo_app_cpp, 2},
     {"_vapour_raster_vrt_cpp", (DL_FUNC) &_vapour_raster_vrt_cpp, 6},
     {"_vapour_raster_warp_file_cpp", (DL_FUNC) &_vapour_raster_warp_file_cpp, 11},
+    {"_rcpp_module_boot_GDALDataset", (DL_FUNC) &_rcpp_module_boot_GDALDataset, 0},
     {NULL, NULL, 0}
 };
 

@@ -60,8 +60,10 @@
 #' @name vapour-package
 #' @aliases vapour
 #' @docType package
-#' @useDynLib vapour
+#' @useDynLib vapour, .registration=TRUE
 #' @importFrom Rcpp sourceCpp
+#' @importFrom Rcpp evalCpp setRcppClass
+#' @importFrom methods new
 NULL
 
 #' SST contours

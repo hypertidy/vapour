@@ -3,6 +3,10 @@
 .vapour_cache <- new.env(FALSE, parent=globalenv())
 
 
+#GDALDataset <- Rcpp::Module("class_GDALDataset", PACKAGE = "vapour")
+#' @importFrom methods new
+#GDALDataset <- Rcpp::setRcppClass("GDALDataset")
+
 .onLoad = function(libname, pkgname) {
   vapour_load_gdal()
 }
