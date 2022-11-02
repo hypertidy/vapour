@@ -27,7 +27,7 @@ RUN export MAKEFLAGS=-j15
 RUN R -e 'options(Ncpus = 15); install.packages("remotes"); remotes::install_cran(c("markdown", "spelling", "jsonlite"));'
 
 #docker build . -t hypertidy/clang-wconversion
-#docker run -it --rm -v $(pwd):/vapour  <imagename>
+#docker run -it --rm -v $(pwd):/vapour  hypertidy/clang-wconversion
 
 ## now edit src/Makevars.in to put -Wconversion ito CPPFLAGS, and: 
 #R CMD build vapour --no-build-vignettes
