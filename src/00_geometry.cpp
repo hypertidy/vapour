@@ -3,6 +3,9 @@
 
 using namespace Rcpp;
 
+
+constexpr int MAX_INT =  std::numeric_limits<int>::max ();
+
 // [[Rcpp::export]]
 NumericVector feature_count_gdal_cpp(CharacterVector dsn,  // double, could be a lot of features
                                     IntegerVector layer, CharacterVector sql, NumericVector ex) {
@@ -141,17 +144,16 @@ List read_fields_gdal_cpp(CharacterVector dsn,
                           NumericVector ex,
                           CharacterVector fid_column_name) {
   
-  
+  NumericVector ij(2); 
+  ij[0] = 0; 
   if (limit_n[0] == 0 && skip_n[0] == 0) {
-    return gdalgeometry::dsn_read_fields_all(dsn, layer, sql, ex, fid_column_name);
-    
+       
   } else {
-    NumericVector ij(2); 
     ij[0] = (double) skip_n[0];
-    ij[1] = (double) (limit_n[0] + skip_n[0] - 1);
-    return gdalgeometry::dsn_read_fields_ij(dsn, layer, sql, ex, fid_column_name, ij);
-    
+    ij[1] = (double) (limit_n[0] + skip_n[0]);
   }
+  return gdalgeometry::dsn_read_fields_ij(dsn, layer, sql, ex, fid_column_name, ij);
+  
 }
 
 // [[Rcpp::export]]

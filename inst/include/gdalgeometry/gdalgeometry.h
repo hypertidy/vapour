@@ -53,10 +53,10 @@ inline CharacterVector gdal_geometry_txt(OGRFeature *poFeature, CharacterVector 
   return txt;
 }
 inline IntegerVector gdal_geometry_type(OGRFeature*poFeature) {
-    OGRwkbGeometryType gtyp = OGR_G_GetGeometryType( poFeature->GetGeometryRef());
-    Rcpp::IntegerVector r_gtyp = Rcpp::IntegerVector(1);
-     r_gtyp[0] = (int)gtyp;
-    return r_gtyp;
+  OGRwkbGeometryType gtyp = OGR_G_GetGeometryType( poFeature->GetGeometryRef());
+  Rcpp::IntegerVector r_gtyp = Rcpp::IntegerVector(1);
+  r_gtyp[0] = (int)gtyp;
+  return r_gtyp;
 }
 inline NumericVector gdal_geometry_extent(OGRFeature *poFeature) {
   OGREnvelope env;
@@ -89,7 +89,7 @@ inline NumericVector layer_read_fids_all(OGRLayer *poLayer) {
     //Rprintf("force count\n");
     nFeature = gdallibrary::force_layer_feature_count(poLayer);
   }
-
+  
   NumericVector out(nFeature);
   std::fill( out.begin(), out.end(), NumericVector::get_na() );
   OGRFeature *poFeature;
@@ -104,7 +104,7 @@ inline NumericVector layer_read_fids_all(OGRLayer *poLayer) {
 
 inline NumericVector dsn_read_fids_all(CharacterVector dsn, IntegerVector layer,
                                        CharacterVector sql, NumericVector ex) {
-
+  
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
@@ -138,15 +138,15 @@ inline NumericVector layer_read_fids_ij(OGRLayer *poLayer, NumericVector ij) {
   if (cnt < out.length()) {
     Rcpp::warning("not as many FIDs as requested");
   }
-
-
+  
+  
   return out;
 }
 
 inline NumericVector dsn_read_fids_ij(CharacterVector dsn, IntegerVector layer,
                                       CharacterVector sql, NumericVector ex,
                                       NumericVector ij) {
-
+  
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
@@ -165,7 +165,7 @@ inline NumericVector dsn_read_fids_ij(CharacterVector dsn, IntegerVector layer,
 
 
 inline NumericVector layer_read_fids_ia(OGRLayer *poLayer, NumericVector ia) {
-
+  
   NumericVector out(ia.length());
   std::fill( out.begin(), out.end(), NumericVector::get_na() );
   OGRFeature *poFeature;
@@ -188,7 +188,7 @@ inline NumericVector layer_read_fids_ia(OGRLayer *poLayer, NumericVector ia) {
 inline NumericVector dsn_read_fids_ia(CharacterVector dsn, IntegerVector layer,
                                       CharacterVector sql, NumericVector ex,
                                       NumericVector ia) {
-
+  
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
@@ -221,7 +221,7 @@ inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
     //Rprintf("force count\n");
     nFeature = gdallibrary::force_layer_feature_count(poLayer);
   }
-
+  
   List out(nFeature);
   R_xlen_t ii = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
@@ -244,7 +244,7 @@ inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
     if (format[0] == "type") {
       out[ii] = gdal_geometry_type(poFeature);
     }
-
+    
     OGRFeature::DestroyFeature(poFeature);
     ii++;
   }
@@ -254,7 +254,7 @@ inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
 inline List dsn_read_geom_all(CharacterVector dsn, IntegerVector layer,
                               CharacterVector sql, NumericVector ex,
                               CharacterVector format) {
-
+  
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
@@ -277,7 +277,7 @@ inline List dsn_read_geom_all(CharacterVector dsn, IntegerVector layer,
 
 inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, NumericVector ij) {
   OGRFeature *poFeature;
-
+  
   poLayer->ResetReading();
   R_xlen_t nFeature;
   nFeature = (R_xlen_t)ij[1] - (R_xlen_t)ij[0] + 1;
@@ -286,7 +286,7 @@ inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, Numeri
   R_xlen_t cnt = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
     if (ii == static_cast<R_xlen_t>(ij[0]) || (ii > static_cast<R_xlen_t>(ij[0]) && ii <= static_cast<R_xlen_t>(ij[1]))) {
-
+      
       // work through format
       // FIXME: get rid of "geometry"
       if ((format[0] == "wkb") || (format[0] == "geometry")) {
@@ -307,7 +307,7 @@ inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, Numeri
         out[ii] = gdal_geometry_type(poFeature);
       }
       cnt++;
-
+      
     }
     ii++;
     OGRFeature::DestroyFeature(poFeature);
@@ -318,7 +318,7 @@ inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, Numeri
 inline List dsn_read_geom_ij(CharacterVector dsn, IntegerVector layer,
                              CharacterVector sql, NumericVector ex,
                              CharacterVector format, NumericVector ij) {
-
+  
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
@@ -340,16 +340,16 @@ inline List dsn_read_geom_ij(CharacterVector dsn, IntegerVector layer,
 
 inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, NumericVector ia) {
   OGRFeature *poFeature;
-
+  
   poLayer->ResetReading();
-
+  
   List out(ia.length());
   R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
-
+  
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
     if (ii == static_cast<R_xlen_t>(ia[cnt])) {
-
+      
       // work through format
       // FIXME: get rid of "geometry"
       if ((format[0] == "wkb") || (format[0] == "geometry")) {
@@ -370,7 +370,7 @@ inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, Numeri
         out[ii] = gdal_geometry_type(poFeature);
       }
       cnt++;
-
+      
     }
     ii++;
     OGRFeature::DestroyFeature(poFeature);
@@ -389,7 +389,7 @@ inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, Numeri
 inline List dsn_read_geom_ia(CharacterVector dsn, IntegerVector layer,
                              CharacterVector sql, NumericVector ex,
                              CharacterVector format, NumericVector ia) {
-
+  
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
@@ -411,9 +411,9 @@ inline List dsn_read_geom_ia(CharacterVector dsn, IntegerVector layer,
 inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, NumericVector fa) {
   OGRFeature *poFeature;
   //poLayer->ResetReading();
-
+  
   List out(fa.length());
-
+  
   for (R_xlen_t ii = 0; ii < fa.length(); ii++) {
     GIntBig feature_id = (GIntBig)fa[ii];
     poFeature = poLayer->GetFeature(feature_id);
@@ -444,7 +444,7 @@ inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, Numeri
 inline List dsn_read_geom_fa(CharacterVector dsn, IntegerVector layer,
                              CharacterVector sql, NumericVector ex,
                              CharacterVector format, NumericVector fa) {
-
+  
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
@@ -473,17 +473,17 @@ inline List layer_read_fields_all(OGRLayer *poLayer, CharacterVector fid_column_
     //Rprintf("force count\n");
     nFeature = gdallibrary::force_layer_feature_count(poLayer);
   }
-
+  
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = false;
   List out = gdallibrary::allocate_fields_list(poFDefn, nFeature, int64_as_string, fid_column_name);
-
+  
   OGRFeature *poFeature;
   R_xlen_t ii = 0;
   int iField;
-
+  
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-
+    
     // FIXME copy the wider field support from sf (but how to make this a function)
     for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
     {
@@ -493,21 +493,21 @@ inline List layer_read_fields_all(OGRLayer *poLayer, CharacterVector fid_column_
         nv = out[iField];
         nv[ii] = poFeature->GetFieldAsInteger( iField );
       }
-
+      
       if( poFieldDefn->GetType() == OFTReal || poFieldDefn->GetType() == OFTInteger64) {
         NumericVector nv;
         nv = out[iField];
         nv[ii] = poFeature->GetFieldAsDouble( iField );
       }
-
+      
       if( poFieldDefn->GetType() == OFTString || poFieldDefn->GetType() == OFTDate || poFieldDefn->GetType() == OFTTime || poFieldDefn->GetType() == OFTDateTime) {
         CharacterVector nv;
         nv = out[iField];
         nv[ii] = poFeature->GetFieldAsString( iField );
-
+        
       }
     }
-
+    
     OGRFeature::DestroyFeature(poFeature);
     ii++;
     if (ii % 1000 == 0)   Rprintf("fields %i\n", ii);
@@ -519,18 +519,18 @@ inline List layer_read_fields_all(OGRLayer *poLayer, CharacterVector fid_column_
 inline List dsn_read_fields_all(CharacterVector dsn, IntegerVector layer,
                                 CharacterVector sql, NumericVector ex,
                                 CharacterVector fid_column_name) {
-
+  
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-
+  
   if( poDS == NULL )
   {
     Rcpp::stop("Open failed.\n");
   }
   OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-
+  
   List out = layer_read_fields_all(poLayer, fid_column_name);
-
+  
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
     poDS->ReleaseResultSet(poLayer);
@@ -539,13 +539,13 @@ inline List dsn_read_fields_all(CharacterVector dsn, IntegerVector layer,
   return out;
 }
 
-inline Date get_date(OGRFeature *poFeature, int iField) {
-  //int i, int *pnYear, int *pnMonth, int *pnDay, int *pnHour, int *pnMinute, float *pfSecond, int *pnTZFlag)
- int year, month, day, hour, minute, timezone; 
- int second; 
- poFeature->GetFieldAsDateTime(iField, &year, &month, &day, &hour, &minute, &second, &timezone);
- return Date(year, month, day); 
-}
+// inline Date get_date(OGRFeature *poFeature, int iField) {
+//   //int i, int *pnYear, int *pnMonth, int *pnDay, int *pnHour, int *pnMinute, float *pfSecond, int *pnTZFlag)
+//  int year, month, day, hour, minute, timezone; 
+//  int second; 
+//  poFeature->GetFieldAsDateTime(iField, &year, &month, &day, &hour, &minute, &second, &timezone);
+//  return Date(year, month, day); 
+// }
 // 
 // inline Datetime get_datetime(OGRFeature *poFeature, int iField) {
 //   //int i, int *pnYear, int *pnMonth, int *pnDay, int *pnHour, int *pnMinute, float *pfSecond, int *pnTZFlag)
@@ -557,38 +557,109 @@ inline Date get_date(OGRFeature *poFeature, int iField) {
 inline List layer_read_fields_ij(OGRLayer *poLayer, CharacterVector fid_column_name,
                                  NumericVector ij) {
   R_xlen_t   nFeature;
-  nFeature = (R_xlen_t)ij[1] - (R_xlen_t)ij[0] + 1;
-
+  if (ij[1] < 1) {
+    R_xlen_t actual_n = poLayer->GetFeatureCount();
+    ij[1] = (double)actual_n;
+  }
+  nFeature = (R_xlen_t)ij[1] - (R_xlen_t)ij[0];
+  
+  
+  
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = false;
   List out = gdallibrary::allocate_fields_list(poFDefn, nFeature, int64_as_string, fid_column_name);
-
+  
   OGRFeature *poFeature;
-
+  
   R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
   int iField;
-
+  
   int  bytecount; 
-  Rprintf("%f %f\n", ij[0], ij[1]); 
+  
   R_xlen_t start_when; 
   R_xlen_t end_when; 
   start_when = static_cast<R_xlen_t>(ij[0]);
-  end_when =   static_cast<R_xlen_t>(ij[1]); 
+  end_when =   nFeature +  static_cast<R_xlen_t>(ij[0]); 
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    int not_NA = poFeature->IsFieldSetAndNotNull(iField);
+    
     ii++;
     if (ii >= start_when && ii <= end_when) {
-
+      
       for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
       {
         OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
-        
+        int not_NA = poFeature->IsFieldSetAndNotNull(iField);
         switch( poFieldDefn->GetType() ) {
+        case OFTInteger: {
+          IntegerVector iv;
+          iv = out[iField];
+          iv[cnt] = poFeature->GetFieldAsInteger( iField );
+          
+        }
+          break;
+        case OFTInteger64: {
+          NumericVector iiv;
+          iiv = out[iField];
+          iiv[cnt] = poFeature->GetFieldAsDouble( iField );
+          
+        }
+          break;
+          
+          
+          case OFTDateTime:
+          case OFTDate: {
+            Rcpp::NumericVector nv;
+
+            nv = out[iField];
+            if (! not_NA) {
+              nv[cnt] = NA_REAL;
+              break;
+            }
+            /// stolen directly from sf, I see that it's no possible to do this really properly!
+            /// I've tried to work my own code but this code is good and just needs to be in better use
+            // thanks Edzer Pebesma
+            int Year, Month, Day, Hour, Minute, TZFlag;
+            float Second;
+            const char *tzone = "";
+            poFeature->GetFieldAsDateTime(iField, &Year, &Month, &Day, &Hour, &Minute,
+                                          &Second, &TZFlag);
+            if (TZFlag == 100)
+              tzone = "UTC";
+            //  POSIXlt: sec   min  hour  mday   mon  year  wday  yday isdst ...
+            Rcpp::List dtlst =
+              Rcpp::List::create(
+                Rcpp::_["sec"] = (double) Second,
+                Rcpp::_["min"] = (int) Minute,
+                Rcpp::_["hour"] = (int) Hour,
+                Rcpp::_["mday"] = (int) Day,
+                Rcpp::_["mon"] = (int) Month - 1,
+                Rcpp::_["year"] = (int) Year - 1900,
+                Rcpp::_["wday"] = NA_INTEGER,
+                Rcpp::_["yday"] = NA_INTEGER,
+                Rcpp::_["isdst"] = NA_INTEGER,
+                Rcpp::_["zone"] = tzone,
+                Rcpp::_["gmtoff"] = NA_INTEGER);
+            if (TZFlag == 100)
+              dtlst.attr("tzone") = "UTC";
+            dtlst.attr("class") = "POSIXlt";
+
+            if (poFieldDefn->GetType() == OFTDateTime) {
+              Rcpp::Function as_POSIXct_POSIXlt("as.POSIXct.POSIXlt");
+              Rcpp::NumericVector ret = as_POSIXct_POSIXlt(dtlst); // R help me!
+              nv[cnt] = ret[0];
+            } else {
+              Rcpp::Function as_Date_POSIXlt("as.Date.POSIXlt");
+              Rcpp::NumericVector ret = as_Date_POSIXlt(dtlst); // R help me!
+              nv[cnt] = ret[0];
+            }
+            break;
+          }
+            break;
         case OFTBinary: {
           Rcpp::List bv;
           bv = out[iField];
-
+          
           const GByte *bin = poFeature->GetFieldAsBinary(iField, &bytecount);
           RawVector rb(bytecount);
           for (int ib = 0; ib < bytecount; ib++) {
@@ -597,147 +668,91 @@ inline List layer_read_fields_ij(OGRLayer *poLayer, CharacterVector fid_column_n
           bv[cnt] = rb;
         }
           break;
-        case OFTDate:
-        case OFTDateTime: {
-          /// stolen directly from sf, I see that it's no possible to do this really properly! 
-          /// I've tried to work my own code but this code is good and just needs to be in better use
-          // thanks Edzer Pebesma
-          int Year, Month, Day, Hour, Minute, TZFlag;
-          float Second;
-          const char *tzone = "";
-          poFeature->GetFieldAsDateTime(iField, &Year, &Month, &Day, &Hour, &Minute,
-                                        &Second, &TZFlag);
-          if (TZFlag == 100)
-            tzone = "UTC";
-          //  POSIXlt: sec   min  hour  mday   mon  year  wday  yday isdst ...
-          Rcpp::List dtlst =
-            Rcpp::List::create(
-              Rcpp::_["sec"] = (double) Second, 
-              Rcpp::_["min"] = (int) Minute,
-              Rcpp::_["hour"] = (int) Hour,
-              Rcpp::_["mday"] = (int) Day,
-              Rcpp::_["mon"] = (int) Month - 1,
-              Rcpp::_["year"] = (int) Year - 1900,
-              Rcpp::_["wday"] = NA_INTEGER, 
-              Rcpp::_["yday"] = NA_INTEGER, 
-              Rcpp::_["isdst"] = NA_INTEGER,
-              Rcpp::_["zone"] = tzone,
-              Rcpp::_["gmtoff"] = NA_INTEGER);
-          if (TZFlag == 100)
-            dtlst.attr("tzone") = "UTC";
-          dtlst.attr("class") = "POSIXlt";
-          Rcpp::NumericVector nv;
-          nv = out[iField];
-          if (! not_NA) {
-            nv[cnt] = NA_REAL;
-            break;
-          }
-          if (poFieldDefn->GetType() == OFTDateTime) {
-            Rcpp::Function as_POSIXct_POSIXlt("as.POSIXct.POSIXlt");
-            Rcpp::NumericVector ret = as_POSIXct_POSIXlt(dtlst); // R help me!
-            nv[cnt] = ret[0];
-          } else {
-            Rcpp::Function as_Date_POSIXlt("as.Date.POSIXlt");
-            Rcpp::NumericVector ret = as_Date_POSIXlt(dtlst); // R help me!
-            nv[cnt] = ret[0];
-          }
-        }
-          break;
-        case OFTInteger: {
-          IntegerVector iv;
-          iv = out[iField];
-          iv[cnt] = poFeature->GetFieldAsInteger( iField );
-
-        }
-        break;
-        case OFTInteger64: {
-          NumericVector iiv;
-          iiv = out[iField];
-          iiv[cnt] = poFeature->GetFieldAsDouble( iField );
-
-        }
-          break;
-        // case OFTIntegerList: {
-        //   // List ilv;
-        //   // ilv = out[iField];
-        //   // int ilcount; 
-        //   // ilv[cnt] = poFeature->GetFieldAsIntegerList(iField, &ilcount); 
-        // }
-        //   break;
-        // case OFTInteger64List: {
-        //   // List iilv;
-        //   // iilv = out[iField];
-        //   // int iilcount; 
-        //   // iilv[cnt] = poFeature->GetFieldAsInteger64List(iField, &iilcount); 
-        //   
-        // }
-        //   break; 
+          // case OFTIntegerList: {
+          //   // List ilv;
+          //   // ilv = out[iField];
+          //   // int ilcount; 
+          //   // ilv[cnt] = poFeature->GetFieldAsIntegerList(iField, &ilcount); 
+          // }
+          //   break;
+          // case OFTInteger64List: {
+          //   // List iilv;
+          //   // iilv = out[iField];
+          //   // int iilcount; 
+          //   // iilv[cnt] = poFeature->GetFieldAsInteger64List(iField, &iilcount); 
+          //   
+          // }
+          //   break; 
         case OFTReal: {
           NumericVector nv;
           nv = out[iField];
           nv[cnt] = poFeature->GetFieldAsDouble( iField );
-
+          
         }
           break;
-        // case OFTRealList: {
-        //   // List rlv;
-        //   // rlv = out[iField];
-        //   // int rlcount; 
-        //   // rlv[cnt] = poFeature->GetFieldAsDoubleList(iField, &rlcount); 
-        //   
-        // }
-        //   break; 
-    
-        // case OFTStringList: {
-        //   // List slv;
-        //   // slv = out[iField];
-        //   // 
-        //   // slv[cnt] = poFeature->GetFieldAsStringList(iField); 
-        //   // 
-        // }
-        //   break;
-        // case OFTTime: {
-        //   CharacterVector tv;
-        //   tv = out[iField];
-        //   tv[cnt] = poFeature->GetFieldAsString( iField );
-        // }
-        //   break;
-        //   
-        // 
-        default: 
+          // case OFTRealList: {
+          //   // List rlv;
+          //   // rlv = out[iField];
+          //   // int rlcount; 
+          //   // rlv[cnt] = poFeature->GetFieldAsDoubleList(iField, &rlcount); 
+          //   
+          // }
+          //   break; 
+          
+          // case OFTStringList: {
+          //   // List slv;
+          //   // slv = out[iField];
+          //   // 
+          //   // slv[cnt] = poFeature->GetFieldAsStringList(iField); 
+          //   // 
+          // }
+          //   break;
+          // case OFTTime: {
+          //   CharacterVector tv;
+          //   tv = out[iField];
+          //   tv[cnt] = poFeature->GetFieldAsString( iField );
+          // }
+          //   break;
+          //   
+          // 
+          //
+          
+          // no default because that takes too long
         case OFTString: {
           CharacterVector cv;
           cv = out[iField];
           if (! not_NA) {
             cv[cnt] = poFeature->GetFieldAsString( iField );
           } else {
-            cv[cnt] = NA_STRING; 
+            cv[cnt] = NA_STRING;
           }
-                      
+
         }
           break;
+       
         }  // end switch
       }
-        cnt++;
-
-      OGRFeature::DestroyFeature(poFeature);
-   if (cnt >= nFeature) {
-      break;
-    }
+      cnt++;
+      
+      if (cnt >= nFeature) {
+        break;
+      }
+      
+      
+    } // end if
     
-
-    }
-     
-  }
+    OGRFeature::DestroyFeature(poFeature);
+    
+  } // end get next feature
   
-
+  
   return out;
 }
 
 inline List dsn_read_fields_ij(CharacterVector dsn, IntegerVector layer,
                                CharacterVector sql, NumericVector ex,
                                CharacterVector fid_column_name, NumericVector ij) {
-
+  
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
@@ -759,21 +774,21 @@ inline List dsn_read_fields_ij(CharacterVector dsn, IntegerVector layer,
 inline List layer_read_fields_ia(OGRLayer *poLayer, CharacterVector fid_column_name,
                                  NumericVector ia) {
   R_xlen_t   nFeature = ia.length();
-
+  
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = false;
   List out = gdallibrary::allocate_fields_list(poFDefn, nFeature, int64_as_string, fid_column_name);
-
+  
   OGRFeature *poFeature;
-
+  
   R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
   int iField;
-
+  
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-
+    
     if (ii == static_cast<R_xlen_t>(ia[cnt])) {
-
+      
       // FIXME copy the wider field support from sf (but how to make this a function)
       for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
       {
@@ -783,24 +798,24 @@ inline List layer_read_fields_ia(OGRLayer *poLayer, CharacterVector fid_column_n
           nv = out[iField];
           nv[cnt] = poFeature->GetFieldAsInteger( iField );
         }
-
+        
         if( poFieldDefn->GetType() == OFTReal || poFieldDefn->GetType() == OFTInteger64) {
           NumericVector nv;
           nv = out[iField];
           nv[cnt] = poFeature->GetFieldAsDouble( iField );
         }
-
+        
         if( poFieldDefn->GetType() == OFTString || poFieldDefn->GetType() == OFTDate || poFieldDefn->GetType() == OFTTime || poFieldDefn->GetType() == OFTDateTime) {
           CharacterVector nv;
           nv = out[iField];
           nv[cnt] = poFeature->GetFieldAsString( iField );
-
+          
         }
       }
-
+      
       cnt++;
     }
-
+    
     OGRFeature::DestroyFeature(poFeature);
     ii++;
   }
@@ -810,7 +825,7 @@ inline List layer_read_fields_ia(OGRLayer *poLayer, CharacterVector fid_column_n
 inline List dsn_read_fields_ia(CharacterVector dsn, IntegerVector layer,
                                CharacterVector sql, NumericVector ex,
                                CharacterVector fid_column_name, NumericVector ia) {
-
+  
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
@@ -833,15 +848,15 @@ inline List dsn_read_fields_ia(CharacterVector dsn, IntegerVector layer,
 inline List layer_read_fields_fa(OGRLayer *poLayer, CharacterVector fid_column_name,
                                  NumericVector fa) {
   R_xlen_t   nFeature = fa.length();
-
+  
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = false;
   List out = gdallibrary::allocate_fields_list(poFDefn, nFeature, int64_as_string, fid_column_name);
-
+  
   OGRFeature *poFeature;
   R_xlen_t cnt = 0;
   int iField;
-
+  
   for (R_xlen_t ii = 0; ii < fa.length(); ii++) {
     GIntBig feature_id = (GIntBig)fa[ii];
     poFeature = poLayer->GetFeature(feature_id);
@@ -857,18 +872,18 @@ inline List layer_read_fields_fa(OGRLayer *poLayer, CharacterVector fid_column_n
           nv = out[iField];
           nv[cnt] = poFeature->GetFieldAsInteger( iField );
         }
-
+        
         if( poFieldDefn->GetType() == OFTReal || poFieldDefn->GetType() == OFTInteger64) {
           NumericVector nv;
           nv = out[iField];
           nv[cnt] = poFeature->GetFieldAsDouble( iField );
         }
-
+        
         if( poFieldDefn->GetType() == OFTString || poFieldDefn->GetType() == OFTDate || poFieldDefn->GetType() == OFTTime || poFieldDefn->GetType() == OFTDateTime) {
           CharacterVector nv;
           nv = out[iField];
           nv[cnt] = poFeature->GetFieldAsString( iField );
-
+          
         }
       }
       OGRFeature::DestroyFeature(poFeature);
@@ -881,7 +896,7 @@ inline List layer_read_fields_fa(OGRLayer *poLayer, CharacterVector fid_column_n
 inline List dsn_read_fields_fa(CharacterVector dsn, IntegerVector layer,
                                CharacterVector sql, NumericVector ex,
                                CharacterVector fid_column_name, NumericVector fa) {
-
+  
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )

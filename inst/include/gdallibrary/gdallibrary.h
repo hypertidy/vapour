@@ -214,11 +214,7 @@ inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, R_xlen_t n_featu
         out[i] = Rcpp::IntegerVector(n_features);
     }
       break;
-    case OFTDate: {
-      IntegerVector ret(n_features);
-      ret.attr("class") = "Date";
-      out[i] = ret;
-    } break;
+    case OFTDate: 
     case OFTDateTime: {
       Rcpp::NumericVector ret(n_features);
       Rcpp::CharacterVector cls(2);
@@ -246,7 +242,6 @@ inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, R_xlen_t n_featu
       out[i] = Rcpp::List(n_features);
       break;
     case OFTString:
-    default:
       out[i] = Rcpp::CharacterVector(n_features);
       break;
     }
