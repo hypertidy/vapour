@@ -510,6 +510,8 @@ inline List layer_read_fields_all(OGRLayer *poLayer, CharacterVector fid_column_
 
     OGRFeature::DestroyFeature(poFeature);
     ii++;
+    if (ii % 1000 == 0)   Rprintf("fields %i\n", ii);
+    
   }
   return out;
 }
@@ -520,12 +522,15 @@ inline List dsn_read_fields_all(CharacterVector dsn, IntegerVector layer,
 
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+
   if( poDS == NULL )
   {
     Rcpp::stop("Open failed.\n");
   }
   OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+
   List out = layer_read_fields_all(poLayer, fid_column_name);
+
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
     poDS->ReleaseResultSet(poLayer);
@@ -534,7 +539,21 @@ inline List dsn_read_fields_all(CharacterVector dsn, IntegerVector layer,
   return out;
 }
 
-
+inline Date get_date(OGRFeature *poFeature, int iField) {
+  //int i, int *pnYear, int *pnMonth, int *pnDay, int *pnHour, int *pnMinute, float *pfSecond, int *pnTZFlag)
+ int year, month, day, hour, minute, timezone; 
+ int second; 
+ poFeature->GetFieldAsDateTime(iField, &year, &month, &day, &hour, &minute, &second, &timezone);
+ return Date(year, month, day); 
+}
+// 
+// inline Datetime get_datetime(OGRFeature *poFeature, int iField) {
+//   //int i, int *pnYear, int *pnMonth, int *pnDay, int *pnHour, int *pnMinute, float *pfSecond, int *pnTZFlag)
+//   int year, month, day, hour, minute, timezone; 
+//   float second; 
+//   poFeature->GetFieldAsDateTime(iField, &year, &month, &day, &hour, &minute, &second, &timezone);
+//   return Datetime(year, month, day, hour, minute, second); 
+// }
 inline List layer_read_fields_ij(OGRLayer *poLayer, CharacterVector fid_column_name,
                                  NumericVector ij) {
   R_xlen_t   nFeature;
@@ -550,40 +569,168 @@ inline List layer_read_fields_ij(OGRLayer *poLayer, CharacterVector fid_column_n
   R_xlen_t cnt = 0;
   int iField;
 
+  int  bytecount; 
+  Rprintf("%f %f\n", ij[0], ij[1]); 
+  R_xlen_t start_when; 
+  R_xlen_t end_when; 
+  start_when = static_cast<R_xlen_t>(ij[0]);
+  end_when =   static_cast<R_xlen_t>(ij[1]); 
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+    int not_NA = poFeature->IsFieldSetAndNotNull(iField);
+    ii++;
+    if (ii >= start_when && ii <= end_when) {
 
-    if (ii == static_cast<R_xlen_t>(ij[0]) || (ii > static_cast<R_xlen_t>(ij[0]) && ii <= static_cast<R_xlen_t>(ij[1]))) {
-
-      // FIXME copy the wider field support from sf (but how to make this a function)
       for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
       {
         OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
-        if( poFieldDefn->GetType() == OFTInteger   ) {
-          IntegerVector nv;
-          nv = out[iField];
-          nv[cnt] = poFeature->GetFieldAsInteger( iField );
-        }
+        
+        switch( poFieldDefn->GetType() ) {
+        case OFTBinary: {
+          Rcpp::List bv;
+          bv = out[iField];
 
-        if( poFieldDefn->GetType() == OFTReal || poFieldDefn->GetType() == OFTInteger64) {
+          const GByte *bin = poFeature->GetFieldAsBinary(iField, &bytecount);
+          RawVector rb(bytecount);
+          for (int ib = 0; ib < bytecount; ib++) {
+            rb[ib] = bin[ib];
+          }
+          bv[cnt] = rb;
+        }
+          break;
+        case OFTDate:
+        case OFTDateTime: {
+          /// stolen directly from sf, I see that it's no possible to do this really properly! 
+          /// I've tried to work my own code but this code is good and just needs to be in better use
+          // thanks Edzer Pebesma
+          int Year, Month, Day, Hour, Minute, TZFlag;
+          float Second;
+          const char *tzone = "";
+          poFeature->GetFieldAsDateTime(iField, &Year, &Month, &Day, &Hour, &Minute,
+                                        &Second, &TZFlag);
+          if (TZFlag == 100)
+            tzone = "UTC";
+          //  POSIXlt: sec   min  hour  mday   mon  year  wday  yday isdst ...
+          Rcpp::List dtlst =
+            Rcpp::List::create(
+              Rcpp::_["sec"] = (double) Second, 
+              Rcpp::_["min"] = (int) Minute,
+              Rcpp::_["hour"] = (int) Hour,
+              Rcpp::_["mday"] = (int) Day,
+              Rcpp::_["mon"] = (int) Month - 1,
+              Rcpp::_["year"] = (int) Year - 1900,
+              Rcpp::_["wday"] = NA_INTEGER, 
+              Rcpp::_["yday"] = NA_INTEGER, 
+              Rcpp::_["isdst"] = NA_INTEGER,
+              Rcpp::_["zone"] = tzone,
+              Rcpp::_["gmtoff"] = NA_INTEGER);
+          if (TZFlag == 100)
+            dtlst.attr("tzone") = "UTC";
+          dtlst.attr("class") = "POSIXlt";
+          Rcpp::NumericVector nv;
+          nv = out[iField];
+          if (! not_NA) {
+            nv[cnt] = NA_REAL;
+            break;
+          }
+          if (poFieldDefn->GetType() == OFTDateTime) {
+            Rcpp::Function as_POSIXct_POSIXlt("as.POSIXct.POSIXlt");
+            Rcpp::NumericVector ret = as_POSIXct_POSIXlt(dtlst); // R help me!
+            nv[cnt] = ret[0];
+          } else {
+            Rcpp::Function as_Date_POSIXlt("as.Date.POSIXlt");
+            Rcpp::NumericVector ret = as_Date_POSIXlt(dtlst); // R help me!
+            nv[cnt] = ret[0];
+          }
+        }
+          break;
+        case OFTInteger: {
+          IntegerVector iv;
+          iv = out[iField];
+          iv[cnt] = poFeature->GetFieldAsInteger( iField );
+
+        }
+        break;
+        case OFTInteger64: {
+          NumericVector iiv;
+          iiv = out[iField];
+          iiv[cnt] = poFeature->GetFieldAsDouble( iField );
+
+        }
+          break;
+        // case OFTIntegerList: {
+        //   // List ilv;
+        //   // ilv = out[iField];
+        //   // int ilcount; 
+        //   // ilv[cnt] = poFeature->GetFieldAsIntegerList(iField, &ilcount); 
+        // }
+        //   break;
+        // case OFTInteger64List: {
+        //   // List iilv;
+        //   // iilv = out[iField];
+        //   // int iilcount; 
+        //   // iilv[cnt] = poFeature->GetFieldAsInteger64List(iField, &iilcount); 
+        //   
+        // }
+        //   break; 
+        case OFTReal: {
           NumericVector nv;
           nv = out[iField];
           nv[cnt] = poFeature->GetFieldAsDouble( iField );
-        }
-
-        if( poFieldDefn->GetType() == OFTString || poFieldDefn->GetType() == OFTDate || poFieldDefn->GetType() == OFTTime || poFieldDefn->GetType() == OFTDateTime) {
-          CharacterVector nv;
-          nv = out[iField];
-          nv[cnt] = poFeature->GetFieldAsString( iField );
 
         }
+          break;
+        // case OFTRealList: {
+        //   // List rlv;
+        //   // rlv = out[iField];
+        //   // int rlcount; 
+        //   // rlv[cnt] = poFeature->GetFieldAsDoubleList(iField, &rlcount); 
+        //   
+        // }
+        //   break; 
+    
+        // case OFTStringList: {
+        //   // List slv;
+        //   // slv = out[iField];
+        //   // 
+        //   // slv[cnt] = poFeature->GetFieldAsStringList(iField); 
+        //   // 
+        // }
+        //   break;
+        // case OFTTime: {
+        //   CharacterVector tv;
+        //   tv = out[iField];
+        //   tv[cnt] = poFeature->GetFieldAsString( iField );
+        // }
+        //   break;
+        //   
+        // 
+        default: 
+        case OFTString: {
+          CharacterVector cv;
+          cv = out[iField];
+          if (! not_NA) {
+            cv[cnt] = poFeature->GetFieldAsString( iField );
+          } else {
+            cv[cnt] = NA_STRING; 
+          }
+                      
+        }
+          break;
+        }  // end switch
       }
+        cnt++;
 
-      cnt++;
+      OGRFeature::DestroyFeature(poFeature);
+   if (cnt >= nFeature) {
+      break;
     }
+    
 
-    OGRFeature::DestroyFeature(poFeature);
-    ii++;
+    }
+     
   }
+  
+
   return out;
 }
 

@@ -215,7 +215,7 @@ inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, R_xlen_t n_featu
     }
       break;
     case OFTDate: {
-      Rcpp::NumericVector ret(n_features);
+      IntegerVector ret(n_features);
       ret.attr("class") = "Date";
       out[i] = ret;
     } break;
@@ -320,7 +320,7 @@ inline List gdal_read_fields(CharacterVector dsn,
     if (lFeature >= nFeature) {
       break;
     }
-    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+    //OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
     // only increment lFeature if we actually keep this one
     if (iFeature >= skip_n[0]) {  // we are at skip_n
       
@@ -368,6 +368,8 @@ inline List gdal_read_fields(CharacterVector dsn,
     // always increment iFeature, it's position through the loop
     iFeature = iFeature + 1;
     OGRFeature::DestroyFeature( poFeature );
+    if (iFeature % 1000 == 0)   Rprintf("fields %i\n", iFeature);
+    
   }
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
