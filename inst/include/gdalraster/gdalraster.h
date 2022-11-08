@@ -693,17 +693,13 @@ inline List gdal_read_band_values(GDALDataset *hRet,
       // consider doing at R level, at least for MEM
       int dval;
       double naflag = GDALGetRasterNoDataValue(rasterBand, &hasNA);
-      
-      // use NA for int
-      if (hasNA ) {
-        std::replace(integer_scanline.begin(), integer_scanline.end(), (int) naflag, NA_INTEGER);
-        
-      }
+   
       R_xlen_t isi;
       for (isi = 0; isi < (static_cast<R_xlen_t>(integer_scanline.size())); isi++) {
         dval = integer_scanline[static_cast<size_t>(isi)];
-       // if (hasScale) dval = dval * scale;
-      //  if (hasOffset) dval = dval + offset;
+        if (static_cast<double>(dval) <= naflag) {
+          dval = NA_INTEGER;
+        }
         res[isi] = dval;
       }
       outlist[iband] = res;

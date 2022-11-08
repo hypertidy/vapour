@@ -1,3 +1,7 @@
+# vapour 0.9.1
+
+* Fixed another stray cast (int), now checking more robustly for nodata value for integer bands. 
+
 # vapour 0.9.0
 
 * Big cleanup. 
