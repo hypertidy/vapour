@@ -8,10 +8,9 @@
 // #include "cpl_conv.h" // for CPLFree()
 
 #include "gdallibrary/gdallibrary.h"
+#include "gdalmiscutils/gdalmiscutils.h"
 namespace gdalgeometry {
 using namespace Rcpp;
-
-
 
 // low level geometry converters from feature ----------------------------------------------
 //FIXME
@@ -80,13 +79,10 @@ inline NumericVector gdal_geometry_extent(OGRFeature *poFeature) {
 
 // --------------------------------------------------------------------------------------
 
-/// READ FIDS ----------------------------------------------------------------------------
+/// layer READ FIDS ----------------------------------------------------------------------------
 inline NumericVector layer_read_fids_all(OGRLayer *poLayer) {
-  //double   nFeature = gdallibrary::force_layer_feature_count(poLayer);
-  // trying to fix SQL problem 2020-10-05
   R_xlen_t nFeature = poLayer->GetFeatureCount();
   if (nFeature < 1) {
-    //Rprintf("force count\n");
     nFeature = gdallibrary::force_layer_feature_count(poLayer);
   }
   
@@ -102,67 +98,28 @@ inline NumericVector layer_read_fids_all(OGRLayer *poLayer) {
   return out;
 }
 
-inline NumericVector dsn_read_fids_all(CharacterVector dsn, IntegerVector layer,
-                                       CharacterVector sql, NumericVector ex) {
-  
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-  NumericVector out = layer_read_fids_all(poLayer);
-  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-  if (sql[0] != "") {
-    poDS->ReleaseResultSet(poLayer);
-  }
-  GDALClose(poDS);
-  return out;
-}
-
 inline NumericVector layer_read_fids_ij(OGRLayer *poLayer, NumericVector ij) {
-  NumericVector out((R_xlen_t)ij[1] - (R_xlen_t)ij[0] + 1);
+  R_xlen_t st = (R_xlen_t)ij[0]; 
+  R_xlen_t en = (R_xlen_t)ij[1]; 
+  NumericVector out(en - st + 1);
   std::fill( out.begin(), out.end(), NumericVector::get_na() );
   OGRFeature *poFeature;
   R_xlen_t cnt = 0;
   R_xlen_t ii = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    if (ii == static_cast<R_xlen_t>(ij[0]) || (ii > static_cast<R_xlen_t>(ij[0]) && ii <= static_cast<R_xlen_t>(ij[1]))) {
+    if (ii >= st && ii <= en) {
       out[cnt] = (double)poFeature->GetFID();
       cnt++;
     }
     ii++;
     OGRFeature::DestroyFeature(poFeature);
+    if (ii == en) break;
   }
   if (cnt < out.length()) {
     Rcpp::warning("not as many FIDs as requested");
   }
-  
-  
   return out;
 }
-
-inline NumericVector dsn_read_fids_ij(CharacterVector dsn, IntegerVector layer,
-                                      CharacterVector sql, NumericVector ex,
-                                      NumericVector ij) {
-  
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-  NumericVector out = layer_read_fids_ij(poLayer, ij);
-  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-  if (sql[0] != "") {
-    poDS->ReleaseResultSet(poLayer);
-  }
-  GDALClose(poDS);
-  return out;
-}
-
 
 inline NumericVector layer_read_fids_ia(OGRLayer *poLayer, NumericVector ia) {
   
@@ -172,7 +129,7 @@ inline NumericVector layer_read_fids_ia(OGRLayer *poLayer, NumericVector ia) {
   R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    if (ii == static_cast<R_xlen_t>(ia[cnt])) {
+    if (ii == (R_xlen_t)(ia[cnt])) {
       out[cnt] = (double)poFeature->GetFID();
       cnt++;
     }
@@ -185,157 +142,70 @@ inline NumericVector layer_read_fids_ia(OGRLayer *poLayer, NumericVector ia) {
   return out;
 }
 
-inline NumericVector dsn_read_fids_ia(CharacterVector dsn, IntegerVector layer,
-                                      CharacterVector sql, NumericVector ex,
-                                      NumericVector ia) {
+
+inline List feature_read_geom(OGRFeature *poFeature, CharacterVector format) {
+  List out(1); 
   
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
+  // work through format
+  // FIXME: get rid of "geometry"
+  if ((format[0] == "wkb") || (format[0] == "geometry")) {
+    out[0] = gdal_geometry_raw(poFeature);
   }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-  NumericVector out = layer_read_fids_ia(poLayer, ia);
-  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-  if (sql[0] != "") {
-    poDS->ReleaseResultSet(poLayer);
+  if (format[0] == "wkt") {
+    out[0] = gdal_geometry_wkt(poFeature);
   }
-  GDALClose(poDS);
+  // FIXME: maybe call it envelope not extent
+  if (format[0] == "extent") {
+    out[0] = gdal_geometry_extent(poFeature);
+  }
+  // these are all just text variants (wkt uses a different mech)
+  if ((format[0] == "gml") || (format[0] == "json") || (format[0] == "kml")) {
+    out[0] = gdal_geometry_txt(poFeature, format);
+  }
+  if (format[0] == "type") {
+    out[0] = gdal_geometry_type(poFeature);
+  }
+  
   return out;
 }
-
-// -----------------------------------------------------------------------------
-
-
-
-
-/// READ GEOMS ----------------------------------------------------------------------------
+/// layer READ GEOMS ----------------------------------------------------------------------------
 inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
   OGRFeature *poFeature;
   poLayer->ResetReading();
-  //int nFeature = gdallibrary::force_layer_feature_count(poLayer);
-  // trying to fix SQL problem 2020-10-05
   R_xlen_t nFeature = poLayer->GetFeatureCount();
   if (nFeature < 1) {
-    //Rprintf("force count\n");
     nFeature = gdallibrary::force_layer_feature_count(poLayer);
   }
-  
   List out(nFeature);
   R_xlen_t ii = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    // work through format
-    // FIXME: get rid of "geometry"
-    if ((format[0] == "wkb") || (format[0] == "geometry")) {
-      out[ii] = gdal_geometry_raw(poFeature);
-    }
-    if (format[0] == "wkt") {
-      out[ii] = gdal_geometry_wkt(poFeature);
-    }
-    // FIXME: maybe call it envelope not extent
-    if (format[0] == "extent") {
-      out[ii] = gdal_geometry_extent(poFeature);
-    }
-    // these are all just text variants (wkt uses a different mech)
-    if ((format[0] == "gml") || (format[0] == "json") || (format[0] == "kml")) {
-      out[ii] = gdal_geometry_txt(poFeature, format);
-    }
-    if (format[0] == "type") {
-      out[ii] = gdal_geometry_type(poFeature);
-    }
-    
+    out[ii] = feature_read_geom(poFeature, format)[0]; 
     OGRFeature::DestroyFeature(poFeature);
     ii++;
   }
   return out;
 }
-
-inline List dsn_read_geom_all(CharacterVector dsn, IntegerVector layer,
-                              CharacterVector sql, NumericVector ex,
-                              CharacterVector format) {
-  
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-  List out = layer_read_geom_all(poLayer, format);
-  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-  if (sql[0] != "") {
-    poDS->ReleaseResultSet(poLayer);
-  }
-  GDALClose(poDS);
-  return out;
-}
-
-
-
-
 
 inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, NumericVector ij) {
   OGRFeature *poFeature;
+  R_xlen_t st = (R_xlen_t)ij[0]; 
+  R_xlen_t en = (R_xlen_t)ij[1]; 
   
-  poLayer->ResetReading();
-  R_xlen_t nFeature;
-  nFeature = (R_xlen_t)ij[1] - (R_xlen_t)ij[0] + 1;
-  List out(nFeature);
+  List out(en - st + 1);
   R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
-  while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    if (ii == static_cast<R_xlen_t>(ij[0]) || (ii > static_cast<R_xlen_t>(ij[0]) && ii <= static_cast<R_xlen_t>(ij[1]))) {
-      
-      // work through format
-      // FIXME: get rid of "geometry"
-      if ((format[0] == "wkb") || (format[0] == "geometry")) {
-        out[cnt] = gdal_geometry_raw(poFeature);
-      }
-      if (format[0] == "wkt") {
-        out[cnt] = gdal_geometry_wkt(poFeature);
-      }
-      // FIXME: maybe call it envelope not extent
-      if (format[0] == "extent") {
-        out[cnt] = gdal_geometry_extent(poFeature);
-      }
-      // these are all just text variants (wkt uses a different mech)
-      if ((format[0] == "gml") || (format[0] == "json") || (format[0] == "kml")) {
-        out[cnt] = gdal_geometry_txt(poFeature, format);
-      }
-      if (format[0] == "type") {
-        out[ii] = gdal_geometry_type(poFeature);
-      }
+  while((poFeature = poLayer->GetNextFeature()) != NULL ) {
+    if (ii >= st  && ii <= en) {
+      out[cnt] = feature_read_geom(poFeature, format)[0]; 
       cnt++;
       
     }
-    ii++;
     OGRFeature::DestroyFeature(poFeature);
+    ii++;
+    if (cnt == out.length()) break;
   }
   return out;
 }
-
-inline List dsn_read_geom_ij(CharacterVector dsn, IntegerVector layer,
-                             CharacterVector sql, NumericVector ex,
-                             CharacterVector format, NumericVector ij) {
-  
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-  List out = layer_read_geom_ij(poLayer, format, ij);
-  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-  if (sql[0] != "") {
-    poDS->ReleaseResultSet(poLayer);
-  }
-  GDALClose(poDS);
-  return out;
-}
-
-
 
 
 inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, NumericVector ia) {
@@ -349,63 +219,17 @@ inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, Numeri
   
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
     if (ii == static_cast<R_xlen_t>(ia[cnt])) {
-      
-      // work through format
-      // FIXME: get rid of "geometry"
-      if ((format[0] == "wkb") || (format[0] == "geometry")) {
-        out[cnt] = gdal_geometry_raw(poFeature);
-      }
-      if (format[0] == "wkt") {
-        out[cnt] = gdal_geometry_wkt(poFeature);
-      }
-      // FIXME: maybe call it envelope not extent
-      if (format[0] == "extent") {
-        out[cnt] = gdal_geometry_extent(poFeature);
-      }
-      // these are all just text variants (wkt uses a different mech)
-      if ((format[0] == "gml") || (format[0] == "json") || (format[0] == "kml")) {
-        out[cnt] = gdal_geometry_txt(poFeature, format);
-      }
-      if (format[0] == "type") {
-        out[ii] = gdal_geometry_type(poFeature);
-      }
+      out[cnt] = feature_read_geom(poFeature, format)[0]; 
       cnt++;
       
     }
     ii++;
     OGRFeature::DestroyFeature(poFeature);
+    if (cnt == ia.length()) break; 
   }
-  // should we do this? normalize output to avoid idx greater than available?
-  // if (cnt < ia.length()) {
-  //   List out2(cnt);
-  //   for (int ii = 0; ii < cnt; ii++) {
-  //     out2[ii] = out[ii];
-  //   }
-  //   return out2;
-  // }
-  return out;
-}
-
-inline List dsn_read_geom_ia(CharacterVector dsn, IntegerVector layer,
-                             CharacterVector sql, NumericVector ex,
-                             CharacterVector format, NumericVector ia) {
   
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-  List out = layer_read_geom_ia(poLayer, format, ia);
-  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-  if (sql[0] != "") {
-    poDS->ReleaseResultSet(poLayer);
-  }
-  GDALClose(poDS);
   return out;
 }
-
 
 
 inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, NumericVector fa) {
@@ -417,360 +241,187 @@ inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, Numeri
   for (R_xlen_t ii = 0; ii < fa.length(); ii++) {
     GIntBig feature_id = (GIntBig)fa[ii];
     poFeature = poLayer->GetFeature(feature_id);
-    // work through format
-    // FIXME: get rid of "geometry"
-    if ((format[0] == "wkb") || (format[0] == "geometry")) {
-      out[ii] = gdal_geometry_raw(poFeature);
-    }
-    if (format[0] == "wkt") {
-      out[ii] = gdal_geometry_wkt(poFeature);
-    }
-    // FIXME: maybe call it envelope not extent
-    if (format[0] == "extent") {
-      out[ii] = gdal_geometry_extent(poFeature);
-    }
-    // these are all just text variants (wkt uses a different mech)
-    if ((format[0] == "gml") || (format[0] == "json") || (format[0] == "kml")) {
-      out[ii] = gdal_geometry_txt(poFeature, format);
-    }
-    if (format[0] == "type") {
-      out[ii] = gdal_geometry_type(poFeature);
-    }
+    out[ii] = feature_read_geom(poFeature, format)[0]; 
     OGRFeature::DestroyFeature(poFeature);
   }
   return out;
 }
 
-inline List dsn_read_geom_fa(CharacterVector dsn, IntegerVector layer,
-                             CharacterVector sql, NumericVector ex,
-                             CharacterVector format, NumericVector fa) {
-  
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-  List out = layer_read_geom_fa(poLayer, format, fa);
-  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-  if (sql[0] != "") {
-    poDS->ReleaseResultSet(poLayer);
-  }
-  GDALClose(poDS);
-  return out;
-}
 
-/// --------------------------------------------------------------------------------------
+/// layer READ FIELDS ----------------------------------------------------------------------------
 
 
-/// READ FIELDS ----------------------------------------------------------------------------
-inline List layer_read_fields_all(OGRLayer *poLayer, CharacterVector fid_column_name) {
-  //double   nFeature = gdallibrary::force_layer_feature_count(poLayer);
-  // trying to fix SQL problem 2020-10-05
-  R_xlen_t nFeature = poLayer->GetFeatureCount();
-  if (nFeature < 0) {
-    //Rprintf("force count\n");
-    nFeature = gdallibrary::force_layer_feature_count(poLayer);
-  }
-  
-  OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-  bool int64_as_string = false;
-  List out = gdallibrary::allocate_fields_list(poFDefn, nFeature, int64_as_string, fid_column_name);
-  
-  OGRFeature *poFeature;
-  R_xlen_t ii = 0;
-  int iField;
-  
-  while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    
-    // FIXME copy the wider field support from sf (but how to make this a function)
-    for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
-    {
-      OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
-      if( poFieldDefn->GetType() == OFTInteger   ) {
-        IntegerVector nv;
-        nv = out[iField];
-        nv[ii] = poFeature->GetFieldAsInteger( iField );
-      }
-      
-      if( poFieldDefn->GetType() == OFTReal || poFieldDefn->GetType() == OFTInteger64) {
-        NumericVector nv;
-        nv = out[iField];
-        nv[ii] = poFeature->GetFieldAsDouble( iField );
-      }
-      
-      if( poFieldDefn->GetType() == OFTString || poFieldDefn->GetType() == OFTDate || poFieldDefn->GetType() == OFTTime || poFieldDefn->GetType() == OFTDateTime) {
-        CharacterVector nv;
-        nv = out[iField];
-        nv[ii] = poFeature->GetFieldAsString( iField );
-        
-      }
-    }
-    
-    OGRFeature::DestroyFeature(poFeature);
-    ii++;
-    if (ii % 1000 == 0)   Rprintf("fields %i\n", ii);
-    
-  }
-  return out;
-}
-
-inline List dsn_read_fields_all(CharacterVector dsn, IntegerVector layer,
-                                CharacterVector sql, NumericVector ex,
-                                CharacterVector fid_column_name) {
-  
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-  
-  List out = layer_read_fields_all(poLayer, fid_column_name);
-  
-  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-  if (sql[0] != "") {
-    poDS->ReleaseResultSet(poLayer);
-  }
-  GDALClose(poDS);
-  return out;
-}
-
-// inline Date get_date(OGRFeature *poFeature, int iField) {
-//   //int i, int *pnYear, int *pnMonth, int *pnDay, int *pnHour, int *pnMinute, float *pfSecond, int *pnTZFlag)
-//  int year, month, day, hour, minute, timezone; 
-//  int second; 
-//  poFeature->GetFieldAsDateTime(iField, &year, &month, &day, &hour, &minute, &second, &timezone);
-//  return Date(year, month, day); 
-// }
-// 
-// inline Datetime get_datetime(OGRFeature *poFeature, int iField) {
-//   //int i, int *pnYear, int *pnMonth, int *pnDay, int *pnHour, int *pnMinute, float *pfSecond, int *pnTZFlag)
-//   int year, month, day, hour, minute, timezone; 
-//   float second; 
-//   poFeature->GetFieldAsDateTime(iField, &year, &month, &day, &hour, &minute, &second, &timezone);
-//   return Datetime(year, month, day, hour, minute, second); 
-// }
+// _alll uses _ij so this comes first
 inline List layer_read_fields_ij(OGRLayer *poLayer, CharacterVector fid_column_name,
                                  NumericVector ij) {
-  R_xlen_t   nFeature;
-  if (ij[1] < 1) {
-    R_xlen_t actual_n = poLayer->GetFeatureCount();
-    ij[1] = (double)actual_n;
-  }
-  nFeature = (R_xlen_t)ij[1] - (R_xlen_t)ij[0];
   
-  
-  
+  R_xlen_t st = (R_xlen_t)ij[0]; 
+  R_xlen_t en = (R_xlen_t)ij[1]; 
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = false;
-  List out = gdallibrary::allocate_fields_list(poFDefn, nFeature, int64_as_string, fid_column_name);
-  
+  // special case if ij[1] < ij[0] 
+  R_xlen_t nfeatures = en - st + 1;
+  if (en < st) nfeatures = 0; 
+  List out = gdallibrary::allocate_fields_list(poFDefn, nfeatures, 
+                                               int64_as_string, fid_column_name);
   OGRFeature *poFeature;
-  
-  R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
+  R_xlen_t ii = 0;
   int iField;
+  int bytecount; 
+  int not_NA; 
   
-  int  bytecount; 
-  
-  R_xlen_t start_when; 
-  R_xlen_t end_when; 
-  start_when = static_cast<R_xlen_t>(ij[0]);
-  end_when =   nFeature +  static_cast<R_xlen_t>(ij[0]); 
+  // for OFTDateTime
+  Rcpp::Function ISOdatetime("ISOdatetime");
+  Rcpp::Function ISOdate("ISOdate");
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    
-    ii++;
-    if (ii >= start_when && ii <= end_when) {
-      
-      for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
+    if (ii >= st && ii <= en) {
+      for(iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
       {
         OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
-        int not_NA = poFeature->IsFieldSetAndNotNull(iField);
+        not_NA = poFeature->IsFieldSetAndNotNull(iField);
+        
+        /// stolen directly from sf and adapted thanks Edzer Pebesma
         switch( poFieldDefn->GetType() ) {
+        case OFTString: {
+          CharacterVector cv;
+          cv = out[iField];
+          if (not_NA) {
+            cv[cnt] = poFeature->GetFieldAsString( iField );
+          } else {
+            cv[cnt] = NA_STRING;
+          }
+          
+        } break;
         case OFTInteger: {
           IntegerVector iv;
           iv = out[iField];
+          if (! not_NA) {
+            iv[cnt] = NA_INTEGER;
+            break;
+          }
+          // does this need subtype handling (should allow raw instead of integer for OSTBoolean)
           iv[cnt] = poFeature->GetFieldAsInteger( iField );
-          
+
+        }  break;
+        case OFTTime:
+        case OFTDateTime:
+        case OFTDate: {
+          NumericVector nv;
+          nv = out[iField];
+
+          if (! not_NA) {
+            nv[cnt] = NA_REAL;
+            break;
+          }
+       
+          int Year, Month, Day, Hour, Minute, TZFlag;
+          float Second;
+          const char *tzone = "";
+          if (TZFlag == 100)
+            tzone = "UTC";
+          poFeature->GetFieldAsDateTime(iField, &Year, &Month, &Day, &Hour, &Minute,
+                                        &Second, &TZFlag);
+          if (poFieldDefn->GetType() == OFTDateTime || poFieldDefn->GetType() == OFTTime) {
+            if (cnt == 0 && poFieldDefn->GetType() == OFTTime) {
+              Rcpp::warning("field of type 'OFTTime' converted to POSIXct: %s", poFDefn->GetFieldDefn(iField)->GetNameRef()); 
+            }
+            Rcpp::NumericVector ret = ISOdatetime(Year, Month, Day, Hour, Minute, Second, tzone); 
+            nv[cnt] = ret[0];
+          } else {
+            Rcpp::NumericVector ret = ISOdate(Year, Month, Day); 
+            nv[cnt] = ret[0];
+          }
+          break;
         }
           break;
         case OFTInteger64: {
           NumericVector iiv;
           iiv = out[iField];
-          iiv[cnt] = poFeature->GetFieldAsDouble( iField );
-          
-        }
-          break;
-          
-          
-          case OFTDateTime:
-          case OFTDate: {
-            Rcpp::NumericVector nv;
-
-            nv = out[iField];
-            if (! not_NA) {
-              nv[cnt] = NA_REAL;
-              break;
-            }
-            /// stolen directly from sf, I see that it's no possible to do this really properly!
-            /// I've tried to work my own code but this code is good and just needs to be in better use
-            // thanks Edzer Pebesma
-            int Year, Month, Day, Hour, Minute, TZFlag;
-            float Second;
-            const char *tzone = "";
-            poFeature->GetFieldAsDateTime(iField, &Year, &Month, &Day, &Hour, &Minute,
-                                          &Second, &TZFlag);
-            if (TZFlag == 100)
-              tzone = "UTC";
-            //  POSIXlt: sec   min  hour  mday   mon  year  wday  yday isdst ...
-            Rcpp::List dtlst =
-              Rcpp::List::create(
-                Rcpp::_["sec"] = (double) Second,
-                Rcpp::_["min"] = (int) Minute,
-                Rcpp::_["hour"] = (int) Hour,
-                Rcpp::_["mday"] = (int) Day,
-                Rcpp::_["mon"] = (int) Month - 1,
-                Rcpp::_["year"] = (int) Year - 1900,
-                Rcpp::_["wday"] = NA_INTEGER,
-                Rcpp::_["yday"] = NA_INTEGER,
-                Rcpp::_["isdst"] = NA_INTEGER,
-                Rcpp::_["zone"] = tzone,
-                Rcpp::_["gmtoff"] = NA_INTEGER);
-            if (TZFlag == 100)
-              dtlst.attr("tzone") = "UTC";
-            dtlst.attr("class") = "POSIXlt";
-
-            if (poFieldDefn->GetType() == OFTDateTime) {
-              Rcpp::Function as_POSIXct_POSIXlt("as.POSIXct.POSIXlt");
-              Rcpp::NumericVector ret = as_POSIXct_POSIXlt(dtlst); // R help me!
-              nv[cnt] = ret[0];
-            } else {
-              Rcpp::Function as_Date_POSIXlt("as.Date.POSIXlt");
-              Rcpp::NumericVector ret = as_Date_POSIXlt(dtlst); // R help me!
-              nv[cnt] = ret[0];
-            }
+          if (! not_NA) {
+            iiv[cnt] = NA_REAL;
             break;
           }
+          iiv[cnt] = poFeature->GetFieldAsDouble( iField );
+        }
+          break;
+        case OFTReal: {
+          NumericVector nv;
+          nv = out[iField];
+          if (! not_NA) {
+            nv[cnt] = NA_REAL;
             break;
+          }
+          nv[cnt] = poFeature->GetFieldAsDouble( iField );
+
+        }
+          break;
+          case OFTStringList: {
+            // List slv;
+            // slv = out[iField];
+            //
+            // slv[cnt] = poFeature->GetFieldAsStringList(iField);
+            //
+          }
+            break;
+          case OFTRealList: {
+            // List rlv;
+            // rlv = out[iField];
+            // int rlcount;
+            // rlv[cnt] = poFeature->GetFieldAsDoubleList(iField, &rlcount);
+
+          }
+            break;
+          case OFTIntegerList: {
+            // List ilv;
+            // ilv = out[iField];
+            // int ilcount;
+            // ilv[cnt] = poFeature->GetFieldAsIntegerList(iField, &ilcount);
+          }
+            break;
+          case OFTInteger64List: {
+            // List iilv;
+            // iilv = out[iField];
+            // int iilcount;
+            // iilv[cnt] = poFeature->GetFieldAsInteger64List(iField, &iilcount);
+
+          }
+            break;
+
         case OFTBinary: {
           Rcpp::List bv;
           bv = out[iField];
-          
+
           const GByte *bin = poFeature->GetFieldAsBinary(iField, &bytecount);
           RawVector rb(bytecount);
           for (int ib = 0; ib < bytecount; ib++) {
             rb[ib] = bin[ib];
           }
           bv[cnt] = rb;
-        }
-          break;
-          // case OFTIntegerList: {
-          //   // List ilv;
-          //   // ilv = out[iField];
-          //   // int ilcount; 
-          //   // ilv[cnt] = poFeature->GetFieldAsIntegerList(iField, &ilcount); 
-          // }
-          //   break;
-          // case OFTInteger64List: {
-          //   // List iilv;
-          //   // iilv = out[iField];
-          //   // int iilcount; 
-          //   // iilv[cnt] = poFeature->GetFieldAsInteger64List(iField, &iilcount); 
-          //   
-          // }
-          //   break; 
-        case OFTReal: {
-          NumericVector nv;
-          nv = out[iField];
-          nv[cnt] = poFeature->GetFieldAsDouble( iField );
-          
-        }
-          break;
-          // case OFTRealList: {
-          //   // List rlv;
-          //   // rlv = out[iField];
-          //   // int rlcount; 
-          //   // rlv[cnt] = poFeature->GetFieldAsDoubleList(iField, &rlcount); 
-          //   
-          // }
-          //   break; 
-          
-          // case OFTStringList: {
-          //   // List slv;
-          //   // slv = out[iField];
-          //   // 
-          //   // slv[cnt] = poFeature->GetFieldAsStringList(iField); 
-          //   // 
-          // }
-          //   break;
-          // case OFTTime: {
-          //   CharacterVector tv;
-          //   tv = out[iField];
-          //   tv[cnt] = poFeature->GetFieldAsString( iField );
-          // }
-          //   break;
-          //   
-          // 
-          //
-          
-          // no default because that takes too long
-        case OFTString: {
-          CharacterVector cv;
-          cv = out[iField];
-          if (! not_NA) {
-            cv[cnt] = poFeature->GetFieldAsString( iField );
-          } else {
-            cv[cnt] = NA_STRING;
-          }
-
-        }
-          break;
-       
-        }  // end switch
+        } break; 
+      }  // end switch
       }
       cnt++;
-      
-      if (cnt >= nFeature) {
-        break;
-      }
-      
-      
     } // end if
-    
+    ii++;
     OGRFeature::DestroyFeature(poFeature);
-    
+    if (ii == en) break;
   } // end get next feature
-  
-  
   return out;
 }
 
-inline List dsn_read_fields_ij(CharacterVector dsn, IntegerVector layer,
-                               CharacterVector sql, NumericVector ex,
-                               CharacterVector fid_column_name, NumericVector ij) {
-  
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+
+inline List layer_read_fields_all(OGRLayer *poLayer, CharacterVector fid_column_name) {
+  R_xlen_t nFeature = poLayer->GetFeatureCount();
+
+  NumericVector ij(2);
+  ij[0] = 0;
+  /// if there are no features we get 0 fields allocation
+  ij[1] = (double)(nFeature - 1); 
+ 
   List out = layer_read_fields_ij(poLayer, fid_column_name, ij);
-  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-  if (sql[0] != "") {
-    poDS->ReleaseResultSet(poLayer);
-  }
-  GDALClose(poDS);
   return out;
 }
-// -----------------------------------------------------------------------------------------
-
-
 inline List layer_read_fields_ia(OGRLayer *poLayer, CharacterVector fid_column_name,
                                  NumericVector ia) {
   R_xlen_t   nFeature = ia.length();
@@ -822,29 +473,6 @@ inline List layer_read_fields_ia(OGRLayer *poLayer, CharacterVector fid_column_n
   return out;
 }
 
-inline List dsn_read_fields_ia(CharacterVector dsn, IntegerVector layer,
-                               CharacterVector sql, NumericVector ex,
-                               CharacterVector fid_column_name, NumericVector ia) {
-  
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-  List out = layer_read_fields_ia(poLayer, fid_column_name, ia);
-  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-  if (sql[0] != "") {
-    poDS->ReleaseResultSet(poLayer);
-  }
-  GDALClose(poDS);
-  return out;
-}
-
-
-
-
 inline List layer_read_fields_fa(OGRLayer *poLayer, CharacterVector fid_column_name,
                                  NumericVector fa) {
   R_xlen_t   nFeature = fa.length();
@@ -890,6 +518,208 @@ inline List layer_read_fields_fa(OGRLayer *poLayer, CharacterVector fid_column_n
     }
     cnt++;
   }
+  return out;
+}
+
+
+// DSN read
+inline NumericVector dsn_read_fids_all(CharacterVector dsn, IntegerVector layer,
+                                       CharacterVector sql, NumericVector ex) {
+  
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  NumericVector out = layer_read_fids_all(poLayer);
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
+  }
+  GDALClose(poDS);
+  return out;
+}
+inline NumericVector dsn_read_fids_ij(CharacterVector dsn, IntegerVector layer,
+                                      CharacterVector sql, NumericVector ex,
+                                      NumericVector ij) {
+  
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  NumericVector out = layer_read_fids_ij(poLayer, ij);
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
+  }
+  GDALClose(poDS);
+  return out;
+}
+
+inline NumericVector dsn_read_fids_ia(CharacterVector dsn, IntegerVector layer,
+                                      CharacterVector sql, NumericVector ex,
+                                      NumericVector ia) {
+  
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  NumericVector out = layer_read_fids_ia(poLayer, ia);
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
+  }
+  GDALClose(poDS);
+  return out;
+}
+inline List dsn_read_geom_all(CharacterVector dsn, IntegerVector layer,
+                              CharacterVector sql, NumericVector ex,
+                              CharacterVector format) {
+  
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  List out = layer_read_geom_all(poLayer, format);
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
+  }
+  GDALClose(poDS);
+  return out;
+}
+inline List dsn_read_geom_ij(CharacterVector dsn, IntegerVector layer,
+                             CharacterVector sql, NumericVector ex,
+                             CharacterVector format, NumericVector ij) {
+  
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  List out = layer_read_geom_ij(poLayer, format, ij);
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
+  }
+  GDALClose(poDS);
+  return out;
+}
+
+
+inline List dsn_read_geom_ia(CharacterVector dsn, IntegerVector layer,
+                             CharacterVector sql, NumericVector ex,
+                             CharacterVector format, NumericVector ia) {
+  
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  List out = layer_read_geom_ia(poLayer, format, ia);
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
+  }
+  GDALClose(poDS);
+  return out;
+}
+
+inline List dsn_read_geom_fa(CharacterVector dsn, IntegerVector layer,
+                             CharacterVector sql, NumericVector ex,
+                             CharacterVector format, NumericVector fa) {
+  
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  List out = layer_read_geom_fa(poLayer, format, fa);
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
+  }
+  GDALClose(poDS);
+  return out;
+}
+
+/// dsn READ FIELDS ----------------------------------------------------------------------------
+inline List dsn_read_fields_all(CharacterVector dsn, IntegerVector layer,
+                                CharacterVector sql, NumericVector ex,
+                                CharacterVector fid_column_name) {
+  
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  
+  List out = layer_read_fields_all(poLayer, fid_column_name);
+  
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
+  }
+  GDALClose(poDS);
+  return out;
+}
+
+inline List dsn_read_fields_ij(CharacterVector dsn, IntegerVector layer,
+                               CharacterVector sql, NumericVector ex,
+                               CharacterVector fid_column_name, NumericVector ij) {
+  
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  List out = layer_read_fields_ij(poLayer, fid_column_name, ij);
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
+  }
+  GDALClose(poDS);
+  return out;
+}
+inline List dsn_read_fields_ia(CharacterVector dsn, IntegerVector layer,
+                               CharacterVector sql, NumericVector ex,
+                               CharacterVector fid_column_name, NumericVector ia) {
+  
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  if( poDS == NULL )
+  {
+    Rcpp::stop("Open failed.\n");
+  }
+  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
+  List out = layer_read_fields_ia(poLayer, fid_column_name, ia);
+  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+  if (sql[0] != "") {
+    poDS->ReleaseResultSet(poLayer);
+  }
+  GDALClose(poDS);
   return out;
 }
 

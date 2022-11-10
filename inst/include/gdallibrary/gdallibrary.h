@@ -200,12 +200,14 @@ inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, R_xlen_t n_featu
   
   // modified MDS
   //int n = poFDefn->GetFieldCount() + poFDefn->GetGeomFieldCount() + fid_column.size();
-  int n = poFDefn->GetFieldCount() + (int)fid_column.size();
+  int n = poFDefn->GetFieldCount(); 
   
   Rcpp::List out(n);
   Rcpp::CharacterVector names(n);
   for (int i = 0; i < poFDefn->GetFieldCount(); i++) {
     OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn(i);
+
+    /// stolen directly from sf and adapted thanks Edzer Pebesma
     switch (poFieldDefn->GetType()) {
     case OFTInteger: {
       if (poFieldDefn->GetSubType() == OFSTBoolean)
@@ -214,12 +216,17 @@ inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, R_xlen_t n_featu
         out[i] = Rcpp::IntegerVector(n_features);
     }
       break;
-    case OFTDate: 
+    case OFTDate: {
+      Rcpp::NumericVector ret(n_features);
+      ret.attr("class") = "Date";
+      out[i] = ret;
+    } break;
+    case OFTTime: 
     case OFTDateTime: {
       Rcpp::NumericVector ret(n_features);
       Rcpp::CharacterVector cls(2);
-      cls[0] = "POSIXct";
-      cls[1] = "POSIXt";
+      cls(0) = "POSIXct";
+      cls(1) = "POSIXt";
       ret.attr("class") = cls;
       out[i] = ret;
     } break;
@@ -275,11 +282,8 @@ inline List gdal_read_fields(CharacterVector dsn,
   
   //double  nFeature = force_layer_feature_count(poLayer);
   // trying to fix SQL problem 2020-10-05
-  R_xlen_t nFeature = poLayer->GetFeatureCount();
-  if (nFeature < 1) {
-    //Rprintf("force count\n");
-    nFeature = force_layer_feature_count(poLayer);
-  }
+  R_xlen_t nFeature = (R_xlen_t)poLayer->GetFeatureCount();
+
   
   //Rprintf("%i\n", nFeature);
   if (nFeature > MAX_INT) {
@@ -392,12 +396,10 @@ inline List gdal_read_fields(CharacterVector dsn,
   
   OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
   
-  poLayer->ResetReading();
   //  double nFeature = force_layer_feature_count(poLayer);
   // trying to fix SQL problem 2020-10-05
   R_xlen_t nFeature = poLayer->GetFeatureCount();
   if (nFeature < 1) {
-    //Rprintf("force count\n");
     nFeature = force_layer_feature_count(poLayer);
   }
   
