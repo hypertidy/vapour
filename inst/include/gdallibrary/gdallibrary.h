@@ -112,11 +112,11 @@ inline OGRLayer *gdal_layer(GDALDataset *poDS, IntegerVector layer, CharacterVec
   
   bool use_extent_filter = false;
   if (ex.length() == 4) {
-        if (ex[1] <= ex[0] || ex[2] <= ex[3]) {
+        if (ex[1] <= ex[0] || ex[3] <= ex[2]) {
           if (ex[1] <= ex[0]) {
             Rcpp::warning("extent filter invalid (xmax <= xmin), ignoring");
           }
-          if (ex[3] <= ex[4]) {
+          if (ex[3] <= ex[2]) {
             Rcpp::warning("extent filter invalid (ymax <= ymin), ignoring");
           }
         } else {    
