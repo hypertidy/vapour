@@ -31,4 +31,4 @@ RUN R -e 'options(Ncpus = 15); install.packages("remotes"); remotes::install_cra
 
 ## now edit src/Makevars.in to put -Wconversion ito CPPFLAGS, and: 
 #R CMD build vapour --no-build-vignettes
-#R CMD INSTALL vapour_0.9.0.tar.gz > INSTALL.out 2>&1
+#R CMD INSTALL vapour_0.?.?.tar.gz > INSTALL.out 2>&1
