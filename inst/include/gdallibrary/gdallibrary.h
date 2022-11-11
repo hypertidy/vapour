@@ -119,15 +119,28 @@ inline OGRLayer *gdal_layer(GDALDataset *poDS, IntegerVector layer, CharacterVec
     poly.addRing(&ring);
   }
   
+  // Rcpp::Function vapour_getenv_sql_dialect("vapour_getenv_dialect"); 
+  // const char *sql_dialect = (const char *) vapour_getenv_sql_dialect(); 
+  // 
+  Environment vapour = Environment::namespace_env("vapour");
+ 
+  // Picking up  function from this package
+  Function vapour_getenv_sql_dialect = vapour["vapour_getenv_sql_dialect"];
+  //const char *sql_dialect = (const char *) vapour_getenv_sql_dialect();
+  CharacterVector R_dialect = vapour_getenv_sql_dialect(); 
+  const char *sql_dialect = (const char *)R_dialect[0]; 
+ 
+ 
+ 
   if (sql[0] != "") {
     if (ex.length() == 4) {
       poLayer =  poDS->ExecuteSQL(sql[0],
                                   &poly,
-                                  NULL );
+                                  sql_dialect );
     } else {
       poLayer =  poDS->ExecuteSQL(sql[0],
                                   NULL,
-                                  NULL );
+                                  sql_dialect );
     }
     
     if (poLayer == NULL) {

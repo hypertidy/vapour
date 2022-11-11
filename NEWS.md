@@ -1,5 +1,6 @@
 # vapour 0.9.1
 
+* The SQL dialect in use for the 'sql' argument can now be controlled, it is set to "" by default. See `?vapour-package` for details. 
 
 * 'vapour_layer_info' now supports spatial filter, the 'extent' argument in
 'vapour_layer_info' is now for limiting the spatial extent of a layer query (was
@@ -7,7 +8,8 @@ for controlling whether extent calculated or not).
 
 * 'gdal_read_names' removed from gdallibrary, and 'read_names_gdal_cpp' renamed to 'read_fids_gdal_cpp' and now returns a numeric vector rather than a list.  
 
-* Fixed another stray cast (int), now checking more robustly for nodata value for integer bands. 
+* Fixed another stray cast (int), now checking more robustly for nodata value for integer bands. We have made some
+inroads into better consistency of use of long integer values in the code base, but vapour does not yet support long vectors. 
 
 # vapour 0.9.0
 
