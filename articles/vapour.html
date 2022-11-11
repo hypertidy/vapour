@@ -365,7 +365,14 @@
 <p>SQL is available for general GDAL vector data.</p>
 <p>Note that each lower-level function accepts a <code>sql</code> argument, which sends a query to the GDAL library to be executed against the data source, this can create custom layers and so is independent of and ignores the <code>layer</code> argument. Note that the same sql statement can be passed to the geometry readers, so we get the matching sets of information. <code>vapour_read_geometry</code> will return NULL for each missing geometry if the statement doesn’t include geometry explicitly or implicitly, but <code>vapour_read_geometry</code>, <code>vapour_read_geometry_text</code> and <code>vapour_read_extent</code> all explicitly modify the statement "SELECT *". (We are also assuming the data source hasn’t changed between accesses … let me know if this causes you problems!).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/vapour_read_fields.html">vapour_read_fields</a></span><span class="op">(</span><span class="va">mvfile</span>, sql <span class="op">=</span> <span class="st">"SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE &lt; 7291"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co">## note, this code assumes OGRSQL dialect</span></span>
+<span><span class="va">current_dialect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"vapour.sql.dialect"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.unsetenv</a></span><span class="op">(</span><span class="st">"vapour.sql.dialect"</span><span class="op">)</span>  <span class="co">## ensure that default dialect is used </span></span>
+<span><span class="co">## (in this case it's 'OGRSQL' but we only want to record the state and reset after)</span></span>
+<span><span class="co">## later on, when done do Sys.setenv(vapour.sql.dialect = current_dialect)</span></span>
+<span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/vapour_read_fields.html">vapour_read_fields</a></span><span class="op">(</span><span class="va">mvfile</span>, sql <span class="op">=</span> <span class="st">"SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE &lt; 7291"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $NAME</span></span>
 <span><span class="co">#&gt;  [1] "Frankford"          "Bridgenorth"        "Summerhill"        </span></span>
 <span><span class="co">#&gt;  [4] "Blackstone Heights" "Lake St Clair"      "Trevallyn"         </span></span>
@@ -375,8 +382,6 @@
 <span><span class="co">#&gt; $PLAN_REF</span></span>
 <span><span class="co">#&gt;  [1] "CPR5142" "CPR5140" "CPR5150" "CPR5326" "CPR5570" "CPR5155" "CPR5140"</span></span>
 <span><span class="co">#&gt;  [8] "CPR5329" "CPR5326" "CPR5325"</span></span>
-<span></span>
-<span></span>
 <span><span class="fu"><a href="../reference/vapour_read_fields.html">vapour_read_fields</a></span><span class="op">(</span><span class="va">mvfile</span>, sql <span class="op">=</span> <span class="st">"SELECT NAME, PLAN_REF, FID FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7306"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $NAME</span></span>
 <span><span class="co">#&gt; [1] "Cradle Mountain" "Mount Roland"    "Middlesex"       "Lower Beulah"   </span></span>
@@ -387,7 +392,7 @@
 <span><span class="co">#&gt; $FID</span></span>
 <span><span class="co">#&gt; [1] 20 31 36 45</span></span></code></pre></div>
 <p>Also note that FID is a special row number value, to be used a as general facility for selecting by structural row. This FID is driver-dependent, it can be 0- or 1-based, or completely arbitrary.</p>
-<p>Variously, drivers (GDAL’s formats) are 0- or 1- based with the FID. Others (such as OSM) are arbitrary, and have non-sequential (and presumably persientent) FID values.</p>
+<p>Variously, drivers (GDAL’s formats) are 0- or 1- based with the FID. Others (such as OSM) are arbitrary, and have non-sequential (and presumably persistent) FID values.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hypertidy/vapour" class="external-link">vapour</a></span><span class="op">)</span></span>
 <span><span class="va">file0</span> <span class="op">&lt;-</span> <span class="st">"list_locality_postcode_meander_valley.tab"</span></span>
@@ -409,13 +414,37 @@
 <span><span class="co">#&gt; $n</span></span>
 <span><span class="co">#&gt; [1] 2</span></span></code></pre></div>
 <p>See <a href="https://gdal.org/user/ogr_sql_dialect.html" class="external-link uri">https://gdal.org/user/ogr_sql_dialect.html</a></p>
+<p>Now we are done with our SQL, so in case something else was using <code>current_dialect</code>, restore it.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>vapour.sql.dialect <span class="op">=</span> <span class="va">current_dialect</span><span class="op">)</span></span></code></pre></div>
 <p>There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables.</p>
+</div>
+<div class="section level2">
+<h2 id="sql-dialect">SQL Dialect<a class="anchor" aria-label="anchor" href="#sql-dialect"></a>
+</h2>
+<p>In earlier versions (pre 0.9.1) we couldn’t control the SQL dialect in use, so we variously had available ‘OGRSQL’ or ‘SQLITE’, or whatever native dialect the format defaults to. We couldn’t use ‘OGRSQL’ with a Geopackage, and neither could we use ‘SQLITE’ with a shapefile, MapInfo TAB, or ESRI file Geodatabase (these last three aren’t “real” databases so don’t have their own native SQL, and GDAL fills the gap with OGRSQL. Geopackage defaults to SQLITE, because that’s what it is built upon.</p>
+<p>So for example.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## good citizenry</span></span>
+<span><span class="va">current_dialect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"vapour.sql.dialect"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>vapour.sql.dialect <span class="op">=</span> <span class="st">"SQLITE"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## now we can use SQLITE dialect with TAB</span></span>
+<span><span class="fu"><a href="../reference/vapour_read_fields.html">vapour_read_fields</a></span><span class="op">(</span><span class="va">mvfile</span>, sql <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"SELECT st_area(GEOMETRY) AS area FROM %s LIMIT 1 "</span>, <span class="va">layer</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $area</span></span>
+<span><span class="co">#&gt; [1] 51713229</span></span>
+<span></span>
+<span><span class="co">## but with OGRSQL we need</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>vapour.sql.dialect <span class="op">=</span> <span class="st">"OGRSQL"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/vapour_read_fields.html">vapour_read_fields</a></span><span class="op">(</span><span class="va">mvfile</span>, sql <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"SELECT OGR_GEOM_AREA AS area FROM %s LIMIT 1 "</span>, <span class="va">layer</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $area</span></span>
+<span><span class="co">#&gt; [1] 51713229</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="gdal-information">GDAL information<a class="anchor" aria-label="anchor" href="#gdal-information"></a>
 </h2>
 <p>Find the GDAL version and drivers available.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/GDAL-library.html">vapour_gdal_version</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "GDAL 3.5.2, released 2022/09/02"</span></span>
 <span></span>
@@ -429,7 +458,7 @@
 <span><span class="co">#&gt;  $ copy   : logi [1:203] TRUE FALSE TRUE TRUE TRUE FALSE ...</span></span>
 <span><span class="co">#&gt;  $ virtual: logi [1:203] TRUE FALSE TRUE TRUE TRUE TRUE ...</span></span></code></pre></div>
 <p>Find the driver that will be used for a given data source.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/GDAL-library.html">vapour_driver</a></span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "MapInfo File"</span></span></code></pre></div>
 </div>

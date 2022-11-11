@@ -80,10 +80,42 @@ their native usage. GDAL is not a lightweight library, but provide a very
 nice abstraction over format details for a very large number of different
 formats.</p>
 <p>Functions for raster and vector sources are included.</p>
-<p>#'</p><table class="table table"><tr><td><code><a href="GDAL-library.html">vapour_all_drivers</a></code></td><td>list of all available drivers, with type and features</td></tr><tr><td><code><a href="GDAL-library.html">vapour_driver</a></code></td><td>report short name of driver that will be used for a data source</td></tr><tr><td><code><a href="GDAL-library.html">vapour_gdal_version</a></code></td><td>report version of GDAL in use</td></tr><tr><td><code><a href="vapour_srs_wkt.html">vapour_srs_wkt</a></code></td><td>produce WKT projection string from various projection string inputs</td></tr><tr><td><code><a href="vapour_vsi_list.html">vapour_vsi_list</a></code></td><td>report contents of VSI sources</td></tr></table><table class="table table"><tr><td><code><a href="vapour_raster_gcp.html">vapour_raster_gcp</a></code></td><td>return internal ground control points, if present</td></tr><tr><td><code><a href="vapour_raster_info.html">vapour_raster_info</a></code></td><td>structural metadata of a source</td></tr><tr><td><code><a href="vapour_read_raster.html">vapour_read_raster</a></code></td><td>read data direct from a window of a raster band source</td></tr><tr><td><code><a href="vapour_sds_names.html">vapour_sds_names</a></code></td><td>list individual raster sources in a source containing subdatasets</td></tr><tr><td><code><a href="vapour_warp_raster.html">vapour_warp_raster</a></code></td><td>read data direct from a raster source into a specific window</td></tr></table><table class="table table"><tr><td><code><a href="GDAL-library.html">vapour_driver</a></code></td><td>report name of the driver used for a given source</td></tr><tr><td><code><a href="vapour_geom_name.html">vapour_geom_name</a></code></td><td>report attribute name of geometry</td></tr><tr><td><code><a href="vapour_geom_summary.html">vapour_geom_summary</a></code></td><td>report simple properties of each feature geometry</td></tr><tr><td><code><a href="vapour_layer_names.html">vapour_layer_names</a></code></td><td>list names of vector layers in a data source</td></tr><tr><td><code><a href="vapour_layer_info.html">vapour_layer_info</a></code></td><td>list of data source, driver, layer name/s, fields, feature count, projection</td></tr><tr><td><code><a href="vapour_read_geometry.html">vapour_read_extent</a></code></td><td>read the extent, or bounding box, of geometries in a layer</td></tr><tr><td><code><a href="vapour_read_fields.html">vapour_read_fields</a></code></td><td>read attributes of features in a layer, the columnar data associated with each geometry</td></tr><tr><td><code><a href="vapour_read_geometry.html">vapour_read_geometry</a></code></td><td>read geometry in binary (blob, WKB) form</td></tr><tr><td><code><a href="vapour_read_geometry.html">vapour_read_geometry_ia</a></code></td><td>read geometry by index, arbitrary</td></tr><tr><td><code><a href="vapour_read_geometry.html">vapour_read_geometry_ij</a></code></td><td>read geometry by sequential index, i to j</td></tr><tr><td><code><a href="vapour_read_geometry.html">vapour_read_geometry_text</a></code></td><td>read geometry in text form, various formats</td></tr><tr><td><code><a href="vapour_read_fids.html">vapour_read_names</a></code></td><td>read the 'names' of features in a layer, the 'FID'</td></tr><tr><td><code><a href="vapour_read_geometry.html">vapour_read_type</a></code></td><td>read the GDAL types of attributes</td></tr><tr><td><code><a href="vapour_report_fields.html">vapour_report_fields</a></code></td><td>report internal type of each attribute by name</td></tr></table><p>As far as possible vapour aims to minimize the level of interpretation
+<table class="table table"><tr><td><code><a href="GDAL-library.html">vapour_all_drivers</a></code></td><td>list of all
+available drivers, with type and features</td></tr><tr><td><code><a href="GDAL-library.html">vapour_driver</a></code></td><td>report short name of driver that will be used for a data source</td></tr><tr><td><code><a href="GDAL-library.html">vapour_gdal_version</a></code></td><td>report version of GDAL in use</td></tr><tr><td><code><a href="vapour_srs_wkt.html">vapour_srs_wkt</a></code></td><td>produce WKT projection string
+from various projection string inputs</td></tr><tr><td><code><a href="vapour_vsi_list.html">vapour_vsi_list</a></code></td><td>report contents of VSI sources</td></tr></table><table class="table table"><tr><td><code><a href="vapour_raster_gcp.html">vapour_raster_gcp</a></code></td><td>return internal
+ground control points, if present</td></tr><tr><td><code><a href="vapour_raster_info.html">vapour_raster_info</a></code></td><td>structural metadata of a source</td></tr><tr><td><code><a href="vapour_read_raster.html">vapour_read_raster</a></code></td><td>read data direct from a window of a raster band source</td></tr><tr><td><code><a href="vapour_sds_names.html">vapour_sds_names</a></code></td><td>list individual raster sources
+in a source containing subdatasets</td></tr><tr><td><code><a href="vapour_warp_raster.html">vapour_warp_raster</a></code></td><td>read data direct from a raster source into a specific window</td></tr></table><table class="table table"><tr><td><code><a href="GDAL-library.html">vapour_driver</a></code></td><td>report name of the
+driver used for a given source</td></tr><tr><td><code><a href="vapour_geom_name.html">vapour_geom_name</a></code></td><td>report attribute name of geometry</td></tr><tr><td><code><a href="vapour_geom_summary.html">vapour_geom_summary</a></code></td><td>report simple properties of each feature geometry</td></tr><tr><td><code><a href="vapour_layer_names.html">vapour_layer_names</a></code></td><td>list names of vector layers in a
+data source</td></tr><tr><td><code><a href="vapour_layer_info.html">vapour_layer_info</a></code></td><td>list of data source,
+driver, layer name/s, fields, feature count, projection</td></tr><tr><td><code><a href="vapour_read_geometry.html">vapour_read_extent</a></code></td><td>read the extent, or bounding
+box, of geometries in a layer</td></tr><tr><td><code><a href="vapour_read_fields.html">vapour_read_fields</a></code></td><td>read attributes of features in a layer, the columnar data associated with
+each geometry</td></tr><tr><td><code><a href="vapour_read_geometry.html">vapour_read_geometry</a></code></td><td>read geometry
+in binary (blob, WKB) form</td></tr><tr><td><code><a href="vapour_read_geometry.html">vapour_read_geometry_ia</a></code></td><td>read geometry by index, arbitrary</td></tr><tr><td><code><a href="vapour_read_geometry.html">vapour_read_geometry_ij</a></code></td><td>read geometry by sequential index, i to j</td></tr><tr><td><code><a href="vapour_read_geometry.html">vapour_read_geometry_text</a></code></td><td>read geometry in text form,
+various formats</td></tr><tr><td><code><a href="vapour_read_fids.html">vapour_read_names</a></code></td><td>read the
+'names' of features in a layer, the 'FID'</td></tr><tr><td><code><a href="vapour_read_geometry.html">vapour_read_type</a></code></td><td>read the GDAL types of attributes</td></tr><tr><td><code><a href="vapour_report_fields.html">vapour_report_fields</a></code></td><td>report internal type of each attribute by name</td></tr></table><p>As far as possible vapour aims to minimize the level of interpretation
 provided for the functions, so that developers can choose how things are
-implemented. Functions return raw lists or vectors rather than data frames
-or classed types.</p>
+implemented. Functions return raw lists or vectors rather than data frames or
+classed types.</p>
+    </div>
+    <div id="options">
+    <h2>options</h2>
+    
+
+
+<p>The following options can be set to control global behaviour.</p>
+<table class="table table"><tr><td><code>Sys.getenv("vapour.sql.dialect")</code></td><td>the current SQL
+dialect in use</td></tr></table></div>
+    <div id="sql-dialect">
+    <h2>SQL dialect</h2>
+    
+
+
+<p>The SQL dialect can be set to "" (empty string), "OGRSQL", or "SQLITE".</p>
+<p>The empty string indicates that the native dialect will be used, see
+<a href="https://gdal.org/user/ogr_sql_sqlite_dialect.html" class="external-link">OGRSQL and SQLITE for GDAL, accessed 2022-11-11</a> and the
+<a href="https://gdal.org/api/raster_c_api.html#c.GDAL_DMD_SUPPORTED_SQL_DIALECTS" class="external-link">GDAL_DMD_SUPPORTED_SQL_DIALECTS development documentation (since GDAL 3.6)</a>.</p>
+<p>Setting "NATIVE" as an alias for "" is quite recent and has not been tested with vapour, similarly no testing has been done
+with non OGRSQL-native or SQLITE-native drivers yet.</p>
     </div>
 
   </div>
