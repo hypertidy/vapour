@@ -117,7 +117,8 @@
 <div class="section level3">
 <h3 id="ij">IJ<a class="anchor" aria-label="anchor" href="#ij"></a>
 </h3>
-<p>Get a subset of feature thingys i:j - their positional index</p>
+<p>Get a subset of feature thingys i:j - their positional index.</p>
+<p>For <code>c(0, 0)</code> get the first feature, for <code>c(0, n - 1)</code> get all of them. For <code>c(0, -1)</code> that is a special case, there are no features.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode c++"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1"></a></span>
 <span id="cb2-2"><a href="#cb2-2"></a>  ListVector out(ij[<span class="dv">1</span>] - ij[<span class="dv">0</span>] + <span class="dv">1</span>);</span>
 <span id="cb2-3"><a href="#cb2-3"></a>  <span class="dt">double</span> cnt = <span class="dv">0</span>;</span>

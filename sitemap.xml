@@ -64,13 +64,13 @@
     <loc>/reference/vapour_raster_info.html</loc>
   </url>
   <url>
+    <loc>/reference/vapour_read_fids.html</loc>
+  </url>
+  <url>
     <loc>/reference/vapour_read_fields.html</loc>
   </url>
   <url>
     <loc>/reference/vapour_read_geometry.html</loc>
-  </url>
-  <url>
-    <loc>/reference/vapour_read_names.html</loc>
   </url>
   <url>
     <loc>/reference/vapour_read_raster.html</loc>

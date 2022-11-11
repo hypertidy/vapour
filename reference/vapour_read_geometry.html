@@ -166,7 +166,7 @@ features. These may be duplicated. If 'ia' is greater than the highest index NUL
 <p><code>vapour_read_type</code> will read the (wkb) type of the geometry as an integer. These are
 <code>0</code> unknown, <code>1</code> Point, <code>2</code> LineString, <code>3</code> Polygon, <code>4</code> MultiPoint, <code>5</code> MultiLineString,
 <code>6</code> MultiPolygon, <code>7</code> GeometryCollection, and the other more exotic types listed in "api/vector_c_api.html" from the
-GDAL home page (as at October 2020).</p>
+GDAL home page (as at October 2020).  A missing value 'NA' indicates an empty geometry.</p>
 <p>Note that <code>limit_n</code> and <code>skip_n</code> interact with the affect of <code>sql</code>, first the query is executed on the data source, then
 while looping through available features <code>skip_n</code> features are ignored, and then a feature-count begins and the loop
 is stopped if <code>limit_n</code> is reached.</p>

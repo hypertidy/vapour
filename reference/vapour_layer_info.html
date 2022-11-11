@@ -70,9 +70,9 @@
 <span>  <span class="va">dsource</span>,</span>
 <span>  layer <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  sql <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  <span class="va">...</span>,</span>
-<span>  extent <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  count <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  extent <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  count <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -90,16 +90,16 @@
 <dd><p>if not empty this is executed against the data source (layer will be ignored)</p></dd>
 
 
-<dt>...</dt>
-<dd><p>unused, reserved for future use</p></dd>
-
-
 <dt>extent</dt>
-<dd><p>logical to control if extent calculated and returned, TRUE by default (set to FALSE to avoid the extra calculation and missing value is the result)</p></dd>
+<dd><p>apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin, xmax, ymin, ymax)' but sp bbox, sf bbox, and raster extent also accepted)</p></dd>
 
 
 <dt>count</dt>
 <dd><p>logical to control if count calculated and returned, TRUE by default (set to FALSE to avoid the extra calculation and missing value is the result)</p></dd>
+
+
+<dt>...</dt>
+<dd><p>unused, reserved for future use</p></dd>
 
 </dl></div>
     <div id="value">
@@ -156,6 +156,11 @@ might be done with this (that's up to you). Currently we see
 <span class="r-in"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu">vapour_layer_info</span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">info</span><span class="op">$</span><span class="va">projection</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Wkt"   "Proj4" "EPSG" </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## info depends on the query/spatial-filter</span></span></span>
+<span class="r-in"><span><span class="fu">vapour_layer_info</span><span class="op">(</span><span class="va">mvfile</span>, extent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">412000</span>,  <span class="fl">420000</span>, <span class="fl">5352612.8</span>, <span class="fl">5425154.3</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>  sql <span class="op">=</span> <span class="st">"SELECT * FROM list_locality_postcode_meander_valley"</span><span class="op">)</span><span class="op">$</span><span class="va">count</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
 </code></pre></div>
     </div>
   </div>
