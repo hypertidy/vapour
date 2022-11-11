@@ -49,6 +49,21 @@ feature_count_gdal_cpp <- function(dsn, layer, sql, ex) {
     .Call('_vapour_feature_count_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, ex)
 }
 
+projection_info_gdal_cpp <- function(dsn, layer, sql) {
+    .Call('_vapour_projection_info_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql)
+}
+
+report_fields_gdal_cpp <- function(dsn, layer, sql) {
+    .Call('_vapour_report_fields_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql)
+}
+
+vapour_geom_name_cpp <- function(dsource, layer, sql, ex) {
+    .Call('_vapour_vapour_geom_name_cpp', PACKAGE = 'vapour', dsource, layer, sql, ex)
+}
+
+vapour_layer_extent_cpp <- function(dsource, layer, sql, ex) {
+    .Call('_vapour_vapour_layer_extent_cpp', PACKAGE = 'vapour', dsource, layer, sql, ex)
+}
 
 gdal_dsn_read_geom_all <- function(dsn, layer, sql, ex, format) {
     .Call('_vapour_gdal_dsn_read_geom_all', PACKAGE = 'vapour', dsn, layer, sql, ex, format)
@@ -82,6 +97,16 @@ gdal_dsn_read_fields_fa <- function(dsn, layer, sql, ex, fid_column_name, fa) {
     .Call('_vapour_gdal_dsn_read_fields_fa', PACKAGE = 'vapour', dsn, layer, sql, ex, fid_column_name, fa)
 }
 
+gdal_dsn_read_fids_all <- function(dsn, layer, sql, ex) {
+    .Call('_vapour_gdal_dsn_read_fids_all', PACKAGE = 'vapour', dsn, layer, sql, ex)
+}
+
+gdal_dsn_read_fids_ij <- function(dsn, layer, sql, ex, ij) {
+    .Call('_vapour_gdal_dsn_read_fids_ij', PACKAGE = 'vapour', dsn, layer, sql, ex, ij)
+}
+
+gdal_dsn_read_fids_ia <- function(dsn, layer, sql, ex, ia) {
+    .Call('_vapour_gdal_dsn_read_fids_ia', PACKAGE = 'vapour', dsn, layer, sql, ex, ia)
 }
 
 read_fields_gdal_cpp <- function(dsn, layer, sql, limit_n, skip_n, ex, fid_column_name) {
@@ -92,6 +117,8 @@ read_geometry_gdal_cpp <- function(dsn, layer, sql, what, textformat, limit_n, s
     .Call('_vapour_read_geometry_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, what, textformat, limit_n, skip_n, ex)
 }
 
+read_fids_gdal_cpp <- function(dsn, layer, sql, limit_n, skip_n, ex) {
+    .Call('_vapour_read_fids_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, limit_n, skip_n, ex)
 }
 
 raster_gcp_gdal_cpp <- function(dsn) {
