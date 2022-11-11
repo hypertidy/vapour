@@ -153,16 +153,21 @@ which sends a query to the GDAL library to be executed against
 the data source, this can create custom layers and so is independent of and ignores the `layer` argument. Note that the same sql statement can be passed to the geometry readers, so we get the matching sets of information. `vapour_read_geometry` will return NULL for each missing geometry if the statement doesn't include geometry explicitly or implicitly, but `vapour_read_geometry`, `vapour_read_geometry_text` and `vapour_read_extent` all explicitly modify the statement "SELECT *". (We are also assuming the data source hasn't changed between accesses ... let me know if this causes you problems!). 
 
 ```{r}
+## note, this code assumes OGRSQL dialect
+current_dialect <- Sys.getenv("vapour.sql.dialect")
+Sys.unsetenv("vapour.sql.dialect")  ## ensure that default dialect is used 
+## (in this case it's 'OGRSQL' but we only want to record the state and reset after)
+## later on, when done do Sys.setenv(vapour.sql.dialect = current_dialect)
+
+
 vapour_read_fields(mvfile, sql = "SELECT NAME, PLAN_REF FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7291")
-
-
 vapour_read_fields(mvfile, sql = "SELECT NAME, PLAN_REF, FID FROM list_locality_postcode_meander_valley WHERE POSTCODE = 7306")
 
 ```
 
 Also note that FID is a special row number value, to be used a as general facility for selecting by structural row. This FID is driver-dependent, it can be 0- or 1-based, or completely arbitrary. 
 
-Variously, drivers (GDAL's formats) are 0- or 1- based with the FID. Others (such as OSM) are arbitrary, and have non-sequential (and presumably persientent) FID values. 
+Variously, drivers (GDAL's formats) are 0- or 1- based with the FID. Others (such as OSM) are arbitrary, and have non-sequential (and presumably persistent) FID values. 
 
 ```{r}
 library(vapour)
@@ -179,10 +184,44 @@ vapour_read_fields(mvfile, sql = sprintf("SELECT COUNT(*) AS n FROM %s WHERE FID
 shp <- system.file("extdata/point.shp", package="vapour")
 vapour_read_fields(shp, sql = sprintf("SELECT COUNT(*) AS n FROM %s WHERE FID < 2", "point"))
 ```
+
+
+
 See https://gdal.org/user/ogr_sql_dialect.html
 
 
+Now we are done with our SQL, so in case something else was using `current_dialect`, restore it. 
+
+```{r restore}
+Sys.setenv(vapour.sql.dialect = current_dialect)
+```
+
+
+
+
+
 There are many useful higher level operations that can be used with this. The simplest is the ability to use GDAL as a database-like connection to attribute tables. 
+
+
+# SQL Dialect
+
+In earlier versions (pre 0.9.1) we couldn't control the SQL dialect in use, so we variously had available 'OGRSQL' or 'SQLITE', or whatever native dialect the format defaults to. We couldn't use 'OGRSQL' with a Geopackage, and neither could we use 'SQLITE' with a shapefile, MapInfo TAB, or ESRI file Geodatabase (these last three aren't "real" databases so don't have their own native SQL, and GDAL fills the gap with OGRSQL. Geopackage defaults to SQLITE, because that's what it is built upon. 
+
+So for example. 
+
+```{r dialect}
+## good citizenry
+current_dialect <- Sys.getenv("vapour.sql.dialect")
+Sys.setenv(vapour.sql.dialect = "SQLITE")
+
+## now we can use SQLITE dialect with TAB
+vapour_read_fields(mvfile, sql = sprintf("SELECT st_area(GEOMETRY) AS area FROM %s LIMIT 1 ", layer))
+
+## but with OGRSQL we need
+Sys.setenv(vapour.sql.dialect = "OGRSQL")
+vapour_read_fields(mvfile, sql = sprintf("SELECT OGR_GEOM_AREA AS area FROM %s LIMIT 1 ", layer))
+
+```
 
 
 # GDAL information

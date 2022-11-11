@@ -15,11 +15,15 @@
 
 }
 
+vapour_getenv_sql_dialect <- function() {
+  Sys.getenv("vapour.sql.dialect")
+}
 vapour_load_gdal <- function() {
   ## data only on
   ## - windows because tools/winlibs.R
   ## - macos because   CRAN mac binary libs, and configure --with-data-copy=yes --with-proj-data=/usr/local/share/proj
-
+  sql <- Sys.getenv("vapour.sql.dialect")
+  if (is.null(sql)) Sys.setenv(vapour_sql_dialect = "")
   ##PROJ  data, only if the files are in package (will fix in gdalheaders)
   if (file.exists(system.file("proj/nad.lst", package = "vapour"))) {
      prj = system.file("proj", package = "vapour")[1L]
