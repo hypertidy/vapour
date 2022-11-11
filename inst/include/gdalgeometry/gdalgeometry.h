@@ -303,6 +303,11 @@ inline List layer_read_fields_ij(OGRLayer *poLayer, CharacterVector fid_column_n
         
         /// stolen directly from sf and adapted thanks Edzer Pebesma
         switch( poFieldDefn->GetType() ) {
+        case OFTWideString:
+        case OFTWideStringList: {
+          // don't do anything these are deprecated (and probably will cause version issues ...)
+        }
+          break;
         case OFTString: {
           CharacterVector cv;
           cv = out[iField];

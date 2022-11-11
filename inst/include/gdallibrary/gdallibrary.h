@@ -234,6 +234,11 @@ inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, R_xlen_t n_featu
 
     /// stolen directly from sf and adapted thanks Edzer Pebesma
     switch (poFieldDefn->GetType()) {
+    case OFTWideString:
+    case OFTWideStringList: {
+      // don't do anything these are deprecated (and probably will cause version issues ...)
+    }
+      break;
     case OFTInteger: {
       if (poFieldDefn->GetSubType() == OFSTBoolean)
         out[i] = Rcpp::LogicalVector(n_features);

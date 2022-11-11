@@ -2,14 +2,6 @@
 
 New version to address Additional Issues on CRAN. I've tested for lossy casts on clang with -Wconversion. 
 
-There are warnings from clang about 
-
-"enumeration values 'OFTWideString' and 'OFTWideStringList' not handled in switch [-Wswitch]
-    switch (poFieldDefn->GetType()) {
-
-but these are deprecated values in GDAL. 
-
-Other clang warnings are from Rcpp itself when run with -Wconversion. 
 
 Thank you! 
 
