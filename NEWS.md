@@ -1,5 +1,12 @@
 # vapour 0.9.1
 
+
+* 'vapour_layer_info' now supports spatial filter, the 'extent' argument in
+'vapour_layer_info' is now for limiting the spatial extent of a layer query (was
+for controlling whether extent calculated or not).
+
+* 'gdal_read_names' removed from gdallibrary, and 'read_names_gdal_cpp' renamed to 'read_fids_gdal_cpp' and now returns a numeric vector rather than a list.  
+
 * Fixed another stray cast (int), now checking more robustly for nodata value for integer bands. 
 
 # vapour 0.9.0

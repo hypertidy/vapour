@@ -104,7 +104,7 @@ test_that("limit_n works",
                                                  "extent", "projection"))
             expect_silent(vapour_read_extent(f, limit_n = 3L)) %>% unlist(use.names = FALSE) %>% expect_length(12L)
 
-            expect_error(vapour_read_attributes(f, limit_n = 5, skip_n = 7), "is 'skip_n' set too high?")
+            expect_error(vapour_read_attributes(f, limit_n = 5, skip_n = 7), "skip_n skips all available features")
           }
 
 
@@ -170,7 +170,7 @@ expect_equal(e3, list(c(-6005059.83508923, 6080358.63750109, -5670292.85588759,
 sf_extent <- structure(setNames(ex[c(1, 3, 2, 4)], c("xmin", "ymin", "xmax", "ymax")), class = "bbox",
                        crs = structure(list(epsg = NA_integer_, proj4string = NA_character_), class = "crs"))
 #r_extent <- raster::extent(ex)
-sp_extent <- matrix(ex, 2, byrow = TRUE, dimnames = list(c("s1", "s2"), c("min", "max")))
+sp_extent <- as.vector(t(matrix(ex, 2, byrow = TRUE, dimnames = list(c("s1", "s2"), c("min", "max")))))
 
 expect_silent(s1 <- vapour_read_geometry_text(f))
 expect_warning(s2 <- vapour_read_geometry_text(f, extent = sf_extent))
@@ -202,7 +202,7 @@ test_that("index geometry read works", {
           expect_length(vapour_read_geometry_ij(f, ij = c(3, 5)), 3L)
           expect_error(vapour_read_geometry_ij(f, ij = c(-1, 1)), "ij values < 0") 
           expect_error(vapour_read_geometry_ij(f, ij = c(NA, 1)), "missing values ij") 
-          expect_silent(vapour_read_geometry_ij(f, ij = c(6, 7))[2]) %>% expect_equivalent(list(NULL)) 
+          expect_warning(vapour_read_geometry_ij(f, ij = c(6, 7))[2] %>% expect_equivalent(list(NULL)))
           
           expect_length(vapour_read_geometry_ij(f, ij = c(0, 6)), 7L)
           expect_error(vapour_read_geometry_ij(f, ij = c(5, 5)), "ij values must not be duplicated") 
