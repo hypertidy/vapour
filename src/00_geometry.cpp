@@ -175,6 +175,8 @@ List read_geometry_gdal_cpp(CharacterVector dsn,
                             NumericVector ex ) {
   // validate_limit_n ensures it is 0 or greater
   // but, if greater we must ensure it won't exceed the feature count
+  // we get two warnings if the extent is poorly ordered, see 171 but I don't want to fix that atm
+  // we might send in quiet messages ...
    NumericVector ij = gdalmiscutils::limit_skip_n_to_start_end_len(skip_n, limit_n, 
                                                       feature_count_gdal_cpp(dsn, layer, sql, ex)); 
 
