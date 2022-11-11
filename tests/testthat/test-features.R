@@ -104,7 +104,7 @@ test_that("limit_n works",
                                                  "extent", "projection"))
             expect_silent(vapour_read_extent(f, limit_n = 3L)) %>% unlist(use.names = FALSE) %>% expect_length(12L)
 
-            expect_error(vapour_read_attributes(f, limit_n = 5, skip_n = 7), "is 'skip_n' set too high?")
+            expect_error(vapour_read_attributes(f, limit_n = 5, skip_n = 7), "skip_n skips all available features")
           }
 
 

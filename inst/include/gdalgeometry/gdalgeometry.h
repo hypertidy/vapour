@@ -23,21 +23,32 @@ using namespace Rcpp;
 // see here for the constants for the format variants
 // http://www.gdal.org/ogr__core_8h.html#a6716bd3399c31e7bc8b0fd94fd7d9ba6a7459e8d11fa69e89271771c8d0f265d8
 inline RawVector gdal_geometry_raw(OGRFeature *poFeature) {
-  Rcpp::RawVector raw(poFeature->GetGeometryRef()->WkbSize());
-  poFeature->GetGeometryRef()->exportToWkb(wkbNDR, &(raw[0]), wkbVariantIso);
-  return raw;
+  if (poFeature->GetGeometryRef()) {
+    Rcpp::RawVector raw(poFeature->GetGeometryRef()->WkbSize());
+    poFeature->GetGeometryRef()->exportToWkb(wkbNDR, &(raw[0]), wkbVariantIso);
+    return raw;
+    
+  } else {
+    Rcpp::RawVector raw(0); 
+    return raw; 
+  }
 }
 inline CharacterVector gdal_geometry_wkt(OGRFeature *poFeature) {
-  char *pszGEOM_WKT = NULL;
-  poFeature->GetGeometryRef()->exportToWkt(&pszGEOM_WKT, wkbVariantIso );
   CharacterVector wkt(1);
-  wkt[0] = pszGEOM_WKT;
-  CPLFree( pszGEOM_WKT );
+  if (poFeature->GetGeometryRef()) {
+    char *pszGEOM_WKT = NULL;
+    poFeature->GetGeometryRef()->exportToWkt(&pszGEOM_WKT, wkbVariantIso );
+    wkt[0] = pszGEOM_WKT;
+    CPLFree( pszGEOM_WKT );
+  } else {
+    wkt[0] = NA_STRING; 
+  }
   return wkt;
 }
 inline CharacterVector gdal_geometry_txt(OGRFeature *poFeature, CharacterVector format) {
   char *export_txt = NULL;
   CharacterVector txt(1);
+  if (poFeature->GetGeometryRef()) {
   if (format[0] == "gml") {
     export_txt = poFeature->GetGeometryRef()->exportToGML();
   }
@@ -48,30 +59,51 @@ inline CharacterVector gdal_geometry_txt(OGRFeature *poFeature, CharacterVector 
     export_txt = poFeature->GetGeometryRef()->exportToKML();
   }
   txt[0] = export_txt;
+  } else {
+    txt[0] = NA_STRING; 
+  }
   CPLFree(export_txt);
   return txt;
 }
 inline IntegerVector gdal_geometry_type(OGRFeature*poFeature) {
-  OGRwkbGeometryType gtyp = OGR_G_GetGeometryType( poFeature->GetGeometryRef());
+  OGRGeometry *poGeom = poFeature->GetGeometryRef(); 
+  
+  
+  OGRBoolean empty;
+  if (poGeom) {
+    empty = poFeature->GetGeometryRef()->IsEmpty(); 
+  } else {
+    empty = 1; 
+  }
+  
   Rcpp::IntegerVector r_gtyp = Rcpp::IntegerVector(1);
-  r_gtyp[0] = (int)gtyp;
+  if (empty) {
+    r_gtyp = NA_INTEGER; 
+  } else {
+    OGRwkbGeometryType gtyp = OGR_G_GetGeometryType( poFeature->GetGeometryRef());
+    r_gtyp[0] = (int)gtyp;
+  }
   return r_gtyp;
 }
 inline NumericVector gdal_geometry_extent(OGRFeature *poFeature) {
-  OGREnvelope env;
-  OGR_G_GetEnvelope(poFeature->GetGeometryRef(), &env);
-  // if geometry is empty, set the envelope to undefined (otherwise all 0s)
+  
   double minx, maxx, miny, maxy;
-  if (poFeature->GetGeometryRef()->IsEmpty()) {
-    minx = NA_REAL;
-    maxx = NA_REAL;
-    miny = NA_REAL;
-    maxy = NA_REAL;
-  } else {
-    minx = env.MinX;
-    maxx = env.MaxX;
-    miny = env.MinY;
-    maxy = env.MaxY;
+  minx = NA_REAL;
+  maxx = NA_REAL;
+  miny = NA_REAL;
+  maxy = NA_REAL;
+  
+  if (poFeature->GetGeometryRef()) {
+   OGREnvelope env;
+   OGR_G_GetEnvelope(poFeature->GetGeometryRef(), &env);
+   if (poFeature->GetGeometryRef()->IsEmpty()) {
+     
+   } else {
+     minx = env.MinX;
+     maxx = env.MaxX;
+     miny = env.MinY;
+     maxy = env.MaxY;
+   }
   }
   NumericVector extent = NumericVector::create(minx, maxx, miny, maxy);
   return extent;
@@ -79,24 +111,6 @@ inline NumericVector gdal_geometry_extent(OGRFeature *poFeature) {
 
 // --------------------------------------------------------------------------------------
 
-/// layer READ FIDS ----------------------------------------------------------------------------
-inline NumericVector layer_read_fids_all(OGRLayer *poLayer) {
-  R_xlen_t nFeature = poLayer->GetFeatureCount();
-  if (nFeature < 1) {
-    nFeature = gdallibrary::force_layer_feature_count(poLayer);
-  }
-  
-  NumericVector out(nFeature);
-  std::fill( out.begin(), out.end(), NumericVector::get_na() );
-  OGRFeature *poFeature;
-  R_xlen_t ii = 0;
-  while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    out[ii] = (double)poFeature->GetFID();
-    OGRFeature::DestroyFeature(poFeature);
-    ii++;
-  }
-  return out;
-}
 
 inline NumericVector layer_read_fids_ij(OGRLayer *poLayer, NumericVector ij) {
   R_xlen_t st = (R_xlen_t)ij[0]; 
@@ -106,18 +120,31 @@ inline NumericVector layer_read_fids_ij(OGRLayer *poLayer, NumericVector ij) {
   OGRFeature *poFeature;
   R_xlen_t cnt = 0;
   R_xlen_t ii = 0;
-  while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    if (ii >= st && ii <= en) {
+  
+  while(ii <= en && (poFeature = poLayer->GetNextFeature()) != NULL ) {
+    if (ii >= st) {
       out[cnt] = (double)poFeature->GetFID();
       cnt++;
     }
     ii++;
     OGRFeature::DestroyFeature(poFeature);
-    if (ii == en) break;
   }
   if (cnt < out.length()) {
     Rcpp::warning("not as many FIDs as requested");
   }
+  return out;
+}
+
+/// layer READ FIDS ----------------------------------------------------------------------------
+inline NumericVector layer_read_fids_all(OGRLayer *poLayer) {
+  R_xlen_t nFeature = poLayer->GetFeatureCount();
+  
+  NumericVector ij(2);
+  ij[0] = 0;
+  /// if there are no features we get 0 fields allocation
+  ij[1] = (double)(nFeature - 1); 
+  
+  NumericVector out = layer_read_fids_ij(poLayer, ij);
   return out;
 }
 
@@ -145,10 +172,9 @@ inline NumericVector layer_read_fids_ia(OGRLayer *poLayer, NumericVector ia) {
 
 inline List feature_read_geom(OGRFeature *poFeature, CharacterVector format) {
   List out(1); 
-  
   // work through format
   // FIXME: get rid of "geometry"
-  if ((format[0] == "wkb") || (format[0] == "geometry")) {
+  if ((format[0] == "wkb")) { // || (format[0] == "geometry")) {
     out[0] = gdal_geometry_raw(poFeature);
   }
   if (format[0] == "wkt") {
@@ -169,22 +195,6 @@ inline List feature_read_geom(OGRFeature *poFeature, CharacterVector format) {
   return out;
 }
 /// layer READ GEOMS ----------------------------------------------------------------------------
-inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
-  OGRFeature *poFeature;
-  poLayer->ResetReading();
-  R_xlen_t nFeature = poLayer->GetFeatureCount();
-  if (nFeature < 1) {
-    nFeature = gdallibrary::force_layer_feature_count(poLayer);
-  }
-  List out(nFeature);
-  R_xlen_t ii = 0;
-  while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    out[ii] = feature_read_geom(poFeature, format)[0]; 
-    OGRFeature::DestroyFeature(poFeature);
-    ii++;
-  }
-  return out;
-}
 
 inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, NumericVector ij) {
   OGRFeature *poFeature;
@@ -194,19 +204,32 @@ inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, Numeri
   List out(en - st + 1);
   R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
-  while((poFeature = poLayer->GetNextFeature()) != NULL ) {
-    if (ii >= st  && ii <= en) {
+  
+  while(ii <= en &&  (poFeature = poLayer->GetNextFeature()) != NULL ) {
+    if (ii >= st) {
       out[cnt] = feature_read_geom(poFeature, format)[0]; 
       cnt++;
-      
     }
     OGRFeature::DestroyFeature(poFeature);
     ii++;
-    if (cnt == out.length()) break;
+  }
+  if (cnt < out.length()) {
+    Rcpp::warning("not as many geoms as requested");
   }
   return out;
 }
 
+inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
+  R_xlen_t nFeature = poLayer->GetFeatureCount();
+  
+  NumericVector ij(2);
+  ij[0] = 0;
+  /// if there are no features we get 0 fields allocation
+  ij[1] = (double)(nFeature - 1); 
+  
+  List out = layer_read_geom_ij(poLayer, format, ij);
+  return out;
+}
 
 inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, NumericVector ia) {
   OGRFeature *poFeature;
@@ -231,7 +254,6 @@ inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, Numeri
   return out;
 }
 
-
 inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, NumericVector fa) {
   OGRFeature *poFeature;
   //poLayer->ResetReading();
@@ -247,9 +269,7 @@ inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, Numeri
   return out;
 }
 
-
 /// layer READ FIELDS ----------------------------------------------------------------------------
-
 
 // _alll uses _ij so this comes first
 inline List layer_read_fields_ij(OGRLayer *poLayer, CharacterVector fid_column_name,
@@ -274,8 +294,8 @@ inline List layer_read_fields_ij(OGRLayer *poLayer, CharacterVector fid_column_n
   // for OFTDateTime
   Rcpp::Function ISOdatetime("ISOdatetime");
   Rcpp::Function ISOdate("ISOdate");
-  while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-    if (ii >= st && ii <= en) {
+  while(ii <= en &&  (poFeature = poLayer->GetNextFeature()) != NULL ) {
+    if (ii >= st) {
       for(iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
       {
         OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
@@ -405,8 +425,10 @@ inline List layer_read_fields_ij(OGRLayer *poLayer, CharacterVector fid_column_n
     } // end if
     ii++;
     OGRFeature::DestroyFeature(poFeature);
-    if (ii == en) break;
   } // end get next feature
+  if (cnt < nfeatures) {
+    Rcpp::warning("not as many features as requested");
+  }
   return out;
 }
 

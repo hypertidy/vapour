@@ -17,7 +17,7 @@ validate_limit_n <- function(x) {
   if (is.null(x)) {
     x <- 0L
   } else {
-    if (x < 1) stop("limit_n must be 1 or greater")
+    if (x < 1) stop("limit_n must be 1 or greater (or NULL)")
   }
   stopifnot(is.numeric(x))
   x
@@ -103,6 +103,8 @@ vapour_geom_name <- function(dsource, layer = 0L, sql = "") {
 #'
 #' An earlier version use 'OGRSQL' to obtain these names, which was slow for some
 #' drivers and also clashed with independent use of the `sql` argument.
+
+#' [vapour_read_names()] is an older name, aliased to [vapour_read_fids()]. 
 #' @inheritParams vapour_read_geometry
 #' @export
 #' @return character vector of geometry id 'names'
@@ -111,16 +113,21 @@ vapour_geom_name <- function(dsource, layer = 0L, sql = "") {
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' range(fids <- vapour_read_names(mvfile))
 #' length(fids)
-vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+vapour_read_fids <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   skip_n <- skip_n[1L]
   if (skip_n < 0) stop("skip_n must be 0, or higher")
   extent <- validate_extent(extent, sql)
-  fids <- read_names_gdal_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent)
-  unlist(lapply(fids, function(x) if (is.null(x)) NA_real_ else x), use.names = FALSE)
+  fids <- read_fids_gdal_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent)
+  fids
 }
 
+#' @name vapour_read_fids
+#' @export
+vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+  vapour_read_fids(dsource, layer, sql, limit_n, skip_n, extent) 
+}
 #' Read feature field types.
 #'
 #' Obtains the internal type-constant name for the data attributes in a source.

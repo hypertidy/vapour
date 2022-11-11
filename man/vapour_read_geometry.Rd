@@ -93,7 +93,7 @@ features. These may be duplicated. If 'ia' is greater than the highest index NUL
 \code{vapour_read_type} will read the (wkb) type of the geometry as an integer. These are
 \code{0} unknown, \code{1} Point, \code{2} LineString, \code{3} Polygon, \code{4} MultiPoint, \code{5} MultiLineString,
 \code{6} MultiPolygon, \code{7} GeometryCollection, and the other more exotic types listed in "api/vector_c_api.html" from the
-GDAL home page (as at October 2020).
+GDAL home page (as at October 2020).  A missing value 'NA' indicates an empty geometry.
 
 Note that \code{limit_n} and \code{skip_n} interact with the affect of \code{sql}, first the query is executed on the data source, then
 while looping through available features \code{skip_n} features are ignored, and then a feature-count begins and the loop

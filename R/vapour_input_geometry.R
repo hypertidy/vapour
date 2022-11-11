@@ -26,7 +26,6 @@
 #'
 #' @inheritParams vapour_read_geometry
 #' @param ... unused, reserved for future use
-#' @param extent logical to control if extent calculated and returned, TRUE by default (set to FALSE to avoid the extra calculation and missing value is the result)
 #' @param count logical to control if count calculated and returned, TRUE by default (set to FALSE to avoid the extra calculation and missing value is the result)
 #' @return list with a list of character vectors of projection metadata, see details
 #' @export
@@ -37,7 +36,11 @@
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' info <- vapour_layer_info(mvfile)
 #' names(info$projection)
-vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE, count = TRUE) {
+#' 
+#' ## info depends on the query/spatial-filter
+#' vapour_layer_info(mvfile, extent = c(412000,  420000, 5352612.8, 5425154.3), 
+#'   sql = "SELECT * FROM list_locality_postcode_meander_valley")$count
+vapour_layer_info <- function(dsource, layer = 0L, sql = "", extent = NA, count = TRUE, ...) {
 
   layer_names <- vapour_layer_names(dsource)
   layer_name <- layer
@@ -51,18 +54,12 @@ vapour_layer_info <- function(dsource, layer = 0L, sql = "", ..., extent = TRUE,
   fields <- vapour_report_fields(dsource, layer, sql)
   
   if (count) {
-    cnt <- try(vapour_read_fields(dsource, sql = sprintf("SELECT COUNT(*) FROM \"%s\"", layer_name))[[1]], silent = TRUE)
-
-    if (inherits(cnt, "try-error")) cnt <- length(vapour_read_names(dsource, layer, sql))
+    cnt <- feature_count_gdal_cpp(dsource, layer, sql, extent)
   } else {
     cnt <- NA_integer_
   }
-  ## if we're getting extent
-  if (extent) {
-    ext <- vapour_layer_extent(dsource, layer, sql)
-  } else {
-    ext <- rep(NA_real_, 4L)
-  }
+    ext <- vapour_layer_extent(dsource, layer, sql, extent = extent)
+
   list(dsn = dsource, driver = driver, layer = layer_names[layer + 1],
        layer_names = layer_names,
        fields = fields,
@@ -119,7 +116,7 @@ vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ...) 
 #' `vapour_read_type` will read the (wkb) type of the geometry as an integer. These are
 #' `0` unknown, `1` Point, `2` LineString, `3` Polygon, `4` MultiPoint, `5` MultiLineString,
 #' `6` MultiPolygon, `7` GeometryCollection, and the other more exotic types listed in "api/vector_c_api.html" from the
-#' GDAL home page (as at October 2020).
+#' GDAL home page (as at October 2020).  A missing value 'NA' indicates an empty geometry. 
 #'
 #' Note that `limit_n` and `skip_n` interact with the affect of `sql`, first the query is executed on the data source, then
 #' while looping through available features `skip_n` features are ignored, and then a feature-count begins and the loop
@@ -167,7 +164,7 @@ vapour_read_geometry <- function(dsource, layer = 0L, sql = "", limit_n = NULL, 
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
-  read_geometry_gdal_cpp( dsn = dsource, layer = layer, sql = sql, what = "geometry", textformat = "", limit_n = limit_n, skip_n = skip_n, ex = extent)
+  read_geometry_gdal_cpp( dsn = dsource, layer = layer, sql = sql, what = "wkb", textformat = "", limit_n = limit_n, skip_n = skip_n, ex = extent)
 }
 
 #' @export
@@ -177,8 +174,8 @@ vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat 
   textformat = match.arg (tolower (textformat), c ("json", "gml", "kml", "wkt"))
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
-  read_geometry_gdal_cpp(dsn = dsource, layer = layer, sql = sql, what = "text",
-                           textformat = textformat, limit_n = limit_n, skip_n = skip_n, ex = extent)
+  read_geometry_gdal_cpp(dsn = dsource, layer = layer, sql = sql, what = textformat,
+                           textformat = "", limit_n = limit_n, skip_n = skip_n, ex = extent)
 }
 
 

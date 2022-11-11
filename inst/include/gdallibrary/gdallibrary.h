@@ -367,7 +367,7 @@ inline List gdal_read_fields(CharacterVector dsn,
     // always increment iFeature, it's position through the loop
     iFeature = iFeature + 1;
     OGRFeature::DestroyFeature( poFeature );
-    if (iFeature % 1000 == 0)   Rprintf("fields %i\n", iFeature);
+    //if (iFeature % 1000 == 0)   Rprintf("fields %i\n", iFeature);
     
   }
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
@@ -625,97 +625,6 @@ inline List gdal_read_geometry(CharacterVector dsn,
 }
 
 
-
-inline List gdal_read_names(CharacterVector dsn,
-                            IntegerVector layer,
-                            CharacterVector sql,
-                            IntegerVector limit_n,
-                            IntegerVector skip_n,
-                            NumericVector ex)
-{
-  
-  GDALDataset       *poDS;
-  
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR | GDAL_OF_READONLY, NULL, NULL, NULL );
-  
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  
-  
-  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
-  
-  OGRFeature *poFeature;
-  poLayer->ResetReading();
-  
-  //OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-  CollectorList feature_xx;
-  int iFeature = 0;
-  int lFeature = 0;
-  // double   nFeature = force_layer_feature_count(poLayer);
-  // trying to fix SQL problem 2020-10-05
-  R_xlen_t nFeature = poLayer->GetFeatureCount();
-  if (nFeature < 1) {
-    //Rprintf("force count\n");
-    nFeature = force_layer_feature_count(poLayer);
-  }
-  
-  
-  if (nFeature > MAX_INT) {
-    Rcpp::warning("Number of features exceeds maximal number able to be read");
-    nFeature = MAX_INT;
-  }
-  
-  if (limit_n[0] > 0) {
-    if (limit_n[0] < nFeature) {
-      nFeature = limit_n[0];
-      
-    }
-  }
-  
-  if (nFeature < 1) {
-    if (skip_n[0] > 0) {
-      Rcpp::stop("no features to be read (is 'skip_n' set too high?");
-    }
-    
-    Rcpp::stop("no features to be read");
-  }
-  
-  double aFID;
-  Rcpp::NumericVector rFID(1);
-  
-  while( (poFeature = poLayer->GetNextFeature()) != NULL )
-  {
-    
-    if (iFeature >= skip_n[0]) {
-      aFID = (double) poFeature->GetFID();
-      OGRFeature::DestroyFeature( poFeature );
-      rFID[0] = aFID;
-      feature_xx.push_back(Rcpp::clone(rFID));
-      lFeature++;
-    }
-    iFeature++;
-    if (limit_n[0] > 0 && lFeature >= limit_n[0]) {
-      break;  // short-circuit for limit_n
-    }
-    
-  }
-  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-  if (sql[0] != "") {
-    poDS->ReleaseResultSet(poLayer);
-  }
-  GDALClose( poDS );
-  
-  if (lFeature < 1) {
-    if (skip_n[0] > 0) {
-      Rcpp::stop("no features to be read (is 'skip_n' set too high?");
-    }
-    
-    Rcpp::stop("no features to be read");
-  }
-  return(feature_xx.vector());
-}
 
 
 inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {

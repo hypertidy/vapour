@@ -8,9 +8,9 @@ vapour_layer_info(
   dsource,
   layer = 0L,
   sql = "",
-  ...,
-  extent = TRUE,
-  count = TRUE
+  extent = NA,
+  count = TRUE,
+  ...
 )
 }
 \arguments{
@@ -20,11 +20,11 @@ vapour_layer_info(
 
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
 
-\item{...}{unused, reserved for future use}
-
-\item{extent}{logical to control if extent calculated and returned, TRUE by default (set to FALSE to avoid the extra calculation and missing value is the result)}
+\item{extent}{apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin, xmax, ymin, ymax)' but sp bbox, sf bbox, and raster extent also accepted)}
 
 \item{count}{logical to control if count calculated and returned, TRUE by default (set to FALSE to avoid the extra calculation and missing value is the result)}
+
+\item{...}{unused, reserved for future use}
 }
 \value{
 list with a list of character vectors of projection metadata, see details
@@ -61,6 +61,10 @@ file <- "list_locality_postcode_meander_valley.tab"
 mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 info <- vapour_layer_info(mvfile)
 names(info$projection)
+
+## info depends on the query/spatial-filter
+vapour_layer_info(mvfile, extent = c(412000,  420000, 5352612.8, 5425154.3), 
+  sql = "SELECT * FROM list_locality_postcode_meander_valley")$count
 }
 \seealso{
 vapour_geom_name vapour_layer_names vapour_report_fields vapour_read_fields vapour_driver vapour_read_names
