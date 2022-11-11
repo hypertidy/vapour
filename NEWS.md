@@ -1,5 +1,6 @@
 # vapour 0.9.1
 
+
 * 'vapour_layer_info' now supports spatial filter, the 'extent' argument in
 'vapour_layer_info' is now for limiting the spatial extent of a layer query (was
 for controlling whether extent calculated or not).
