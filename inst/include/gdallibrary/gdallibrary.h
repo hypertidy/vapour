@@ -250,8 +250,8 @@ inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, R_xlen_t n_featu
     case OFTDateTime: {
       Rcpp::NumericVector ret(n_features);
       Rcpp::CharacterVector cls(2);
-      cls(0) = "POSIXct";
-      cls(1) = "POSIXt";
+      cls[0] = "POSIXct";
+      cls[1] = "POSIXt";
       ret.attr("class") = cls;
       out[i] = ret;
     } break;
