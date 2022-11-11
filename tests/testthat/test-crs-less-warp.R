@@ -5,10 +5,10 @@ test_that("with with no source crs works", {
   #vapour_warp_raster(f, dimension = info$dimension, 
   #                   extent = c(0, 1, 0, 1))
   
-  sds <- "NETCDF:/rdsi/PUBLIC/raad/data/www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr/198109/oisst-avhrr-v02r01.19810901.nc:sst"
+ # sds <- "NETCDF:/rdsi/PUBLIC/raad/data/www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr/198109/oisst-avhrr-v02r01.19810901.nc:sst"
   ## expect no crashy crashy
-  expect_silent(vapour_warp_raster(sds, extent = c(0, 1, 0, 1), dimension = c(4, 4)))
-  expect_silent(vapour_warp_raster(sds, extent = c(0, 1, 0, 1), dimension = c(4, 4), source_projection = "+proj=laea"))
+#  expect_silent(vapour_warp_raster(sds, extent = c(0, 1, 0, 1), dimension = c(4, 4)))
+ # expect_silent(vapour_warp_raster(sds, extent = c(0, 1, 0, 1), dimension = c(4, 4), source_projection = "+proj=laea"))
  ## expect_warning(vapour_warp_raster(sds, extent = c(0, 1, 0, 1), dimension = c(4, 4), projection = "OGC:CRS84"))
   
   
@@ -21,14 +21,14 @@ test_that("with with no source crs works", {
   ex <- c(-3077504,  3968504, -2763621,  3472383)
   vrt <- vapour_vrt(sds[3], geolocation = sds[2:1], bands = 1)
   info <- vapour_raster_info(vrt)
-  expect_silent(im <- vapour_warp_raster_dbl(vrt, extent = ex, dimension = info$dimension, projection = lcc
+  expect_warning(im <- vapour_warp_raster_dbl(vrt, extent = ex, dimension = info$dimension, projection = lcc
                                , transformation_options = c("SRC_METHOD=NO_GEOTRANSFORM")))
   
   ex <- c(-180, 180, -90, 90)
   dm <- c(512, 1024)
   vrt <- vapour_vrt(sds[3], geolocation = sds[2:1], bands = 1)
   vapour::vapour_set_config("GDAL_NETCDF_BOTTOMUP", 'NO')
-  expect_silent(  im <- vapour_warp_raster_dbl(vrt, extent = ex, dimension = dm, projection = "OGC:CRS84"
+  expect_warning(  im <- vapour_warp_raster_dbl(vrt, extent = ex, dimension = dm, projection = "OGC:CRS84"
                               , transformation_options = c("SRC_METHOD=GEOLOC_ARRAY")))
 
 })
