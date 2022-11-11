@@ -110,14 +110,26 @@ inline OGRLayer *gdal_layer(GDALDataset *poDS, IntegerVector layer, CharacterVec
   OGRPolygon poly;
   OGRLinearRing ring;
   
+  bool use_extent_filter = false;
   if (ex.length() == 4) {
-    ring.addPoint(ex[0], ex[2]); //xmin, ymin
-    ring.addPoint(ex[0], ex[3]); //xmin, ymax
-    ring.addPoint(ex[1], ex[3]); //xmax, ymax
-    ring.addPoint(ex[1], ex[2]); //xmax, ymin
-    ring.closeRings();
-    poly.addRing(&ring);
+        if (ex[1] <= ex[0] || ex[2] <= ex[3]) {
+          if (ex[1] <= ex[0]) {
+            Rcpp::warning("extent filter invalid (xmax <= xmin), ignoring");
+          }
+          if (ex[3] <= ex[4]) {
+            Rcpp::warning("extent filter invalid (ymax <= ymin), ignoring");
+          }
+        } else {    
+          use_extent_filter = true;
+          ring.addPoint(ex[0], ex[2]); //xmin, ymin
+          ring.addPoint(ex[0], ex[3]); //xmin, ymax
+          ring.addPoint(ex[1], ex[3]); //xmax, ymax
+          ring.addPoint(ex[1], ex[2]); //xmax, ymin
+          ring.closeRings();
+          poly.addRing(&ring);
+        }
   }
+        
   
   // Rcpp::Function vapour_getenv_sql_dialect("vapour_getenv_dialect"); 
   // const char *sql_dialect = (const char *) vapour_getenv_sql_dialect(); 
@@ -133,7 +145,7 @@ inline OGRLayer *gdal_layer(GDALDataset *poDS, IntegerVector layer, CharacterVec
  
  
   if (sql[0] != "") {
-    if (ex.length() == 4) {
+    if (use_extent_filter) {
       poLayer =  poDS->ExecuteSQL(sql[0],
                                   &poly,
                                   sql_dialect );
