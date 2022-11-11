@@ -31,7 +31,10 @@ inline NumericVector limit_skip_n_to_start_end_len(IntegerVector skip_n, Integer
   if (limit_n[0] > 0) { // silently ignore negative values
     end = start + (R_xlen_t)limit_n[0] - 1;
   }
-  if (start >= n[0] || is_infinite(skip_n)[0]  ) {
+  if (is_infinite(skip_n)[0]) {
+    Rcpp::warning("skip_n not a valid value, assuming 'skip_n = 0'"); 
+  }
+  if (n[0] > 0 && start >= n[0] ) {
     Rcpp::stop("skip_n skips all available features");
   }
   if (end > (n[0] - 1)) {
