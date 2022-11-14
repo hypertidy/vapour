@@ -5,7 +5,6 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT
 AC_CONFIG_SRCDIR([src/00_gdal.cpp])
 
-
 # as at 2021-08-12 sf uses the following flags in src/
 #if ((PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 1) || PROJ_VERSION_MAJOR > 7)
 #if (GDAL_VERSION_MINOR >= 2 || GDAL_VERSION_MAJOR > 2)
@@ -447,6 +446,7 @@ else
 fi
 
 LIBS="${PROJ_LIBS} ${INLIBS} ${PKG_LIBS}"
+AC_MSG_NOTICE([LIBS: ${LIBS}])
 
 if test "${PROJH}" = no; then
   proj4ok=yes
@@ -477,7 +477,9 @@ int main(void) {
 _EOCONF]
   #AC_CHECK_LIB(proj,proj_context_create,,proj6ok=no)
   AC_MSG_CHECKING(PROJ: checking whether PROJ and sqlite3 are available for linking:)
-  ${CXX} ${CPPFLAGS} -o proj_conf_test proj_conf_test.cpp ${LIBS} -lsqlite3 2> errors.txt
+  ## LDFLAGS?  CRAN says, I removed -sqlite3 which was a mistake (that's in LIBS already)
+  ## have check on macbuilder that LIBS includes same pkg-config --libs proj as BDR (2022-11-15): -L/opt/R/arm64/lib -lproj -lc++ -lm -ldl -lsqlite3 -lz -lcurl -ltiff -lwebp -llzma -ljpeg -lz
+  ${CXX} ${CPPFLAGS} -o proj_conf_test proj_conf_test.cpp ${LIBS} ${LDFLAGS} 2> errors.txt
   if test `echo $?` -ne 0 ; then
     proj6ok=no
     AC_MSG_RESULT(no)

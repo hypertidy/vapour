@@ -1,6 +1,6 @@
 # vapour 0.9.2
 
-* Resubmit after 0.9.1 was rejected, no good on M1MAC/macbuilder. 
+* Resubmit after 0.9.1 was rejected, fixed configure.ac and checked on on M1MAC/macbuilder. 
 
 * The SQL dialect in use for the 'sql' argument can now be controlled, it is set to "" by default. See `?vapour-package` for details. 
 

@@ -1,6 +1,8 @@
 ## vapour 0.9.2
 
-New submission after confirmation on mac builder. 
+* Removed hardcoded -lsqlite3 from configure.ac, as per helpful CRAN email. 
+
+New submission after confirmation on mac builder, confirmed that it works, same pkg-config --libs as expected from CRAN email. 
 
 Thanks! 
 
