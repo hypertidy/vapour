@@ -1,7 +1,12 @@
+## vapour 0.9.2
+
+New submission after confirmation on mac builder. 
+
+Thanks! 
+
 ## vapour 0.9.1
 
 New version to address Additional Issues on CRAN. I've tested for lossy casts on clang with -Wconversion. 
-
 
 Thank you! 
 

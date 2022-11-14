@@ -5,8 +5,6 @@
 using namespace Rcpp;
 
 
-constexpr int MAX_INT =  std::numeric_limits<int>::max ();
-
 
 // [[Rcpp::export]]
 NumericVector feature_count_gdal_cpp(CharacterVector dsn,  // double, could be a lot of features
