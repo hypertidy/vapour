@@ -343,10 +343,11 @@ inline List layer_read_fields_ij(OGRLayer *poLayer, CharacterVector fid_column_n
           int Year, Month, Day, Hour, Minute, TZFlag;
           float Second;
           const char *tzone = "";
-          if (TZFlag == 100)
-            tzone = "UTC";
+         
           poFeature->GetFieldAsDateTime(iField, &Year, &Month, &Day, &Hour, &Minute,
                                         &Second, &TZFlag);
+          if (TZFlag == 100)
+            tzone = "UTC";
           if (poFieldDefn->GetType() == OFTDateTime || poFieldDefn->GetType() == OFTTime) {
             if (cnt == 0 && poFieldDefn->GetType() == OFTTime) {
               Rcpp::warning("field of type 'OFTTime' converted to POSIXct: %s", poFDefn->GetFieldDefn(iField)->GetNameRef()); 
