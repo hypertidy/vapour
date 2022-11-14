@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2</span>
       </span>
     </div>
 
@@ -61,8 +61,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.1" id="vapour-091">vapour 0.9.1<a class="anchor" aria-label="anchor" href="#vapour-091"></a></h2>
-<ul><li><p>The SQL dialect in use for the ‘sql’ argument can now be controlled, it is set to "" by default. See <code>?vapour-package</code> for details.</p></li>
+<h2 class="page-header" data-toc-text="0.9.2" id="vapour-092">vapour 0.9.2<a class="anchor" aria-label="anchor" href="#vapour-092"></a></h2>
+<ul><li><p>Resubmit after 0.9.1 was rejected, no good on M1MAC/macbuilder.</p></li>
+<li><p>The SQL dialect in use for the ‘sql’ argument can now be controlled, it is set to "" by default. See <code>?vapour-package</code> for details.</p></li>
 <li><p>‘vapour_layer_info’ now supports spatial filter, the ‘extent’ argument in ‘vapour_layer_info’ is now for limiting the spatial extent of a layer query (was for controlling whether extent calculated or not).</p></li>
 <li><p>‘gdal_read_names’ removed from gdallibrary, and ‘read_names_gdal_cpp’ renamed to ‘read_fids_gdal_cpp’ and now returns a numeric vector rather than a list.</p></li>
 <li><p>Fixed another stray cast (int), now checking more robustly for nodata value for integer bands. We have made some inroads into better consistency of use of long integer values in the code base, but vapour does not yet support long vectors.</p></li>
