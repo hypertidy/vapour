@@ -417,6 +417,33 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// proj_reproj_list
+List proj_reproj_list(List x, CharacterVector source, CharacterVector target);
+RcppExport SEXP _vapour_proj_reproj_list(SEXP xSEXP, SEXP sourceSEXP, SEXP targetSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type x(xSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type source(sourceSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type target(targetSEXP);
+    rcpp_result_gen = Rcpp::wrap(proj_reproj_list(x, source, target));
+    return rcpp_result_gen;
+END_RCPP
+}
+// proj_reproj_xy
+List proj_reproj_xy(NumericVector x, NumericVector y, CharacterVector source, CharacterVector target);
+RcppExport SEXP _vapour_proj_reproj_xy(SEXP xSEXP, SEXP ySEXP, SEXP sourceSEXP, SEXP targetSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type source(sourceSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type target(targetSEXP);
+    rcpp_result_gen = Rcpp::wrap(proj_reproj_xy(x, y, source, target));
+    return rcpp_result_gen;
+END_RCPP
+}
 // raster_gcp_gdal_cpp
 List raster_gcp_gdal_cpp(CharacterVector dsn);
 RcppExport SEXP _vapour_raster_gcp_gdal_cpp(SEXP dsnSEXP) {
@@ -661,6 +688,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_read_fields_gdal_cpp", (DL_FUNC) &_vapour_read_fields_gdal_cpp, 7},
     {"_vapour_read_geometry_gdal_cpp", (DL_FUNC) &_vapour_read_geometry_gdal_cpp, 8},
     {"_vapour_read_fids_gdal_cpp", (DL_FUNC) &_vapour_read_fids_gdal_cpp, 6},
+    {"_vapour_proj_reproj_list", (DL_FUNC) &_vapour_proj_reproj_list, 3},
+    {"_vapour_proj_reproj_xy", (DL_FUNC) &_vapour_proj_reproj_xy, 4},
     {"_vapour_raster_gcp_gdal_cpp", (DL_FUNC) &_vapour_raster_gcp_gdal_cpp, 1},
     {"_vapour_raster_has_geolocation_gdal_cpp", (DL_FUNC) &_vapour_raster_has_geolocation_gdal_cpp, 2},
     {"_vapour_raster_info_gdal_cpp", (DL_FUNC) &_vapour_raster_info_gdal_cpp, 2},

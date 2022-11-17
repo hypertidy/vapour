@@ -121,6 +121,14 @@ read_fids_gdal_cpp <- function(dsn, layer, sql, limit_n, skip_n, ex) {
     .Call('_vapour_read_fids_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, limit_n, skip_n, ex)
 }
 
+proj_reproj_list <- function(x, source, target) {
+    .Call('_vapour_proj_reproj_list', PACKAGE = 'vapour', x, source, target)
+}
+
+proj_reproj_xy <- function(x, y, source, target) {
+    .Call('_vapour_proj_reproj_xy', PACKAGE = 'vapour', x, y, source, target)
+}
+
 raster_gcp_gdal_cpp <- function(dsn) {
     .Call('_vapour_raster_gcp_gdal_cpp', PACKAGE = 'vapour', dsn)
 }
