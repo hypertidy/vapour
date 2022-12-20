@@ -91,7 +91,7 @@
       <h1 data-toc-skip>Vapour - lightweight GDAL</h1>
                         <h4 data-toc-skip class="author">Michael D. Sumner</h4>
             
-            <h4 data-toc-skip class="date">2022-11-17</h4>
+            <h4 data-toc-skip class="date">2022-12-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/hypertidy/vapour/blob/HEAD/vignettes/vapour.Rmd" class="external-link"><code>vignettes/vapour.Rmd</code></a></small>
       <div class="hidden name"><code>vapour.Rmd</code></div>
@@ -446,17 +446,17 @@
 <p>Find the GDAL version and drivers available.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/GDAL-library.html">vapour_gdal_version</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GDAL 3.5.2, released 2022/09/02"</span></span>
+<span><span class="co">#&gt; [1] "GDAL 3.6.0, released 2022/11/06"</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/GDAL-library.html">vapour_all_drivers</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 7</span></span>
-<span><span class="co">#&gt;  $ driver : chr [1:203] "VRT" "DERIVED" "GTiff" "COG" ...</span></span>
-<span><span class="co">#&gt;  $ name   : chr [1:203] "Virtual Raster" "Derived datasets using VRT pixel functions" "GeoTIFF" "Cloud optimized GeoTIFF generator" ...</span></span>
-<span><span class="co">#&gt;  $ vector : logi [1:203] FALSE FALSE FALSE FALSE FALSE FALSE ...</span></span>
-<span><span class="co">#&gt;  $ raster : logi [1:203] TRUE TRUE TRUE TRUE TRUE TRUE ...</span></span>
-<span><span class="co">#&gt;  $ create : logi [1:203] TRUE FALSE TRUE FALSE TRUE FALSE ...</span></span>
-<span><span class="co">#&gt;  $ copy   : logi [1:203] TRUE FALSE TRUE TRUE TRUE FALSE ...</span></span>
-<span><span class="co">#&gt;  $ virtual: logi [1:203] TRUE FALSE TRUE TRUE TRUE TRUE ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  $ driver : chr [1:208] "VRT" "DERIVED" "GTiff" "COG" ...</span></span>
+<span><span class="co">#&gt;  $ name   : chr [1:208] "Virtual Raster" "Derived datasets using VRT pixel functions" "GeoTIFF" "Cloud optimized GeoTIFF generator" ...</span></span>
+<span><span class="co">#&gt;  $ vector : logi [1:208] FALSE FALSE FALSE FALSE FALSE FALSE ...</span></span>
+<span><span class="co">#&gt;  $ raster : logi [1:208] TRUE TRUE TRUE TRUE TRUE TRUE ...</span></span>
+<span><span class="co">#&gt;  $ create : logi [1:208] TRUE FALSE TRUE FALSE TRUE FALSE ...</span></span>
+<span><span class="co">#&gt;  $ copy   : logi [1:208] TRUE FALSE TRUE TRUE TRUE FALSE ...</span></span>
+<span><span class="co">#&gt;  $ virtual: logi [1:208] TRUE FALSE TRUE TRUE TRUE TRUE ...</span></span></code></pre></div>
 <p>Find the driver that will be used for a given data source.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/GDAL-library.html">vapour_driver</a></span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span></span>
@@ -481,7 +481,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
