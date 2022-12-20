@@ -143,26 +143,23 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
   }
   
   GDALDataset* oDS = (GDALDataset*)gdalH_open_dsn(dsn, sds);
-
-  
   if (geolocation.size() == 2) {
-      // OGRSpatialReference* geolsrs = nullptr;
-      // geolsrs = new OGRSpatialReference;
-      // OGRErr chk = geolsrs->SetFromUserInput("OGC:CRS84"); 
-      oDS->SetMetadataItem( "SRS", "OGC:CRS84", "GEOLOCATION" ); 
-      oDS->SetMetadataItem( "X_DATASET", geolocation[0], "GEOLOCATION" );
-        oDS->SetMetadataItem( "X_BAND", "1" , "GEOLOCATION" );
-        oDS->SetMetadataItem( "Y_DATASET", geolocation[1], "GEOLOCATION" );
-        oDS->SetMetadataItem( "Y_BAND", "1" , "GEOLOCATION" );
-
-
-        oDS->SetMetadataItem( "PIXEL_OFFSET", "0", "GEOLOCATION" );
-        oDS->SetMetadataItem( "PIXEL_STEP", "1", "GEOLOCATION" );
-        oDS->SetMetadataItem( "LINE_OFFSET", "0", "GEOLOCATION" );
-        oDS->SetMetadataItem( "LINE_STEP", "1", "GEOLOCATION" );
+    OGRSpatialReference  geolsrs;
+    char *pszGeoSrsWKT = nullptr;
+    geolsrs.SetFromUserInput("OGC:CRS84");
+    geolsrs.exportToWkt(&pszGeoSrsWKT);
+    
+    oDS->SetMetadataItem( "SRS", pszGeoSrsWKT, "GEOLOCATION" ); 
+    oDS->SetMetadataItem( "X_DATASET", geolocation[0], "GEOLOCATION" );
+    oDS->SetMetadataItem( "X_BAND", "1" , "GEOLOCATION" );
+    oDS->SetMetadataItem( "Y_DATASET", geolocation[1], "GEOLOCATION" );
+    oDS->SetMetadataItem( "Y_BAND", "1" , "GEOLOCATION" );
+    oDS->SetMetadataItem( "PIXEL_OFFSET", "0", "GEOLOCATION" );
+    oDS->SetMetadataItem( "LINE_OFFSET", "0", "GEOLOCATION" );
+    oDS->SetMetadataItem( "PIXEL_STEP", "1", "GEOLOCATION" );
+    oDS->SetMetadataItem( "LINE_STEP", "1", "GEOLOCATION" );
+    CPLFree(pszGeoSrsWKT); 
   }
-  
-  
   
   if (oDS == nullptr) return(nullptr);
   int nBands = oDS->GetRasterCount();
