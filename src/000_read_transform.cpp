@@ -9,14 +9,6 @@ using namespace Rcpp;
 
 
 
-OGRCoordinateTransformation * construct_transform(OGRSpatialReference *poSRS, CharacterVector crs) {
-  OGRSpatialReference *poTargetSRS = nullptr;
-  poTargetSRS = new OGRSpatialReference;
-  OGRErr target_chk =  poTargetSRS->SetFromUserInput(crs[0]); 
-  OGRCoordinateTransformation *poCT; 
-  OGRCreateCoordinateTransformation(poSRS, poTargetSRS);
-  return poCT; 
-}
 
 
 List layer_read_transform_geom_ij(OGRLayer *poLayer,   OGRCoordinateTransformation *poCT, NumericVector ij, CharacterVector format) {
@@ -31,17 +23,23 @@ List layer_read_transform_geom_ij(OGRLayer *poLayer,   OGRCoordinateTransformati
   //if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
   while(ii <= en &&  (poFeature = poLayer->GetNextFeature()) != NULL ) {
     
-    
-    OGRFeature *poNewFeat = new OGRFeature(poFeature->GetDefnRef());
-    poNewFeat->SetFrom(poFeature);
-    poNewFeat->SetFID(poFeature->GetFID());
-    poNewFeat->GetGeometryRef()->transform(poCT); 
+    Rprintf("%i\n", ii); 
     if (ii >= st) {
-      out[cnt] = gdalgeometry::feature_read_geom(poNewFeat, format)[0]; 
+      OGRFeature *poNewFeat = new OGRFeature(poFeature->GetDefnRef());
+      poNewFeat->SetFrom(poFeature);
+      if(poNewFeat != NULL) {
+        //poNewFeat->SetFID(poFeature->GetFID());
+        OGRGeometry *poGeometry = poNewFeat->GetGeometryRef(); 
+        if (poGeometry != NULL) {
+          poGeometry->transform(poCT); 
+          out[cnt] = gdalgeometry::feature_read_geom(poNewFeat, format)[0]; 
+        }
+           OGRFeature::DestroyFeature(poNewFeat); 
+      }
       cnt++;
+   
     }
     OGRFeature::DestroyFeature(poFeature);
-    
     ii++;
   }
   if (cnt < out.length()) {
