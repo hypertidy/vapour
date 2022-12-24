@@ -10,6 +10,23 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// dsn_read_transform_geom_ij
+List dsn_read_transform_geom_ij(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex, CharacterVector format, NumericVector ij, CharacterVector crs);
+RcppExport SEXP _vapour_dsn_read_transform_geom_ij(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP, SEXP formatSEXP, SEXP ijSEXP, SEXP crsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type ex(exSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type format(formatSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type ij(ijSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type crs(crsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dsn_read_transform_geom_ij(dsn, layer, sql, ex, format, ij, crs));
+    return rcpp_result_gen;
+END_RCPP
+}
 // set_gdal_config_cpp
 IntegerVector set_gdal_config_cpp(CharacterVector option, CharacterVector value);
 RcppExport SEXP _vapour_set_gdal_config_cpp(SEXP optionSEXP, SEXP valueSEXP) {
@@ -631,6 +648,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_vapour_dsn_read_transform_geom_ij", (DL_FUNC) &_vapour_dsn_read_transform_geom_ij, 7},
     {"_vapour_set_gdal_config_cpp", (DL_FUNC) &_vapour_set_gdal_config_cpp, 2},
     {"_vapour_get_gdal_config_cpp", (DL_FUNC) &_vapour_get_gdal_config_cpp, 1},
     {"_vapour_cleanup_gdal_cpp", (DL_FUNC) &_vapour_cleanup_gdal_cpp, 0},

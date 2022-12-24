@@ -608,32 +608,6 @@ inline NumericVector dsn_read_fids_ia(CharacterVector dsn, IntegerVector layer,
   GDALClose(poDS);
   return out;
 }
-
-
-inline List dsn_read_geom_crs_all(CharacterVector dsn, IntegerVector layer,
-                              CharacterVector sql, NumericVector ex,
-                              CharacterVector format, 
-                              CharacterVector crs) {
-  
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-  OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-  
-  poLayer->
-  List out = layer_read_geom_all(poLayer, format);
-  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-  if (sql[0] != "") {
-    poDS->ReleaseResultSet(poLayer);
-  }
-  GDALClose(poDS);
-  return out;
-}
-
-
 inline List dsn_read_geom_all(CharacterVector dsn, IntegerVector layer,
                               CharacterVector sql, NumericVector ex,
                               CharacterVector format) {
