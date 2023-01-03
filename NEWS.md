@@ -1,3 +1,7 @@
+# vapour 0.9.3
+
+* Update to CRAN Makevars.ucrt. 
+
 # vapour 0.9.2
 
 * Resubmit after 0.9.1 was rejected, fixed configure.ac and checked on on M1MAC/macbuilder. 
