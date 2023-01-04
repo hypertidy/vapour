@@ -15,7 +15,7 @@
 #' @param dialect  sql dialect (SQLITE or OGRSQL most important ones)
 #' @param limit_n optional limit on number of output objects
 #' @param geom must be provided when crs is used, and must match syntax in 'select' of geometry SQL (use 'AS')
-#' 
+#' @param where subquer/ies for WHERE clause
 #' @return character string vector data source name for GDAL 
 #' @export
 #'
@@ -23,31 +23,39 @@
 #' dsn <- system.file("extdata/sst_c.gpkg", package = "vapour", mustWork = TRUE)
 #' vrt <- vapour_vector_vrt(dsn, layer = "sst_c", select = "sst, ConvexHull(geom) as chull", 
 #'    limit_n = 4, dialect = "sqlite", crs = "+proj=laea +lat_0=-90", debug = T, out_field = "chull")
-vapour_vector_vrt <- function(dsn, layer = NULL,crs = NULL, select = "*", geom = NULL, dialect = "sqlite", limit_n = 0) {
+vapour_vector_vrt <- function(dsn, layer = NULL,crs = NULL, select = "*", geom = NULL, dialect = "sqlite", limit_n = 0, where = "") {
   if (is.null(layer)) {
-    layers <- sf::st_layers(dsn)$name
+    layers <- vapour_layer_names(dsn)
     layer <- layers[1L]
   }
   if (is.numeric(layer)) {
-    layers <- sf::st_layers(dsn)$name
+    layers <- vapour_layer_names(dsn)
     layer <- layers[layer]
   }
   if (is.null(geom) && !is.null(crs))  {
     geom <- vapour::vapour_geom_name(dsn, layer)[1L]
   }
 
-  src_sql <- NULL
-  if (!select == "*") {
+  src_sql <- ""
+  if (!select == "*" || limit_n > 0 || nchar(where) > 0) {
     if (limit_n > 0) {
       limit_n <- sprintf(" LIMIT %i", limit_n)
     } else {
       limit_n <- ""
     }
-    src_sql <- sprintf('<SrcSQL dialect="%s">SELECT %s from %s %s</SrcSQL>', 
-                       dialect, select, layer, limit_n)
+    quote_layer <- TRUE ## always do it
+    qlayer <- layer
+      if (quote_layer) {
+    qlayer <- sprintf("\"%s\"", qlayer)
+      }
+    if (nchar(where) > 0) where <- sprintf("WHERE %s", where)
+    src_sql <- sprintf('<SrcSQL dialect="%s">SELECT %s from %s %s %s</SrcSQL>', 
+                       dialect, select, qlayer,  where, 
+                       limit_n)
     
   }
   
+
   if (!is.null(crs)) {
    out <- sprintf('<OGRVRTDataSource>
     <OGRVRTWarpedLayer>
