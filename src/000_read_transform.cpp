@@ -29,7 +29,7 @@ List layer_read_transform_geom_ij(OGRLayer *poLayer,   OGRCoordinateTransformati
       poNewFeat->SetFrom(poFeature);
       if(poNewFeat != NULL) {
         //poNewFeat->SetFID(poFeature->GetFID());
-        OGRGeometry *poGeometry = poNewFeat->GetGeometryRef(); 
+        OGRGeometry *poGeometry = poNewFeat->GetGeometryRef();
         if (poGeometry != NULL) {
           poGeometry->transform(poCT); 
           out[cnt] = gdalgeometry::feature_read_geom(poNewFeat, format)[0]; 
