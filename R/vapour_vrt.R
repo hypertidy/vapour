@@ -36,7 +36,7 @@
 #' 
 #' @section Projections:
 #' Common inputs for `projection` are WKT variants, "AUTH:CODE"s e.g.
-#' "EPSG:3031", the "OGC:CRS84" for long,lat WGS84, "ESRI:<code>" and other
+#' "EPSG:3031", the "OGC:CRS84" for long,lat WGS84, "ESRI:code" and other
 #' authority variants, and datum names such as 'WGS84','NAD27' recognized by
 #' PROJ itself.
 #'
