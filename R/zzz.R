@@ -37,7 +37,14 @@ vapour_load_gdal <- function() {
   }
 
   # now done globally, prior vapour did this per library call
-  register_gdal_cpp()
+  out <- register_gdal_cpp()
+
+  ## provided by R. Bivand #183  
+  rver <- version_gdal_cpp()
+  if (strsplit(strsplit(rver, ",")[[1]][1], " ")[[1]][2] == "3.6.0") {
+    warning("GDAL 3.6.0 is in use but has been officially retracted; check here for whether its use might affect your work:\nhttps://github.com/OSGeo/gdal/blob/v3.6.1/NEWS.md\n Need help? Contact the maintainer of {vapour}.")
+  }
+  out
 }
 # todo
 vapour_unload_gdal <- function() {
