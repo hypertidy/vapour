@@ -323,7 +323,7 @@ int main(int argc, char *argv[]) {
 _EOCONF]
 
 AC_MSG_CHECKING(GDAL: checking whether PROJ is available for linking:)
-${CXX} ${CPPFLAGS} -o gdal_proj gdal_proj.cpp ${LIBS} ${LDFLAGS} 2> errors.txt
+${CXX} ${CPPFLAGS} -o gdal_proj gdal_proj.cpp ${LIBS}  2> errors.txt
 if test `echo $?` -ne 0 ; then
 gdal_has_proj=no
 AC_MSG_RESULT(no)
@@ -480,7 +480,7 @@ _EOCONF]
   ## LDFLAGS?  CRAN says, I removed -sqlite3 which was a mistake (that's in LIBS already)
   ## have check on macbuilder that LIBS includes same pkg-config --libs proj as 
   ## BDR (2022-11-15): -L/opt/R/arm64/lib -lproj -lc++ -lm -ldl -lsqlite3 -lz -lcurl -ltiff -lwebp -llzma -ljpeg -lz
-  ${CXX} ${CPPFLAGS} -o proj_conf_test proj_conf_test.cpp ${LIBS} ${LDFLAGS} 2> errors.txt
+  ${CXX} ${CPPFLAGS} -o proj_conf_test proj_conf_test.cpp ${LIBS}  2> errors.txt
   if test `echo $?` -ne 0 ; then
     proj6ok=no
     AC_MSG_RESULT(no)
@@ -506,7 +506,7 @@ fi
 
 #AC_MSG_NOTICE([PKG_LIBS: ${PKG_LIBS}])
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} ${LDFLAGS}
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 
 
 proj_version=`./proj_conf_test`
 
@@ -545,7 +545,7 @@ int main(void) {
 }
 _EOCONF]
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} ${LDFLAGS}
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 
 if test [ -n "$proj_share_path" ] ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
@@ -593,7 +593,7 @@ int main(void) {
 }
 _EOCONF]
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} ${LDFLAGS}
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 
 if test [ -n "$proj_share_path" ] ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
@@ -646,7 +646,7 @@ int main(void) {
 }
 _EOCONF]
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} ${LDFLAGS}
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 
 if test [ -n "$proj_share_path" ] ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
