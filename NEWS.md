@@ -1,3 +1,10 @@
+# vapour dev
+
+* Removed C++11 requirement. 
+
+* remove LDFLAGS from configure, as per sf #1369 and vapour #188, thanks to @gremms1 and @sgoslee for 
+ report on Fedora. 
+
 # vapour 0.9.3
 
 * Update to CRAN Makevars.ucrt. 

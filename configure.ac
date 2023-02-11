@@ -67,25 +67,17 @@ RVER_MINOR=`echo ${RVER} | cut  -f2 -d"."`
 RVER_PATCH=`echo ${RVER} | cut  -f3 -d"."`
 
 if test [$RVER_MAJOR = "development"]; then
-    CXX11=`"${RBIN}" CMD config CXX11`
-    CXX11STD=`"${RBIN}" CMD config CXX11STD`
+    CXX=`"${RBIN}" CMD config CXX`
 else
     if test [$RVER_MAJOR -lt 3] -o [$RVER_MAJOR -eq 3 -a $RVER_MINOR -lt 3]; then
         AC_MSG_ERROR([vapour is not compatible with R versions before 3.3.0])
     else
-        if test [$RVER_MAJOR -eq 3 -a $RVER_MINOR -eq 3]; then
-            CXX11=`"${RBIN}" CMD config CXX1X`
-            CXX11STD=`"${RBIN}" CMD config CXX1XSTD`
-        else
-            CXX11=`"${RBIN}" CMD config CXX11`
-            CXX11STD=`"${RBIN}" CMD config CXX11STD`
-        fi
+        CXX=`"${RBIN}" CMD config CXX`
     fi
 fi
 
 # pick all flags for testing from R
 : ${CC=`"${RBIN}" CMD config CC`}
-: ${CXX=${CXX11} ${CXX11STD}}
 : ${CFLAGS=`"${RBIN}" CMD config CFLAGS`}
 : ${CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`}
 : ${CXXFLAGS=`"${RBIN}" CMD config CXXFLAGS`}
@@ -251,16 +243,6 @@ else
   fi
 fi
 
-GDAL_DATA_TEST_FILE="${GDAL_DATADIR}/pcs.csv"
-AC_MSG_CHECKING(GDAL: ${GDAL_DATADIR}/pcs.csv readable)
-if test -r "${GDAL_DATA_TEST_FILE}" ; then
-  AC_MSG_RESULT(yes)
-else
-  AC_MSG_RESULT(no)
-  if test "${GDAL_GE_250}" = "no" ; then
-    AC_MSG_ERROR([pcs.csv not found in GDAL data directory.])
-  fi
-fi
 
 # Optional local copy of GDAL datadir and PROJ_LIB
 
@@ -323,7 +305,7 @@ int main(int argc, char *argv[]) {
 _EOCONF]
 
 AC_MSG_CHECKING(GDAL: checking whether PROJ is available for linking:)
-${CXX} ${CPPFLAGS} -o gdal_proj gdal_proj.cpp ${LIBS} ${LDFLAGS} 2> errors.txt
+${CXX} ${CPPFLAGS} -o gdal_proj gdal_proj.cpp ${LIBS}  2> errors.txt
 if test `echo $?` -ne 0 ; then
 gdal_has_proj=no
 AC_MSG_RESULT(no)
@@ -480,7 +462,7 @@ _EOCONF]
   ## LDFLAGS?  CRAN says, I removed -sqlite3 which was a mistake (that's in LIBS already)
   ## have check on macbuilder that LIBS includes same pkg-config --libs proj as 
   ## BDR (2022-11-15): -L/opt/R/arm64/lib -lproj -lc++ -lm -ldl -lsqlite3 -lz -lcurl -ltiff -lwebp -llzma -ljpeg -lz
-  ${CXX} ${CPPFLAGS} -o proj_conf_test proj_conf_test.cpp ${LIBS} ${LDFLAGS} 2> errors.txt
+  ${CXX} ${CPPFLAGS} -o proj_conf_test proj_conf_test.cpp ${LIBS}  2> errors.txt
   if test `echo $?` -ne 0 ; then
     proj6ok=no
     AC_MSG_RESULT(no)
@@ -506,7 +488,7 @@ fi
 
 #AC_MSG_NOTICE([PKG_LIBS: ${PKG_LIBS}])
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} ${LDFLAGS}
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 
 
 proj_version=`./proj_conf_test`
 
@@ -545,7 +527,7 @@ int main(void) {
 }
 _EOCONF]
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} ${LDFLAGS}
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 
 if test [ -n "$proj_share_path" ] ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
@@ -593,7 +575,7 @@ int main(void) {
 }
 _EOCONF]
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} ${LDFLAGS}
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 
 if test [ -n "$proj_share_path" ] ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
@@ -646,7 +628,7 @@ int main(void) {
 }
 _EOCONF]
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} ${LDFLAGS}
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS} 
 if test [ -n "$proj_share_path" ] ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`

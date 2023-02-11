@@ -1,6 +1,6 @@
 Package: vapour
 Title: Access to the 'Geospatial Data Abstraction Library' ('GDAL')
-Version: 0.9.3
+Version: 0.9.3.9002
 Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-2471-7511")), 
              person("Simon", "Wotherspoon", role = "ctb", comment = "RasterIO configuration for resampling options"), 
              person("Mark", "Padgham", role = "ctb", comment = "helped get started :)"), 
@@ -35,7 +35,7 @@ Suggests:
     markdown,
     rmarkdown,
     spelling
-SystemRequirements: libgdal-dev, GDAL (>= 2.2.3), PROJ (>= 4.8.0), C++11
+SystemRequirements: libgdal-dev, GDAL (>= 2.2.3), PROJ (>= 4.8.0)
 VignetteBuilder: knitr
 URL: https://github.com/hypertidy/vapour
 BugReports: https://github.com/hypertidy/vapour/issues
