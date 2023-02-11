@@ -66,6 +66,7 @@ inline List gdal_warp_general(CharacterVector dsn,
                                 CharacterVector target_crs,
                                 NumericVector target_extent,
                                 IntegerVector target_dim,
+                                NumericVector target_res,
                                 IntegerVector bands,
                                 CharacterVector resample,
                                 LogicalVector silent,
@@ -148,6 +149,13 @@ inline List gdal_warp_general(CharacterVector dsn,
     papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
   }
   
+  if (target_res.size() > 0) {
+    int XRes = target_res[0];
+    int YRes = target_res[1];
+    papszArg = CSLAddString(papszArg, "-tr");
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%d", XRes));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%d", YRes));
+  }
   if (resample.size() > 0) {
    papszArg = CSLAddString(papszArg, "-r");
    papszArg = CSLAddString(papszArg, resample[0]);
@@ -237,6 +245,26 @@ inline List gdal_warp_general(CharacterVector dsn,
                                                    band_output_type,
                                                    resample,
                                                    unscale);
+  
+  // shove the grid details on as attributes
+  // get the extent ...
+  R_xlen_t dimx =  ((GDALDataset*)hRet)->GetRasterXSize(); 
+  R_xlen_t dimy =  ((GDALDataset*)hRet)->GetRasterYSize();
+  double        adfGeoTransform[6];
+  //poDataset->GetGeoTransform( adfGeoTransform );
+  GDALGetGeoTransform(hRet, adfGeoTransform );
+  double xmin = adfGeoTransform[0];
+  double xmax = adfGeoTransform[0] + dimx * adfGeoTransform[1];
+  double ymin = adfGeoTransform[3] + dimy * adfGeoTransform[5];
+  double ymax = adfGeoTransform[3];
+  
+  
+  const char *proj;
+  proj = GDALGetProjectionRef(hRet);
+  //https://gis.stackexchange.com/questions/164279/how-do-i-create-ogrspatialreference-from-raster-files-georeference-c
+  outlist.attr("dimension") = NumericVector::create(dimx, dimy);
+  outlist.attr("extent") = NumericVector::create(xmin, xmax, ymin, ymax);
+  outlist.attr("projection") = CharacterVector::create(proj);
   
   GDALClose( hRet );
   return outlist;
