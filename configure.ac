@@ -67,25 +67,17 @@ RVER_MINOR=`echo ${RVER} | cut  -f2 -d"."`
 RVER_PATCH=`echo ${RVER} | cut  -f3 -d"."`
 
 if test [$RVER_MAJOR = "development"]; then
-    CXX11=`"${RBIN}" CMD config CXX11`
-    CXX11STD=`"${RBIN}" CMD config CXX11STD`
+    CXX=`"${RBIN}" CMD config CXX`
 else
     if test [$RVER_MAJOR -lt 3] -o [$RVER_MAJOR -eq 3 -a $RVER_MINOR -lt 3]; then
         AC_MSG_ERROR([vapour is not compatible with R versions before 3.3.0])
     else
-        if test [$RVER_MAJOR -eq 3 -a $RVER_MINOR -eq 3]; then
-            CXX11=`"${RBIN}" CMD config CXX1X`
-            CXX11STD=`"${RBIN}" CMD config CXX1XSTD`
-        else
-            CXX11=`"${RBIN}" CMD config CXX11`
-            CXX11STD=`"${RBIN}" CMD config CXX11STD`
-        fi
+        CXX=`"${RBIN}" CMD config CXX`
     fi
 fi
 
 # pick all flags for testing from R
 : ${CC=`"${RBIN}" CMD config CC`}
-: ${CXX=${CXX11} ${CXX11STD}}
 : ${CFLAGS=`"${RBIN}" CMD config CFLAGS`}
 : ${CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`}
 : ${CXXFLAGS=`"${RBIN}" CMD config CXXFLAGS`}
@@ -251,16 +243,6 @@ else
   fi
 fi
 
-GDAL_DATA_TEST_FILE="${GDAL_DATADIR}/pcs.csv"
-AC_MSG_CHECKING(GDAL: ${GDAL_DATADIR}/pcs.csv readable)
-if test -r "${GDAL_DATA_TEST_FILE}" ; then
-  AC_MSG_RESULT(yes)
-else
-  AC_MSG_RESULT(no)
-  if test "${GDAL_GE_250}" = "no" ; then
-    AC_MSG_ERROR([pcs.csv not found in GDAL data directory.])
-  fi
-fi
 
 # Optional local copy of GDAL datadir and PROJ_LIB
 
