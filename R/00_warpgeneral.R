@@ -38,16 +38,47 @@ imfun <- function(X) {
 #' ## specify exactly (as per vapour originally)
 #' X3 <- warp_general(dsn,  target_ext = c(-1, 1, -1, 1) * 8e6, target_dim = c(512, 678), target_crs = "+proj=stere +lon_0=147 +lat_0=-90")
 #' imfun(X3)
-warp_general <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
-                         resample = "near", bands = 1L) {
+gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
+                         resample = "near", bands = 1L, band_output_type = NULL, options = character()) {
   
   if (length(target_res) > 0 ) target_res <- as.numeric(rep(target_res, length.out = 2L))
    if (is.null(target_crs)) target_crs <- "" 
    if (is.null(target_ext)) target_ext <-  numeric()
    if (is.null(target_dim)) target_dim <- integer() #info$dimension
    if (is.null(target_res)) target_res <- numeric() ## TODO
-   vapour:::warp_general_cpp(dsn, target_crs, target_ext, target_dim, target_res, bands = bands, resample = resample, silent = FALSE, band_output_type = "Float64", options = character())
+   if (is.null(band_output_type)) band_output_type <- "Float64"
+   vapour:::warp_general_cpp(dsn, target_crs, 
+                             target_ext, 
+                             target_dim, 
+                             target_res, 
+                             bands = bands, 
+                             resample = resample, 
+                             silent = FALSE, band_output_type = band_output_type, 
+                             options = options)
 }
 
+
+gdal_raster_image <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
+                               resample = "near", bands = 1:3, band_output_type = NULL, options = character()) {
+  
+  if (length(target_res) > 0 ) target_res <- as.numeric(rep(target_res, length.out = 2L))
+  if (is.null(target_crs)) target_crs <- "" 
+  if (is.null(target_ext)) target_ext <-  numeric()
+  if (is.null(target_dim)) target_dim <- integer() #info$dimension
+  if (is.null(target_res)) target_res <- numeric() ## TODO
+  if (is.null(band_output_type)) band_output_type <- "UInt8"
+  bytes <- vapour:::warp_general_cpp(dsn, target_crs, 
+                            target_ext, 
+                            target_dim, 
+                            target_res, 
+                            bands = bands, 
+                            resample = resample, 
+                            silent = FALSE, band_output_type = band_output_type, 
+                            options = options)
+  atts <- attributes(bytes)
+  out <- list(as.vector(grDevices::as.raster(array(unlist(bytes, use.names = FALSE), c(length(bytes[[1]]), 1, max(c(3, length(bytes))))))))
+  attributes(out) <- atts
+  out
+}
 
 

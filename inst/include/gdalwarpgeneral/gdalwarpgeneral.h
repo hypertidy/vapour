@@ -57,7 +57,7 @@ List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
 // remove source_WKT (because VRT)
 // remove source_extent (VRT)
 //  target_extent must be optional
-// target_dim must be optional
+// target_dim must be optional, 
 // expose SuggestedWarpOutput to R
 // band_output_type -ot
 // resample         -r
@@ -179,7 +179,7 @@ inline List gdal_warp_general(CharacterVector dsn,
   CPLFree(poSrcDS);
   
   if (hRet == nullptr) {
-    Rcpp::stop("something went wrong!");
+    Rcpp::stop("data source could not be processed with GDALWarp api");
   }
   
   
@@ -226,19 +226,7 @@ inline List gdal_warp_general(CharacterVector dsn,
   for (int i  = 0; i < window.size(); i++) window[i] = 0;
   
   
-  // we can't do  gdal_warped_vrt here ... was just trying something and realized 
-  // that cant work
-  // 
-  // GDALRasterIOExtraArg psExtraArg;
-  // psExtraArg = gdallibrary::init_resample_alg(resample);
-  // 
-  // std::vector<double> values( GDALGetRasterXSize(hRet) * GDALGetRasterYSize(hRet) * nBands );
-  // CPLErr err = 
-  // GDALDataset::FromHandle(hRet)->RasterIO(GF_Read, 0, 0, GDALGetRasterXSize(hRet), GDALGetRasterYSize(hRet),
-  //                         &values[0],   GDALGetRasterXSize(hRet), GDALGetRasterYSize(hRet), GDT_Float64,
-  //                         nBands, &bands_to_read[0],
-  //                         0, 0, 0, &psExtraArg);
-  
+
   List outlist = gdalraster::gdal_read_band_values(GDALDataset::FromHandle(hRet),
                                                    window,
                                                    bands_to_read,
