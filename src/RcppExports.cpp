@@ -130,6 +130,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// crs_is_lonlat_cpp
+LogicalVector crs_is_lonlat_cpp(CharacterVector input_string);
+RcppExport SEXP _vapour_crs_is_lonlat_cpp(SEXP input_stringSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type input_string(input_stringSEXP);
+    rcpp_result_gen = Rcpp::wrap(crs_is_lonlat_cpp(input_string));
+    return rcpp_result_gen;
+END_RCPP
+}
 // register_gdal_cpp
 LogicalVector register_gdal_cpp();
 RcppExport SEXP _vapour_register_gdal_cpp() {
@@ -674,6 +685,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_layer_names_gdal_cpp", (DL_FUNC) &_vapour_layer_names_gdal_cpp, 1},
     {"_vapour_drivers_list_gdal_cpp", (DL_FUNC) &_vapour_drivers_list_gdal_cpp, 0},
     {"_vapour_proj_to_wkt_gdal_cpp", (DL_FUNC) &_vapour_proj_to_wkt_gdal_cpp, 1},
+    {"_vapour_crs_is_lonlat_cpp", (DL_FUNC) &_vapour_crs_is_lonlat_cpp, 1},
     {"_vapour_register_gdal_cpp", (DL_FUNC) &_vapour_register_gdal_cpp, 0},
     {"_vapour_version_gdal_cpp", (DL_FUNC) &_vapour_version_gdal_cpp, 0},
     {"_vapour_vsi_list_gdal_cpp", (DL_FUNC) &_vapour_vsi_list_gdal_cpp, 1},

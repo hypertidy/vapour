@@ -41,6 +41,10 @@ proj_to_wkt_gdal_cpp <- function(proj4string) {
     .Call('_vapour_proj_to_wkt_gdal_cpp', PACKAGE = 'vapour', proj4string)
 }
 
+crs_is_lonlat_cpp <- function(input_string) {
+    .Call('_vapour_crs_is_lonlat_cpp', PACKAGE = 'vapour', input_string)
+}
+
 register_gdal_cpp <- function() {
     .Call('_vapour_register_gdal_cpp', PACKAGE = 'vapour')
 }
