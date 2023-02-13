@@ -1,5 +1,7 @@
 # vapour dev
 
+* New function `vapour_crs_is_lonlat()` to test crs string. 
+
 * Removed C++11 requirement. 
 
 * remove LDFLAGS from configure, as per sf #1369 and vapour #188, thanks to @gremms1 and @sgoslee for 

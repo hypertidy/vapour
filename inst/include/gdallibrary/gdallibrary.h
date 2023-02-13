@@ -668,6 +668,17 @@ inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
   return out;
 }
 
+inline LogicalVector gdal_crs_is_lonlat(CharacterVector proj_str) {
+  OGRSpatialReference oSRS;
+  
+  oSRS.SetFromUserInput(proj_str[0]);
+  LogicalVector out(1); 
+  out[0] = oSRS.IsGeographic() > 0; 
+  
+  return out;
+}
+
+
 inline List gdal_projection_info(CharacterVector dsn,
                                  IntegerVector layer,
                                  CharacterVector sql)

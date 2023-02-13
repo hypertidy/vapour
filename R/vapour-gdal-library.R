@@ -75,6 +75,29 @@ vapour_srs_wkt <- function(crs) {
 }
 
 
+#' Is the CRS string representative of angular coordinates
+#' 
+#' Returns `TRUE` if this is longitude latitude data. Missing, malformed, zero-length values are disallowed. 
+#'
+#' @param crs character string of length 1
+#'
+#' @return logical value `TRUE` for lonlat, `FALSE` otherwise
+#' @export
+#'
+#' @examples
+#' vapour_crs_is_lonlat("+proj=laea")
+#' vapour_crs_is_lonlat("+proj=longlat")
+#' vapour_crs_is_lonlat("+init=EPSG:4326")
+#' vapour_crs_is_lonlat("OGC:CRS84")
+#' vapour_crs_is_lonlat("WGS84")
+#' vapour_crs_is_lonlat("NAD27")
+#' vapour_crs_is_lonlat("EPSG:3031")
+vapour_crs_is_lonlat <- function(crs) {
+  crs_in <- crs[1L]
+  if (length(crs) > 1L) message("multiple crs input is not supported, using the first only")
+  if (is.na(crs_in) || is.null(crs_in) || length(crs_in) < 1L || !nzchar(crs_in)) stop(sprintf("problem with input crs: %s", crs_in))
+  crs_is_lonlat_cpp(crs)
+}
 
 #' Summary of available geometry
 #'
