@@ -19,7 +19,7 @@ List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
   GDALDataset* poSrcDS = (GDALDataset*) gdalraster::gdalH_open_dsn(dsn[0],  0);
   double        adfGeoTransform[6];
   poSrcDS->GetGeoTransform( adfGeoTransform );
-  double outGeoTransform[6]; 
+ 
   int nXSize, nYSize;
   double adfExtent[4]; 
   GDALTransformerFunc pfnTransformer; 
@@ -31,7 +31,7 @@ List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
                                      nullptr,
                                      nullptr,
                                      target_crs[0],
-                                     FALSE, 0.0, 1 );
+                                               FALSE, 0.0, 1 );
   GDALSuggestedWarpOutput2(poSrcDS, pfnTransformer, pfnTransformerArg,
                            adfGeoTransform, &nXSize, &nYSize, adfExtent,
                            0); 
@@ -63,15 +63,16 @@ List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
 // resample         -r
 // bands            -b n0 -b n1
 inline List gdal_warp_general(CharacterVector dsn,
-                                CharacterVector target_crs,
-                                NumericVector target_extent,
-                                IntegerVector target_dim,
-                                NumericVector target_res,
-                                IntegerVector bands,
-                                CharacterVector resample,
-                                LogicalVector silent,
-                                CharacterVector band_output_type, 
-                                CharacterVector options) {
+                              CharacterVector target_crs,
+                              NumericVector target_extent,
+                              IntegerVector target_dim,
+                              NumericVector target_res,
+                              IntegerVector bands,
+                              CharacterVector resample,
+                              LogicalVector silent,
+                              CharacterVector band_output_type, 
+                              CharacterVector options, 
+                              CharacterVector dsn_outname) {
   
   
   GDALDatasetH *poSrcDS;
@@ -94,9 +95,15 @@ inline List gdal_warp_general(CharacterVector dsn,
   // we manually handle -r, -te, -t_srs, -ts, -of,
   // but the rest passed in as wo, to, oo, doo, or general (non general ones get -wo/-to/-oo/-doo prepended in R)
   char** papszArg = nullptr;
-  
   papszArg = CSLAddString(papszArg, "-of");
   papszArg = CSLAddString(papszArg, "MEM");
+  
+  bool write_dsn = false; 
+  if (EQUAL(dsn_outname[0], "")) {
+   
+  } else {
+    write_dsn = true; 
+  }
   
   if (!target_crs[0].empty()) {
     OGRSpatialReference *oTargetSRS = nullptr;
@@ -129,18 +136,18 @@ inline List gdal_warp_general(CharacterVector dsn,
   }
   
   if (target_extent.size() > 0) {
-   double dfMinX = target_extent[0];
-   double dfMaxX = target_extent[1];
-   double dfMinY = target_extent[2];
-   double dfMaxY = target_extent[3];
-  
-   papszArg = CSLAddString(papszArg, "-te");
-   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
-   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
-   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
-   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
+    double dfMinX = target_extent[0];
+    double dfMaxX = target_extent[1];
+    double dfMinY = target_extent[2];
+    double dfMaxY = target_extent[3];
+    
+    papszArg = CSLAddString(papszArg, "-te");
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
   }
-  
+ 
   if (target_dim.size() > 0) {
     int nXSize = target_dim[0];
     int nYSize = target_dim[1];
@@ -148,7 +155,7 @@ inline List gdal_warp_general(CharacterVector dsn,
     papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
     papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
   }
-  
+ 
   if (target_res.size() > 0) {
     int XRes = target_res[0];
     int YRes = target_res[1];
@@ -157,22 +164,31 @@ inline List gdal_warp_general(CharacterVector dsn,
     papszArg = CSLAddString(papszArg, CPLSPrintf("%d", YRes));
   }
   if (resample.size() > 0) {
-   papszArg = CSLAddString(papszArg, "-r");
-   papszArg = CSLAddString(papszArg, resample[0]);
+    papszArg = CSLAddString(papszArg, "-r");
+    papszArg = CSLAddString(papszArg, resample[0]);
   }
   for (int gwopt = 0; gwopt < options.length(); gwopt++) {
     papszArg = CSLAddString(papszArg, options[gwopt]);
   }
+  
+  // List out = List::create(1);
+  // CharacterVector sss(CSLCount (papszArg));
+  // for (int sii = 0; sii < sss.size(); sii++) sss[sii] = papszArg[sii];
+  // out[0] = sss;
+  // return out;
+
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
+
+
+    GDALDatasetH hRet = GDALWarp(dsn_outname[0], nullptr,
+                                  static_cast<int>(dsn.size()), poSrcDS,
+                                  psOptions, nullptr);
   
-  GDALDatasetH hRet = GDALWarp( "", nullptr,
-                                static_cast<int>(dsn.size()), poSrcDS,
-                                psOptions, nullptr);
-  
-  CPLAssert( hRet != NULL );
   GDALWarpAppOptionsFree(psOptions);
+
+  CPLAssert( hRet != NULL );
   for (int si = 0; si < dsn.size(); si++) {
     GDALClose( (GDALDataset *)poSrcDS[si] );
   }
@@ -183,56 +199,49 @@ inline List gdal_warp_general(CharacterVector dsn,
   }
   
   
-  /// this doesn't work because we don't keep the file name/s
-  if (band_output_type[0] == "vrt") {
-    // GDALDriver * vDriver = (GDALDriver *)GDALGetDriverByName("VRT");
-    // GDALDatasetH VRTDS = vDriver->CreateCopy("", (GDALDataset *) hRet, 0, nullptr, nullptr, nullptr);
-    //
+  List outlist; 
+  if (write_dsn) {
+    outlist.push_back(dsn_outname); 
     
-    CharacterVector oof(1);
-    CharacterVector infile(1);
-    LogicalVector filein(1);
-    oof[0] = gdalraster::gdal_vrt_text((GDALDataset *) hRet);
-    GDALClose(hRet);
-    return List::create(oof);
-  }
-  
-  
-  // Prepare to read bands
-  int nBands;
-  if (bands[0] == 0) {
-    nBands = (int)GDALGetRasterCount(hRet);
   } else {
-    nBands = (int)bands.size();
-  }
-  std::vector<int> bands_to_read(static_cast<size_t>(nBands));
-  for (int i = 0; i < nBands; i++) {
+    // Prepare to read bands
+    int nBands;
     if (bands[0] == 0) {
-      bands_to_read[static_cast<size_t>(i)] = i + 1;
+      nBands = (int)GDALGetRasterCount(hRet);
     } else {
-      bands_to_read[static_cast<size_t>(i)] = bands[i];
+      nBands = (int)bands.size();
     }
-    
-    if (bands_to_read[static_cast<size_t>(i)] > (int)GDALGetRasterCount(hRet)) {
-      GDALClose( hRet );
-      stop("band number is not available: %i", bands_to_read[static_cast<size_t>(i)]);
+    std::vector<int> bands_to_read(static_cast<size_t>(nBands));
+    for (int i = 0; i < nBands; i++) {
+      if (bands[0] == 0) {
+        bands_to_read[static_cast<size_t>(i)] = i + 1;
+      } else {
+        bands_to_read[static_cast<size_t>(i)] = bands[i];
+      }
+      
+      if (bands_to_read[static_cast<size_t>(i)] > (int)GDALGetRasterCount(hRet)) {
+        GDALClose( hRet );
+        stop("band number is not available: %i", bands_to_read[static_cast<size_t>(i)]);
+      }
+      
     }
+    LogicalVector unscale = true;
+    IntegerVector window(6);
+    // default window with all zeroes results in entire read (for warp)
+    // also supports vapour_raster_read  atm
+    for (int i  = 0; i < window.size(); i++) window[i] = 0;
     
+    
+    outlist = gdalraster::gdal_read_band_values(GDALDataset::FromHandle(hRet),
+                                                window,
+                                                bands_to_read,
+                                                band_output_type,
+                                                resample,
+                                                unscale);
   }
-  LogicalVector unscale = true;
-  IntegerVector window(6);
-  // default window with all zeroes results in entire read (for warp)
-  // also supports vapour_raster_read  atm
-  for (int i  = 0; i < window.size(); i++) window[i] = 0;
   
   
-
-  List outlist = gdalraster::gdal_read_band_values(GDALDataset::FromHandle(hRet),
-                                                   window,
-                                                   bands_to_read,
-                                                   band_output_type,
-                                                   resample,
-                                                   unscale);
+  
   
   // shove the grid details on as attributes
   // get the extent ...
