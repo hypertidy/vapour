@@ -28,7 +28,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 //CharacterVector transformation_options, 
                                 //CharacterVector open_options, 
                                 // CharacterVector output_dataset_options,
-                                CharacterVector options) {
+                                CharacterVector options, 
+                                LogicalVector nomd) {
   
   
   GDALDatasetH *poSrcDS;
@@ -153,7 +154,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     CharacterVector oof(1);
     CharacterVector infile(1);
     LogicalVector filein(1);
-    oof[0] = gdalraster::gdal_vrt_text((GDALDataset *) hRet);
+    oof[0] = gdalraster::gdal_vrt_text((GDALDataset *) hRet, nomd);
     GDALClose(hRet);
     return List::create(oof);
   }

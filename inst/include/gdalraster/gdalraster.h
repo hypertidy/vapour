@@ -213,22 +213,24 @@ inline GDALDatasetH* gdalH_open_avrt_multiple(CharacterVector dsn, NumericVector
 }
 // convert an opened GDALDataset to chunk-of-text VRT, if it is VRT you get it direct
 //  if it's a different driver it is firs CreateCopy()ied to VRT
-inline const char* gdal_vrt_text(GDALDataset* poSrcDS) {
+inline const char* gdal_vrt_text(GDALDataset* poSrcDS, LogicalVector nomd) {
   CharacterVector out(1);
   // can't do this unless poSrcDS really is VRT
   if (EQUAL(poSrcDS->GetDriverName(),  "VRT")) {
     VRTDataset * VRTdcDS = cpl::down_cast<VRTDataset *>(poSrcDS );
-    // if (add_filename[0]) {
-    //   //VRTdcDS->SetDescription( filename[0]);
-    // }
     if (!(VRTdcDS == nullptr)) out[0] = VRTdcDS->GetMetadata("xml:VRT")[0];
   } else {
     GDALDriver *poDriver = (GDALDriver *)GDALGetDriverByName("VRT");
-    GDALDataset *VRTDS = poDriver->CreateCopy("", poSrcDS, false, NULL, NULL, NULL);
-    // if (add_filename[0]) {
-    //   //VRTDS->SetDescription( filename[0]);
-    // 
-    // }
+    // if nomd specified from caller zap all of it, on the dataset and on the band/s
+    if (nomd[0]) {
+      // removes all the MDI key stuff, the mega-meta you get from the likes of netcdf
+      // IMAGE_STRUCTURE COMPRESSION and so forth are retained
+      poSrcDS->SetMetadata(nullptr); 
+      int i_bands = poSrcDS->GetRasterCount(); 
+      for (int ii_b = 0; ii_b < i_bands; ii_b++) poSrcDS->GetRasterBand(ii_b + 1)->SetMetadata(nullptr); 
+    }
+    GDALDataset *VRTDS = poDriver->CreateCopy("", poSrcDS, false, nullptr, nullptr, nullptr);
+  
     if (!(VRTDS == nullptr)) out[0] = VRTDS->GetMetadata("xml:VRT")[0];
     GDALClose((GDALDatasetH) VRTDS);
   }
@@ -240,7 +242,7 @@ inline const char* gdal_vrt_text(GDALDataset* poSrcDS) {
 // [[Rcpp::export]]
 inline CharacterVector gdal_dsn_vrt(CharacterVector dsn, NumericVector extent, CharacterVector projection, 
                                     IntegerVector sds, IntegerVector bands, 
-                                    CharacterVector geolocation) {
+                                    CharacterVector geolocation, LogicalVector nomd) {
   CharacterVector out(dsn.size());
   GDALDatasetH DS;
   for (int i = 0; i < out.size(); i++) {
@@ -254,7 +256,7 @@ inline CharacterVector gdal_dsn_vrt(CharacterVector dsn, NumericVector extent, C
     if (DS == nullptr) {
      out[i] = NA_STRING;  
     } else {
-      out[i] = gdal_vrt_text((GDALDataset*) DS);
+      out[i] = gdal_vrt_text((GDALDataset*) DS, nomd);
       GDALClose(DS);
     }
   }

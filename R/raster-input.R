@@ -319,6 +319,8 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' @param transformation_options character vector of options, as in gdalwarp -to see Details
 #' @param open_options character vector of options, as in gdalwarp -oo - see Details
 #' @param options character vectors of options as per the gdalwarp command line 
+#' @param nomd if `TRUE` the Metadata tag is removed from the resulting VRT (it can be quite substantial)
+
 #' @export
 #' @seealso vapour_read_raster vapour_read_raster_raw vapour_read_raster_int vapour_read_raster_dbl vapour_read_raster_chr vapour_read_raster_hex
 #' @return list of vectors (only 1 for 'band') of numeric values, in raster order
@@ -348,7 +350,8 @@ vapour_warp_raster <- function(x, bands = NULL,
                                warp_options = "", 
                                transformation_options = "", 
                                open_options = "",
-                               options = "") {
+                               options = "", 
+                               nomd = FALSE) {
   x <- .check_dsn_multiple(x)
   if (!is.null(bands) && (anyNA(bands) || length(bands) < 1 || !is.numeric(bands))) {
     stop("'bands' must be a valid set of band integers (1-based)")
@@ -513,7 +516,7 @@ vapour_warp_raster <- function(x, bands = NULL,
                                   resample = resample,
                                   silent = silent,
                                   band_output_type = band_output_type, 
-                                  options = options)
+                                  options = options, nomd = nomd)
   # ##// if we Dataset->RasterIO we don't have separated bands'
   # nbands <- length(vals[[1L]]) / prod(as.integer(dimension))
   # if (nbands > 1) vals <- split(vals[[1L]], rep(seq_len(nbands), each = prod(as.integer(dimension))))

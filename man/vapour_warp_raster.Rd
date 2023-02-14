@@ -20,7 +20,8 @@ vapour_warp_raster(
   warp_options = "",
   transformation_options = "",
   open_options = "",
-  options = ""
+  options = "",
+  nomd = FALSE
 )
 }
 \arguments{
@@ -55,6 +56,8 @@ vapour_warp_raster(
 \item{open_options}{character vector of options, as in gdalwarp -oo - see Details}
 
 \item{options}{character vectors of options as per the gdalwarp command line}
+
+\item{nomd}{if \code{TRUE} the Metadata tag is removed from the resulting VRT (it can be quite substantial)}
 }
 \value{
 list of vectors (only 1 for 'band') of numeric values, in raster order

@@ -161,8 +161,8 @@ sds_list_list_gdal_cpp <- function(dsn) {
     .Call('_vapour_sds_list_list_gdal_cpp', PACKAGE = 'vapour', dsn)
 }
 
-warp_in_memory_gdal_cpp <- function(dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent, band_output_type, options) {
-    .Call('_vapour_warp_in_memory_gdal_cpp', PACKAGE = 'vapour', dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent, band_output_type, options)
+warp_in_memory_gdal_cpp <- function(dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent, band_output_type, options, nomd) {
+    .Call('_vapour_warp_in_memory_gdal_cpp', PACKAGE = 'vapour', dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent, band_output_type, options, nomd)
 }
 
 vapour_read_raster_block_cpp <- function(dsource, offset, dimension, band, band_output_type) {
@@ -185,8 +185,8 @@ raster_gdalinfo_app_cpp <- function(dsn, options) {
     .Call('_vapour_raster_gdalinfo_app_cpp', PACKAGE = 'vapour', dsn, options)
 }
 
-raster_vrt_cpp <- function(dsn, extent, projection, sds, bands, geolocation) {
-    .Call('_vapour_raster_vrt_cpp', PACKAGE = 'vapour', dsn, extent, projection, sds, bands, geolocation)
+raster_vrt_cpp <- function(dsn, extent, projection, sds, bands, geolocation, nomd) {
+    .Call('_vapour_raster_vrt_cpp', PACKAGE = 'vapour', dsn, extent, projection, sds, bands, geolocation, nomd)
 }
 
 raster_warp_file_cpp <- function(source_filename, target_crs, target_extent, target_dim, target_filename, bands, resample, silent, band_output_type, warp_options, transformation_options) {

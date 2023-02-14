@@ -57,6 +57,7 @@
 #' @param relative_to_vrt default `FALSE`, if `TRUE` input strings that identify as files on the system are left as-is (by default they are made absolute at the R level)
 #' @param geolocation vector of 2 dsn to longitude, latitude geolocation array sources
 #' @return VRT character string (for use by GDAL-capable tools, i.e. reading raster)
+#' @param nomd if `TRUE` the Metadata tag is removed from the resulting VRT (it can be quite substantial)
 #' @export
 #'
 #' @examples
@@ -65,7 +66,7 @@
 #' 
 #' vapour_vrt(tif, bands = c(1, 1))
 #' 
-vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = NULL, geolocation = NULL, ..., relative_to_vrt = FALSE) {
+vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = NULL, geolocation = NULL, ..., relative_to_vrt = FALSE, nomd = FALSE) {
   x <- .check_dsn_multiple_naok(x)
   
   if (!relative_to_vrt) { 
@@ -126,7 +127,7 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
    if (!is.null(geolocation) && (length(geolocation) != 2 || !is.character(geolocation) || anyNA(geolocation))) {
     geolocation <- ""
   }
-  raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation)
+  raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation, nomd)
 }
 
   

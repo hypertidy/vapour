@@ -12,7 +12,8 @@ vapour_vrt(
   bands = NULL,
   geolocation = NULL,
   ...,
-  relative_to_vrt = FALSE
+  relative_to_vrt = FALSE,
+  nomd = FALSE
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ vapour_vrt(
 \item{...}{ignored}
 
 \item{relative_to_vrt}{default \code{FALSE}, if \code{TRUE} input strings that identify as files on the system are left as-is (by default they are made absolute at the R level)}
+
+\item{nomd}{if \code{TRUE} the Metadata tag is removed from the resulting VRT (it can be quite substantial)}
 }
 \value{
 VRT character string (for use by GDAL-capable tools, i.e. reading raster)

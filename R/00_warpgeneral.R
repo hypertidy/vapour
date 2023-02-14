@@ -1,12 +1,5 @@
 
 
-imfun <- function(X) {
-  ximage::ximage(matrix(X[[1]], attr(X, "dimension")[2L], byrow = TRUE), 
-                 extent = attr(X, "extent"), asp = 1)
-  lines(whatarelief::coastline(attr(X, "extent"), projection = attr(X, "projection"), dimension = c(512, 512)))
-}
-
-
 ## wrapper around in-dev vapour function to simplify the warper interface (let GDAL do the work)
 #' Title
 #'
@@ -47,7 +40,7 @@ gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
    if (is.null(target_dim)) target_dim <- integer() #info$dimension
    if (is.null(target_res)) target_res <- numeric() ## TODO
    if (is.null(band_output_type)) band_output_type <- "Float64"
-   vapour:::warp_general_cpp(dsn, target_crs, 
+   warp_general_cpp(dsn, target_crs, 
                              as.numeric(target_ext), 
                              as.integer(target_dim), 
                              as.numeric(target_res), 
@@ -73,7 +66,7 @@ gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ex
   options <- c(options, "-of",  "COG")
   
   #}
-  vapour:::warp_general_cpp(dsn, target_crs, 
+  warp_general_cpp(dsn, target_crs, 
                             target_ext, 
                             target_dim, 
                             target_res, 
@@ -92,7 +85,7 @@ gdal_raster_image <- function(dsn, target_crs = NULL, target_dim = NULL, target_
   if (is.null(target_dim)) target_dim <- integer() #info$dimension
   if (is.null(target_res)) target_res <- numeric() ## TODO
   if (is.null(band_output_type)) band_output_type <- "UInt8"
-  bytes <- vapour:::warp_general_cpp(dsn, target_crs, 
+  bytes <- warp_general_cpp(dsn, target_crs, 
                             target_ext, 
                             target_dim, 
                             target_res, 
