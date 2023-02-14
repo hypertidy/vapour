@@ -2,6 +2,7 @@
 
 export(vapour_all_drivers)
 export(vapour_create)
+export(vapour_crs_is_lonlat)
 export(vapour_driver)
 export(vapour_gdal_version)
 export(vapour_geom_name)
