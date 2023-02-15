@@ -19,7 +19,7 @@ properties of the transformed output."><meta property="og:image" content="/logo.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3.9004</span>
       </span>
     </div>
 
@@ -86,7 +86,8 @@ properties of the transformed output.</p>
 <span>  warp_options <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  transformation_options <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  open_options <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  options <span class="op">=</span> <span class="st">""</span></span>
+<span>  options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  nomd <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -154,6 +155,10 @@ properties of the transformed output.</p>
 
 <dt>options</dt>
 <dd><p>character vectors of options as per the gdalwarp command line</p></dd>
+
+
+<dt>nomd</dt>
+<dd><p>if <code>TRUE</code> the Metadata tag is removed from the resulting VRT (it can be quite substantial)</p></dd>
 
 </dl></div>
     <div id="value">

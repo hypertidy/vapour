@@ -20,7 +20,7 @@ it is missing."><meta property="og:image" content="/logo.png"><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3.9004</span>
       </span>
     </div>
 
@@ -80,7 +80,8 @@ it is missing.</p>
 <span>  bands <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  geolocation <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  relative_to_vrt <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  relative_to_vrt <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  nomd <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -116,6 +117,10 @@ it is missing.</p>
 
 <dt>relative_to_vrt</dt>
 <dd><p>default <code>FALSE</code>, if <code>TRUE</code> input strings that identify as files on the system are left as-is (by default they are made absolute at the R level)</p></dd>
+
+
+<dt>nomd</dt>
+<dd><p>if <code>TRUE</code> the Metadata tag is removed from the resulting VRT (it can be quite substantial)</p></dd>
 
 </dl></div>
     <div id="value">
