@@ -2,6 +2,7 @@
 #define GDALGEOMETRY_H
 #include <Rcpp.h>
 #include "ogrsf_frmts.h"
+//#include "geos.h"
 //#include "ogr_api.h"
 #include "gdal_priv.h"
 // #include "ogr_spatialref.h" // for OGRSpatialReference
@@ -33,6 +34,26 @@ inline RawVector gdal_geometry_raw(OGRFeature *poFeature) {
     return raw; 
   }
 }
+
+
+// SEXP geos_common_xptr(GEOSGeometry* geometry) {
+//   SEXP externalPtr = R_MakeExternalPtr((void *) geometry, R_NilValue, R_NilValue);
+//   return externalPtr;
+// }
+// inline SEXP gdal_geometry_geos(OGRFeature *poFeature) {
+//   if (poFeature->GetGeometryRef()) {
+//     GEOSContextHandle_t ctxt = OGRGeometry::createGEOSContext();
+//     GEOSGeom geosGeom = geom.exportToGEOS(ctxt);
+//     OGRGeometry::freeGEOSContext(ctxt);
+//     
+//     GEOSGeom geosGeom  = poFeature->GetGeometryRef()->exportToGEOS(ctxt); 
+//     GEOSGeom_destroy_r(ctxt);
+//     if (nullptr != geosGeom) {
+//       return geos_common_xptr(geosGeom); 
+//     }
+//   } 
+//   return R_NilValue;  
+// }
 inline CharacterVector gdal_geometry_wkt(OGRFeature *poFeature) {
   CharacterVector wkt(1);
   if (poFeature->GetGeometryRef()) {
