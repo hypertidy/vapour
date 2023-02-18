@@ -143,6 +143,8 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
   }
   
   GDALDataset* oDS = (GDALDataset*)gdalH_open_dsn(dsn, sds);
+
+  
   if (geolocation.size() == 2) {
     OGRSpatialReference  geolsrs;
     char *pszGeoSrsWKT = nullptr;
@@ -159,6 +161,8 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
     oDS->SetMetadataItem( "PIXEL_STEP", "1", "GEOLOCATION" );
     oDS->SetMetadataItem( "LINE_STEP", "1", "GEOLOCATION" );
     CPLFree(pszGeoSrsWKT); 
+   
+    
   }
   
   if (oDS == nullptr) return(nullptr);
@@ -246,9 +250,8 @@ inline CharacterVector gdal_dsn_vrt(CharacterVector dsn, NumericVector extent, C
   CharacterVector out(dsn.size());
   GDALDatasetH DS;
   for (int i = 0; i < out.size(); i++) {
-    if (extent.size() == 4 || (!projection[0].empty()) || bands[0] > 0) {
+    if (extent.size() == 4 || (!projection[0].empty()) || bands[0] > 0 || (!geolocation[0].empty() ) || sds[0] > 1) {
       DS = gdalH_open_avrt(dsn[i], extent, projection, sds, bands, geolocation);
-      
     } else {
       DS = gdalH_open_dsn(dsn[i], sds);
     }

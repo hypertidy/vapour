@@ -1,5 +1,7 @@
 # vapour dev
 
+* Fix for `vapour_vrt()` where 'geolocation' was not being included. Fixes #192. 
+
 * New capability to drop dataset and band metdata, used by functions `vapour_vrt()` and `vapour_warp_raster()` which gain a new argument 'nomd', which
 is FALSE by default. If TRUE, the dataset and band metadata are removed from an open dataset before it is converted to VRT. 
 
