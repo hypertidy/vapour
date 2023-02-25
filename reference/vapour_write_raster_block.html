@@ -18,7 +18,7 @@ Don't write to a file you don't want to update by mistake."><meta property="og:i
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3.9006</span>
       </span>
     </div>
 
@@ -115,12 +115,14 @@ Don't write to a file you don't want to update by mistake.</p>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sst.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vapour_read_raster_block.html">vapour_read_raster_block</a></span><span class="op">(</span><span class="va">f</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">0L</span><span class="op">)</span>, dimension <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2L</span>, <span class="fl">3L</span><span class="op">)</span>, band <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale: 1.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> offset: 0.000000</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="va">f</span>, <span class="va">tf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".tif"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">vapour_write_raster_block</span><span class="op">(</span><span class="va">tf</span>, data <span class="op">=</span> <span class="va">v</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, offset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">0L</span><span class="op">)</span>, </span></span>
 <span class="r-in"><span>               dimension <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2L</span>, <span class="fl">3L</span><span class="op">)</span>, band <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error in vapour_write_raster_block(tf, data = v[[1]], offset = c(0L, 0L),  : </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   set 'overwrite' to TRUE if you really mean to write to file /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmpkftwur/file4d5421aad29.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   set 'overwrite' to TRUE if you really mean to write to file /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpaL32hQ/file5b6132bde8b2.tif</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">tf</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="va">tf</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 </code></pre></div>
