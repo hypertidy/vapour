@@ -52,8 +52,7 @@ inline CharacterVector gdal_subdataset_1(GDALDataset *poDataset, int i_sds) {
   
   char **SDS2 = poDataset->GetMetadata("SUBDATASETS");
   while (SDS2 && SDS2[sdi] != NULL) {
-   // Rprintf("%i\n", sdi/2);
-  //  Rprintf("%i\n\n", i_sds - 1);
+
     if (sdi / 2 == (i_sds -1 )) {
       char  **papszTokens = CSLTokenizeString2(SDS2[sdi ], "=", 0);
       ret[0] = papszTokens[1];
@@ -167,15 +166,7 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
   
   if (oDS == nullptr) return(nullptr);
   int nBands = oDS->GetRasterCount();
-  // Rprintf("%i\n", nBands);
-  //  if (bands[0] > 0) {
-  //    for (int iband = 0; iband < bands.size(); iband++ ) {
-  //      if (bands[iband] > nBands) {
-  //        Rprintf("%i\n", bands[iband]);
-  //        Rprintf("mismatch bands\n");
-  //      }
-  //      }
-  //  }
+
   if (bands[0] > 0) {
     for (int iband = 0; iband < bands.size(); iband++ ) {
       if (bands[iband] > nBands) {
@@ -522,7 +513,6 @@ inline List gdal_raster_gcp(CharacterVector dsn) {
     gcpout[3] = GCPY;
     gcpout[4] = GCPZ;
     gcpout[5] = gcpCRS;
-    //gcp_proj = poDataset->GetGCPProjection();
   } else {
     Rprintf("No GCP (ground control points) found.\n");
   }
@@ -635,6 +625,8 @@ inline List gdal_read_band_values(GDALDataset *hRet,
     
     scale = rasterBand->GetScale(&hasScale);
     offset = rasterBand->GetOffset(&hasOffset);
+    Rprintf("scale: %f\n", scale); 
+    Rprintf("offset: %f\n", offset); 
     
     // if scale is 1 or 0 then don't override the type
     if (abs(scale - 1.0) <= 1.0e-05 || abs(scale) < 1.0e-05) {

@@ -95,13 +95,16 @@ inline List gdal_warp_general(CharacterVector dsn,
   // we manually handle -r, -te, -t_srs, -ts, -of,
   // but the rest passed in as wo, to, oo, doo, or general (non general ones get -wo/-to/-oo/-doo prepended in R)
   char** papszArg = nullptr;
-  papszArg = CSLAddString(papszArg, "-of");
-  papszArg = CSLAddString(papszArg, "MEM");
-  
+ 
   bool write_dsn = false; 
   if (EQUAL(dsn_outname[0], "")) {
-   
+    papszArg = CSLAddString(papszArg, "-of");
+    papszArg = CSLAddString(papszArg, "MEM");
+    
   } else {
+    papszArg = CSLAddString(papszArg, "-of");
+    papszArg = CSLAddString(papszArg, "GTiff");
+    
     write_dsn = true; 
   }
   
@@ -171,6 +174,13 @@ inline List gdal_warp_general(CharacterVector dsn,
     papszArg = CSLAddString(papszArg, options[gwopt]);
   }
   
+  
+  if (bands.size() > 0) {
+    for (int iband = 0; iband < bands.size(); iband++) {
+    papszArg = CSLAddString(papszArg, "-b");
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%i", bands[iband]));
+    }
+  }
   // List out = List::create(1);
   // CharacterVector sss(CSLCount (papszArg));
   // for (int sii = 0; sii < sss.size(); sii++) sss[sii] = papszArg[sii];
@@ -206,18 +216,18 @@ inline List gdal_warp_general(CharacterVector dsn,
   } else {
     // Prepare to read bands
     int nBands;
-    if (bands[0] == 0) {
+//    if (bands[0] == 0) {
       nBands = (int)GDALGetRasterCount(hRet);
-    } else {
-      nBands = (int)bands.size();
-    }
+    // } else {
+    //   nBands = (int)bands.size();
+    // }
     std::vector<int> bands_to_read(static_cast<size_t>(nBands));
     for (int i = 0; i < nBands; i++) {
-      if (bands[0] == 0) {
+      // if (bands[0] == 0) {
+      //   bands_to_read[static_cast<size_t>(i)] = i + 1;
+      // } else {
         bands_to_read[static_cast<size_t>(i)] = i + 1;
-      } else {
-        bands_to_read[static_cast<size_t>(i)] = bands[i];
-      }
+      
       
       if (bands_to_read[static_cast<size_t>(i)] > (int)GDALGetRasterCount(hRet)) {
         GDALClose( hRet );

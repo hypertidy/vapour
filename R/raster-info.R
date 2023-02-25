@@ -153,6 +153,7 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
   } else {
     geoTransform <- json$geoTransform
   }
+  #browser()
   list(geotransform = geoTransform, 
        dimension = json$size,  ## or/and dimXY
        dimXY = json$size,

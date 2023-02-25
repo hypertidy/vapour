@@ -1,5 +1,8 @@
 # vapour dev
 
+* Fix inefficiency in gdal_raster_data() which was warping all bands in MEM lol. 
+
+
 * Fix for `vapour_vrt()` where 'geolocation' was not being included. Fixes #192. 
 
 * New capability to drop dataset and band metdata, used by functions `vapour_vrt()` and `vapour_warp_raster()` which gain a new argument 'nomd', which
