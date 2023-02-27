@@ -171,23 +171,15 @@
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sst.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">vapour_read_raster_int</span><span class="op">(</span><span class="va">f</span>, window <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> scale: 1.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> offset: 0.000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 286 286 286 286 286 286 286 286 286 286 286 286 286 286 286 286 286 286 286</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [20] 286</span>
 <span class="r-in"><span><span class="fu">vapour_read_raster_raw</span><span class="op">(</span><span class="va">f</span>, window <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> scale: 1.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> offset: 0.000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff</span>
 <span class="r-in"><span><span class="fu">vapour_read_raster_chr</span><span class="op">(</span><span class="va">f</span>, window <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> scale: 1.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> offset: 0.000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [15] "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF" "#FFFFFF"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">vapour_read_raster_dbl</span><span class="op">(</span><span class="va">f</span>, native <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, pch <span class="op">=</span> <span class="st">"."</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">273</span>, <span class="fl">300</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> scale: 1.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> offset: 0.000000</span>
 <span class="r-plt img"><img src="vapour_read_raster_raw-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
