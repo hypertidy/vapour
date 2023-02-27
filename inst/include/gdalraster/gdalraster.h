@@ -625,8 +625,8 @@ inline List gdal_read_band_values(GDALDataset *hRet,
     
     scale = rasterBand->GetScale(&hasScale);
     offset = rasterBand->GetOffset(&hasOffset);
-    Rprintf("scale: %f\n", scale); 
-    Rprintf("offset: %f\n", offset); 
+   //Rprintf("scale: %f\n", scale); 
+   //Rprintf("offset: %f\n", offset); 
     
     // if scale is 1 or 0 then don't override the type
     if (abs(scale - 1.0) <= 1.0e-05 || abs(scale) < 1.0e-05) {

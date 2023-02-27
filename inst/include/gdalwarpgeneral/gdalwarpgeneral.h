@@ -160,11 +160,14 @@ inline List gdal_warp_general(CharacterVector dsn,
   }
  
   if (target_res.size() > 0) {
-    int XRes = target_res[0];
-    int YRes = target_res[1];
+    double XRes = target_res[0];
+    double YRes = target_res[1];
+    if (! (XRes > 0 && YRes > 0)) {
+      Rcpp::stop("invalid value/s for 'target_res' (not greater than zero)\n");
+    } 
     papszArg = CSLAddString(papszArg, "-tr");
-    papszArg = CSLAddString(papszArg, CPLSPrintf("%d", XRes));
-    papszArg = CSLAddString(papszArg, CPLSPrintf("%d", YRes));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%f", XRes));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%f", YRes));
   }
   if (resample.size() > 0) {
     papszArg = CSLAddString(papszArg, "-r");
