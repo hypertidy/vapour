@@ -63,7 +63,7 @@
 #' str(matrix(vapour_read_raster(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 #'
 vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL, native = FALSE, set_na = TRUE, band_output_type = "") {
-  .check_dsn_single(x)
+  x <- .check_dsn_single(x)
   if (!length(native) == 1L || is.na(native[1]) || !is.logical(native)) {
     stop("'native' must be a single 'TRUE' or 'FALSE'")
   }

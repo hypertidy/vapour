@@ -6,7 +6,12 @@
   if (length(x) > 1L) stop(sprintf(mess, "Longer than 1 element:"))
   if (!is.character(x)) stop(sprintf(mess, "Not a character string:"))
   if (nchar(x) < 1) stop(sprintf(mess, "Not a valid character string:"))
-  
+  if (file.exists(x)) {
+    ## we only want to normalize out the "~"
+    if (grepl("~", x)) {
+      x <- normalizePath(x)
+    }
+  }
   x
 }
 .check_dsn_multiple <- function(x) {
