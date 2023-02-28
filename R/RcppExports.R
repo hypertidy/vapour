@@ -149,8 +149,8 @@ raster_extent_cpp <- function(dsn) {
     .Call('_vapour_raster_extent_cpp', PACKAGE = 'vapour', dsn)
 }
 
-raster_io_gdal_cpp <- function(dsn, window, band, resample, band_output_type) {
-    .Call('_vapour_raster_io_gdal_cpp', PACKAGE = 'vapour', dsn, window, band, resample, band_output_type)
+raster_io_gdal_cpp <- function(dsn, window, band, resample, band_output_type, unscale) {
+    .Call('_vapour_raster_io_gdal_cpp', PACKAGE = 'vapour', dsn, window, band, resample, band_output_type, unscale)
 }
 
 sds_list_gdal_cpp <- function(dsn) {
@@ -165,8 +165,8 @@ warp_in_memory_gdal_cpp <- function(dsn, source_WKT, target_WKT, target_extent, 
     .Call('_vapour_warp_in_memory_gdal_cpp', PACKAGE = 'vapour', dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent, band_output_type, options, nomd)
 }
 
-vapour_read_raster_block_cpp <- function(dsource, offset, dimension, band, band_output_type) {
-    .Call('_vapour_vapour_read_raster_block_cpp', PACKAGE = 'vapour', dsource, offset, dimension, band, band_output_type)
+vapour_read_raster_block_cpp <- function(dsource, offset, dimension, band, band_output_type, unscale) {
+    .Call('_vapour_vapour_read_raster_block_cpp', PACKAGE = 'vapour', dsource, offset, dimension, band, band_output_type, unscale)
 }
 
 vapour_write_raster_block_cpp <- function(dsource, data, offset, dimension, band) {
@@ -179,6 +179,18 @@ vapour_create_copy_cpp <- function(dsource, dtarget, driver) {
 
 vapour_create_cpp <- function(filename, driver, extent, dimension, projection, n_bands) {
     .Call('_vapour_vapour_create_cpp', PACKAGE = 'vapour', filename, driver, extent, dimension, projection, n_bands)
+}
+
+vapour_read_raster_value_cpp <- function(dsource, col, row, band, band_output_type) {
+    .Call('_vapour_vapour_read_raster_value_cpp', PACKAGE = 'vapour', dsource, col, row, band, band_output_type)
+}
+
+blocks_cpp1 <- function(dsource, iblock, read) {
+    .Call('_vapour_blocks_cpp1', PACKAGE = 'vapour', dsource, iblock, read)
+}
+
+blocks_cpp <- function(dsource, iblock, read) {
+    .Call('_vapour_blocks_cpp', PACKAGE = 'vapour', dsource, iblock, read)
 }
 
 raster_gdalinfo_app_cpp <- function(dsn, options) {

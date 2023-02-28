@@ -508,8 +508,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // raster_io_gdal_cpp
-List raster_io_gdal_cpp(CharacterVector dsn, IntegerVector window, IntegerVector band, CharacterVector resample, CharacterVector band_output_type);
-RcppExport SEXP _vapour_raster_io_gdal_cpp(SEXP dsnSEXP, SEXP windowSEXP, SEXP bandSEXP, SEXP resampleSEXP, SEXP band_output_typeSEXP) {
+List raster_io_gdal_cpp(CharacterVector dsn, IntegerVector window, IntegerVector band, CharacterVector resample, CharacterVector band_output_type, LogicalVector unscale);
+RcppExport SEXP _vapour_raster_io_gdal_cpp(SEXP dsnSEXP, SEXP windowSEXP, SEXP bandSEXP, SEXP resampleSEXP, SEXP band_output_typeSEXP, SEXP unscaleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -518,7 +518,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type resample(resampleSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type band_output_type(band_output_typeSEXP);
-    rcpp_result_gen = Rcpp::wrap(raster_io_gdal_cpp(dsn, window, band, resample, band_output_type));
+    Rcpp::traits::input_parameter< LogicalVector >::type unscale(unscaleSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_io_gdal_cpp(dsn, window, band, resample, band_output_type, unscale));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -567,8 +568,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // vapour_read_raster_block_cpp
-Rcpp::List vapour_read_raster_block_cpp(CharacterVector dsource, IntegerVector offset, IntegerVector dimension, IntegerVector band, CharacterVector band_output_type);
-RcppExport SEXP _vapour_vapour_read_raster_block_cpp(SEXP dsourceSEXP, SEXP offsetSEXP, SEXP dimensionSEXP, SEXP bandSEXP, SEXP band_output_typeSEXP) {
+Rcpp::List vapour_read_raster_block_cpp(CharacterVector dsource, IntegerVector offset, IntegerVector dimension, IntegerVector band, CharacterVector band_output_type, LogicalVector unscale);
+RcppExport SEXP _vapour_vapour_read_raster_block_cpp(SEXP dsourceSEXP, SEXP offsetSEXP, SEXP dimensionSEXP, SEXP bandSEXP, SEXP band_output_typeSEXP, SEXP unscaleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -577,7 +578,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type dimension(dimensionSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type band_output_type(band_output_typeSEXP);
-    rcpp_result_gen = Rcpp::wrap(vapour_read_raster_block_cpp(dsource, offset, dimension, band, band_output_type));
+    Rcpp::traits::input_parameter< LogicalVector >::type unscale(unscaleSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_read_raster_block_cpp(dsource, offset, dimension, band, band_output_type, unscale));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -622,6 +624,47 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type projection(projectionSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type n_bands(n_bandsSEXP);
     rcpp_result_gen = Rcpp::wrap(vapour_create_cpp(filename, driver, extent, dimension, projection, n_bands));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vapour_read_raster_value_cpp
+Rcpp::NumericVector vapour_read_raster_value_cpp(CharacterVector dsource, IntegerVector col, IntegerVector row, IntegerVector band, CharacterVector band_output_type);
+RcppExport SEXP _vapour_vapour_read_raster_value_cpp(SEXP dsourceSEXP, SEXP colSEXP, SEXP rowSEXP, SEXP bandSEXP, SEXP band_output_typeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type col(colSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type row(rowSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type band_output_type(band_output_typeSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_read_raster_value_cpp(dsource, col, row, band, band_output_type));
+    return rcpp_result_gen;
+END_RCPP
+}
+// blocks_cpp1
+Rcpp::List blocks_cpp1(CharacterVector dsource, IntegerVector iblock, LogicalVector read);
+RcppExport SEXP _vapour_blocks_cpp1(SEXP dsourceSEXP, SEXP iblockSEXP, SEXP readSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type iblock(iblockSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type read(readSEXP);
+    rcpp_result_gen = Rcpp::wrap(blocks_cpp1(dsource, iblock, read));
+    return rcpp_result_gen;
+END_RCPP
+}
+// blocks_cpp
+Rcpp::List blocks_cpp(CharacterVector dsource, IntegerVector iblock, LogicalVector read);
+RcppExport SEXP _vapour_blocks_cpp(SEXP dsourceSEXP, SEXP iblockSEXP, SEXP readSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type iblock(iblockSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type read(readSEXP);
+    rcpp_result_gen = Rcpp::wrap(blocks_cpp(dsource, iblock, read));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -714,14 +757,17 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_raster_has_geolocation_gdal_cpp", (DL_FUNC) &_vapour_raster_has_geolocation_gdal_cpp, 2},
     {"_vapour_raster_info_gdal_cpp", (DL_FUNC) &_vapour_raster_info_gdal_cpp, 2},
     {"_vapour_raster_extent_cpp", (DL_FUNC) &_vapour_raster_extent_cpp, 1},
-    {"_vapour_raster_io_gdal_cpp", (DL_FUNC) &_vapour_raster_io_gdal_cpp, 5},
+    {"_vapour_raster_io_gdal_cpp", (DL_FUNC) &_vapour_raster_io_gdal_cpp, 6},
     {"_vapour_sds_list_gdal_cpp", (DL_FUNC) &_vapour_sds_list_gdal_cpp, 1},
     {"_vapour_sds_list_list_gdal_cpp", (DL_FUNC) &_vapour_sds_list_list_gdal_cpp, 1},
     {"_vapour_warp_in_memory_gdal_cpp", (DL_FUNC) &_vapour_warp_in_memory_gdal_cpp, 12},
-    {"_vapour_vapour_read_raster_block_cpp", (DL_FUNC) &_vapour_vapour_read_raster_block_cpp, 5},
+    {"_vapour_vapour_read_raster_block_cpp", (DL_FUNC) &_vapour_vapour_read_raster_block_cpp, 6},
     {"_vapour_vapour_write_raster_block_cpp", (DL_FUNC) &_vapour_vapour_write_raster_block_cpp, 5},
     {"_vapour_vapour_create_copy_cpp", (DL_FUNC) &_vapour_vapour_create_copy_cpp, 3},
     {"_vapour_vapour_create_cpp", (DL_FUNC) &_vapour_vapour_create_cpp, 6},
+    {"_vapour_vapour_read_raster_value_cpp", (DL_FUNC) &_vapour_vapour_read_raster_value_cpp, 5},
+    {"_vapour_blocks_cpp1", (DL_FUNC) &_vapour_blocks_cpp1, 3},
+    {"_vapour_blocks_cpp", (DL_FUNC) &_vapour_blocks_cpp, 3},
     {"_vapour_raster_gdalinfo_app_cpp", (DL_FUNC) &_vapour_raster_gdalinfo_app_cpp, 2},
     {"_vapour_raster_vrt_cpp", (DL_FUNC) &_vapour_raster_vrt_cpp, 7},
     {"_vapour_raster_warp_file_cpp", (DL_FUNC) &_vapour_raster_warp_file_cpp, 11},

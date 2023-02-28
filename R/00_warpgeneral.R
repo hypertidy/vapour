@@ -78,11 +78,35 @@ gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
 gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
                              resample = "near", bands = 1L, band_output_type = NULL, options = character(), out_dsn = tempfile(fileext = ".tif")) {
   
-  if (length(target_res) > 0 ) target_res <- as.numeric(rep(target_res, length.out = 2L))
   if (is.null(target_crs)) target_crs <- "" 
-  if (is.null(target_ext)) target_ext <-  numeric()
-  if (is.null(target_dim)) target_dim <- integer() #info$dimension
-  if (is.null(target_res)) target_res <- numeric() ## TODO
+  if (is.null(target_ext)) {
+    target_ext <-  numeric()
+  } else {
+    if (~length(target_ext) == 4L ) stop("'target_ext' must be of length 4 (xmin, xmax, ymin, ymax")
+    
+    if (anyNA(target_ext)) stop("NA values in 'target_ext'")
+    dif <- diff(target_ext)[c(1L, 3L)]
+    if (any(!dif > 0)) stop("all 'target_ext' values must xmin < xmax, ymin < ymax")
+    
+  }
+  if (is.null(target_dim)) {
+    target_dim <- integer() #info$dimension
+  } else {
+    if (length(target_dim) > 0 ) target_dim <- as.integer(rep(target_dim, length.out = 2L))
+    
+    if (anyNA(target_dim)) stop("NA values in 'target_dim'")
+    if (any(target_dim <= 0)) stop("all 'target_dim' values must be > 0")
+    
+  }
+  if (is.null(target_res)) {
+    target_res <- numeric() ## TODO
+  } else {
+    ## check res is above zero
+    if (length(target_res) > 0 ) target_res <- as.numeric(rep(target_res, length.out = 2L))
+    
+    if (anyNA(target_res)) stop("NA values in 'target_res'")
+    if (any(target_res <= 0)) stop("all 'target_res' values must be > 0")
+  }
   if (is.null(band_output_type)) band_output_type <- "Float64"
   #if (grepl("tif$", out_dsn)) {
     ## we'll have to do some work here

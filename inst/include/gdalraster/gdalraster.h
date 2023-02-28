@@ -625,6 +625,10 @@ inline List gdal_read_band_values(GDALDataset *hRet,
     
     scale = rasterBand->GetScale(&hasScale);
     offset = rasterBand->GetOffset(&hasOffset);
+    if (!unscale[0]) {
+      hasScale = 0; 
+      hasOffset = 0;
+    }
    //Rprintf("scale: %f\n", scale); 
    //Rprintf("offset: %f\n", offset); 
     
@@ -735,6 +739,189 @@ inline List gdal_read_band_values(GDALDataset *hRet,
 }
 
 
+
+
+inline NumericVector gdal_read_band_value(GDALDataset *hRet, 
+                                  IntegerVector window,
+                                  std::vector<int> bands_to_read, 
+                                  CharacterVector band_output_type, 
+                                  CharacterVector resample,
+                                  LogicalVector unscale) 
+{
+  int Xoffset = window[0];
+  int Yoffset = window[1];
+  int nXSize = window[2];
+  int nYSize = window[3];
+  
+  int outXSize = window[4];
+  int outYSize = window[5];
+  int actual_XSize = -1; //GDALGetRasterBandXSize(hRet);
+  int actual_YSize = -1; //GDALGetRasterBandYSize(hRet);
+  
+  
+  // double scale, double offset, 
+  // int hasScale, int hasOffset, int hasNA,
+  // GDALDataType src_band_type) {
+  // if band_output_type is not empty, possible override:
+  // complex types not supported Byte, UInt16, Int16, UInt32, Int32, Float32, Float64
+  GDALDataType src_band_type =  GDALGetRasterDataType(GDALGetRasterBand(hRet, bands_to_read[0])); 
+  //bool output_type_set = false; 
+  
+  if (!band_output_type[0].empty()) {
+    if (band_output_type[0] == "Byte")   src_band_type = GDT_Byte;
+    if (band_output_type[0] == "UInt16") src_band_type = GDT_UInt16;
+    if (band_output_type[0] == "Int16")  src_band_type = GDT_Int16;
+    
+    if (band_output_type[0] == "UInt32") src_band_type = GDT_UInt32;
+    if (band_output_type[0] == "Int32") src_band_type = GDT_Int32;
+    
+    if (band_output_type[0] == "Float32") src_band_type = GDT_Float32;
+    if (band_output_type[0] == "Float64") src_band_type = GDT_Float64;
+    
+    //output_type_set = true;
+  }
+  
+  int sbands = (int)bands_to_read.size();
+  Rcpp::NumericVector outlist(1);
+  
+  bool band_type_not_supported = true;
+  
+  GDALRasterBand *rasterBand; 
+  int hasNA;
+  int hasScale, hasOffset;
+  double scale, offset;
+  
+  GDALRasterIOExtraArg psExtraArg;
+  psExtraArg = init_resample_alg(resample);
+  CPLErr err;
+  
+  for (int iband = 0; iband < sbands; iband++) {
+    rasterBand = GDALDataset::FromHandle(hRet)->GetRasterBand(bands_to_read[static_cast<size_t>(iband)]);
+    //rasterBand = GDALGetRasterBand(hRet, bands_to_read[iband]);
+    if (iband < 1) {
+      // actual_XSize = GDALGetRasterBandXSize(rasterBand); 
+      // actual_YSize = GDALGetRasterBandYSize(rasterBand); 
+      actual_XSize = rasterBand->GetXSize();
+      actual_YSize = rasterBand->GetYSize();
+      
+      if (nXSize < 1) nXSize = actual_XSize;
+      if (nYSize < 1) nYSize = actual_YSize;
+      if (outXSize < 1) outXSize = actual_XSize;
+      if (outYSize < 1) outYSize = actual_YSize;
+      
+      
+    }
+    
+    scale = rasterBand->GetScale(&hasScale);
+    offset = rasterBand->GetOffset(&hasOffset);
+    //Rprintf("scale: %f\n", scale); 
+    //Rprintf("offset: %f\n", offset); 
+    
+    // if scale is 1 or 0 then don't override the type
+    if (abs(scale - 1.0) <= 1.0e-05 || abs(scale) < 1.0e-05) {
+      hasScale = 0; 
+    }
+    // if hasScale we ignore integer or byte and go with float
+    if ((src_band_type == GDT_Float64) || (src_band_type == GDT_Float32) || hasScale) {
+      std::vector<double> double_scanline( static_cast<size_t>( outXSize * outYSize ));
+      err = rasterBand->RasterIO(GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+                                 &double_scanline[0], outXSize, outYSize, GDT_Float64,
+                                 0, 0, &psExtraArg);
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      NumericVector res(outXSize * outYSize  );
+      
+      // consider doing at R level, at least for MEM
+      double dval;
+      double naflag = rasterBand->GetNoDataValue(&hasNA);// GDALGetRasterNoDataValue(rasterBand, &hasNA);
+      if (hasNA && (!std::isnan(naflag))) {
+        if (naflag < -3.4e+37) {
+          naflag = -3.4e+37;
+          
+          for (size_t i=0; i< double_scanline.size(); i++) {
+            if (double_scanline[i] <= naflag) {
+              double_scanline[i] = NA_REAL; 
+            }
+          }
+        } else {
+          
+          std::replace(double_scanline.begin(), double_scanline.end(), naflag, (double) NAN);
+        }
+      }
+      R_xlen_t isi;
+      
+      for (isi = 0; isi < (static_cast<R_xlen_t>(double_scanline.size())); isi++) {
+        dval = double_scanline[static_cast<size_t>(isi)];
+        if (hasScale) dval = dval * scale;
+        if (hasOffset) dval = dval + offset;
+        res[isi] = dval;
+      }
+      
+      outlist[0] = res[0];
+      band_type_not_supported = false;
+    }
+    // if hasScale we assume to never use scale/offset in integer case (see block above we already dealt)
+    if ((!hasScale) & 
+        ((src_band_type == GDT_Int16) |
+        (src_band_type == GDT_Int32) |
+        (src_band_type == GDT_UInt16) |
+        (src_band_type == GDT_UInt32)))  {
+      std::vector<int32_t> integer_scanline(static_cast<size_t>( outXSize * outYSize ));
+      err = rasterBand->RasterIO(GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+                                 &integer_scanline[0], outXSize, outYSize, GDT_Int32,
+                                 0, 0, &psExtraArg);
+      
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      IntegerVector res(outXSize * outYSize );
+      
+      // consider doing at R level, at least for MEM
+      int dval;
+      double naflag = GDALGetRasterNoDataValue(rasterBand, &hasNA);
+      
+      R_xlen_t isi;
+      for (isi = 0; isi < (static_cast<R_xlen_t>(integer_scanline.size())); isi++) {
+        dval = integer_scanline[static_cast<size_t>(isi)];
+        if (static_cast<double>(dval) <= naflag) {
+          dval = NA_INTEGER;
+        }
+        res[isi] = dval;
+      }
+      outlist[0] = res[0];
+      band_type_not_supported = false;
+    }
+    
+    // if hasScale we assume to never use scale/offset in integer case (see block above we already dealt)
+    
+    if (!hasScale & (src_band_type == GDT_Byte)) {
+      std::vector<uint8_t> byte_scanline( static_cast<size_t>( outXSize * outYSize ) );
+      err = rasterBand->RasterIO(GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+                                 &byte_scanline[0], outXSize, outYSize, GDT_Byte,
+                                 0, 0, &psExtraArg);
+      
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      RawVector res(outXSize * outYSize );
+      
+      
+      
+      R_xlen_t isi;
+      for (isi = 0; isi < (static_cast<R_xlen_t>(byte_scanline.size())); isi++) {
+        res[isi] = byte_scanline[static_cast<size_t>(isi)];
+      }
+      outlist[0] = res[0];
+      band_type_not_supported = false;
+    }
+    
+    
+    
+  }
+  // safe but lazy way of not supporting Complex, TypeCount or Unknown types
+  // (see GDT_ checks above)
+  if (band_type_not_supported) {
+    GDALClose(hRet); 
+    Rcpp::stop("band type not supported (is it Complex? report at hypertidy/vapour/issues)");
+  }
+  
+  return outlist; 
+}
 
 
   inline List gdal_read_dataset_values(GDALDataset *hRet, 
@@ -951,7 +1138,8 @@ inline List gdal_raster_io(CharacterVector dsn,
                            IntegerVector window,
                            IntegerVector band,
                            CharacterVector resample,
-                           CharacterVector band_output_type)
+                           CharacterVector band_output_type, 
+                           LogicalVector unscale)
 {
   
   GDALDataset  *poDataset;
@@ -970,7 +1158,7 @@ inline List gdal_raster_io(CharacterVector dsn,
   } else {
     for (int i = 0; i < band.size(); i++) bands_to_read[static_cast<size_t>(i)] = band[i];
   }
-  List out = gdal_read_band_values(poDataset, window, bands_to_read, band_output_type, resample, false);
+  List out = gdal_read_band_values(poDataset, window, bands_to_read, band_output_type, resample, unscale);
   // close up
   GDALClose(poDataset );
   return out;

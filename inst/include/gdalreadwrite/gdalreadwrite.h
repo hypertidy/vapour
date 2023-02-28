@@ -106,7 +106,7 @@ inline CharacterVector gdal_create_copy(CharacterVector dsource, CharacterVector
 }
 inline List gdal_read_block(CharacterVector dsn, IntegerVector offset,
                             IntegerVector dimension, IntegerVector band,
-                            CharacterVector band_output_type) {
+                            CharacterVector band_output_type, LogicalVector unscale) {
   IntegerVector window(6);
   window[0] = offset[0];
   window[1] = offset[1];
@@ -114,7 +114,7 @@ inline List gdal_read_block(CharacterVector dsn, IntegerVector offset,
   window[3] = dimension[1];
   window[4] = dimension[0];
   window[5] = dimension[1];
-  return   gdalraster::gdal_raster_io(dsn, window, band, "nearestneighbour", band_output_type);
+  return   gdalraster::gdal_raster_io(dsn, window, band, "nearestneighbour", band_output_type, unscale);
 }
 
 inline LogicalVector gdal_write_block(CharacterVector dsn, NumericVector data,
