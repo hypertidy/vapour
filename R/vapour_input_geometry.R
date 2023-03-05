@@ -42,7 +42,10 @@
 #'   sql = "SELECT * FROM list_locality_postcode_meander_valley")$count
 vapour_layer_info <- function(dsource, layer = 0L, sql = "", extent = NA, count = TRUE, ...) {
 
-  layer_names <- vapour_layer_names(dsource)
+  layer_names <- try(vapour_layer_names(dsource))
+  if (inherits(layer_names, "try-error") && grepl("rest.*FeatureServer/0", dsource)) {
+    message("looks like dsource is a ESRI Feature Services, try constructing the DSN as \n \ https://<_>rest/services/<sources>/<layerset>/FeatureServer/0query?where=objectid+%3D+objectid&outfields=*&f=json\n see ESRIJSON document in gdal.org and this example https://gist.github.com/mdsumner/c54bdc119accf95138f5ad7ab574337d\n")
+  }
   layer_name <- layer
   if (!is.numeric(layer)) layer <- match(layer_name, layer_names) - 1
   if (is.numeric(layer_name)) layer_name <- layer_names[layer + 1]
