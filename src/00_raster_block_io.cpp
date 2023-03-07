@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include "gdalreadwrite/gdalreadwrite.h"
 #include "gdalraster/gdalraster.h"
+
 using namespace Rcpp;
 
 
