@@ -44,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3.9008</span>
       </span>
     </div>
 
@@ -103,13 +103,14 @@
 <p>The functions are deliberately <em>lower-level</em> than these data models and provide access to the component entities independently.</p>
 <p>For vector data:</p>
 <ul>
-<li>read access to feature attributes.</li>
-<li>read access to raw binary geometry.</li>
-<li>read access to geometry in text forms (GeoJSON, WKT, GML, KML).</li>
-<li>read access to the extent, or bounding box, of feature geometries.</li>
+<li>read access to fields alone</li>
+<li>read raw binary geometry alone, or geometry in text forms (GeoJSON, WKT, GML, KML).</li>
+<li>read access to the extent of geometries</li>
 <li>helper functions to summarize feature identity and geometry status</li>
+<li>limit/skip control on records read</li>
+<li>execution of <a href="https://gdal.org/user/ogr_sql_dialect.html" class="external-link">OGRSQL</a> with control of SQL dialect</li>
+<li>read in the context of a <a href="https://gdal.org/user/ogr_sql_dialect.html#executesql" class="external-link">bounding box spatial filter</a> can be applied via the <code>extent</code> argument</li>
 </ul>
-<p>All vector/feature read tasks can optionally apply an arbitrary limit to the maximum number of features read or queried, and all allow execution of <a href="https://gdal.org/user/ogr_sql_dialect.html" class="external-link">OGRSQL</a> to a layer prior to data extraction. In combination with a SQL query a <a href="https://gdal.org/user/ogr_sql_dialect.html#executesql" class="external-link">bounding box spatial filter</a> can be applied via the <code>extent</code> argument.</p>
 <p>For raster data:</p>
 <ul>
 <li>read access to the list of available rasters within a collection source (subdatasets).</li>
@@ -117,25 +118,37 @@
 <li>read access for raw data using GDAL’s <a href="https://gdal.org/tutorials/raster_api_tut.html" class="external-link">RasterIO framework</a> and its dynamic image decimation / replication resampling algorithms.</li>
 <li>read access for raw data using GDAL’s <a href="https://gdal.org/api/gdalwarp_cpp.html" class="external-link">Warper framework</a> and its dynamic image warping, a superset of the RasterIO capabilities.</li>
 </ul>
-<p>The <code><a href="reference/vapour_warp_raster.html">vapour_warp_raster()</a></code> function is a new feature in vapour, and reflects many learnings about how the warper works and what is needed for use. We simplify the approach taken in <code><a href="reference/vapour_read_raster.html">vapour_read_raster()</a></code> by allowing specifying an <em>extent</em> and <em>dimensions</em> as a minimum, and this works for data sources that contain <em>overviews</em> (or pyramid levels-of-detail) as it automatically chooses an appropriate level for the request made. This works for files, urls, database connections, online tiled image servers, and all the various ways of specifying GDAL data sources.</p>
+<p>The warper works for data sources that contain <em>overviews</em> (or pyramid levels-of-detail) as it automatically chooses an appropriate level for the request made, files, urls, database connections, online tiled image servers, and all the various ways of specifying GDAL data sources.</p>
 <p>The workflows available are intended to support development of applications in R for these vector and <a href="https://en.wikipedia.org/wiki/Raster_data" class="external-link">raster data</a> without being constrained to any particular data model.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>The package ~cannot be installed from CRAN~.</p>
-<p>The development version can be installed from Github, easiest is via the <a href="https://hypertidy.r-universe.dev/ui#builds" class="external-link">hypertidy universe</a>:</p>
+<p>Install from CRAN, this should work on MacOS and Windows because CRAN provide binaries.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"vapour"</span><span class="op">)</span></span></code></pre></div>
+<p>The development version can be installed from Github, easiest is via the <a href="https://hypertidy.r-universe.dev/ui#builds" class="external-link">hypertidy universe</a>:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    hypertidy <span class="op">=</span> <span class="st">'https://hypertidy.r-universe.dev'</span>,</span>
 <span>    CRAN <span class="op">=</span> <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"vapour"</span><span class="op">)</span></span></code></pre></div>
 <p>To install the development version the more github-traditional way:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"hypertidy/vapour"</span><span class="op">)</span></span></code></pre></div>
 <p>You will need development tools for building R packages.</p>
-<p>On Linux and MacOS building also requires an available GDAL installation, but on Windows the ROpenSci rwinlib tools are used and the required GDAL will be downloaded and used when building the package. The hypertidy universe way also has access to binaries. On windows this installation is self-contained and only affects the use of R, it can be used alongside other applications using GDAL.</p>
-<p>For MacOS the package build is controlled by an internal CRAN process including configure arguments for the gdal and proj data directories.</p>
+<p>On Linux, I’m using latest ubuntu and R usually, check <a href="https://cran.r-project.org/bin/linux/ubuntu/README" class="external-link uri">https://cran.r-project.org/bin/linux/ubuntu/README</a></p>
+<p>then</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="ex">apt</span> install --no-install-recommends software-properties-common dirmngr</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="ex">add-apt-repository</span> ppa:ubuntugis/ubuntugis-unstable --yes</span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="ex">apt</span> update</span>
+<span id="cb4-5"><a href="#cb4-5"></a></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co">## Install 3rd parties</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co">## NetCDF and geo-spatial wunderkind</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="ex">apt</span> install libgdal-dev </span></code></pre></div>
+<p>then <code>install.packages("vapour")</code> or whatever you use.</p>
 </div>
 <div class="section level2">
 <h2 id="purpose">Purpose<a class="anchor" aria-label="anchor" href="#purpose"></a>
@@ -144,7 +157,7 @@
 <p>The priority is to give low-level access to key functionality rather than comprehensive coverage of the library. The real advantage of <code>vapour</code> is the flexibility of a modular workflow, not the outright efficiency.</p>
 <p>A parallel goal is to be freed from the powerful but sometimes limiting high-level data models of GDAL itself, specifically these are <em>simple features</em> and <em>affine-based regular rasters composed of 2D slices</em>. (GDAL will possibly remove these limitations over time but still there will always be value in having modularity in an ecosystem of tools.)</p>
 <p>GDAL’s dynamic resampling of arbitrary raster windows is also very useful for interactive tools on local data, and is radically under-utilized. A quick example, topography data is available from Amazon compute servers, first we need a config for the source:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elevation.tiles.prod</span> <span class="op">&lt;-</span> </span>
 <span> <span class="st">'&lt;GDAL_WMS&gt;</span></span>
 <span><span class="st">  &lt;Service name="TMS"&gt;</span></span>
@@ -171,7 +184,7 @@
 <span><span class="st">  &lt;/DataValues&gt;</span></span>
 <span><span class="st">  &lt;Cache/&gt;</span></span>
 <span><span class="st">&lt;/GDAL_WMS&gt;'</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## we want an extent</span></span>
 <span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">5000</span>  <span class="co">## 10km wide/high region</span></span>
 <span><span class="co">## Madrid is at this location</span></span>
@@ -184,7 +197,7 @@
 <span><span class="co">## now we can use this in a matrix</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, nrow <span class="op">=</span> <span class="va">dm</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, ncol <span class="op">=</span> <span class="va">dm</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">[</span>,<span class="va">dm</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">:</span><span class="fl">1</span> <span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-topo-example-1.png" width="100%"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## using the image list format</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">ex</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">ex</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, length.out <span class="op">=</span> <span class="va">dm</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">ex</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> ,<span class="va">ex</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>, length.out <span class="op">=</span> <span class="va">dm</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>, z <span class="op">=</span> <span class="va">m</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
@@ -196,7 +209,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/contour.html" class="external-link">contour</a></span><span class="op">(</span><span class="va">r</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-topo-example-2.png" width="100%"></p>
 <p>If we want more detail, go ahead:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">512</span>, <span class="fl">512</span><span class="op">)</span></span>
 <span><span class="va">vals</span> <span class="op">&lt;-</span> <span class="fu">vapour</span><span class="fu">::</span><span class="fu"><a href="reference/vapour_warp_raster.html">vapour_warp_raster</a></span><span class="op">(</span><span class="va">elevation.tiles.prod</span>, extent <span class="op">=</span> <span class="va">ex</span>, dimension <span class="op">=</span> <span class="va">dm</span>, projection <span class="op">=</span> <span class="va">crs</span><span class="op">)</span></span>
 <span><span class="op">(</span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">setValues</span><span class="op">(</span><span class="fu">raster</span><span class="op">(</span><span class="fu">extent</span><span class="op">(</span><span class="va">ex</span><span class="op">)</span>, nrows <span class="op">=</span> <span class="va">dm</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, ncols <span class="op">=</span> <span class="va">dm</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, crs <span class="op">=</span> <span class="va">crs</span><span class="op">)</span>, <span class="va">vals</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
@@ -214,28 +227,21 @@
 <p>This partly draws on work done in <a href="https://github.com/r-spatial/sf" class="external-link">the sf package</a> and <a href="https://github.com/rspatial/terra" class="external-link">the terra package</a> and in packages <code>rgdal</code> and <code>rgdal2</code>. I’m amazed that something as powerful and general as GDAL is still only available through these lenses, but maybe more folks will get interested over time.</p>
 </div>
 <div class="section level2">
-<h2 id="warnings">Warnings<a class="anchor" aria-label="anchor" href="#warnings"></a>
-</h2>
-<p>It’s possible to give problematic “SELECT” statements via the <code>sql</code> argument. Note that the geometry readers <code>vapour_read_geometry</code>, <code>vapour_read_geometry_text</code>, and <code>vapour_read_extent</code> will strip out the <code>SELECT ... FROM</code> clause and replace it with <code>SELECT * FROM</code> to ensure that the geometry is accessible, though the attributes are ignored. This means we can allow the user or <code>dplyr</code> to create any <code>SELECT</code> statement. The function <code>vapour_read_geometry</code> will return a list of NULLs, in this case.</p>
-</div>
-<div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h2>
 <p>The package documentation page gives an overview of available functions.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="st">"vapour-package"</span><span class="op">)</span></span></code></pre></div>
 <p>See the vignettes and documentation for examples WIP.</p>
 </div>
 <div class="section level2">
 <h2 id="context">Context<a class="anchor" aria-label="anchor" href="#context"></a>
 </h2>
-<p>Examples of packages that use vapour are in development, <a href="https://github.com/mdsumner/RGDALSQL" class="external-link">RGDALSQL</a> and <a href="https://github.com/hypertidy/lazyraster" class="external-link">lazyraster</a>. <code>RGDALSQL</code> aims to leverage the facilities of GDAL to provide data <em>on-demand</em> for many sources <em>as if</em> they were databases. <code>lazyraster</code> uses the level-of-detail facility of GDAL to read just enough resolution from a raster source using traditional window techniques.</p>
-<p>Limitations, work-in-progress and other discussion are active here: <a href="https://github.com/hypertidy/vapour/issues/4" class="external-link uri">https://github.com/hypertidy/vapour/issues/4</a></p>
+<p>Examples of packages that use vapour are in development, especially <a href="https://github.com/hypertidy/whatarelief" class="external-link">whatarelief</a> and <a href="https://github.com/hypertidy/ggdal" class="external-link">ggdal</a>.</p>
+<p>Limitations, work-in-progress and other discussion:</p>
+<p><a href="https://github.com/hypertidy/vapour/issues/4" class="external-link uri">https://github.com/hypertidy/vapour/issues/4</a></p>
 <p>We’ve kept a record of a minimal GDAL wrapper package here:</p>
 <p><a href="https://github.com/diminutive/gdalmin" class="external-link uri">https://github.com/diminutive/gdalmin</a></p>
-<p>Before those I had worked on getting sp and dplyr to at least work together <a href="https://github.com/dis-organization/sp_dplyrexpt" class="external-link uri">https://github.com/dis-organization/sp_dplyrexpt</a> and recently rgdal was updated to allow tibbles to be used, something that spbabel and spdplyr really needed to avoid friction.</p>
-<p>Early exploration of allow non-geometry read with rgdal was tried here: <a href="https://github.com/hypertidy/gladr" class="external-link uri">https://github.com/hypertidy/gladr</a></p>
-<p>Thanks to Edzer Pebesma and Roger Bivand and Tim Keitt for prior art that I crib and copy from. Jeroen Ooms helped the R community hugely by providing an accessible build process for libraries on Windows. Mark Padgham helped kick me over a huge obstacle in using C++ libraries with R. Simon Wotherspoon and Ben Raymond have endured ravings about wanting this level of control for many years.</p>
 </div>
 </div>
 <div class="section level1">
