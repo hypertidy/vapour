@@ -6,7 +6,7 @@ using namespace Rcpp;
 
 // see process_cpl_read_ogr_stream
 // [[Rcpp::export]]
-List gdal_dsn_read_geom_stream(RObject stream_xptr, 
+List gdal_dsn_read_vector_stream(RObject stream_xptr, 
                            CharacterVector dsn, 
                           CharacterVector layer,
                            CharacterVector sql, 
