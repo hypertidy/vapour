@@ -9,7 +9,8 @@ vapour_read_raster_block(
   offset,
   dimension,
   band = 1L,
-  band_output_type = ""
+  band_output_type = "",
+  unscale = TRUE
 )
 }
 \arguments{

@@ -13,7 +13,8 @@ vapour_read_raster(
   sds = NULL,
   native = FALSE,
   set_na = TRUE,
-  band_output_type = ""
+  band_output_type = "",
+  unscale = TRUE
 )
 }
 \arguments{

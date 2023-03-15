@@ -10,6 +10,28 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// gdal_dsn_read_geom_stream
+List gdal_dsn_read_geom_stream(RObject stream_xptr, CharacterVector dsn, CharacterVector layer, CharacterVector sql, Rcpp::CharacterVector options, bool quiet, Rcpp::CharacterVector drivers, Rcpp::CharacterVector wkt_filter, bool dsn_exists, bool dsn_isdb, Rcpp::CharacterVector fid_column_name, int width);
+RcppExport SEXP _vapour_gdal_dsn_read_geom_stream(SEXP stream_xptrSEXP, SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP optionsSEXP, SEXP quietSEXP, SEXP driversSEXP, SEXP wkt_filterSEXP, SEXP dsn_existsSEXP, SEXP dsn_isdbSEXP, SEXP fid_column_nameSEXP, SEXP widthSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RObject >::type stream_xptr(stream_xptrSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type options(optionsSEXP);
+    Rcpp::traits::input_parameter< bool >::type quiet(quietSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type drivers(driversSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type wkt_filter(wkt_filterSEXP);
+    Rcpp::traits::input_parameter< bool >::type dsn_exists(dsn_existsSEXP);
+    Rcpp::traits::input_parameter< bool >::type dsn_isdb(dsn_isdbSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type fid_column_name(fid_column_nameSEXP);
+    Rcpp::traits::input_parameter< int >::type width(widthSEXP);
+    rcpp_result_gen = Rcpp::wrap(gdal_dsn_read_geom_stream(stream_xptr, dsn, layer, sql, options, quiet, drivers, wkt_filter, dsn_exists, dsn_isdb, fid_column_name, width));
+    return rcpp_result_gen;
+END_RCPP
+}
 // warp_general_cpp
 List warp_general_cpp(CharacterVector dsn, CharacterVector target_crs, NumericVector target_extent, IntegerVector target_dim, NumericVector target_res, IntegerVector bands, CharacterVector resample, LogicalVector silent, CharacterVector band_output_type, CharacterVector options, CharacterVector dsn_outname);
 RcppExport SEXP _vapour_warp_general_cpp(SEXP dsnSEXP, SEXP target_crsSEXP, SEXP target_extentSEXP, SEXP target_dimSEXP, SEXP target_resSEXP, SEXP bandsSEXP, SEXP resampleSEXP, SEXP silentSEXP, SEXP band_output_typeSEXP, SEXP optionsSEXP, SEXP dsn_outnameSEXP) {
@@ -720,6 +742,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_vapour_gdal_dsn_read_geom_stream", (DL_FUNC) &_vapour_gdal_dsn_read_geom_stream, 12},
     {"_vapour_warp_general_cpp", (DL_FUNC) &_vapour_warp_general_cpp, 11},
     {"_vapour_warp_suggest_cpp", (DL_FUNC) &_vapour_warp_suggest_cpp, 2},
     {"_vapour_set_gdal_config_cpp", (DL_FUNC) &_vapour_set_gdal_config_cpp, 2},
