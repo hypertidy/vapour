@@ -308,18 +308,19 @@ inline Rcpp::List read_gdal_stream(
 
 #else
 
-inline Rcpp::List read_gdal_stream(Rcpp::RObject stream_xptr, 
-                                      Rcpp::CharacterVector datasource, 
-                                      Rcpp::CharacterVector layer,
-                                   Rcpp::CharacterVector query,
-                                   Rcpp::CharacterVector options, 
-                                   bool quiet, 
-                                   Rcpp::CharacterVector drivers,
-                                   Rcpp::CharacterVector wkt_filter,
-                                   bool dsn_exists = true,
-                                   bool dsn_isdb = false,
-                                   Rcpp::CharacterVector fid_column,
-                                   int width) {
+inline Rcpp::List read_gdal_stream(
+    Rcpp::RObject stream_xptr,
+    Rcpp::CharacterVector datasource, 
+    Rcpp::CharacterVector layer,
+    Rcpp::CharacterVector query,
+    Rcpp::CharacterVector options, 
+    bool quiet, 
+    Rcpp::CharacterVector drivers,
+    Rcpp::CharacterVector wkt_filter,
+    bool dsn_exists,
+    bool dsn_isdb,
+    Rcpp::CharacterVector fid_column,
+    int width) {
   Rcpp::stop("read_stream() requires GDAL >= 3.6");
 }
 
