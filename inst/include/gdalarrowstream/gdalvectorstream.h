@@ -308,7 +308,7 @@ inline Rcpp::List read_gdal_stream(
 
 #else
 
-inline Rcpp::RObject read_gdal_stream(Rcpp::RObject stream_xptr, 
+inline Rcpp::List read_gdal_stream(Rcpp::RObject stream_xptr, 
                                       Rcpp::CharacterVector datasource, 
                                       Rcpp::CharacterVector layer,
                                    Rcpp::CharacterVector query,
@@ -319,7 +319,7 @@ inline Rcpp::RObject read_gdal_stream(Rcpp::RObject stream_xptr,
                                    bool dsn_exists = true,
                                    bool dsn_isdb = false,
                                    Rcpp::CharacterVector fid_column,
-                                   int width = 80) {
+                                   int width) {
   Rcpp::stop("read_stream() requires GDAL >= 3.6");
 }
 
