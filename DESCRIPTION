@@ -26,6 +26,7 @@ LazyData: true
 LinkingTo: Rcpp
 Imports:
     jsonlite,
+    nanoarrow,
     Rcpp,
     utils
 RoxygenNote: 7.2.3

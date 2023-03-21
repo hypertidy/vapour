@@ -1,5 +1,5 @@
-#ifndef GDALGEOMETRY_STREAM_H
-#define GDALGEOMETRY_STREAM_H
+#ifndef GDALVECTORSTREAM_H
+#define GDALVECTORSTREAM_H
 
 // WIP https://gdal.org/development/rfc/rfc86_column_oriented_api.html
 // written entirely by Dewey Dunnington and the GDAL project
@@ -77,7 +77,7 @@ private:
 
 #endif
 
-namespace gdalgeometry_stream {
+namespace gdalvectorstream {
 using namespace Rcpp; 
 
 #if (GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 6)
@@ -210,35 +210,35 @@ inline Rcpp::List ogr_layer_setup(Rcpp::CharacterVector datasource, Rcpp::Charac
 }
 
 
-inline Rcpp::List read_ogr(Rcpp::CharacterVector datasource, Rcpp::CharacterVector layer,
-                        Rcpp::CharacterVector query,
-                        Rcpp::CharacterVector options, bool quiet, Rcpp::NumericVector toTypeUser,
-                        Rcpp::CharacterVector fid_column_name, Rcpp::CharacterVector drivers,
-                        Rcpp::CharacterVector wkt_filter,
-                        bool promote_to_multi = true, bool int64_as_string = false,
-                        bool dsn_exists = true,
-                        bool dsn_isdb = false,
-                        int width = 80) {
-  Rcpp::List prep = ogr_layer_setup(datasource, layer, query, 
-                                        //options,
-                                        quiet,  
-                                        //drivers,
-                                        wkt_filter,
-                                        dsn_exists, dsn_isdb, width);
-  OGRDataSource* poDS = (OGRDataSource*)(R_ExternalPtrAddr(prep[0]));
-  OGRLayer* poLayer = (OGRLayer*)R_ExternalPtrAddr(prep[1]);
-  
-  Rcpp::List out; // = sf_from_ogrlayer(poLayer, quiet, int64_as_string, toTypeUser, fid_column_name,
-  //                promote_to_multi);
-  
-  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-  if (! Rcpp::CharacterVector::is_na(query[0]))
-    poDS->ReleaseResultSet(poLayer);
-  
-  GDALClose(poDS);
-  R_SetExternalPtrAddr(prep[0], nullptr);
-  return out;
-}
+// inline Rcpp::List read_ogr(Rcpp::CharacterVector datasource, Rcpp::CharacterVector layer,
+//                         Rcpp::CharacterVector query,
+//                         Rcpp::CharacterVector options, bool quiet, Rcpp::NumericVector toTypeUser,
+//                         Rcpp::CharacterVector fid_column_name, Rcpp::CharacterVector drivers,
+//                         Rcpp::CharacterVector wkt_filter,
+//                         bool promote_to_multi = true, bool int64_as_string = false,
+//                         bool dsn_exists = true,
+//                         bool dsn_isdb = false,
+//                         int width = 80) {
+//   Rcpp::List prep = ogr_layer_setup(datasource, layer, query, 
+//                                         //options,
+//                                         quiet,  
+//                                         //drivers,
+//                                         wkt_filter,
+//                                         dsn_exists, dsn_isdb, width);
+//   OGRDataSource* poDS = (OGRDataSource*)(R_ExternalPtrAddr(prep[0]));
+//   OGRLayer* poLayer = (OGRLayer*)R_ExternalPtrAddr(prep[1]);
+//   
+//   Rcpp::List out; // = sf_from_ogrlayer(poLayer, quiet, int64_as_string, toTypeUser, fid_column_name,
+//   //                promote_to_multi);
+//   
+//   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+//   if (! Rcpp::CharacterVector::is_na(query[0]))
+//     poDS->ReleaseResultSet(poLayer);
+//   
+//   GDALClose(poDS);
+//   R_SetExternalPtrAddr(prep[0], nullptr);
+//   return out;
+// }
 
 inline Rcpp::List read_gdal_stream(
     Rcpp::RObject stream_xptr,
@@ -272,8 +272,13 @@ inline Rcpp::List read_gdal_stream(
   
   OGRSpatialReference* crs = poLayer->GetSpatialRef();
   char* wkt_out;
-  crs->exportToWkt(&wkt_out);
-  std::string wkt_str(wkt_out);
+  std::string wkt_str; 
+  if (crs) {
+    crs->exportToWkt(&wkt_out);
+    wkt_str = "yaba"; 
+  } else {
+    wkt_str = ""; 
+  }
   CPLFree(wkt_out);
   
   struct ArrowArrayStream stream_temp;
@@ -283,6 +288,13 @@ inline Rcpp::List read_gdal_stream(
   
   GDALStreamWrapper::Make(&stream_temp, prep, stream_out);
   
+    // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
+    if (! Rcpp::CharacterVector::is_na(query[0]))
+      poDS->ReleaseResultSet(poLayer);
+
+    GDALClose(poDS);
+    R_SetExternalPtrAddr(prep[0], nullptr);
+
   // The reported feature count is incorrect if there is a query
   double num_features;
   if (query.size() == 0) {
@@ -308,6 +320,6 @@ inline Rcpp::RObject read_gdal_stream(Rcpp::CharacterVector datasource, Rcpp::Ch
 
 #endif
 
-} // gdalgeometry_stream
+} // gdalvectorstream
 
 #endif

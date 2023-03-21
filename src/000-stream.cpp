@@ -1,5 +1,5 @@
 #include <Rcpp.h>
-#include "gdalgeometry/gdalgeometry_stream.h"
+#include "gdalarrowstream/gdalvectorstream.h"
 
 
 using namespace Rcpp;
@@ -18,7 +18,7 @@ List gdal_dsn_read_vector_stream(RObject stream_xptr,
                            bool dsn_isdb,
                            Rcpp::CharacterVector fid_column_name,
                            int width) {
-  return gdalgeometry_stream::read_gdal_stream(stream_xptr, dsn, layer, sql, 
+  return gdalvectorstream::read_gdal_stream(stream_xptr, dsn, layer, sql, 
                                                options, quiet, drivers, wkt_filter, dsn_exists, dsn_isdb, 
                                                fid_column_name, width);
 }

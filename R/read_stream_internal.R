@@ -25,10 +25,12 @@
     info = vapour:::gdal_dsn_read_vector_stream(stream, dsn, layer, sql, as.character(options), quiet,
                                 drivers, wkt_filter, dsn_exists, dsn_isdb  = FALSE, fid_column_name, 80L)
 
+    browser()
     if (return_stream) return(stream)
-    geometry_column <- unlist(lapply(
-      stream$get_schema()$children, function(s) identical(s$metadata[["ARROW:extension:name"]], "ogc.wkb")
-    ))
+    ##// layer has been freed as this point
+    # geometry_column <- unlist(lapply(
+    #   stream$get_schema()$children, function(s) identical(s$metadata[["ARROW:extension:name"]], "ogc.wkb")
+    # ))
     crs <- info[[1L]]
     if (info[[2L]] == -1) {
       num_features = NULL
