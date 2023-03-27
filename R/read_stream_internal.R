@@ -22,7 +22,7 @@
 
     stream = nanoarrow::nanoarrow_allocate_array_stream()
 
-    info = vapour:::gdal_dsn_read_vector_stream(stream, dsn, layer, sql, as.character(options), quiet,
+    info = gdal_dsn_read_vector_stream(stream, dsn, layer, sql, as.character(options), quiet,
                                 drivers, wkt_filter, dsn_exists, dsn_isdb  = FALSE, fid_column_name, 80L)
 
     browser()

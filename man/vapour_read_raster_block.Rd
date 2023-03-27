@@ -23,6 +23,8 @@ vapour_read_raster_block(
 \item{band}{which band to read (1-based)}
 
 \item{band_output_type}{numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'}
+
+\item{unscale}{default is \code{TRUE} so native values will be converted by offset and scale to floating point}
 }
 \value{
 a list with a vector of data from the band read

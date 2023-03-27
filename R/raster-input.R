@@ -49,6 +49,7 @@
 #' @param sds index of subdataset to read (usually 1)
 #' @param set_na specify whether NA values should be set for the NODATA
 #' @param band_output_type numeric type of band to apply (else the native type if ''), is mapped to one of 'Byte', 'Int32', or 'Float64'
+#' @param unscale default is `TRUE` so native values will be converted by offset and scale to floating point
 #' @export
 #' @return list of numeric vectors (only one for 'band')
 #' @examples

@@ -1,8 +1,11 @@
 
 
-## wrapper around in-dev vapour function to simplify the warper interface (let GDAL do the work)
-#' Title
+#' General warper functions
+#' 
+#' The warper is used to convert source/s to an output file or data in memory. 
 #'
+#' Two functions 'gdal_raster_data' and 'gdal_raster_dsn' act like the gdalwarp command line
+#' tool. 
 #' @param dsn 
 #' @param target_crs 
 #' @param target_dim 
