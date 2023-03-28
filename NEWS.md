@@ -1,3 +1,7 @@
+# vapour 0.9.4
+
+New Makevars.ucrt with patch contributed by CRAN, and removed outdated C++11 requirement.
+
 # vapour 0.9.3
 
 * Update to CRAN Makevars.ucrt. 
