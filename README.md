@@ -21,11 +21,11 @@ provide access to the component entities independently.
 
 For vector data:
 
--   read access to feature attributes.
--   read access to raw binary geometry.
--   read access to geometry in text forms (GeoJSON, WKT, GML, KML).
--   read access to the extent, or bounding box, of feature geometries.
--   helper functions to summarize feature identity and geometry status
+- read access to feature attributes.
+- read access to raw binary geometry.
+- read access to geometry in text forms (GeoJSON, WKT, GML, KML).
+- read access to the extent, or bounding box, of feature geometries.
+- helper functions to summarize feature identity and geometry status
 
 All vector/feature read tasks can optionally apply an arbitrary limit to
 the maximum number of features read or queried, and all allow execution
@@ -36,15 +36,15 @@ can be applied via the `extent` argument.
 
 For raster data:
 
--   read access to the list of available rasters within a collection
-    source (subdatasets).
--   read access to *structural metadata* for individual raster sources.
--   read access for raw data using GDAL’s [RasterIO
-    framework](https://gdal.org/tutorials/raster_api_tut.html) and its
-    dynamic image decimation / replication resampling algorithms.
--   read access for raw data using GDAL’s [Warper
-    framework](https://gdal.org/api/gdalwarp_cpp.html) and its dynamic
-    image warping, a superset of the RasterIO capabilities.
+- read access to the list of available rasters within a collection
+  source (subdatasets).
+- read access to *structural metadata* for individual raster sources.
+- read access for raw data using GDAL’s [RasterIO
+  framework](https://gdal.org/tutorials/raster_api_tut.html) and its
+  dynamic image decimation / replication resampling algorithms.
+- read access for raw data using GDAL’s [Warper
+  framework](https://gdal.org/api/gdalwarp_cpp.html) and its dynamic
+  image warping, a superset of the RasterIO capabilities.
 
 The `vapour_warp_raster()` function is a new feature in vapour, and
 reflects many learnings about how the warper works and what is needed
@@ -65,8 +65,7 @@ constrained to any particular data model.
 
 The package \~cannot be installed from CRAN\~.
 
-The development version can be installed from Github, easiest is via the
-[hypertidy universe](https://hypertidy.r-universe.dev/ui#builds):
+The development version can be installed from Github.
 
 ``` r
 options(repos = c(
@@ -184,7 +183,7 @@ vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension 
 #> dimensions : 512, 512, 262144  (nrow, ncol, ncell)
 #> resolution : 19.53125, 19.53125  (x, y)
 #> extent     : -5000, 5000, -5000, 5000  (xmin, xmax, ymin, ymax)
-#> crs        : +proj=laea +lat_0=40.416667 +lon_0=-3.716667 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs 
+#> crs        : +proj=laea +lon_0=-3.716667 +lat_0=40.416667 +datum=WGS84 
 #> source     : memory
 #> names      : layer 
 #> values     : 562, 742  (min, max)

@@ -61,7 +61,7 @@ The package ~cannot be installed from CRAN~.
 ```{r, install-cran, eval=FALSE}
 ```
 
-The development version can be installed from Github, easiest is via the [hypertidy universe](https://hypertidy.r-universe.dev/ui#builds): 
+The development version can be installed from Github. 
 
 ```{r install-universe, eval=FALSE}
 options(repos = c(
