@@ -1,6 +1,8 @@
 # vapour 0.9.4
 
-New Makevars.ucrt with patch contributed by CRAN, and removed outdated C++11 requirement.
+* Removed FromHandle (introduced GDAL 2.3) and undeclared use of down_cast, and now tested on GDAL 2.2.3. 
+
+* New Makevars.ucrt with patch contributed by CRAN, and removed outdated C++11 requirement.
 
 # vapour 0.9.3
 
