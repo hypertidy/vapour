@@ -1,5 +1,7 @@
 # vapour dev
 
+* New Makevars.ucrt with patch contributed by CRAN, Tomas Kalibera. 
+
 * raster read gains "unscale" argument, `TRUE` by default which means offset and scale values are applied and return value is of type Float64, set to `FALSE` to avoid applying scale/offset to band values (this was always implicitly false (no offset scale applied) if the output type wasn't suitable). . 
 
 * Fix inefficiency in gdal_raster_data() which was warping all bands in MEM lol. 
