@@ -178,12 +178,7 @@ inline List gdal_warp_general(CharacterVector dsn,
   }
   
   
-  if (bands.size() > 0) {
-    for (int iband = 0; iband < bands.size(); iband++) {
-    papszArg = CSLAddString(papszArg, "-b");
-    papszArg = CSLAddString(papszArg, CPLSPrintf("%i", bands[iband]));
-    }
-  }
+
   // List out = List::create(1);
   // CharacterVector sss(CSLCount (papszArg));
   // for (int sii = 0; sii < sss.size(); sii++) sss[sii] = papszArg[sii];
