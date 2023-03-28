@@ -37,6 +37,7 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           r-tools: 42
+          windows-path-include-rtools: true
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
