@@ -187,20 +187,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   for (int i  = 0; i < window.size(); i++) window[i] = 0;
   
   
-  // we can't do  gdal_warped_vrt here ... was just trying something and realized 
-  // that cant work
-  // 
-  // GDALRasterIOExtraArg psExtraArg;
-  // psExtraArg = gdallibrary::init_resample_alg(resample);
-  // 
-  // std::vector<double> values( GDALGetRasterXSize(hRet) * GDALGetRasterYSize(hRet) * nBands );
-  // CPLErr err = 
-  // GDALDataset::FromHandle(hRet)->RasterIO(GF_Read, 0, 0, GDALGetRasterXSize(hRet), GDALGetRasterYSize(hRet),
-  //                         &values[0],   GDALGetRasterXSize(hRet), GDALGetRasterYSize(hRet), GDT_Float64,
-  //                         nBands, &bands_to_read[0],
-  //                         0, 0, 0, &psExtraArg);
-  
-  List outlist = gdalraster::gdal_read_band_values(GDALDataset::FromHandle(hRet),
+
+  List outlist = gdalraster::gdal_read_band_values((GDALDataset *)hRet,
                                                    window,
                                                    bands_to_read,
                                                    band_output_type,

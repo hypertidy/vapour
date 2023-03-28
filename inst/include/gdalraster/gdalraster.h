@@ -612,7 +612,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
   CPLErr err;
   
   for (int iband = 0; iband < sbands; iband++) {
-    rasterBand = GDALDataset::FromHandle(hRet)->GetRasterBand(bands_to_read[static_cast<size_t>(iband)]);
+    rasterBand = ( (GDALDataset *) hRet)->GetRasterBand(bands_to_read[static_cast<size_t>(iband)]);
     //rasterBand = GDALGetRasterBand(hRet, bands_to_read[iband]);
     if (iband < 1) {
       // actual_XSize = GDALGetRasterBandXSize(rasterBand); 
@@ -794,7 +794,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
     psExtraArg = init_resample_alg(resample);
     CPLErr err;
     
-    rasterBand = GDALDataset::FromHandle(hRet)->GetRasterBand(bands_to_read[0]);
+    rasterBand = ((GDALDataset *)hRet)->GetRasterBand(bands_to_read[0]);
     actual_XSize = rasterBand->GetXSize();
     actual_YSize = rasterBand->GetYSize();
     
