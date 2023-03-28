@@ -19,7 +19,9 @@ jobs:
       matrix:
         config:
           - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: '4.2.3', rtools-version: '42'}
+          - {os: windows-devel, r: '4.3.0', rtools-version: '43'}
+          
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
@@ -38,7 +40,13 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-
+          rtools-version: ${{ matrix.config.rtools.version }}
+          
+      # - name: Install most Windows system dependencies
+      #   if: runner.os == 'Windows'
+      #   run: |
+      #     pacman -Syu mingw-w64-x86_64-make --noconfirm
+      #     
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
