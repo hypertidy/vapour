@@ -217,7 +217,7 @@ inline const char* gdal_vrt_text(GDALDataset* poSrcDS) {
   CharacterVector out(1);
   // can't do this unless poSrcDS really is VRT
   if (EQUAL(poSrcDS->GetDriverName(),  "VRT")) {
-    VRTDataset * VRTdcDS = cpl::down_cast<VRTDataset *>(poSrcDS );
+    VRTDataset * VRTdcDS = dynamic_cast<VRTDataset *>(poSrcDS );
     // if (add_filename[0]) {
     //   //VRTdcDS->SetDescription( filename[0]);
     // }
