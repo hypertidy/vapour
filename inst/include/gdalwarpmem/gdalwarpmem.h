@@ -67,33 +67,27 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   papszArg = CSLAddString(papszArg, "MEM");
   
   if (!target_WKT[0].empty()) {
-    OGRSpatialReference *oTargetSRS = nullptr;
-    oTargetSRS = new OGRSpatialReference;
-    const char * strforuin = (const char *)target_WKT[0];
-    OGRErr target_chk =  oTargetSRS->SetFromUserInput(strforuin);
-    if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
-    OGRSpatialReference  oSRS;
-    const OGRSpatialReference* poSrcSRS = ((GDALDataset *)poSrcDS[0])->GetSpatialRef();
-    if( poSrcSRS ) {
-      oSRS = *poSrcSRS;
-      if (!oSRS.IsEmpty()) {
-        OGRCoordinateTransformation *poCT;
-        poCT = OGRCreateCoordinateTransformation(&oSRS, oTargetSRS);
-        if( poCT == nullptr )	{
-          delete oTargetSRS;
-          Rcpp::stop( "Transformation to this target CRS not possible from this source dataset, target CRS given: \n\n %s \n\n", 
-                      (char *)  target_WKT[0] );
-        }
+    const char *wkt = ((GDALDataset*)poSrcDS[0])->GetProjectionRef();
+    if (*wkt != '\0') {
+      // if supplied check that it's valid
+      OGRSpatialReference *oTargetSRS = nullptr;
+      oTargetSRS = new OGRSpatialReference;
+      OGRErr target_chk =  oTargetSRS->SetFromUserInput(target_WKT[0]);
+       delete oTargetSRS; 
+      if (target_chk != OGRERR_NONE) {
+       
+        Rcpp::stop("cannot initialize target projection");
+      } else {
+      
         // we add our target projection iff a) source crs is valid b) target crs is valid c) transformation source->target is valid
         // user may have augmented the array of datasets with source_projection
         // if the source is just not defined we ignore the target with a warning
         papszArg = CSLAddString(papszArg, "-t_srs");
         papszArg = CSLAddString(papszArg, target_WKT[0]);
+      }
       } else {
         Rcpp::warning("no source crs, target crs is ignored\n");
       }
-    }
-    delete oTargetSRS;
   }
   // we always provide extent and dimension, crs is optional and just means subset/decimate
   double dfMinX = target_extent[0];
