@@ -63,9 +63,10 @@ inline CharacterVector gdal_create(CharacterVector filename, CharacterVector dri
                                 extent[3], 0, (extent[2] - extent[3])/ dimension[1]};
   poDstDS->SetGeoTransform( adfGeoTransform );
   
-  
-
-  poDstDS->SetSpatialRef(oTargetSRS);
+  char *wkt; 
+  oTargetSRS->exportToWkt(&wkt); 
+  poDstDS->SetProjection(wkt); 
+  //poDstDS->SetSpatialRef(oTargetSRS);
   
   GDALClose(poDstDS);
   
