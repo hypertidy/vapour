@@ -67,6 +67,7 @@ gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
      if (any(target_res <= 0)) stop("all 'target_res' values must be > 0")
    }
    if (is.null(band_output_type)) band_output_type <- "Float64"
+   if (is.null(bands)) bands <- -1
    warp_general_cpp(dsn, target_crs, 
                              as.numeric(target_ext), 
                              as.integer(target_dim), 

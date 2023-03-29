@@ -214,22 +214,24 @@ inline List gdal_warp_general(CharacterVector dsn,
   } else {
     // Prepare to read bands
     int nBands;
-//    if (bands[0] == 0) {
-      nBands = (int)GDALGetRasterCount(hRet);
-    // } else {
-    //   nBands = (int)bands.size();
-    // }
-    std::vector<int> bands_to_read(static_cast<size_t>(nBands));
+     nBands = (int)GDALGetRasterCount(hRet);
+     int nbands_to_read = bands.size();
+/// if user set bands to NULL, then all bands read (default is bands = 1L)
+     if (bands[0] < 1) {
+       nbands_to_read = nBands;
+     }
+    std::vector<int> bands_to_read(static_cast<size_t>(nbands_to_read));
     for (int i = 0; i < nBands; i++) {
       // if (bands[0] == 0) {
       //   bands_to_read[static_cast<size_t>(i)] = i + 1;
       // } else {
-        bands_to_read[static_cast<size_t>(i)] = i + 1;
+        bands_to_read[static_cast<size_t>(i)] = bands[i];
       
       
       if (bands_to_read[static_cast<size_t>(i)] > (int)GDALGetRasterCount(hRet)) {
         GDALClose( hRet );
-        stop("band number is not available: %i", bands_to_read[static_cast<size_t>(i)]);
+
+        stop("band number is not available: %i", bands[i]);
       }
       
     }
