@@ -41,7 +41,7 @@ gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
    if (is.null(target_ext)) {
      target_ext <-  numeric()
    } else {
-     if (~length(target_ext) == 4L ) stop("'target_ext' must be of length 4 (xmin, xmax, ymin, ymax")
+     if (!length(target_ext) == 4L ) stop("'target_ext' must be of length 4 (xmin, xmax, ymin, ymax")
      
      if (anyNA(target_ext)) stop("NA values in 'target_ext'")
      dif <- diff(target_ext)[c(1L, 3L)]
@@ -85,7 +85,7 @@ gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ex
   if (is.null(target_ext)) {
     target_ext <-  numeric()
   } else {
-    if (~length(target_ext) == 4L ) stop("'target_ext' must be of length 4 (xmin, xmax, ymin, ymax")
+    if (!length(target_ext) == 4L ) stop("'target_ext' must be of length 4 (xmin, xmax, ymin, ymax")
     
     if (anyNA(target_ext)) stop("NA values in 'target_ext'")
     dif <- diff(target_ext)[c(1L, 3L)]
