@@ -132,21 +132,19 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
   }
   if (!projection[0].empty()) {
     // have to validate this
-    OGRSpatialReference *srs = nullptr;
-    srs = new OGRSpatialReference; 
+    OGRSpatialReference *srs = new OGRSpatialReference;
     if (srs->SetFromUserInput(projection[0]) != OGRERR_NONE) {
       Rprintf("cannot set projection (CRS) from input 'projection' argument, ignoring: '%s'\n", (const char*)projection[0]);
     } else {
       translate_argv.AddString("-a_srs");
       translate_argv.AddString(projection[0]);
     }
-    if (srs != nullptr) delete srs; 
+    delete srs; 
   }
   
   GDALDataset* oDS = (GDALDataset*)gdalH_open_dsn(dsn, sds);
   if (geolocation.size() == 2) {
-    OGRSpatialReference  *geolsrs = nullptr;
-    geolsrs = new OGRSpatialReference; 
+    OGRSpatialReference  *geolsrs = new OGRSpatialReference; 
     char *pszGeoSrsWKT = nullptr;
     geolsrs->SetFromUserInput("OGC:CRS84");
     geolsrs->exportToWkt(&pszGeoSrsWKT);
@@ -161,22 +159,13 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
     oDS->SetMetadataItem( "PIXEL_STEP", "1", "GEOLOCATION" );
     oDS->SetMetadataItem( "LINE_STEP", "1", "GEOLOCATION" );
     CPLFree(pszGeoSrsWKT); 
-    if (geolsrs != nullptr) {
-      delete geolsrs; 
-    }
+    delete geolsrs; 
+
   }
   
   if (oDS == nullptr) return(nullptr);
   int nBands = oDS->GetRasterCount();
-  // Rprintf("%i\n", nBands);
-  //  if (bands[0] > 0) {
-  //    for (int iband = 0; iband < bands.size(); iband++ ) {
-  //      if (bands[iband] > nBands) {
-  //        Rprintf("%i\n", bands[iband]);
-  //        Rprintf("mismatch bands\n");
-  //      }
-  //      }
-  //  }
+
   if (bands[0] > 0) {
     for (int iband = 0; iband < bands.size(); iband++ ) {
       if (bands[iband] > nBands) {
@@ -418,8 +407,7 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
     names[5] = "bands";
     
     char *stri;
-    OGRSpatialReference *oSRS = nullptr;
-    oSRS = new OGRSpatialReference; 
+    OGRSpatialReference *oSRS = new OGRSpatialReference; 
     const char *proj2;
     proj2 = GDALGetProjectionRef(hDataset);
     char **cwkt = (char **) &proj2;
@@ -433,9 +421,8 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
     out[6] =  Rcpp::CharacterVector::create(stri); //Rcpp::CharacterVector::create(stri);
     names[6] = "projstring";
     CPLFree(stri);
-    if (oSRS != nullptr) {
-      delete oSRS; 
-    }
+    delete oSRS; 
+    
     int succ;
     out[7] = GDALGetRasterNoDataValue(hBand, &succ);
     names[7] = "nodata_value";
