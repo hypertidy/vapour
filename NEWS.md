@@ -1,5 +1,7 @@
 # vapour 0.94
 
+* All functions that read or query data source/s now check for tilde "~" at the beginning of the string/s, and normalize the path as needed. Reported by @Sibada in #193. 
+
 * vapour now imports nanoarrow and includes internal experimental support for GDAL (>= 3.6) stream reading (RFC 86). Nothing is
 exposed for general use yet.
 

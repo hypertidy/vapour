@@ -140,6 +140,7 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' vapour_raster_info(f)
 vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
   sd <- if (is.null(sds)) 0 else sds
+  x <- .check_dsn_single(x)
   info <- gdalinfo_internal(x[1L], json  = TRUE, stats = min_max, sd = sd, ...)
   json <- jsonlite::fromJSON(info)
   sds <- NULL

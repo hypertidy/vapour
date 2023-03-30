@@ -125,6 +125,7 @@ vapour_crs_is_lonlat <- function(crs) {
 #' text(gsum$xmin, gsum$ymin, labels = gsum$FID)
 vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
   #limit_n <- validate_limit_n(limit_n)
+  dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(x = dsource, layername = layer)
   extent <- validate_extent(extent, sql, warn = FALSE)
 
