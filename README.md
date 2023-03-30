@@ -161,8 +161,6 @@ dm <- c(256, 256)
 
 
 vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, projection = crs)
-#> scale: 1.000000
-#> offset: 0.000000
 ## now we can use this in a matrix
 image(m <- matrix(vals[[1]], nrow = dm[2], ncol = dm[1])[,dm[2]:1 ])
 ```
@@ -188,8 +186,6 @@ If we want more detail, go ahead:
 ``` r
 dm <- c(512, 512)
 vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, projection = crs)
-#> scale: 1.000000
-#> offset: 0.000000
 (r <- rast(ext(ex), nrows = dm[2], ncols = dm[1], crs = crs, vals = vals[[1]]))
 #> class       : SpatRaster 
 #> dimensions  : 512, 512, 1  (nrow, ncol, nlyr)
