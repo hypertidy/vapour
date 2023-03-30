@@ -140,7 +140,7 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
       translate_argv.AddString("-a_srs");
       translate_argv.AddString(projection[0]);
     }
-    delete srs; 
+    if (srs != nullptr) delete srs; 
   }
   
   GDALDataset* oDS = (GDALDataset*)gdalH_open_dsn(dsn, sds);
@@ -161,7 +161,9 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
     oDS->SetMetadataItem( "PIXEL_STEP", "1", "GEOLOCATION" );
     oDS->SetMetadataItem( "LINE_STEP", "1", "GEOLOCATION" );
     CPLFree(pszGeoSrsWKT); 
-    delete geolsrs; 
+    if (geolsrs != nullptr) {
+      delete geolsrs; 
+    }
   }
   
   if (oDS == nullptr) return(nullptr);
@@ -431,7 +433,9 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
     out[6] =  Rcpp::CharacterVector::create(stri); //Rcpp::CharacterVector::create(stri);
     names[6] = "projstring";
     CPLFree(stri);
-    delete oSRS; 
+    if (oSRS != nullptr) {
+      delete oSRS; 
+    }
     int succ;
     out[7] = GDALGetRasterNoDataValue(hBand, &succ);
     names[7] = "nodata_value";

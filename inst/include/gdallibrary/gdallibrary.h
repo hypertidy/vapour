@@ -665,7 +665,7 @@ inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
   oSRS->exportToWkt(&pszWKT);
   CharacterVector out =  Rcpp::CharacterVector::create(pszWKT);
   CPLFree(pszWKT);
-  delete oSRS; 
+  if (oSRS != nullptr) delete oSRS; 
   return out;
 }
 

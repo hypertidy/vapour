@@ -241,7 +241,9 @@ inline List gdalwarp_applib(CharacterVector source_filename,
     OGRSpatialReference *oTargetSRS = nullptr;
     oTargetSRS = new OGRSpatialReference;
     OGRErr target_chk =  oTargetSRS->SetFromUserInput(target_crs[0]);
-    delete oTargetSRS; 
+    if (oTargetSRS != nullptr) {
+      delete oTargetSRS; 
+    }
     if (target_chk != OGRERR_NONE) {
       Rcpp::stop("cannot initialize target projection");
     }
