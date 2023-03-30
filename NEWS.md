@@ -1,5 +1,9 @@
 # vapour 0.94
 
+* The extent reported by 'vapour_raster_info()' is now correct for the general case including non-zero skew geotransforms. 
+
+* 'vapour_raster_info()' gains a  'corners' element. 
+
 * All functions that read or query data source/s now check for tilde "~" at the beginning of the string/s, and normalize the path as needed. Reported by @Sibada in #193. 
 
 * vapour now imports nanoarrow and includes internal experimental support for GDAL (>= 3.6) stream reading (RFC 86). Nothing is

@@ -40,6 +40,8 @@ The structural metadata are
 \item{overviews}{the number and size of any available overviews}
 \item{filelist}{the list of files involved (may be none, and so will be a single NA character value)}
 \item{datatype}{the band type name, in GDAL form 'Byte', 'Int16', 'Float32', etc.}
+\item{subdatasets}{any subdataset DSNs is present, otherwise \code{NULL} }
+\item{corners}{corner coordinates of the data, for non-zero skew geotransforms a 2-column matrix with rows upperLeft, lowerLeft, lowerRight, upperRight, and center}
 }
 
 Note that the geotransform is a kind of obscure combination of the extent and dimension, I don't find it
