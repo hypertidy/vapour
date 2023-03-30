@@ -19,7 +19,7 @@ vapour_sds_names for more."><meta property="og:image" content="/logo.png"><!-- m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3.9008</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.4</span>
       </span>
     </div>
 
@@ -136,6 +136,12 @@ Subdatasets may be specified by number, starting at 1. See
 
 <dt>datatype</dt>
 <dd><p>the band type name, in GDAL form 'Byte', 'Int16', 'Float32', etc.</p></dd>
+
+<dt>subdatasets</dt>
+<dd><p>any subdataset DSNs is present, otherwise <code>NULL</code></p></dd>
+
+<dt>corners</dt>
+<dd><p>corner coordinates of the data, for non-zero skew geotransforms a 2-column matrix with rows upperLeft, lowerLeft, lowerRight, upperRight, and center</p></dd>
 
 
 </dl><p>Note that the geotransform is a kind of obscure combination of the extent and dimension, I don't find it
@@ -270,6 +276,14 @@ their dimensions will be listed as pairs of x,y values.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $subdatasets</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $corners</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               [,1]      [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> upperLeft  140.000 -39.99722</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> lowerLeft  140.000 -60.01833</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> lowerRight 150.010 -60.01833</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> upperRight 150.010 -39.99722</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> center     145.005 -50.00778</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
