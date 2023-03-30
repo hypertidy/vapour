@@ -4,6 +4,7 @@
 #include "gdal_priv.h"
 #include "gdal_utils.h"  // for GDALTranslateOptions
 #include "vrtdataset.h"
+#include <ogr_spatialref.h>
 
 namespace gdalraster {
 using namespace Rcpp;
