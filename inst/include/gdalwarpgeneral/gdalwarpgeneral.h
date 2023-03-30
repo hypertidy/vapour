@@ -206,7 +206,7 @@ inline List gdal_warp_general(CharacterVector dsn,
     // Prepare to read bands
     int nBands;
      nBands = (int)GDALGetRasterCount(hRet);
-     int nbands_to_read = bands.size();
+     int nbands_to_read = (int)bands.size();
 /// if user set bands to NULL, then all bands read (default is bands = 1L)
      if (bands[0] < 1) {
        nbands_to_read = nBands;
@@ -250,8 +250,8 @@ inline List gdal_warp_general(CharacterVector dsn,
   //poDataset->GetGeoTransform( adfGeoTransform );
   GDALGetGeoTransform(hRet, adfGeoTransform );
   double xmin = adfGeoTransform[0];
-  double xmax = adfGeoTransform[0] + dimx * adfGeoTransform[1];
-  double ymin = adfGeoTransform[3] + dimy * adfGeoTransform[5];
+  double xmax = adfGeoTransform[0] + (double)dimx * adfGeoTransform[1];
+  double ymin = adfGeoTransform[3] + (double)dimy * adfGeoTransform[5];
   double ymax = adfGeoTransform[3];
   
   
