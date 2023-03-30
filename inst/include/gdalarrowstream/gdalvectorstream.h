@@ -5,9 +5,6 @@
 // written entirely by Dewey Dunnington and the GDAL project
 // https://github.com/paleolimbot/sf/tree/stream-reading
 
-
-#define RCPP_DEFAULT_INCLUDE_CALL false
-
 #include <Rcpp.h>
 
 #include <ogrsf_frmts.h>

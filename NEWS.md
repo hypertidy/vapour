@@ -1,7 +1,7 @@
 # vapour 0.94
 
-* vapour now imports nanoarrow and includes internal experimental support for GDAL stream reading (RFC 86). Nothing is
-exposed for general use yet however. 
+* vapour now imports nanoarrow and includes internal experimental support for GDAL (>= 3.6) stream reading (RFC 86). Nothing is
+exposed for general use yet.
 
 * New Makevars.ucrt with patch contributed by CRAN, Tomas Kalibera. 
 
