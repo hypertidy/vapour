@@ -87,7 +87,7 @@ Rcpp::List blocks_cpp1(CharacterVector dsource, IntegerVector iblock, LogicalVec
   GDALDatasetH ds = gdalraster::gdalH_open_dsn(dsource[0],   0);  
   GDALRasterBand * poBand = ((GDALDataset*) ds)->GetRasterBand(1); 
   
-  if (! poBand->GetRasterDataType() == GDT_Float32 ) Rcpp::stop("\n");
+  if (! (poBand->GetRasterDataType() == GDT_Float32 )) Rcpp::stop("\n");
   
   int nXBlockSize, nYBlockSize;
   poBand->GetBlockSize( &nXBlockSize, &nYBlockSize );
@@ -104,7 +104,13 @@ Rcpp::List blocks_cpp1(CharacterVector dsource, IntegerVector iblock, LogicalVec
   // for partial edge blocks.
   poBand->GetActualBlockSize(iXBlock, iYBlock, &nXValid, &nYValid); 
   NumericVector float_data(nXValid *  nYValid); 
-  poBand->ReadBlock( iXBlock, iYBlock, faBlockData );
+  CPLErr err = poBand->ReadBlock( iXBlock, iYBlock, faBlockData );
+  if (!(err == OGRERR_NONE)) {
+    GDALClose(ds); 
+    CPLFree(faBlockData); 
+    Rcpp::stop("could not read block\n"); 
+    
+  }
   for( int iY = 0; iY < nYValid; iY++ )
   {
     for( int iX = 0; iX < nXValid; iX++ )
