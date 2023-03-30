@@ -18,13 +18,13 @@ jobs:
       fail-fast: false
       matrix:
         config:
-         # - {os: macos-latest,   r: 'release'}
+          - {os: macos-latest,   r: 'release'}
           - {os: windows-latest, r: '4.2.3', rtools-version: '42', windows-path-include-rtools: 'true', update-rtools: 'true'}
           - {os: windows-devel, r: '4.3.0', rtools-version: '42', windows-path-include-rtools: 'true', update-rtools: 'true'}
           
-          #- {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          #- {os: ubuntu-latest,   r: 'release'}
-          #- {os: ubuntu-latest,   r: 'oldrel-1'}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+          - {os: ubuntu-latest,   r: 'oldrel-1'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
