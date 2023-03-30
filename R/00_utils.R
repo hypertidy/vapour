@@ -19,8 +19,8 @@ gdalinfo_internal <- function(x, json = TRUE,
   if (length(sd) > 1) message("'sd' argument cannot be vectorized over 'dsn', ignoring all but first value")
   
   version <- vapour_gdal_version()
-  v3 <- FALSE
-  if (grep("GDAL 2", version )) v3 <- TRUE
+  v3 <- TRUE
+  if (grep("GDAL 2", version )) v3 <- FALSE
   extra <- c(if(json) "-json",
              if (is.numeric(sd) && sd[1L] > 0) c("-sd", sd[1L]),
              if (stats) "-stats",
