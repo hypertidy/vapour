@@ -19,8 +19,8 @@ jobs:
       matrix:
         config:
           - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: '4.2.3', rtools-version: '42', windows-path-include-rtools: 'true', update-rtools: 'true'}
-          - {os: windows-devel, r: '4.3.0', rtools-version: '42', windows-path-include-rtools: 'true', update-rtools: 'true'}
+          - {os: windows-latest, r: '4.2.3', rtools-version: '42', windows-path-include-rtools: 'true', update-rtools: 'true', binary: 'rwinlib'}
+          - {os: windows-devel, r: '4.3.0', rtools-version: '43', windows-path-include-rtools: 'true', update-rtools: 'true'}
           
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
@@ -39,6 +39,10 @@ jobs:
            brew install geos
            brew install gdal
     
+      - name: ZapRtools
+        if: runner.os == 'windows' && matrix.config.binary == 'rwinlib'
+        run: rm src/Makevars.ucrt
+        
       - uses: actions/checkout@v3
 
       - uses: r-lib/actions/setup-pandoc@v2
