@@ -31,6 +31,14 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
 
     steps:
+      - name: Install macOS system dependencies
+        if: runner.os == 'macOS'
+        run: |
+           brew install openssl
+           brew install proj
+           brew install geos
+           brew install gdal
+    
       - uses: actions/checkout@v3
 
       - uses: r-lib/actions/setup-pandoc@v2
@@ -42,12 +50,6 @@ jobs:
           use-public-rspm: true
           rtools-version: ${{ matrix.config.rtools.version }}
           windows-path-include-rtools: ${{ matrix.config.windows-path-include-rtools }}
-          
-      - name: Install Rtools
-        if: runner.os == 'Windows'
-        run: |
-           Invoke-WebRequest -Uri  https://www.r-project.org/nosvn/winutf8/ucrt3/rtools43-5550-5548.exe -OutFile rtools42.exe
-           .\rtools42.exe /verysilent /suppressmsgboxes
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
