@@ -163,8 +163,8 @@ x <- list(x = seq(ex[1], ex[2], length.out = dm[1] + 1), y = seq(ex[3] ,ex[4], l
 image(x)
 
 ## or as a spatial object
-library(raster)
-r <- setValues(raster(extent(ex), nrows = dm[2], ncols = dm[1], crs = crs), vals[[1]])
+library(terra)
+r <- rast(ext(ex), nrows = dm[2], ncols = dm[1], crs = crs, vals = vals[[1]])
 contour(r, add = TRUE)
 
 ```
@@ -174,7 +174,7 @@ If we want more detail, go ahead:
 ```{r lod}
 dm <- c(512, 512)
 vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, projection = crs)
-(r <- setValues(raster(extent(ex), nrows = dm[2], ncols = dm[1], crs = crs), vals[[1]]))
+(r <- rast(ext(ex), nrows = dm[2], ncols = dm[1], crs = crs, vals = vals[[1]]))
 plot(r, col = hcl.colors(24))
 
 ```
