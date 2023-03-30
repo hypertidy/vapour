@@ -20,7 +20,7 @@ gdalinfo_internal <- function(x, json = TRUE,
   
   version <- vapour_gdal_version()
   v3 <- TRUE
-  if (grep("GDAL 2", version )) v3 <- FALSE
+  if (grepl("GDAL 2", version )) v3 <- FALSE
   extra <- c(if(json) "-json",
              if (is.numeric(sd) && sd[1L] > 0) c("-sd", sd[1L]),
              if (stats) "-stats",
