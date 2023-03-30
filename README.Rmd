@@ -63,7 +63,7 @@ Install from CRAN, this should work on MacOS and Windows because CRAN provide bi
 install.packages("vapour")
 ```
 
-The development version can be installed from Github, easiest is via the [hypertidy universe](https://hypertidy.r-universe.dev/ui#builds): 
+The development version can be installed from Github. 
 
 ```{r install-universe, eval=FALSE}
 options(repos = c(

@@ -1,4 +1,4 @@
-# vapour dev
+# vapour 0.94
 
 * New Makevars.ucrt with patch contributed by CRAN, Tomas Kalibera. 
 
@@ -21,6 +21,10 @@ This particularly makes VRT DSN strings a lot smaller, for use by whatarelief an
 
 * remove LDFLAGS from configure, as per sf #1369 and vapour #188, thanks to @gremms1 and @sgoslee for 
  report on Fedora. 
+
+* Removed FromHandle (introduced GDAL 2.3) and undeclared use of down_cast, and now tested on GDAL 2.2.3. 
+
+* New Makevars.ucrt with patch contributed by CRAN, and removed outdated C++11 requirement.
 
 # vapour 0.9.3
 

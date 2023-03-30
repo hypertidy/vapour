@@ -24,7 +24,9 @@ inline CharacterVector gdal_create(CharacterVector filename, CharacterVector dri
   oTargetSRS = new OGRSpatialReference;
   OGRErr target_chk =  oTargetSRS->SetFromUserInput(projection[0]);
   if (target_chk != OGRERR_NONE) {
-    delete oTargetSRS;
+    if (oTargetSRS != nullptr) {
+      delete oTargetSRS;
+    }
     Rcpp::stop("cannot initialize target projection");
   }
   
@@ -64,12 +66,9 @@ inline CharacterVector gdal_create(CharacterVector filename, CharacterVector dri
   poDstDS->SetGeoTransform( adfGeoTransform );
   
   
-
-  poDstDS->SetSpatialRef(oTargetSRS);
-  
-  GDALClose(poDstDS);
-  
-  delete oTargetSRS;
+  if (oTargetSRS != nullptr) {
+    delete oTargetSRS;
+  }
   return Rcpp::CharacterVector::create(filename[0]);
 }
 inline CharacterVector gdal_create_copy(CharacterVector dsource, CharacterVector dtarget, CharacterVector driver) {

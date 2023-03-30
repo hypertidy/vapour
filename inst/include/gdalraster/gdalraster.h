@@ -4,6 +4,7 @@
 #include "gdal_priv.h"
 #include "gdal_utils.h"  // for GDALTranslateOptions
 #include "vrtdataset.h"
+#include <ogr_spatialref.h>
 
 namespace gdalraster {
 using namespace Rcpp;
@@ -131,24 +132,24 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
   }
   if (!projection[0].empty()) {
     // have to validate this
-    OGRSpatialReference srs;
-    
-    if (srs.SetFromUserInput(projection[0]) != OGRERR_NONE) {
+    OGRSpatialReference *srs = new OGRSpatialReference;
+    if (srs->SetFromUserInput(projection[0]) != OGRERR_NONE) {
       Rprintf("cannot set projection (CRS) from input 'projection' argument, ignoring: '%s'\n", (const char*)projection[0]);
     } else {
       translate_argv.AddString("-a_srs");
       translate_argv.AddString(projection[0]);
     }
+    delete srs; 
   }
   
   GDALDataset* oDS = (GDALDataset*)gdalH_open_dsn(dsn, sds);
 
   
   if (geolocation.size() == 2) {
-    OGRSpatialReference  geolsrs;
+    OGRSpatialReference  *geolsrs = new OGRSpatialReference; 
     char *pszGeoSrsWKT = nullptr;
-    geolsrs.SetFromUserInput("OGC:CRS84");
-    geolsrs.exportToWkt(&pszGeoSrsWKT);
+    geolsrs->SetFromUserInput("OGC:CRS84");
+    geolsrs->exportToWkt(&pszGeoSrsWKT);
     
     oDS->SetMetadataItem( "SRS", pszGeoSrsWKT, "GEOLOCATION" ); 
     oDS->SetMetadataItem( "X_DATASET", geolocation[0], "GEOLOCATION" );
@@ -160,8 +161,7 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
     oDS->SetMetadataItem( "PIXEL_STEP", "1", "GEOLOCATION" );
     oDS->SetMetadataItem( "LINE_STEP", "1", "GEOLOCATION" );
     CPLFree(pszGeoSrsWKT); 
-   
-    
+    delete geolsrs; 
   }
   
   if (oDS == nullptr) return(nullptr);
@@ -212,7 +212,8 @@ inline const char* gdal_vrt_text(GDALDataset* poSrcDS, LogicalVector nomd) {
   CharacterVector out(1);
   // can't do this unless poSrcDS really is VRT
   if (EQUAL(poSrcDS->GetDriverName(),  "VRT")) {
-    VRTDataset * VRTdcDS = cpl::down_cast<VRTDataset *>(poSrcDS );
+    VRTDataset * VRTdcDS = dynamic_cast<VRTDataset *>(poSrcDS );
+
     if (!(VRTdcDS == nullptr)) out[0] = VRTdcDS->GetMetadata("xml:VRT")[0];
   } else {
     GDALDriver *poDriver = (GDALDriver *)GDALGetDriverByName("VRT");
@@ -409,20 +410,21 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
     names[5] = "bands";
     
     char *stri;
-    OGRSpatialReference oSRS;
+    OGRSpatialReference *oSRS = new OGRSpatialReference; 
     const char *proj2;
     proj2 = GDALGetProjectionRef(hDataset);
     char **cwkt = (char **) &proj2;
     
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-    oSRS.importFromWkt(cwkt);
+    oSRS->importFromWkt(cwkt);
 #else
-    oSRS.importFromWkt( (const char**) cwkt);
+    oSRS->importFromWkt( (const char**) cwkt);
 #endif
-    oSRS.exportToProj4(&stri);
+    oSRS->exportToProj4(&stri);
     out[6] =  Rcpp::CharacterVector::create(stri); //Rcpp::CharacterVector::create(stri);
     names[6] = "projstring";
     CPLFree(stri);
+    delete oSRS; 
     
     int succ;
     out[7] = GDALGetRasterNoDataValue(hBand, &succ);
@@ -607,7 +609,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
   CPLErr err;
   
   for (int iband = 0; iband < sbands; iband++) {
-    rasterBand = GDALDataset::FromHandle(hRet)->GetRasterBand(bands_to_read[static_cast<size_t>(iband)]);
+    rasterBand = ( (GDALDataset *) hRet)->GetRasterBand(bands_to_read[static_cast<size_t>(iband)]);
     //rasterBand = GDALGetRasterBand(hRet, bands_to_read[iband]);
     if (iband < 1) {
       // actual_XSize = GDALGetRasterBandXSize(rasterBand); 
@@ -978,7 +980,7 @@ inline NumericVector gdal_read_band_value(GDALDataset *hRet,
     psExtraArg = init_resample_alg(resample);
     CPLErr err;
     
-    rasterBand = GDALDataset::FromHandle(hRet)->GetRasterBand(bands_to_read[0]);
+    rasterBand = ((GDALDataset *)hRet)->GetRasterBand(bands_to_read[0]);
     actual_XSize = rasterBand->GetXSize();
     actual_YSize = rasterBand->GetYSize();
     
