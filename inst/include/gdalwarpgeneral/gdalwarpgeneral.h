@@ -231,7 +231,7 @@ inline List gdal_warp_general(CharacterVector dsn,
     for (int i  = 0; i < window.size(); i++) window[i] = 0;
     
     
-    outlist = gdalraster::gdal_read_band_values(GDALDataset::FromHandle(hRet),
+    outlist = gdalraster::gdal_read_band_values(((GDALDataset*) hRet),
                                                 window,
                                                 bands_to_read,
                                                 band_output_type,
