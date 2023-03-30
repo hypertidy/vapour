@@ -132,22 +132,24 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
   }
   if (!projection[0].empty()) {
     // have to validate this
-    OGRSpatialReference srs;
-    
-    if (srs.SetFromUserInput(projection[0]) != OGRERR_NONE) {
+    OGRSpatialReference *srs = nullptr;
+    srs = new OGRSpatialReference; 
+    if (srs->SetFromUserInput(projection[0]) != OGRERR_NONE) {
       Rprintf("cannot set projection (CRS) from input 'projection' argument, ignoring: '%s'\n", (const char*)projection[0]);
     } else {
       translate_argv.AddString("-a_srs");
       translate_argv.AddString(projection[0]);
     }
+    delete srs; 
   }
   
   GDALDataset* oDS = (GDALDataset*)gdalH_open_dsn(dsn, sds);
   if (geolocation.size() == 2) {
-    OGRSpatialReference  geolsrs;
+    OGRSpatialReference  *geolsrs = nullptr;
+    geolsrs = new OGRSpatialReference; 
     char *pszGeoSrsWKT = nullptr;
-    geolsrs.SetFromUserInput("OGC:CRS84");
-    geolsrs.exportToWkt(&pszGeoSrsWKT);
+    geolsrs->SetFromUserInput("OGC:CRS84");
+    geolsrs->exportToWkt(&pszGeoSrsWKT);
     
     oDS->SetMetadataItem( "SRS", pszGeoSrsWKT, "GEOLOCATION" ); 
     oDS->SetMetadataItem( "X_DATASET", geolocation[0], "GEOLOCATION" );
@@ -159,6 +161,7 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
     oDS->SetMetadataItem( "PIXEL_STEP", "1", "GEOLOCATION" );
     oDS->SetMetadataItem( "LINE_STEP", "1", "GEOLOCATION" );
     CPLFree(pszGeoSrsWKT); 
+    delete geolsrs; 
   }
   
   if (oDS == nullptr) return(nullptr);
@@ -413,21 +416,22 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
     names[5] = "bands";
     
     char *stri;
-    OGRSpatialReference oSRS;
+    OGRSpatialReference *oSRS = nullptr;
+    oSRS = new OGRSpatialReference; 
     const char *proj2;
     proj2 = GDALGetProjectionRef(hDataset);
     char **cwkt = (char **) &proj2;
     
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-    oSRS.importFromWkt(cwkt);
+    oSRS->importFromWkt(cwkt);
 #else
-    oSRS.importFromWkt( (const char**) cwkt);
+    oSRS->importFromWkt( (const char**) cwkt);
 #endif
-    oSRS.exportToProj4(&stri);
+    oSRS->exportToProj4(&stri);
     out[6] =  Rcpp::CharacterVector::create(stri); //Rcpp::CharacterVector::create(stri);
     names[6] = "projstring";
     CPLFree(stri);
-    
+    delete oSRS; 
     int succ;
     out[7] = GDALGetRasterNoDataValue(hBand, &succ);
     names[7] = "nodata_value";
