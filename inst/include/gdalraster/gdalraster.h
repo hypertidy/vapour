@@ -798,7 +798,7 @@ inline NumericVector gdal_read_band_value(GDALDataset *hRet,
   CPLErr err;
   
   for (int iband = 0; iband < sbands; iband++) {
-    rasterBand = GDALDataset::FromHandle(hRet)->GetRasterBand(bands_to_read[static_cast<size_t>(iband)]);
+    rasterBand = hRet->GetRasterBand(bands_to_read[static_cast<size_t>(iband)]);
     //rasterBand = GDALGetRasterBand(hRet, bands_to_read[iband]);
     if (iband < 1) {
       // actual_XSize = GDALGetRasterBandXSize(rasterBand); 

@@ -114,19 +114,11 @@ inline List gdal_warp_general(CharacterVector dsn,
     const char * strforuin = (const char *)target_crs[0];
     OGRErr target_chk =  oTargetSRS->SetFromUserInput(strforuin);
     if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
-    OGRSpatialReference  oSRS;
-    const OGRSpatialReference* poSrcSRS = ((GDALDataset *)poSrcDS[0])->GetSpatialRef();
-    if( poSrcSRS ) {
-      oSRS = *poSrcSRS;
-      if (!oSRS.IsEmpty()) {
-        OGRCoordinateTransformation *poCT;
-        poCT = OGRCreateCoordinateTransformation(&oSRS, oTargetSRS);
-        if( poCT == nullptr )	{
-          delete oTargetSRS;
-          Rcpp::stop( "Transformation to this target CRS not possible from this source dataset, target CRS given: \n\n %s \n\n", 
-                      (char *)  target_crs[0] );
-        }
-        // we add our target projection iff a) source crs is valid b) target crs is valid c) transformation source->target is valid
+   const char *st = NULL;
+    st = ((GDALDataset *)poSrcDS[0])->GetProjectionRef(); 
+    
+    if( *st != '\0') {
+       // we add our target projection iff a) source crs is valid b) target crs is valid c) transformation source->target is valid
         // user may have augmented the array of datasets with source_projection
         // if the source is just not defined we ignore the target with a warning
         papszArg = CSLAddString(papszArg, "-t_srs");
@@ -134,8 +126,7 @@ inline List gdal_warp_general(CharacterVector dsn,
       } else {
         Rcpp::warning("no source crs, target crs is ignored\n");
       }
-    }
-    delete oTargetSRS;
+
   }
   
   if (target_extent.size() > 0) {
