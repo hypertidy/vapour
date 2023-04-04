@@ -174,7 +174,7 @@ image(x)
 
 ## or as a spatial object
 library(terra)
-#> terra 1.7.18
+#> terra 1.7.21
 r <- rast(ext(ex), nrows = dm[2], ncols = dm[1], crs = crs, vals = vals[[1]])
 contour(r, add = TRUE)
 ```

@@ -15,7 +15,7 @@
 #' @param resample resampling algorith used
 #' @param bands band or bands to include, default is first band only (use NULL or a value less that one to obtain all bands)
 #'
-#' @return
+#' @returns pixel values in a list vector per band, or a list of file paths
 #'
 #' @examples
 #' dsn <- "inst/extdata/sst.tif"
