@@ -96,7 +96,7 @@ source string.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">pointzipfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vsi/point_shp.zip"</span>, package <span class="op">=</span> <span class="st">"vapour"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">pointzipfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vsi/point_shp.zip"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">vapour_vsi_list</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"/vsizip/%s"</span>, <span class="va">pointzipfile</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point.dbf" "point.shx" "point.shp"</span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
