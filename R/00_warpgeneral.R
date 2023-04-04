@@ -14,7 +14,7 @@
 #' @param resample 
 #' @param bands 
 #'
-#' @return
+#' @return pixel values in a list vector per band, or a list of file paths
 #' @noRd
 #'
 #' @examples
