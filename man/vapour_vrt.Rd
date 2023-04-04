@@ -96,7 +96,7 @@ See the following links to GDAL and PROJ documentation:
 }
 
 \examples{
-tif <- system.file("extdata", "sst.tif", package = "vapour", mustWork = TRUE)
+tif <- system.file("extdata", "sst.tif", package = "vapour")
 vapour_vrt(tif)
 
 vapour_vrt(tif, bands = c(1, 1))
