@@ -1,21 +1,21 @@
 
 
-#' General warper functions
+#' General raster read and convert
 #' 
-#' The warper is used to convert source/s to an output file or data in memory. 
+#' The warper is used to convert source/s to an output file or to data in memory. 
 #'
 #' Two functions 'gdal_raster_data' and 'gdal_raster_dsn' act like the gdalwarp command line
-#' tool. 
-#' @param dsn 
-#' @param target_crs 
-#' @param target_dim 
-#' @param target_ext 
-#' @param target_res 
-#' @param resample 
-#' @param bands 
+#' tool, a convenience third function 'gdal_raster_image()' works especially for image data. 
+#' 
+#' @param dsn data sources, files, urls, db strings, vrt, etc
+#' @param target_crs projection of the target grid
+#' @param target_dim dimension of the target grid
+#' @param target_ext extent of the target grid
+#' @param target_res resolution of the target grid
+#' @param resample resampling algorith used
+#' @param bands band or bands to include, default is first band only (use NULL or a value less that one to obtain all bands)
 #'
 #' @return
-#' @noRd
 #'
 #' @examples
 #' dsn <- "inst/extdata/sst.tif"
