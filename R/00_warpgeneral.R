@@ -54,7 +54,8 @@ gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
      if (length(target_dim) > 0 ) target_dim <- as.integer(rep(target_dim, length.out = 2L))
      
      if (anyNA(target_dim)) stop("NA values in 'target_dim'")
-     if (any(target_dim <= 0)) stop("all 'target_dim' values must be > 0")
+     if (any(target_dim < 0)) stop("all 'target_dim' values must be >= 0")
+     if (all(target_dim < 1)) stop("one 'target_dim' value must be > 0")
      
    }
    if (is.null(target_res)) {
@@ -97,9 +98,9 @@ gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ex
     target_dim <- integer() #info$dimension
   } else {
     if (length(target_dim) > 0 ) target_dim <- as.integer(rep(target_dim, length.out = 2L))
-    
     if (anyNA(target_dim)) stop("NA values in 'target_dim'")
-    if (any(target_dim <= 0)) stop("all 'target_dim' values must be > 0")
+    if (any(target_dim < 0)) stop("all 'target_dim' values must be >= 0")
+    if (all(target_dim < 1)) stop("one 'target_dim' value must be > 0")
     
   }
   if (is.null(target_res)) {
@@ -109,7 +110,7 @@ gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ex
     if (length(target_res) > 0 ) target_res <- as.numeric(rep(target_res, length.out = 2L))
     
     if (anyNA(target_res)) stop("NA values in 'target_res'")
-    if (any(target_res <= 0)) stop("all 'target_res' values must be > 0")
+    if (any(target_res <= 0)) stop("all 'target_res' values must be >= 0")
   }
   if (is.null(band_output_type)) band_output_type <- "Float64"
   #if (grepl("tif$", out_dsn)) {
