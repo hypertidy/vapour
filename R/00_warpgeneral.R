@@ -12,7 +12,7 @@
 #' @param target_dim dimension of the target grid
 #' @param target_ext extent of the target grid
 #' @param target_res resolution of the target grid
-#' @param resample resampling algorith used
+#' @param resample resampling algorithm used
 #' @param bands band or bands to include, default is first band only (use NULL or a value less that one to obtain all bands)
 #'
 #' @returns pixel values in a list vector per band, or a list of file paths
