@@ -76,6 +76,31 @@
 <span>  bands <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  band_output_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">gdal_raster_dsn</span><span class="op">(</span></span>
+<span>  <span class="va">dsn</span>,</span>
+<span>  target_crs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  target_dim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  target_ext <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  target_res <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  resample <span class="op">=</span> <span class="st">"near"</span>,</span>
+<span>  bands <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  band_output_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  out_dsn <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".tif"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">gdal_raster_image</span><span class="op">(</span></span>
+<span>  <span class="va">dsn</span>,</span>
+<span>  target_crs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  target_dim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  target_ext <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  target_res <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  resample <span class="op">=</span> <span class="st">"near"</span>,</span>
+<span>  bands <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  band_output_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -102,11 +127,23 @@
 
 
 <dt>resample</dt>
-<dd><p>resampling algorith used</p></dd>
+<dd><p>resampling algorithm used</p></dd>
 
 
 <dt>bands</dt>
 <dd><p>band or bands to include, default is first band only (use NULL or a value less that one to obtain all bands)</p></dd>
+
+
+<dt>band_output_type</dt>
+<dd><p>specify the band type, see <a href="vapour_read_raster.html">vapour_read_raster</a></p></dd>
+
+
+<dt>options</dt>
+<dd><p>general options passed to gdal warper</p></dd>
+
+
+<dt>out_dsn</dt>
+<dd><p>use with gdal_raster_dsn optionally set the output file name (or one will be generated)</p></dd>
 
 </dl></div>
     <div id="value">
@@ -123,30 +160,28 @@ tool, a convenience third function 'gdal_raster_image()' works especially for im
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dsn</span> <span class="op">&lt;-</span> <span class="st">"inst/extdata/sst.tif"</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dsn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/sst.tif"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## do nothing, get native</span></span></span>
 <span class="r-in"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu">gdal_raster_data</span><span class="op">(</span><span class="va">dsn</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gdal_raster_data(dsn):</span> could not find function "gdal_raster_data"</span>
-<span class="r-in"><span><span class="fu">imfun</span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in imfun(X):</span> could not find function "imfun"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## set resolution (or dimension, extent, crs, or combination thereof - GDAL will report/resolve incompatible opts)</span></span></span>
+<span class="r-in"><span><span class="co">## set resolution (or dimension, extent, crs, or combination thereof - GDAL </span></span></span>
+<span class="r-in"><span><span class="co">## will report/resolve incompatible opts)</span></span></span>
 <span class="r-in"><span><span class="va">X1</span> <span class="op">&lt;-</span> <span class="fu">gdal_raster_data</span><span class="op">(</span><span class="va">dsn</span>,  target_res <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gdal_raster_data(dsn, target_res = 1):</span> could not find function "gdal_raster_data"</span>
-<span class="r-in"><span><span class="fu">imfun</span><span class="op">(</span><span class="va">X1</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in imfun(X1):</span> could not find function "imfun"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## add a cutline, and cut to it using gdal warp args</span></span></span>
+<span class="r-in"><span><span class="va">cutline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/cutline_sst.gpkg"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">X1c</span> <span class="op">&lt;-</span> <span class="fu">gdal_raster_data</span><span class="op">(</span><span class="va">dsn</span>,  target_res <span class="op">=</span> <span class="fl">.1</span>, options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-cutline"</span>,<span class="va">cutline</span>, <span class="st">"-crop_to_cutline"</span> <span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> data source could not be processed with GDALWarp api</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## warp whole grid to give res</span></span></span>
 <span class="r-in"><span><span class="va">X2</span> <span class="op">&lt;-</span> <span class="fu">gdal_raster_data</span><span class="op">(</span><span class="va">dsn</span>,  target_res <span class="op">=</span> <span class="fl">25000</span>, target_crs <span class="op">=</span> <span class="st">"EPSG:32755"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gdal_raster_data(dsn, target_res = 25000, target_crs = "EPSG:32755"):</span> could not find function "gdal_raster_data"</span>
-<span class="r-in"><span><span class="fu">imfun</span><span class="op">(</span><span class="va">X2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in imfun(X2):</span> could not find function "imfun"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## specify exactly (as per vapour originally)</span></span></span>
-<span class="r-in"><span><span class="va">X3</span> <span class="op">&lt;-</span> <span class="fu">gdal_raster_data</span><span class="op">(</span><span class="va">dsn</span>,  target_ext <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">8e6</span>, target_dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">512</span>, <span class="fl">678</span><span class="op">)</span>, target_crs <span class="op">=</span> <span class="st">"+proj=stere +lon_0=147 +lat_0=-90"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gdal_raster_data(dsn, target_ext = c(-1, 1, -1, 1) * 8e+06, target_dim = c(512,     678), target_crs = "+proj=stere +lon_0=147 +lat_0=-90"):</span> could not find function "gdal_raster_data"</span>
-<span class="r-in"><span><span class="fu">imfun</span><span class="op">(</span><span class="va">X3</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in imfun(X3):</span> could not find function "imfun"</span>
+<span class="r-in"><span><span class="va">X3</span> <span class="op">&lt;-</span> <span class="fu">gdal_raster_data</span><span class="op">(</span><span class="va">dsn</span>,  target_ext <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">8e6</span>, </span></span>
+<span class="r-in"><span> target_dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">512</span>, <span class="fl">678</span><span class="op">)</span>, target_crs <span class="op">=</span> <span class="st">"+proj=stere +lon_0=147 +lat_0=-90"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> </span></span>
+<span class="r-in"><span><span class="va">X4</span> <span class="op">&lt;-</span> <span class="fu">gdal_raster_dsn</span><span class="op">(</span><span class="va">dsn</span>, out_dsn <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".tif"</span><span class="op">)</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
