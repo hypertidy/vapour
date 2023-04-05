@@ -2,6 +2,8 @@
 % Please edit documentation in R/00_warpgeneral.R
 \name{gdal_raster_data}
 \alias{gdal_raster_data}
+\alias{gdal_raster_dsn}
+\alias{gdal_raster_image}
 \title{General raster read and convert}
 \usage{
 gdal_raster_data(
@@ -12,6 +14,31 @@ gdal_raster_data(
   target_res = NULL,
   resample = "near",
   bands = 1L,
+  band_output_type = NULL,
+  options = character()
+)
+
+gdal_raster_dsn(
+  dsn,
+  target_crs = NULL,
+  target_dim = NULL,
+  target_ext = NULL,
+  target_res = NULL,
+  resample = "near",
+  bands = NULL,
+  band_output_type = NULL,
+  options = character(),
+  out_dsn = tempfile(fileext = ".tif")
+)
+
+gdal_raster_image(
+  dsn,
+  target_crs = NULL,
+  target_dim = NULL,
+  target_ext = NULL,
+  target_res = NULL,
+  resample = "near",
+  bands = NULL,
   band_output_type = NULL,
   options = character()
 )
@@ -27,9 +54,15 @@ gdal_raster_data(
 
 \item{target_res}{resolution of the target grid}
 
-\item{resample}{resampling algorith used}
+\item{resample}{resampling algorithm used}
 
 \item{bands}{band or bands to include, default is first band only (use NULL or a value less that one to obtain all bands)}
+
+\item{band_output_type}{specify the band type, see \link{vapour_read_raster}}
+
+\item{options}{general options passed to gdal warper}
+
+\item{out_dsn}{use with \link{gdal_raster_dsn} optionally set the output file name (or one will be generated)}
 }
 \value{
 pixel values in a list vector per band, or a list of file paths
@@ -42,20 +75,25 @@ Two functions 'gdal_raster_data' and 'gdal_raster_dsn' act like the gdalwarp com
 tool, a convenience third function 'gdal_raster_image()' works especially for image data.
 }
 \examples{
-dsn <- "inst/extdata/sst.tif"
+dsn <- system.file("extdata/sst.tif", package = "vapour")
 par(mfrow = c(2, 2))
 ## do nothing, get native
 X <- gdal_raster_data(dsn)
-imfun(X)
 
-## set resolution (or dimension, extent, crs, or combination thereof - GDAL will report/resolve incompatible opts)
+## set resolution (or dimension, extent, crs, or combination thereof - GDAL 
+## will report/resolve incompatible opts)
 X1 <- gdal_raster_data(dsn,  target_res = 1)
-imfun(X1)
+
+## add a cutline, and cut to it using gdal warp args
+cutline <- system.file("extdata/cutline_sst.gpkg", package = "vapour")
+X1c <- gdal_raster_data(dsn,  target_res = .1, options = c("-cutline",cutline, "-crop_to_cutline" ))
+
 ## warp whole grid to give res
 X2 <- gdal_raster_data(dsn,  target_res = 25000, target_crs = "EPSG:32755")
-imfun(X2)
 
 ## specify exactly (as per vapour originally)
-X3 <- gdal_raster_data(dsn,  target_ext = c(-1, 1, -1, 1) * 8e6, target_dim = c(512, 678), target_crs = "+proj=stere +lon_0=147 +lat_0=-90")
-imfun(X3)
+X3 <- gdal_raster_data(dsn,  target_ext = c(-1, 1, -1, 1) * 8e6, 
+ target_dim = c(512, 678), target_crs = "+proj=stere +lon_0=147 +lat_0=-90")
+ 
+X4 <- gdal_raster_dsn(dsn, out_dsn = tempfile(fileext = ".tif"))
 }
