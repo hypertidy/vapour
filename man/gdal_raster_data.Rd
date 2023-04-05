@@ -31,6 +31,9 @@ gdal_raster_data(
 
 \item{bands}{band or bands to include, default is first band only (use NULL or a value less that one to obtain all bands)}
 }
+\value{
+pixel values in a list vector per band, or a list of file paths
+}
 \description{
 The warper is used to convert source/s to an output file or to data in memory.
 }
