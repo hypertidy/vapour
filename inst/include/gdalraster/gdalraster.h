@@ -102,6 +102,7 @@ inline CharacterVector gdal_list_subdatasets(GDALDataset *poDataset) {
 inline GDALDatasetH gdalH_open_dsn(const char * dsn, IntegerVector sds) {
   GDALDatasetH DS; 
   DS = GDALOpen(dsn, GA_ReadOnly);
+  if (!DS) return nullptr; 
   if (sds[0] > 0 && gdal_has_subdataset((GDALDataset*) DS)) {
     CharacterVector sdsnames = gdal_subdataset_1((GDALDataset*)DS, sds[0]);
     if (sdsnames.length() > 0 && !sdsnames[0].empty()) {
