@@ -61,8 +61,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.94" id="vapour-094">vapour 0.94<a class="anchor" aria-label="anchor" href="#vapour-094"></a></h2>
-<ul><li><p>The extent reported by ‘vapour_raster_info()’ is now correct for the general case including non-zero skew geotransforms.</p></li>
+<h2 class="page-header" data-toc-text="0.9.5" id="vapour-095">vapour 0.9.5<a class="anchor" aria-label="anchor" href="#vapour-095"></a></h2>
+<ul><li><p><code><a href="../reference/vapour_vrt.html">vapour_vrt()</a></code> gains an ‘overview’ argument. Wish of <a href="https://github.com/hypertidy/vapour/issues/186" class="external-link uri">https://github.com/hypertidy/vapour/issues/186</a></p></li>
+<li><p><code><a href="../reference/gdal_raster_data.html">gdal_raster_data()</a></code>, <code><a href="../reference/gdal_raster_data.html">gdal_raster_dsn()</a></code>, and <code><a href="../reference/gdal_raster_data.html">gdal_raster_image()</a></code> now allow a source with geolocation arrays to be warped to a non-longlat projection.</p></li>
+<li><p>The extent reported by ‘vapour_raster_info()’ is now correct for the general case including non-zero skew geotransforms.</p></li>
 <li><p>‘vapour_raster_info()’ gains a ‘corners’ element.</p></li>
 <li><p>All functions that read or query data source/s now check for tilde “~” at the beginning of the string/s, and normalize the path as needed. Reported by <a href="https://github.com/Sibada" class="external-link">@Sibada</a> in <a href="https://github.com/hypertidy/vapour/issues/193" class="external-link">#193</a>.</p></li>
 <li><p>vapour now imports nanoarrow and includes internal experimental support for GDAL (&gt;= 3.6) stream reading (RFC 86). Nothing is exposed for general use yet.</p></li>

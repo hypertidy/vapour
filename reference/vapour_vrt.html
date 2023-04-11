@@ -81,7 +81,8 @@ it is missing.</p>
 <span>  geolocation <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  relative_to_vrt <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  nomd <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  nomd <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  overview <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -121,6 +122,10 @@ it is missing.</p>
 
 <dt>nomd</dt>
 <dd><p>if <code>TRUE</code> the Metadata tag is removed from the resulting VRT (it can be quite substantial)</p></dd>
+
+
+<dt>overview</dt>
+<dd><p>pick an integer overview from the source (0L is highest resolution, default -1L does nothing)</p></dd>
 
 </dl></div>
     <div id="value">
