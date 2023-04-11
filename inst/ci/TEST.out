@@ -1,0 +1,168 @@
+i Testing vapour
+v | F W S  OK | Context
+
+/ |         0 | api-funs                                                        
+\ |         2 | api-funs                                                        
+v |         9 | api-funs [0.2s]
+
+/ |         0 | crs-less-warp                                                   Warning 1: No UNIDATA NC_GLOBAL:Conventions attribute
+Warning 1: No UNIDATA NC_GLOBAL:Conventions attribute
+ERROR 1: netcdf error #-57 : NetCDF: Start+count exceeds dimension bound .
+at (netcdfdataset.cpp,SetProjectionFromVar,3478)
+
+Warning 1: No 1D variable is indexed by dimension month
+Warning 1: No UNIDATA NC_GLOBAL:Conventions attribute
+ERROR 1: netcdf error #-57 : NetCDF: Start+count exceeds dimension bound .
+at (netcdfdataset.cpp,SetProjectionFromVar,3478)
+
+Warning 1: No 1D variable is indexed by dimension month
+Warning 1: No UNIDATA NC_GLOBAL:Conventions attribute
+ERROR 1: netcdf error #-57 : NetCDF: Start+count exceeds dimension bound .
+at (netcdfdataset.cpp,SetProjectionFromVar,3478)
+
+Warning 1: No 1D variable is indexed by dimension month
+
+- |         1 | crs-less-warp                                                   Warning 1: No UNIDATA NC_GLOBAL:Conventions attribute
+ERROR 1: netcdf error #-57 : NetCDF: Start+count exceeds dimension bound .
+at (netcdfdataset.cpp,SetProjectionFromVar,3478)
+
+Warning 1: No 1D variable is indexed by dimension month
+Warning 1: No UNIDATA NC_GLOBAL:Conventions attribute
+ERROR 1: netcdf error #-57 : NetCDF: Start+count exceeds dimension bound .
+at (netcdfdataset.cpp,SetProjectionFromVar,3478)
+
+Warning 1: No UNIDATA NC_GLOBAL:Conventions attribute
+ERROR 1: netcdf error #-57 : NetCDF: Start+count exceeds dimension bound .
+at (netcdfdataset.cpp,SetProjectionFromVar,3478)
+
+Warning 1: No UNIDATA NC_GLOBAL:Conventions attribute
+ERROR 1: netcdf error #-57 : NetCDF: Start+count exceeds dimension bound .
+at (netcdfdataset.cpp,SetProjectionFromVar,3478)
+
+Warning 1: No 1D variable is indexed by dimension month
+
+\ |         2 | crs-less-warp                                                   
+v |         2 | crs-less-warp [0.9s]
+
+/ |         0 | features                                                        
+/ |         0 | test-features.R                                                 
+- |         1 | test-features.R                                                 
+| |        15 | test-features.R                                                 
+/ |        16 | test-features.R                                                 
+- |        17 | test-features.R                                                 
+\ |        22 | test-features.R                                                 
+/ |        24 | test-features.R                                                 
+\ |        26 | test-features.R                                                 
+- |        29 | test-features.R                                                 
+- |        33 | test-features.R                                                 
+| |        39 | test-features.R                                                 
+- |        45 | test-features.R                                                 
+- |        49 | test-features.R                                                 Warning 1: No translation from Polar_Stereographic to MapInfo known
+Warning 6: Unhandled projection method Polar_Stereographic
+
+| |        51 | test-features.R                                                 
+| |        55 | test-features.R                                                 
+/ |        60 | test-features.R                                                 
+\ |        66 | test-features.R                                                 
+\ |        70 | test-features.R                                                 
+| |        71 | test-features.R                                                 
+| |        75 | test-features.R                                                 
+| |        83 | test-features.R                                                 
+/ |        84 | test-features.R                                                 
+| |        87 | test-features.R                                                 
+\ |        90 | test-features.R                                                 
+- |        97 | test-features.R                                                 
+/ |       104 | test-features.R                                                 
+v |       106 | test-features.R [4.1s]
+
+/ |         0 | gdal                                                            
+v |         2 | gdal
+
+/ |         0 | helpers                                                         
+/ |         0 | test-helpers                                                    
+\ |         2 | test-helpers                                                    
+- |         5 | test-helpers                                                    
+v |         5 | test-helpers [0.3s]
+
+/ |         0 | layers                                                          
+| |         3 | layers                                                          
+/ |         4 | layers                                                          
+- |         5 | layers                                                          
+\ |         6 | layers                                                          
+| |         7 | layers                                                          
+/ |         8 | layers                                                          
+- |         9 | layers                                                          
+\ |        10 | layers                                                          
+| |        11 | layers                                                          
+- |        13 | layers                                                          
+\ |        14 | layers                                                          
+| |        15 | layers                                                          
+/ |        16 | layers                                                          
+/ |        20 | layers                                                          
+/ |        24 | layers                                                          
+/ |        28 | layers                                                          
+v |        28 | layers [4.6s]
+
+/ |         0 | limit_skip_n                                                    
+/ |         0 | test-limit_skip_n                                               
+/ |         4 | test-limit_skip_n                                               
+- |         9 | test-limit_skip_n                                               
+| |        15 | test-limit_skip_n                                               
+- |        21 | test-limit_skip_n                                               
+- |        25 | test-limit_skip_n                                               
+v |        25 | test-limit_skip_n [0.6s]
+
+/ |         0 | names                                                           
+/ |         0 | test-names                                                      
+v |         1 | test-names
+
+/ |         0 | raster-info                                                     
+/ |         0 | test-raster-info                                                
+| |         3 | test-raster-info                                                
+v |        13 | test-raster-info [0.2s]
+
+/ |         0 | raster-read                                                     
+| |         3 | raster-read                                                     
+| |        19 | raster-read                                                     
+/ |        36 | raster-read                                                     
+v |        41 | raster-read [0.4s]
+
+/ |         0 | raster_read_block                                               
+/ |         8 | raster_read_block                                               
+v |        11 | raster_read_block [0.1s]
+
+/ |         0 | rasterio-resampling                                             
+/ |         0 | rasterio-resampling                                             
+/ |         8 | rasterio-resampling                                             
+\ |        14 | rasterio-resampling                                             
+\ |        22 | rasterio-resampling                                             
+/ |        28 | rasterio-resampling                                             
+| |        31 | rasterio-resampling                                             
+v |        31 | rasterio-resampling [0.6s]
+
+/ |         0 | stress                                                          
+/ |         0 | test-on-rhub                                                    
+v |         1 | test-on-rhub
+
+/ |         0 | tiles                                                           
+v |         1 | tiles
+
+/ |         0 | utils                                                           
+/ |         0 | test-utils                                                      
+v |         8 | test-utils
+
+/ |         0 | vrt                                                             
+/ |         0 | vsi_list                                                        
+v |         1 | vsi_list
+
+/ |         0 | warper                                                          
+/ |         8 | warper                                                          ERROR 4: afile: No such file or directory
+
+/ |        16 | warper                                                          
+| |        19 | warper                                                          
+v |        19 | warper [0.3s]
+
+== Results =====================================================================
+Duration: 12.6 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 304 ]
