@@ -60,7 +60,7 @@ List warp_in_memory_gdal_cpp(CharacterVector dsn,
                              CharacterVector band_output_type, 
                      
                              CharacterVector options, 
-                             LogicalVector nomd) {
+                             LogicalVector nomd, IntegerVector overview) {
   return gdalwarpmem::gdal_warp_in_memory(dsn,
                                           source_WKT,
                                           target_WKT,
@@ -71,5 +71,5 @@ List warp_in_memory_gdal_cpp(CharacterVector dsn,
                                           resample,
                                           silent,
                                           band_output_type, 
-                                        options, nomd);
+                                        options, nomd, overview);
 }

@@ -29,7 +29,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 //CharacterVector open_options, 
                                 // CharacterVector output_dataset_options,
                                 CharacterVector options, 
-                                LogicalVector nomd) {
+                                LogicalVector nomd, 
+                                IntegerVector overview) {
   
   
   GDALDatasetH *poSrcDS;
@@ -42,7 +43,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     if (augment) {
       // not dealing with subdatasets here atm
       // not dealing with source bands here, bands applies at read beloew
-      poSrcDS[i] = gdalraster::gdalH_open_avrt(source_filename[i],   source_extent, source_WKT, 0, 0, "");
+      poSrcDS[i] = gdalraster::gdalH_open_avrt(source_filename[i],   source_extent, source_WKT, 0, 0, "", overview);
     } else {
       poSrcDS[i] = gdalraster::gdalH_open_dsn(source_filename[i],   0); 
       

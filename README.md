@@ -81,8 +81,8 @@ remotes::install_github("hypertidy/vapour")
 
 You will need development tools for building R packages.
 
-On Linux, I’m using latest ubuntu and R usually, check
-<https://cran.r-project.org/bin/linux/ubuntu/README>
+On Linux, I’m using latest ubuntu and R usually, check CRAN on ubuntu
+(search for “ubuntu cran”).
 
 then
 

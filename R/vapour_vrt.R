@@ -58,6 +58,7 @@
 #' @param geolocation vector of 2 dsn to longitude, latitude geolocation array sources
 #' @return VRT character string (for use by GDAL-capable tools, i.e. reading raster)
 #' @param nomd if `TRUE` the Metadata tag is removed from the resulting VRT (it can be quite substantial)
+#' @param overview  pick an integer overview from the source (0L is highest resolution, default -1L does nothing)
 #' @export
 #'
 #' @examples
@@ -66,7 +67,7 @@
 #' 
 #' vapour_vrt(tif, bands = c(1, 1))
 #' 
-vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = NULL, geolocation = NULL, ..., relative_to_vrt = FALSE, nomd = FALSE) {
+vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = NULL, geolocation = NULL, ..., relative_to_vrt = FALSE, nomd = FALSE, overview = -1L) {
   x <- .check_dsn_multiple_naok(x)
   
   if (!relative_to_vrt) { 
@@ -126,8 +127,12 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
   }
    if (!is.null(geolocation) && (length(geolocation) != 2 || !is.character(geolocation) || anyNA(geolocation))) {
     geolocation <- ""
-  }
-  raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation, nomd)
+   }
+  if (is.null(overview)) overview <- -1L
+  overview <- as.integer(overview[1])
+  if (is.na(overview)) overview <- -1L
+
+  raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation, nomd, overview)
 }
 
   

@@ -21,7 +21,8 @@ vapour_warp_raster(
   transformation_options = "",
   open_options = "",
   options = "",
-  nomd = FALSE
+  nomd = FALSE,
+  overview = -1L
 )
 }
 \arguments{
@@ -58,6 +59,8 @@ vapour_warp_raster(
 \item{options}{character vectors of options as per the gdalwarp command line}
 
 \item{nomd}{if \code{TRUE} the Metadata tag is removed from the resulting VRT (it can be quite substantial)}
+
+\item{overview}{pick an integer overview from the source (0L is highest resolution, default -1L does nothing)}
 }
 \value{
 list of vectors (only 1 for 'band') of numeric values, in raster order

@@ -1,5 +1,7 @@
 # vapour 0.9.5
 
+* `vapour_vrt()` gains an 'overview' argument. Wish of https://github.com/hypertidy/vapour/issues/186
+
 * `gdal_raster_data()`, `gdal_raster_dsn()`, and `gdal_raster_image()` now allow a source with geolocation arrays to be warped to a non-longlat projection. 
 
 * The extent reported by 'vapour_raster_info()' is now correct for the general case including non-zero skew geotransforms. 
