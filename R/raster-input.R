@@ -507,7 +507,6 @@ vapour_warp_raster <- function(x, bands = NULL,
     stop("manually setting -r, -te, -t_srs, -of, -s_srs, -ot options not allowed \n ( these controlled by arguments 'resample', 'target_extent', 'target_projection', '<MEM>', 'source_projection', 'band_output_type')")
   } 
   if (any(grepl("-te_srs", options))) stop("setting '-te_srs' projection of target extent is not supported") 
-  
   vals <- warp_in_memory_gdal_cpp(x, source_WKT = source_projection,
                                   target_WKT = projection,
                                   target_extent = as.numeric(extent),
