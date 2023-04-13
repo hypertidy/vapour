@@ -23,10 +23,21 @@ using namespace Rcpp;
 // o allow control over wkbNDR and wkbVariant
 // see here for the constants for the format variants
 // http://www.gdal.org/ogr__core_8h.html#a6716bd3399c31e7bc8b0fd94fd7d9ba6a7459e8d11fa69e89271771c8d0f265d8
-inline RawVector gdal_geometry_raw(OGRFeature *poFeature) {
-  if (poFeature->GetGeometryRef()) {
-    Rcpp::RawVector raw(poFeature->GetGeometryRef()->WkbSize());
-    poFeature->GetGeometryRef()->exportToWkb(wkbNDR, &(raw[0]), wkbVariantIso);
+inline RawVector gdal_geometry_raw(OGRFeature *poFeature, NumericVector simplify) {
+  OGRGeometry *poGeom; 
+  if (simplify[0] > 0) {
+    poGeom =
+      poFeature->GetGeometryRef()->SimplifyPreserveTopology(simplify[0]);
+
+  } else {
+    poGeom =
+      poFeature->GetGeometryRef(); 
+  }
+  
+  if (poGeom) {
+    Rcpp::RawVector raw(poGeom->WkbSize());
+    poGeom->exportToWkb(wkbNDR, &(raw[0]), wkbVariantIso);
+    if (simplify[0]) delete poGeom;
     return raw;
     
   } else {
@@ -191,12 +202,13 @@ inline NumericVector layer_read_fids_ia(OGRLayer *poLayer, NumericVector ia) {
 }
 
 
-inline List feature_read_geom(OGRFeature *poFeature, CharacterVector format) {
+inline List feature_read_geom(OGRFeature *poFeature, CharacterVector format, NumericVector simplify) {
   List out(1); 
+
   // work through format
   // FIXME: get rid of "geometry"
   if ((format[0] == "wkb")) { // || (format[0] == "geometry")) {
-    out[0] = gdal_geometry_raw(poFeature);
+    out[0] = gdal_geometry_raw(poFeature, simplify);
   }
   if (format[0] == "wkt") {
     out[0] = gdal_geometry_wkt(poFeature);
@@ -217,7 +229,7 @@ inline List feature_read_geom(OGRFeature *poFeature, CharacterVector format) {
 }
 /// layer READ GEOMS ----------------------------------------------------------------------------
 
-inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, NumericVector ij) {
+inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, NumericVector ij, NumericVector simplify) {
   OGRFeature *poFeature;
   R_xlen_t st = (R_xlen_t)ij[0]; 
   R_xlen_t en = (R_xlen_t)ij[1]; 
@@ -228,7 +240,7 @@ inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, Numeri
   
   while(ii <= en &&  (poFeature = poLayer->GetNextFeature()) != NULL ) {
     if (ii >= st) {
-      out[cnt] = feature_read_geom(poFeature, format)[0]; 
+      out[cnt] = feature_read_geom(poFeature, format, simplify)[0]; 
       cnt++;
     }
     OGRFeature::DestroyFeature(poFeature);
@@ -240,7 +252,7 @@ inline List layer_read_geom_ij(OGRLayer *poLayer, CharacterVector format, Numeri
   return out;
 }
 
-inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
+inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format, NumericVector simplify) {
   R_xlen_t nFeature = poLayer->GetFeatureCount();
   
   NumericVector ij(2);
@@ -248,11 +260,11 @@ inline List layer_read_geom_all(OGRLayer *poLayer, CharacterVector format) {
   /// if there are no features we get 0 fields allocation
   ij[1] = (double)(nFeature - 1); 
   
-  List out = layer_read_geom_ij(poLayer, format, ij);
+  List out = layer_read_geom_ij(poLayer, format, ij, simplify);
   return out;
 }
 
-inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, NumericVector ia) {
+inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, NumericVector ia, NumericVector simplify) {
   OGRFeature *poFeature;
   
   poLayer->ResetReading();
@@ -263,7 +275,7 @@ inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, Numeri
   
   while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
     if (ii == static_cast<R_xlen_t>(ia[cnt])) {
-      out[cnt] = feature_read_geom(poFeature, format)[0]; 
+      out[cnt] = feature_read_geom(poFeature, format, simplify)[0]; 
       cnt++;
       
     }
@@ -275,7 +287,7 @@ inline List layer_read_geom_ia(OGRLayer *poLayer, CharacterVector format, Numeri
   return out;
 }
 
-inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, NumericVector fa) {
+inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, NumericVector fa, NumericVector simplify) {
   OGRFeature *poFeature;
   //poLayer->ResetReading();
   
@@ -284,7 +296,7 @@ inline List layer_read_geom_fa(OGRLayer *poLayer, CharacterVector format, Numeri
   for (R_xlen_t ii = 0; ii < fa.length(); ii++) {
     GIntBig feature_id = (GIntBig)fa[ii];
     poFeature = poLayer->GetFeature(feature_id);
-    out[ii] = feature_read_geom(poFeature, format)[0]; 
+    out[ii] = feature_read_geom(poFeature, format, simplify)[0]; 
     OGRFeature::DestroyFeature(poFeature);
   }
   return out;
@@ -631,7 +643,7 @@ inline NumericVector dsn_read_fids_ia(CharacterVector dsn, IntegerVector layer,
 }
 inline List dsn_read_geom_all(CharacterVector dsn, IntegerVector layer,
                               CharacterVector sql, NumericVector ex,
-                              CharacterVector format) {
+                              CharacterVector format, NumericVector simplify) {
   
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -640,7 +652,7 @@ inline List dsn_read_geom_all(CharacterVector dsn, IntegerVector layer,
     Rcpp::stop("Open failed.\n");
   }
   OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-  List out = layer_read_geom_all(poLayer, format);
+  List out = layer_read_geom_all(poLayer, format, simplify);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
     poDS->ReleaseResultSet(poLayer);
@@ -650,7 +662,8 @@ inline List dsn_read_geom_all(CharacterVector dsn, IntegerVector layer,
 }
 inline List dsn_read_geom_ij(CharacterVector dsn, IntegerVector layer,
                              CharacterVector sql, NumericVector ex,
-                             CharacterVector format, NumericVector ij) {
+                             CharacterVector format, NumericVector ij, 
+                             NumericVector simplify) {
   
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -659,7 +672,7 @@ inline List dsn_read_geom_ij(CharacterVector dsn, IntegerVector layer,
     Rcpp::stop("Open failed.\n");
   }
   OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-  List out = layer_read_geom_ij(poLayer, format, ij);
+  List out = layer_read_geom_ij(poLayer, format, ij, simplify);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
     poDS->ReleaseResultSet(poLayer);
@@ -671,7 +684,8 @@ inline List dsn_read_geom_ij(CharacterVector dsn, IntegerVector layer,
 
 inline List dsn_read_geom_ia(CharacterVector dsn, IntegerVector layer,
                              CharacterVector sql, NumericVector ex,
-                             CharacterVector format, NumericVector ia) {
+                             CharacterVector format, NumericVector ia, 
+                             NumericVector simplify) {
   
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -680,7 +694,7 @@ inline List dsn_read_geom_ia(CharacterVector dsn, IntegerVector layer,
     Rcpp::stop("Open failed.\n");
   }
   OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-  List out = layer_read_geom_ia(poLayer, format, ia);
+  List out = layer_read_geom_ia(poLayer, format, ia, simplify);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
     poDS->ReleaseResultSet(poLayer);
@@ -691,7 +705,8 @@ inline List dsn_read_geom_ia(CharacterVector dsn, IntegerVector layer,
 
 inline List dsn_read_geom_fa(CharacterVector dsn, IntegerVector layer,
                              CharacterVector sql, NumericVector ex,
-                             CharacterVector format, NumericVector fa) {
+                             CharacterVector format, NumericVector fa,
+                               NumericVector simplify){
   
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -700,7 +715,7 @@ inline List dsn_read_geom_fa(CharacterVector dsn, IntegerVector layer,
     Rcpp::stop("Open failed.\n");
   }
   OGRLayer *poLayer = gdallibrary::gdal_layer(poDS, layer, sql, ex);
-  List out = layer_read_geom_fa(poLayer, format, fa);
+  List out = layer_read_geom_fa(poLayer, format, fa, simplify);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
     poDS->ReleaseResultSet(poLayer);

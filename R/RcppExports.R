@@ -81,20 +81,20 @@ vapour_layer_extent_cpp <- function(dsource, layer, sql, ex) {
     .Call('_vapour_vapour_layer_extent_cpp', PACKAGE = 'vapour', dsource, layer, sql, ex)
 }
 
-gdal_dsn_read_geom_all <- function(dsn, layer, sql, ex, format) {
-    .Call('_vapour_gdal_dsn_read_geom_all', PACKAGE = 'vapour', dsn, layer, sql, ex, format)
+gdal_dsn_read_geom_all <- function(dsn, layer, sql, ex, format, simplify) {
+    .Call('_vapour_gdal_dsn_read_geom_all', PACKAGE = 'vapour', dsn, layer, sql, ex, format, simplify)
 }
 
-gdal_dsn_read_geom_ij <- function(dsn, layer, sql, ex, format, ij) {
-    .Call('_vapour_gdal_dsn_read_geom_ij', PACKAGE = 'vapour', dsn, layer, sql, ex, format, ij)
+gdal_dsn_read_geom_ij <- function(dsn, layer, sql, ex, format, ij, simplify) {
+    .Call('_vapour_gdal_dsn_read_geom_ij', PACKAGE = 'vapour', dsn, layer, sql, ex, format, ij, simplify)
 }
 
-gdal_dsn_read_geom_ia <- function(dsn, layer, sql, ex, format, ia) {
-    .Call('_vapour_gdal_dsn_read_geom_ia', PACKAGE = 'vapour', dsn, layer, sql, ex, format, ia)
+gdal_dsn_read_geom_ia <- function(dsn, layer, sql, ex, format, ia, simplify) {
+    .Call('_vapour_gdal_dsn_read_geom_ia', PACKAGE = 'vapour', dsn, layer, sql, ex, format, ia, simplify)
 }
 
-gdal_dsn_read_geom_fa <- function(dsn, layer, sql, ex, format, fa) {
-    .Call('_vapour_gdal_dsn_read_geom_fa', PACKAGE = 'vapour', dsn, layer, sql, ex, format, fa)
+gdal_dsn_read_geom_fa <- function(dsn, layer, sql, ex, format, fa, simplify) {
+    .Call('_vapour_gdal_dsn_read_geom_fa', PACKAGE = 'vapour', dsn, layer, sql, ex, format, fa, simplify)
 }
 
 gdal_dsn_read_fields_all <- function(dsn, layer, sql, ex, fid_column_name) {
@@ -129,8 +129,8 @@ read_fields_gdal_cpp <- function(dsn, layer, sql, limit_n, skip_n, ex, fid_colum
     .Call('_vapour_read_fields_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, limit_n, skip_n, ex, fid_column_name)
 }
 
-read_geometry_gdal_cpp <- function(dsn, layer, sql, what, textformat, limit_n, skip_n, ex) {
-    .Call('_vapour_read_geometry_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, what, textformat, limit_n, skip_n, ex)
+read_geometry_gdal_cpp <- function(dsn, layer, sql, what, textformat, limit_n, skip_n, ex, simplify) {
+    .Call('_vapour_read_geometry_gdal_cpp', PACKAGE = 'vapour', dsn, layer, sql, what, textformat, limit_n, skip_n, ex, simplify)
 }
 
 read_fids_gdal_cpp <- function(dsn, layer, sql, limit_n, skip_n, ex) {

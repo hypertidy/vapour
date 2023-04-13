@@ -28,21 +28,37 @@ validate_limit_fa <- function(x) {
 
 #' @name vapour_read_geometry
 #' @export
-vapour_read_geometry_ia <- function(dsource, layer = 0L, sql = "", extent = NA, ia = NULL) {
+vapour_read_geometry_ia <- function(dsource, layer = 0L, sql = "", extent = NA, ia = NULL, simplify = NULL) {
   dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   ia <- validate_limit_ia(ia)
   extent <- validate_extent(extent, sql)
-  gdal_dsn_read_geom_ia( dsn = dsource, layer = layer, sql = sql, ex = extent, format = "wkb",  ia = ia)
+  if (!is.null(simplify)) {
+    if (is.na(simplify[1]) || length(simplify) < 1 || !is.numeric(simplify) || (!simplify[1L] >0 )) {
+      simplify <- 0.0
+    }
+  } else {
+    simplify <- 0.0
+  }
+  
+  gdal_dsn_read_geom_ia( dsn = dsource, layer = layer, sql = sql, ex = extent, format = "wkb",  ia = ia, simplify)
 }
 #' @name vapour_read_geometry
 #' @export
-vapour_read_geometry_ij <- function(dsource, layer = 0L, sql = "", extent = NA, ij = NULL) {
+vapour_read_geometry_ij <- function(dsource, layer = 0L, sql = "", extent = NA, ij = NULL, simplify = NULL) {
   dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   ij <- validate_limit_ij(ij)
   extent <- validate_extent(extent, sql)
-  gdal_dsn_read_geom_ij( dsn = dsource, layer = layer, sql = sql, ex = extent, format = "wkb",  ij = ij)
+  if (!is.null(simplify)) {
+    if (is.na(simplify[1]) || length(simplify) < 1 || !is.numeric(simplify) || (!simplify[1L] >0 )) {
+      simplify <- 0.0
+    }
+  } else {
+    simplify <- 0.0
+  }
+  
+  gdal_dsn_read_geom_ij( dsn = dsource, layer = layer, sql = sql, ex = extent, format = "wkb",  ij = ij, simplify)
 }
 
 

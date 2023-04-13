@@ -164,24 +164,40 @@ vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ...) 
 #' txtpointwkt <- vapour_read_geometry_text(pfile, textformat = "wkt")
 #' @export
 #' @name vapour_read_geometry
-vapour_read_geometry <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+vapour_read_geometry <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA, simplify = NULL) {
   dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
-  read_geometry_gdal_cpp( dsn = dsource, layer = layer, sql = sql, what = "wkb", textformat = "", limit_n = limit_n, skip_n = skip_n, ex = extent)
+  if (!is.null(simplify)) {
+    if (is.na(simplify[1]) || length(simplify) < 1 || !is.numeric(simplify) || (!simplify[1L] >0 )) {
+      simplify <- 0.0
+    }
+  } else {
+    simplify <- 0.0
+  }
+  print(simplify)
+  read_geometry_gdal_cpp( dsn = dsource, layer = layer, sql = sql, what = "wkb", textformat = "", limit_n = limit_n, skip_n = skip_n, ex = extent, simplify)
 }
 
 #' @export
 #' @rdname vapour_read_geometry
-vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat = "json", limit_n = NULL, skip_n = 0, extent = NA) {
+vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat = "json", limit_n = NULL, skip_n = 0, extent = NA, simplify = NULL) {
   dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   textformat = match.arg (tolower (textformat), c ("json", "gml", "kml", "wkt"))
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
+  if (!is.null(simplify)) {
+    if (is.na(simplify[1]) || length(simplify) < 1 || !is.numeric(simplify) || (!simplify[1L] >0 )) {
+      simplify <- 0.0
+    }
+  } else {
+    simplify <- 0.0
+  }
+  
   read_geometry_gdal_cpp(dsn = dsource, layer = layer, sql = sql, what = textformat,
-                           textformat = "", limit_n = limit_n, skip_n = skip_n, ex = extent)
+                           textformat = "", limit_n = limit_n, skip_n = skip_n, ex = extent, simplify)
 }
 
 

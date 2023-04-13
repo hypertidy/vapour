@@ -71,29 +71,29 @@ Rcpp::NumericVector vapour_layer_extent_cpp(CharacterVector dsource,
 
 // [[Rcpp::export]]
 List gdal_dsn_read_geom_all(CharacterVector dsn, IntegerVector layer,
-                            CharacterVector sql, NumericVector ex, CharacterVector format) {
-  return gdalgeometry::dsn_read_geom_all(dsn, layer, sql, ex, format);
+                            CharacterVector sql, NumericVector ex, CharacterVector format, NumericVector simplify) {
+  return gdalgeometry::dsn_read_geom_all(dsn, layer, sql, ex, format, simplify);
 }
 
 // [[Rcpp::export]]
 List gdal_dsn_read_geom_ij(CharacterVector dsn, IntegerVector layer,
                            CharacterVector sql, NumericVector ex,
-                           CharacterVector format, NumericVector ij) {
-  return gdalgeometry::dsn_read_geom_ij(dsn, layer, sql, ex, format, ij);
+                           CharacterVector format, NumericVector ij, NumericVector simplify) {
+  return gdalgeometry::dsn_read_geom_ij(dsn, layer, sql, ex, format, ij, simplify);
 }
 
 // [[Rcpp::export]]
 List gdal_dsn_read_geom_ia(CharacterVector dsn, IntegerVector layer,
                            CharacterVector sql, NumericVector ex,
-                           CharacterVector format, NumericVector ia) {
-  return gdalgeometry::dsn_read_geom_ia(dsn, layer, sql, ex, format, ia);
+                           CharacterVector format, NumericVector ia,NumericVector simplify) {
+  return gdalgeometry::dsn_read_geom_ia(dsn, layer, sql, ex, format, ia, simplify);
 }
 
 // [[Rcpp::export]]
 List gdal_dsn_read_geom_fa(CharacterVector dsn, IntegerVector layer,
                            CharacterVector sql, NumericVector ex,
-                           CharacterVector format, NumericVector fa) {
-  return gdalgeometry::dsn_read_geom_fa(dsn, layer, sql, ex, format, fa);
+                           CharacterVector format, NumericVector fa,NumericVector simplify) {
+  return gdalgeometry::dsn_read_geom_fa(dsn, layer, sql, ex, format, fa, simplify);
 }
 
 // [[Rcpp::export]]
@@ -170,7 +170,8 @@ List read_geometry_gdal_cpp(CharacterVector dsn,
                             CharacterVector textformat,
                             IntegerVector limit_n,
                             IntegerVector skip_n,
-                            NumericVector ex ) {
+                            NumericVector ex, 
+                            NumericVector simplify) {
   // validate_limit_n ensures it is 0 or greater
   // but, if greater we must ensure it won't exceed the feature count
   // we get two warnings if the extent is poorly ordered, see 171 but I don't want to fix that atm
@@ -179,7 +180,7 @@ List read_geometry_gdal_cpp(CharacterVector dsn,
                                                       feature_count_gdal_cpp(dsn, layer, sql, ex)); 
 
 
-    return gdalgeometry::dsn_read_geom_ij(dsn, layer, sql, ex, what, ij); 
+    return gdalgeometry::dsn_read_geom_ij(dsn, layer, sql, ex, what, ij, simplify); 
 }
 
 // [[Rcpp::export]]
