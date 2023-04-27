@@ -38,7 +38,9 @@ Get all the feature thingys.
 
 ### IJ
 
-Get a subset of feature thingys i:j - their positional index
+Get a subset of feature thingys i:j - their positional index. 
+
+For `c(0, 0)` get the first feature, for `c(0, n - 1)` get all of them. For `c(0, -1)` that is a special case, there are no features. 
 
 ```C++
 

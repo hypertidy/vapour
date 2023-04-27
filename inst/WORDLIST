@@ -37,7 +37,9 @@ GTiff
 GeoJSON
 GeoPackage
 GeoTIFF
+Geodatabase
 GeometryCollection
+Geopackage
 Geospatial
 GetFeatureCount
 GetPointsInternal
@@ -55,6 +57,7 @@ LineString
 MEM
 MUR
 MacOS
+MapInfo
 MultiLineString
 MultiPoint
 MultiPolygon
@@ -135,6 +138,7 @@ enum
 env
 executesql
 favour
+fids
 filelist
 filepath
 focussed
@@ -149,7 +153,6 @@ gdalraster
 gdalwarp
 gdalwarpmem
 geo
-geoloation
 geolocation
 georeferenced
 georeferencing
@@ -191,8 +194,8 @@ nrows
 ogr
 oo
 ovr
-persientent
 podaac
+pre
 proj
 projstring
 rasters

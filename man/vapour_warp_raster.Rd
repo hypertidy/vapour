@@ -20,7 +20,9 @@ vapour_warp_raster(
   warp_options = "",
   transformation_options = "",
   open_options = "",
-  options = ""
+  options = "",
+  nomd = FALSE,
+  overview = -1L
 )
 }
 \arguments{
@@ -55,6 +57,10 @@ vapour_warp_raster(
 \item{open_options}{character vector of options, as in gdalwarp -oo - see Details}
 
 \item{options}{character vectors of options as per the gdalwarp command line}
+
+\item{nomd}{if \code{TRUE} the Metadata tag is removed from the resulting VRT (it can be quite substantial)}
+
+\item{overview}{pick an integer overview from the source (0L is highest resolution, default -1L does nothing)}
 }
 \value{
 list of vectors (only 1 for 'band') of numeric values, in raster order
@@ -150,7 +156,7 @@ In future all 'source_*' arguments may be deprecated in favour of
 augmentation by 'vapour_vrt()'.
 
 Common inputs for \code{projection} are WKT variants, 'AUTH:CODE's e.g.
-'EPSG:3031', the 'OGC:CRS84' for lon,lat WGS84, 'ESRI:<code>' and other
+'EPSG:3031', the 'OGC:CRS84' for lon,lat WGS84, 'ESRI:code' and other
 authority variants, and datum names such as 'WGS84','NAD27' recognized by
 PROJ itself.
 

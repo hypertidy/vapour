@@ -80,6 +80,7 @@ vapour_create_copy <- function(dsource, filename, overwrite = FALSE, driver = "G
 #' @param dimension window size to read from, or write to
 #' @param band_output_type numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'
 #' @param band which band to read (1-based)
+#' @param unscale default is `TRUE` so native values will be converted by offset and scale to floating point
 #'
 #' @return a list with a vector of data from the band read
 #' @export
@@ -87,7 +88,7 @@ vapour_create_copy <- function(dsource, filename, overwrite = FALSE, driver = "G
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' v <- vapour_read_raster_block(f, c(0L, 0L), dimension = c(2L, 3L), band = 1L)
-vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band_output_type = "") {
+vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band_output_type = "", unscale = TRUE) {
   dsource <- .check_dsn_single(dsource)
   if (anyNA(band) || length(band) < 1L) stop("missing band value")
   if (file.exists(dsource)) {
@@ -95,7 +96,8 @@ vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band
   }
   vapour_read_raster_block_cpp(dsource, as.integer(rep(offset, length.out = 2L)),
                                as.integer(rep(dimension, length.out = 2L)), band = as.integer(band[1L]),
-                               band_output_type = band_output_type)
+                               band_output_type = band_output_type, 
+                               unscale = unscale)
 }
 #' Write data to a block *in an existing file*.
 #'

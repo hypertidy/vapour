@@ -49,6 +49,7 @@
 #' @param sds index of subdataset to read (usually 1)
 #' @param set_na specify whether NA values should be set for the NODATA
 #' @param band_output_type numeric type of band to apply (else the native type if ''), is mapped to one of 'Byte', 'Int32', or 'Float64'
+#' @param unscale default is `TRUE` so native values will be converted by offset and scale to floating point
 #' @export
 #' @return list of numeric vectors (only one for 'band')
 #' @examples
@@ -62,8 +63,8 @@
 #' ## the method can be used to up-sample as well
 #' str(matrix(vapour_read_raster(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 #'
-vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL, native = FALSE, set_na = TRUE, band_output_type = "") {
-  .check_dsn_single(x)
+vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL, native = FALSE, set_na = TRUE, band_output_type = "", unscale = TRUE) {
+  x <- .check_dsn_single(x)
   if (!length(native) == 1L || is.na(native[1]) || !is.logical(native)) {
     stop("'native' must be a single 'TRUE' or 'FALSE'")
   }
@@ -104,7 +105,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
   ## pull a swifty here with [[  to return numeric or integer
   ##vals <- raster_io_gdal_cpp(dsn = datasourcename, window  = window, band = band, resample = resample[1L], band_output_type = band_output_type)
   vals <- lapply(band, function(iband) {
-    raster_io_gdal_cpp(dsn = datasourcename, window  = window, band = iband, resample = resample[1L], band_output_type = band_output_type)[[1L]]
+    raster_io_gdal_cpp(dsn = datasourcename, window  = window, band = iband, resample = resample[1L], band_output_type = band_output_type, unscale = unscale)[[1L]]
   })
   if (set_na && !is.raw(vals[[1L]][1L])) {
     for (i in seq_along(vals)) {
@@ -290,7 +291,7 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' augmentation by 'vapour_vrt()'.
 #'
 #' Common inputs for `projection` are WKT variants, 'AUTH:CODE's e.g.
-#' 'EPSG:3031', the 'OGC:CRS84' for lon,lat WGS84, 'ESRI:<code>' and other
+#' 'EPSG:3031', the 'OGC:CRS84' for lon,lat WGS84, 'ESRI:code' and other
 #' authority variants, and datum names such as 'WGS84','NAD27' recognized by
 #' PROJ itself.
 #'
@@ -319,6 +320,8 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' @param transformation_options character vector of options, as in gdalwarp -to see Details
 #' @param open_options character vector of options, as in gdalwarp -oo - see Details
 #' @param options character vectors of options as per the gdalwarp command line 
+#' @param nomd if `TRUE` the Metadata tag is removed from the resulting VRT (it can be quite substantial)
+#' @param overview pick an integer overview from the source (0L is highest resolution, default -1L does nothing)
 #' @export
 #' @seealso vapour_read_raster vapour_read_raster_raw vapour_read_raster_int vapour_read_raster_dbl vapour_read_raster_chr vapour_read_raster_hex
 #' @return list of vectors (only 1 for 'band') of numeric values, in raster order
@@ -348,7 +351,8 @@ vapour_warp_raster <- function(x, bands = NULL,
                                warp_options = "", 
                                transformation_options = "", 
                                open_options = "",
-                               options = "") {
+                               options = "", 
+                               nomd = FALSE, overview = -1L) {
   x <- .check_dsn_multiple(x)
   if (!is.null(bands) && (anyNA(bands) || length(bands) < 1 || !is.numeric(bands))) {
     stop("'bands' must be a valid set of band integers (1-based)")
@@ -503,7 +507,6 @@ vapour_warp_raster <- function(x, bands = NULL,
     stop("manually setting -r, -te, -t_srs, -of, -s_srs, -ot options not allowed \n ( these controlled by arguments 'resample', 'target_extent', 'target_projection', '<MEM>', 'source_projection', 'band_output_type')")
   } 
   if (any(grepl("-te_srs", options))) stop("setting '-te_srs' projection of target extent is not supported") 
-  
   vals <- warp_in_memory_gdal_cpp(x, source_WKT = source_projection,
                                   target_WKT = projection,
                                   target_extent = as.numeric(extent),
@@ -513,7 +516,7 @@ vapour_warp_raster <- function(x, bands = NULL,
                                   resample = resample,
                                   silent = silent,
                                   band_output_type = band_output_type, 
-                                  options = options)
+                                  options = options, nomd = nomd, overview)
   # ##// if we Dataset->RasterIO we don't have separated bands'
   # nbands <- length(vals[[1L]]) / prod(as.integer(dimension))
   # if (nbands > 1) vals <- split(vals[[1L]], rep(seq_len(nbands), each = prod(as.integer(dimension))))

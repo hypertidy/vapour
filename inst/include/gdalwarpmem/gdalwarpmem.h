@@ -28,7 +28,9 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 //CharacterVector transformation_options, 
                                 //CharacterVector open_options, 
                                 // CharacterVector output_dataset_options,
-                                CharacterVector options) {
+                                CharacterVector options, 
+                                LogicalVector nomd, 
+                                IntegerVector overview) {
   
   
   GDALDatasetH *poSrcDS;
@@ -41,7 +43,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     if (augment) {
       // not dealing with subdatasets here atm
       // not dealing with source bands here, bands applies at read beloew
-      poSrcDS[i] = gdalraster::gdalH_open_avrt(source_filename[i],   source_extent, source_WKT, 0, 0, "");
+      poSrcDS[i] = gdalraster::gdalH_open_avrt(source_filename[i],   source_extent, source_WKT, 0, 0, "", overview);
     } else {
       poSrcDS[i] = gdalraster::gdalH_open_dsn(source_filename[i],   0); 
       
@@ -67,33 +69,27 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   papszArg = CSLAddString(papszArg, "MEM");
   
   if (!target_WKT[0].empty()) {
-    OGRSpatialReference *oTargetSRS = nullptr;
-    oTargetSRS = new OGRSpatialReference;
-    const char * strforuin = (const char *)target_WKT[0];
-    OGRErr target_chk =  oTargetSRS->SetFromUserInput(strforuin);
-    if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
-    OGRSpatialReference  oSRS;
-    const OGRSpatialReference* poSrcSRS = ((GDALDataset *)poSrcDS[0])->GetSpatialRef();
-    if( poSrcSRS ) {
-      oSRS = *poSrcSRS;
-      if (!oSRS.IsEmpty()) {
-        OGRCoordinateTransformation *poCT;
-        poCT = OGRCreateCoordinateTransformation(&oSRS, oTargetSRS);
-        if( poCT == nullptr )	{
-          delete oTargetSRS;
-          Rcpp::stop( "Transformation to this target CRS not possible from this source dataset, target CRS given: \n\n %s \n\n", 
-                      (char *)  target_WKT[0] );
-        }
+    const char *wkt = ((GDALDataset*)poSrcDS[0])->GetProjectionRef();
+    if (*wkt != '\0') {
+      // if supplied check that it's valid
+      OGRSpatialReference *oTargetSRS = nullptr;
+      oTargetSRS = new OGRSpatialReference;
+      OGRErr target_chk =  oTargetSRS->SetFromUserInput(target_WKT[0]);
+       delete oTargetSRS; 
+      if (target_chk != OGRERR_NONE) {
+       
+        Rcpp::stop("cannot initialize target projection");
+      } else {
+      
         // we add our target projection iff a) source crs is valid b) target crs is valid c) transformation source->target is valid
         // user may have augmented the array of datasets with source_projection
         // if the source is just not defined we ignore the target with a warning
         papszArg = CSLAddString(papszArg, "-t_srs");
         papszArg = CSLAddString(papszArg, target_WKT[0]);
+      }
       } else {
         Rcpp::warning("no source crs, target crs is ignored\n");
       }
-    }
-    delete oTargetSRS;
   }
   // we always provide extent and dimension, crs is optional and just means subset/decimate
   double dfMinX = target_extent[0];
@@ -153,7 +149,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
     CharacterVector oof(1);
     CharacterVector infile(1);
     LogicalVector filein(1);
-    oof[0] = gdalraster::gdal_vrt_text((GDALDataset *) hRet);
+    oof[0] = gdalraster::gdal_vrt_text((GDALDataset *) hRet, nomd);
     GDALClose(hRet);
     return List::create(oof);
   }
@@ -187,20 +183,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   for (int i  = 0; i < window.size(); i++) window[i] = 0;
   
   
-  // we can't do  gdal_warped_vrt here ... was just trying something and realized 
-  // that cant work
-  // 
-  // GDALRasterIOExtraArg psExtraArg;
-  // psExtraArg = gdallibrary::init_resample_alg(resample);
-  // 
-  // std::vector<double> values( GDALGetRasterXSize(hRet) * GDALGetRasterYSize(hRet) * nBands );
-  // CPLErr err = 
-  // GDALDataset::FromHandle(hRet)->RasterIO(GF_Read, 0, 0, GDALGetRasterXSize(hRet), GDALGetRasterYSize(hRet),
-  //                         &values[0],   GDALGetRasterXSize(hRet), GDALGetRasterYSize(hRet), GDT_Float64,
-  //                         nBands, &bands_to_read[0],
-  //                         0, 0, 0, &psExtraArg);
-  
-  List outlist = gdalraster::gdal_read_band_values(GDALDataset::FromHandle(hRet),
+
+  List outlist = gdalraster::gdal_read_band_values((GDALDataset *)hRet,
                                                    window,
                                                    bands_to_read,
                                                    band_output_type,

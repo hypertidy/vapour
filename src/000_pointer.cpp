@@ -4,169 +4,43 @@ using namespace Rcpp;
 #include "ogrsf_frmts.h"
 
 #include "gdalraster/gdalraster.h"
+//#include "gdalwarpgeneral/gdalwarpgeneral.h"
 
 // seee some examples in https://github.com/hypertidy/vapour/issues/127#issuecomment-1279661138
 
 // [[Rcpp::export]]
-SEXP gh_GDALOpenEx(CharacterVector dsn) {
-  
-  GDALAllRegister();
+SEXP gh_GDALOpenEx(CharacterVector dsn, IntegerVector sds = IntegerVector::create(1)) {
+  GDALDataset       *poDS;
+ 
+  poDS = (GDALDataset*)gdalraster::gdalH_open_dsn(dsn[0], sds); 
   // create pointer to an GDAL object and
   // wrap it as an external pointer
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_READONLY, NULL, NULL, NULL);
-  //poDS = (GDALDataset*) GDALOpen(dsn[0], GDAL_OF_READONLY);
 
-  if( poDS == NULL )
+  if( poDS == nullptr)
   {
     Rprintf("Problem with 'dsn' input: %s\n", dsn[0]);
     Rcpp::stop("Open failed.\n");
   }
   Rcpp::XPtr<GDALDataset> ptr(poDS);
-  
+
   return ptr;
 }
 
 // [[Rcpp::export]]
-SEXP gh_GDALWarpDataset(SEXP xp,  IntegerVector dimension, NumericVector extent, CharacterVector projection) {
+SEXP gh_GDALGetRasterSize(SEXP xp) {
   
   Rcpp::XPtr<GDALDataset> ptr(xp);  // create pointer to an GDAL object and
   
-  // we always provide extent and dimension, crs is optional and just means subset/decimate
-  double dfMinX = extent[0];
-  double dfMaxX = extent[1];
-  double dfMinY = extent[2];
-  double dfMaxY = extent[3];
+  NumericVector res(2) ;
   
-  char** papszArg = nullptr;
+  res[0] = ptr->GetRasterXSize(); 
+  res[1] = ptr->GetRasterYSize(); 
   
-  papszArg = CSLAddString(papszArg, "-of");
-  papszArg = CSLAddString(papszArg, "VRT");
-  
-  papszArg = CSLAddString(papszArg, "-te");
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
-  
-  // we otherwise set a dud dimension, the user didn't set it (so they get native for the extent)
-  if (dimension.size() > 1) {
-    int nXSize = dimension[0];
-    int nYSize = dimension[1];
-    papszArg = CSLAddString(papszArg, "-ts");
-    papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
-    papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
-  }
-  
-  // should check the source is ok
-  if (!EQUAL(projection[0], "")) {
-    papszArg = CSLAddString(papszArg, "-t_srs"); 
-    papszArg = CSLAddString(papszArg, (char *) projection[0]); 
-  }
-  // papszArg = CSLAddString(papszArg, "-r");
-  // papszArg = CSLAddString(papszArg, resample[0]);
-  
-  // for (int gwopt = 0; gwopt < options.length(); gwopt++) {
-  //   papszArg = CSLAddString(papszArg, options[gwopt]);
-  // }
-  auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
-  CSLDestroy(papszArg);
-  GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
-  
-  GDALDataset* poDS = (GDALDataset*)GDALWarp( "", nullptr,
-                       static_cast<int>(dsn.size()), poaDS,
-                       psOptions, nullptr);
-  
-  Rcpp::XPtr<GDALDataset> ptr(poDS);
-  
-  return ptr;
+  return res; 
 }
+
 // [[Rcpp::export]]
-SEXP gh_GDALWarp(CharacterVector dsn, IntegerVector sds, IntegerVector dimension, NumericVector extent, CharacterVector projection) {
-  
- GDALDatasetH* poaDS = gdalraster::gdalH_open_multiple(dsn, sds); 
-
-  // we always provide extent and dimension, crs is optional and just means subset/decimate
-  double dfMinX = extent[0];
-  double dfMaxX = extent[1];
-  double dfMinY = extent[2];
-  double dfMaxY = extent[3];
-  
-  char** papszArg = nullptr;
-  
-  papszArg = CSLAddString(papszArg, "-of");
-  papszArg = CSLAddString(papszArg, "VRT");
-  
-  papszArg = CSLAddString(papszArg, "-te");
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
-  
-  // we otherwise set a dud dimension, the user didn't set it (so they get native for the extent)
-  if (dimension.size() > 1) {
-    int nXSize = dimension[0];
-    int nYSize = dimension[1];
-    papszArg = CSLAddString(papszArg, "-ts");
-    papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
-    papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
-  }
-  
-  // should check the source is ok
-  if (!EQUAL(projection[0], "")) {
-    papszArg = CSLAddString(papszArg, "-t_srs"); 
-    papszArg = CSLAddString(papszArg, (char *) projection[0]); 
-  }
- // papszArg = CSLAddString(papszArg, "-r");
- // papszArg = CSLAddString(papszArg, resample[0]);
-  
-  // for (int gwopt = 0; gwopt < options.length(); gwopt++) {
-  //   papszArg = CSLAddString(papszArg, options[gwopt]);
-  // }
-  auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
-  CSLDestroy(papszArg);
-  GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
-  
-  GDALDataset* poDS = (GDALDataset*)GDALWarp( "", nullptr,
-                                static_cast<int>(dsn.size()), poaDS,
-                                psOptions, nullptr);
-
-  Rcpp::XPtr<GDALDataset> ptr(poDS);
-   
-  return ptr;
-}
-
-inline GDALRasterIOExtraArg init_resample_alg(CharacterVector resample) {
-  GDALRasterIOExtraArg psExtraArg;
-  INIT_RASTERIO_EXTRA_ARG(psExtraArg);
-  if (resample[0] == "average") {
-    psExtraArg.eResampleAlg = GRIORA_Average;
-  }
-  if (resample[0] == "bilinear") {
-    psExtraArg.eResampleAlg = GRIORA_Bilinear;
-  }
-  if (resample[0] == "cubic") {
-    psExtraArg.eResampleAlg = GRIORA_Cubic;
-  }
-  if (resample[0] == "cubicspline") {
-    psExtraArg.eResampleAlg = GRIORA_CubicSpline;
-  }
-  if (resample[0] == "gauss") {
-    psExtraArg.eResampleAlg = GRIORA_Gauss;
-  }
-  if (resample[0] == "lanczos") {
-    psExtraArg.eResampleAlg = GRIORA_Lanczos;
-  }
-  if (resample[0] == "mode") {
-    psExtraArg.eResampleAlg = GRIORA_Mode;
-  }
-  if (resample[0] == "nearestneighbour") {
-    psExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
-  }
-  return psExtraArg;
-}
-// [[Rcpp::export]]
-SEXP gh_GDALRasterio(SEXP xp, IntegerVector window, CharacterVector resample) {
+SEXP gh_GDALRasterIO(SEXP xp, IntegerVector window, CharacterVector resample) {
   
   Rcpp::XPtr<GDALDataset> ptr(xp);  // create pointer to an GDAL object and
 
@@ -201,7 +75,7 @@ SEXP gh_GDALRasterio(SEXP xp, IntegerVector window, CharacterVector resample) {
   size_t n_values_out = static_cast<size_t>(outXSize * outYSize) * nBands;
  
   GDALRasterIOExtraArg psExtraArg;
-  psExtraArg = init_resample_alg((char *)resample[0]);
+  psExtraArg = gdalraster::init_resample_alg((char *)resample[0]);
   CPLErr err;
   
   std::vector<double> double_scanline( n_values_out);
@@ -267,18 +141,7 @@ SEXP gh_GDALGetFileList(SEXP xp) {
   CSLDestroy(filelist);
   return res; 
 }
-// [[Rcpp::export]]
-SEXP gh_GDALGetRasterSize(SEXP xp) {
-  
-  Rcpp::XPtr<GDALDataset> ptr(xp);  // create pointer to an GDAL object and
-  
-  NumericVector res(2) ;
-  
-  res[0] = ptr->GetRasterXSize(); 
-  res[1] = ptr->GetRasterYSize(); 
-  
-  return res; 
-}
+
 /// invoke the close method
 // [[Rcpp::export]]
 SEXP gh_GDALClose(SEXP xp) {
@@ -400,4 +263,75 @@ SEXP gh_GetDriverCount(SEXP xp)  {
   return Rcpp::wrap(n);
 }
 
+
+
+// // [[Rcpp::export]]
+// SEXP gh_GDALWarp(SEXP xp,
+//                  CharacterVector target_crs,
+//                  NumericVector target_extent,
+//                  IntegerVector target_dim,
+//                  NumericVector target_res,
+//                  IntegerVector bands,
+//                  CharacterVector resample,
+//                  LogicalVector silent,
+//                  CharacterVector band_output_type, 
+//                  CharacterVector options, 
+//                  CharacterVector dsn_outname) {
+//   
+//   GDALDataset       *poDS;
+//   
+//   poDS = (GDALDataset*)gdalraster::gdalH_open_dsn(dsn[0], sds); 
+//   
+// 
+//  gdalwarpgeneral::gdal_warp_general()
+//   // we always provide extent and dimension, crs is optional and just means subset/decimate
+//   double dfMinX = extent[0];
+//   double dfMaxX = extent[1];
+//   double dfMinY = extent[2];
+//   double dfMaxY = extent[3];
+//   
+//   char** papszArg = nullptr;
+//   
+//   papszArg = CSLAddString(papszArg, "-of");
+//   papszArg = CSLAddString(papszArg, "VRT");
+//   
+//   papszArg = CSLAddString(papszArg, "-te");
+//   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
+//   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
+//   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
+//   papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
+//   
+//   // we otherwise set a dud dimension, the user didn't set it (so they get native for the extent)
+//   if (dimension.size() > 1) {
+//     int nXSize = dimension[0];
+//     int nYSize = dimension[1];
+//     papszArg = CSLAddString(papszArg, "-ts");
+//     papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nXSize));
+//     papszArg = CSLAddString(papszArg, CPLSPrintf("%d", nYSize));
+//   }
+//   
+//   // should check the source is ok
+//   if (!EQUAL(projection[0], "")) {
+//     papszArg = CSLAddString(papszArg, "-t_srs"); 
+//     papszArg = CSLAddString(papszArg, (char *) projection[0]); 
+//   }
+//  // papszArg = CSLAddString(papszArg, "-r");
+//  // papszArg = CSLAddString(papszArg, resample[0]);
+//   
+//   // for (int gwopt = 0; gwopt < options.length(); gwopt++) {
+//   //   papszArg = CSLAddString(papszArg, options[gwopt]);
+//   // }
+//   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
+//   CSLDestroy(papszArg);
+//   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
+//   
+//   GDALDataset* poDS = (GDALDataset*)GDALWarp( "", nullptr,
+//                                 static_cast<int>(dsn.size()), poaDS,
+//                                 psOptions, nullptr);
+// 
+//   Rcpp::XPtr<GDALDataset> ptr(poDS);
+//    
+//   return ptr;
+// }
+// 
 

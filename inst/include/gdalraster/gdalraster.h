@@ -4,6 +4,7 @@
 #include "gdal_priv.h"
 #include "gdal_utils.h"  // for GDALTranslateOptions
 #include "vrtdataset.h"
+#include <ogr_spatialref.h>
 
 namespace gdalraster {
 using namespace Rcpp;
@@ -52,8 +53,7 @@ inline CharacterVector gdal_subdataset_1(GDALDataset *poDataset, int i_sds) {
   
   char **SDS2 = poDataset->GetMetadata("SUBDATASETS");
   while (SDS2 && SDS2[sdi] != NULL) {
-   // Rprintf("%i\n", sdi/2);
-  //  Rprintf("%i\n\n", i_sds - 1);
+
     if (sdi / 2 == (i_sds -1 )) {
       char  **papszTokens = CSLTokenizeString2(SDS2[sdi ], "=", 0);
       ret[0] = papszTokens[1];
@@ -102,6 +102,7 @@ inline CharacterVector gdal_list_subdatasets(GDALDataset *poDataset) {
 inline GDALDatasetH gdalH_open_dsn(const char * dsn, IntegerVector sds) {
   GDALDatasetH DS; 
   DS = GDALOpen(dsn, GA_ReadOnly);
+  if (!DS) return nullptr; 
   if (sds[0] > 0 && gdal_has_subdataset((GDALDataset*) DS)) {
     CharacterVector sdsnames = gdal_subdataset_1((GDALDataset*)DS, sds[0]);
     if (sdsnames.length() > 0 && !sdsnames[0].empty()) {
@@ -118,7 +119,8 @@ inline GDALDatasetH gdalH_open_dsn(const char * dsn, IntegerVector sds) {
 inline GDALDatasetH gdalH_open_avrt(const char* dsn, 
                                     NumericVector extent, 
                                     CharacterVector projection, 
-                                    IntegerVector sds, IntegerVector bands, CharacterVector geolocation) {
+                                    IntegerVector sds, IntegerVector bands, CharacterVector geolocation, 
+                                    IntegerVector overview) {
   
   CPLStringList translate_argv;
   translate_argv.AddString("-of");
@@ -130,51 +132,47 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
     translate_argv.AddString(CPLSPrintf("%f", extent[1]));
     translate_argv.AddString(CPLSPrintf("%f", extent[2]));
   }
+  if (overview[0] >= 0) {
+    translate_argv.AddString("-ovr"); 
+    translate_argv.AddString(CPLSPrintf("%i", overview[0]));
+  }
   if (!projection[0].empty()) {
     // have to validate this
-    OGRSpatialReference srs;
-    
-    if (srs.SetFromUserInput(projection[0]) != OGRERR_NONE) {
+    OGRSpatialReference *srs = new OGRSpatialReference;
+    if (srs->SetFromUserInput(projection[0]) != OGRERR_NONE) {
       Rprintf("cannot set projection (CRS) from input 'projection' argument, ignoring: '%s'\n", (const char*)projection[0]);
     } else {
       translate_argv.AddString("-a_srs");
       translate_argv.AddString(projection[0]);
     }
+    delete srs; 
   }
   
   GDALDataset* oDS = (GDALDataset*)gdalH_open_dsn(dsn, sds);
 
   
   if (geolocation.size() == 2) {
-      // OGRSpatialReference* geolsrs = nullptr;
-      // geolsrs = new OGRSpatialReference;
-      // OGRErr chk = geolsrs->SetFromUserInput("OGC:CRS84"); 
-      oDS->SetMetadataItem( "SRS", "OGC:CRS84", "GEOLOCATION" ); 
-      oDS->SetMetadataItem( "X_DATASET", geolocation[0], "GEOLOCATION" );
-        oDS->SetMetadataItem( "X_BAND", "1" , "GEOLOCATION" );
-        oDS->SetMetadataItem( "Y_DATASET", geolocation[1], "GEOLOCATION" );
-        oDS->SetMetadataItem( "Y_BAND", "1" , "GEOLOCATION" );
-
-
-        oDS->SetMetadataItem( "PIXEL_OFFSET", "0", "GEOLOCATION" );
-        oDS->SetMetadataItem( "PIXEL_STEP", "1", "GEOLOCATION" );
-        oDS->SetMetadataItem( "LINE_OFFSET", "0", "GEOLOCATION" );
-        oDS->SetMetadataItem( "LINE_STEP", "1", "GEOLOCATION" );
+    OGRSpatialReference  *geolsrs = new OGRSpatialReference; 
+    char *pszGeoSrsWKT = nullptr;
+    geolsrs->SetFromUserInput("OGC:CRS84");
+    geolsrs->exportToWkt(&pszGeoSrsWKT);
+    
+    oDS->SetMetadataItem( "SRS", pszGeoSrsWKT, "GEOLOCATION" ); 
+    oDS->SetMetadataItem( "X_DATASET", geolocation[0], "GEOLOCATION" );
+    oDS->SetMetadataItem( "X_BAND", "1" , "GEOLOCATION" );
+    oDS->SetMetadataItem( "Y_DATASET", geolocation[1], "GEOLOCATION" );
+    oDS->SetMetadataItem( "Y_BAND", "1" , "GEOLOCATION" );
+    oDS->SetMetadataItem( "PIXEL_OFFSET", "0", "GEOLOCATION" );
+    oDS->SetMetadataItem( "LINE_OFFSET", "0", "GEOLOCATION" );
+    oDS->SetMetadataItem( "PIXEL_STEP", "1", "GEOLOCATION" );
+    oDS->SetMetadataItem( "LINE_STEP", "1", "GEOLOCATION" );
+    CPLFree(pszGeoSrsWKT); 
+    delete geolsrs; 
   }
-  
-  
   
   if (oDS == nullptr) return(nullptr);
   int nBands = oDS->GetRasterCount();
-  // Rprintf("%i\n", nBands);
-  //  if (bands[0] > 0) {
-  //    for (int iband = 0; iband < bands.size(); iband++ ) {
-  //      if (bands[iband] > nBands) {
-  //        Rprintf("%i\n", bands[iband]);
-  //        Rprintf("mismatch bands\n");
-  //      }
-  //      }
-  //  }
+
   if (bands[0] > 0) {
     for (int iband = 0; iband < bands.size(); iband++ ) {
       if (bands[iband] > nBands) {
@@ -211,27 +209,30 @@ inline GDALDatasetH* gdalH_open_avrt_multiple(CharacterVector dsn, NumericVector
   GDALDatasetH* poHDS;
   // whoever calls this will have to CPLFree() this
   poHDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * static_cast<size_t>(dsn.size())));
-  for (int i = 0; i < dsn.size(); i++) poHDS[i] = gdalH_open_avrt(dsn[i],  extent, projection, sds, bands, "");
+  for (int i = 0; i < dsn.size(); i++) poHDS[i] = gdalH_open_avrt(dsn[i],  extent, projection, sds, bands, "", -1);
   return poHDS;
 }
 // convert an opened GDALDataset to chunk-of-text VRT, if it is VRT you get it direct
 //  if it's a different driver it is firs CreateCopy()ied to VRT
-inline const char* gdal_vrt_text(GDALDataset* poSrcDS) {
+inline const char* gdal_vrt_text(GDALDataset* poSrcDS, LogicalVector nomd) {
   CharacterVector out(1);
   // can't do this unless poSrcDS really is VRT
   if (EQUAL(poSrcDS->GetDriverName(),  "VRT")) {
-    VRTDataset * VRTdcDS = cpl::down_cast<VRTDataset *>(poSrcDS );
-    // if (add_filename[0]) {
-    //   //VRTdcDS->SetDescription( filename[0]);
-    // }
+    VRTDataset * VRTdcDS = dynamic_cast<VRTDataset *>(poSrcDS );
+
     if (!(VRTdcDS == nullptr)) out[0] = VRTdcDS->GetMetadata("xml:VRT")[0];
   } else {
     GDALDriver *poDriver = (GDALDriver *)GDALGetDriverByName("VRT");
-    GDALDataset *VRTDS = poDriver->CreateCopy("", poSrcDS, false, NULL, NULL, NULL);
-    // if (add_filename[0]) {
-    //   //VRTDS->SetDescription( filename[0]);
-    // 
-    // }
+    // if nomd specified from caller zap all of it, on the dataset and on the band/s
+    if (nomd[0]) {
+      // removes all the MDI key stuff, the mega-meta you get from the likes of netcdf
+      // IMAGE_STRUCTURE COMPRESSION and so forth are retained
+      poSrcDS->SetMetadata(nullptr); 
+      int i_bands = poSrcDS->GetRasterCount(); 
+      for (int ii_b = 0; ii_b < i_bands; ii_b++) poSrcDS->GetRasterBand(ii_b + 1)->SetMetadata(nullptr); 
+    }
+    GDALDataset *VRTDS = poDriver->CreateCopy("", poSrcDS, false, nullptr, nullptr, nullptr);
+  
     if (!(VRTDS == nullptr)) out[0] = VRTDS->GetMetadata("xml:VRT")[0];
     GDALClose((GDALDatasetH) VRTDS);
   }
@@ -243,13 +244,13 @@ inline const char* gdal_vrt_text(GDALDataset* poSrcDS) {
 // [[Rcpp::export]]
 inline CharacterVector gdal_dsn_vrt(CharacterVector dsn, NumericVector extent, CharacterVector projection, 
                                     IntegerVector sds, IntegerVector bands, 
-                                    CharacterVector geolocation) {
+                                    CharacterVector geolocation, LogicalVector nomd, 
+                                    IntegerVector overview) {
   CharacterVector out(dsn.size());
   GDALDatasetH DS;
   for (int i = 0; i < out.size(); i++) {
-    if (extent.size() == 4 || (!projection[0].empty()) || bands[0] > 0) {
-      DS = gdalH_open_avrt(dsn[i], extent, projection, sds, bands, geolocation);
-      
+    if (extent.size() == 4 || (!projection[0].empty()) || bands[0] > 0 || (!geolocation[0].empty() ) || sds[0] > 1 || overview[0] > -1) {
+      DS = gdalH_open_avrt(dsn[i], extent, projection, sds, bands, geolocation, overview);
     } else {
       DS = gdalH_open_dsn(dsn[i], sds);
     }
@@ -257,7 +258,7 @@ inline CharacterVector gdal_dsn_vrt(CharacterVector dsn, NumericVector extent, C
     if (DS == nullptr) {
      out[i] = NA_STRING;  
     } else {
-      out[i] = gdal_vrt_text((GDALDataset*) DS);
+      out[i] = gdal_vrt_text((GDALDataset*) DS, nomd);
       GDALClose(DS);
     }
   }
@@ -416,20 +417,21 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
     names[5] = "bands";
     
     char *stri;
-    OGRSpatialReference oSRS;
+    OGRSpatialReference *oSRS = new OGRSpatialReference; 
     const char *proj2;
     proj2 = GDALGetProjectionRef(hDataset);
     char **cwkt = (char **) &proj2;
     
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-    oSRS.importFromWkt(cwkt);
+    oSRS->importFromWkt(cwkt);
 #else
-    oSRS.importFromWkt( (const char**) cwkt);
+    oSRS->importFromWkt( (const char**) cwkt);
 #endif
-    oSRS.exportToProj4(&stri);
+    oSRS->exportToProj4(&stri);
     out[6] =  Rcpp::CharacterVector::create(stri); //Rcpp::CharacterVector::create(stri);
     names[6] = "projstring";
     CPLFree(stri);
+    delete oSRS; 
     
     int succ;
     out[7] = GDALGetRasterNoDataValue(hBand, &succ);
@@ -520,7 +522,6 @@ inline List gdal_raster_gcp(CharacterVector dsn) {
     gcpout[3] = GCPY;
     gcpout[4] = GCPZ;
     gcpout[5] = gcpCRS;
-    //gcp_proj = poDataset->GetGCPProjection();
   } else {
     Rprintf("No GCP (ground control points) found.\n");
   }
@@ -615,7 +616,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
   CPLErr err;
   
   for (int iband = 0; iband < sbands; iband++) {
-    rasterBand = GDALDataset::FromHandle(hRet)->GetRasterBand(bands_to_read[static_cast<size_t>(iband)]);
+    rasterBand = ( (GDALDataset *) hRet)->GetRasterBand(bands_to_read[static_cast<size_t>(iband)]);
     //rasterBand = GDALGetRasterBand(hRet, bands_to_read[iband]);
     if (iband < 1) {
       // actual_XSize = GDALGetRasterBandXSize(rasterBand); 
@@ -633,6 +634,12 @@ inline List gdal_read_band_values(GDALDataset *hRet,
     
     scale = rasterBand->GetScale(&hasScale);
     offset = rasterBand->GetOffset(&hasOffset);
+    if (!unscale[0]) {
+      hasScale = 0; 
+      hasOffset = 0;
+    }
+   //Rprintf("scale: %f\n", scale); 
+   //Rprintf("offset: %f\n", offset); 
     
     // if scale is 1 or 0 then don't override the type
     if (abs(scale - 1.0) <= 1.0e-05 || abs(scale) < 1.0e-05) {
@@ -665,7 +672,8 @@ inline List gdal_read_band_values(GDALDataset *hRet,
         }
       }
       R_xlen_t isi;
-      for (isi = 0; isi < (double_scanline.size()); isi++) {
+      
+      for (isi = 0; isi < (static_cast<R_xlen_t>(double_scanline.size())); isi++) {
         dval = double_scanline[static_cast<size_t>(isi)];
         if (hasScale) dval = dval * scale;
         if (hasOffset) dval = dval + offset;
@@ -692,17 +700,13 @@ inline List gdal_read_band_values(GDALDataset *hRet,
       // consider doing at R level, at least for MEM
       int dval;
       double naflag = GDALGetRasterNoDataValue(rasterBand, &hasNA);
-      
-      // use NA for int
-      if (hasNA ) {
-        std::replace(integer_scanline.begin(), integer_scanline.end(), (int) naflag, NA_INTEGER);
-        
-      }
+   
       R_xlen_t isi;
-      for (isi = 0; isi < (integer_scanline.size()); isi++) {
+      for (isi = 0; isi < (static_cast<R_xlen_t>(integer_scanline.size())); isi++) {
         dval = integer_scanline[static_cast<size_t>(isi)];
-       // if (hasScale) dval = dval * scale;
-      //  if (hasOffset) dval = dval + offset;
+        if (static_cast<double>(dval) <= naflag) {
+          dval = NA_INTEGER;
+        }
         res[isi] = dval;
       }
       outlist[iband] = res;
@@ -723,7 +727,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
 
    
       R_xlen_t isi;
-      for (isi = 0; isi < (byte_scanline.size()); isi++) {
+      for (isi = 0; isi < (static_cast<R_xlen_t>(byte_scanline.size())); isi++) {
         res[isi] = byte_scanline[static_cast<size_t>(isi)];
       }
       outlist[iband] = res;
@@ -744,6 +748,189 @@ inline List gdal_read_band_values(GDALDataset *hRet,
 }
 
 
+
+
+inline NumericVector gdal_read_band_value(GDALDataset *hRet, 
+                                  IntegerVector window,
+                                  std::vector<int> bands_to_read, 
+                                  CharacterVector band_output_type, 
+                                  CharacterVector resample,
+                                  LogicalVector unscale) 
+{
+  int Xoffset = window[0];
+  int Yoffset = window[1];
+  int nXSize = window[2];
+  int nYSize = window[3];
+  
+  int outXSize = window[4];
+  int outYSize = window[5];
+  int actual_XSize = -1; //GDALGetRasterBandXSize(hRet);
+  int actual_YSize = -1; //GDALGetRasterBandYSize(hRet);
+  
+  
+  // double scale, double offset, 
+  // int hasScale, int hasOffset, int hasNA,
+  // GDALDataType src_band_type) {
+  // if band_output_type is not empty, possible override:
+  // complex types not supported Byte, UInt16, Int16, UInt32, Int32, Float32, Float64
+  GDALDataType src_band_type =  GDALGetRasterDataType(GDALGetRasterBand(hRet, bands_to_read[0])); 
+  //bool output_type_set = false; 
+  
+  if (!band_output_type[0].empty()) {
+    if (band_output_type[0] == "Byte")   src_band_type = GDT_Byte;
+    if (band_output_type[0] == "UInt16") src_band_type = GDT_UInt16;
+    if (band_output_type[0] == "Int16")  src_band_type = GDT_Int16;
+    
+    if (band_output_type[0] == "UInt32") src_band_type = GDT_UInt32;
+    if (band_output_type[0] == "Int32") src_band_type = GDT_Int32;
+    
+    if (band_output_type[0] == "Float32") src_band_type = GDT_Float32;
+    if (band_output_type[0] == "Float64") src_band_type = GDT_Float64;
+    
+    //output_type_set = true;
+  }
+  
+  int sbands = (int)bands_to_read.size();
+  Rcpp::NumericVector outlist(1);
+  
+  bool band_type_not_supported = true;
+  
+  GDALRasterBand *rasterBand; 
+  int hasNA;
+  int hasScale, hasOffset;
+  double scale, offset;
+  
+  GDALRasterIOExtraArg psExtraArg;
+  psExtraArg = init_resample_alg(resample);
+  CPLErr err;
+  
+  for (int iband = 0; iband < sbands; iband++) {
+    rasterBand = hRet->GetRasterBand(bands_to_read[static_cast<size_t>(iband)]);
+    //rasterBand = GDALGetRasterBand(hRet, bands_to_read[iband]);
+    if (iband < 1) {
+      // actual_XSize = GDALGetRasterBandXSize(rasterBand); 
+      // actual_YSize = GDALGetRasterBandYSize(rasterBand); 
+      actual_XSize = rasterBand->GetXSize();
+      actual_YSize = rasterBand->GetYSize();
+      
+      if (nXSize < 1) nXSize = actual_XSize;
+      if (nYSize < 1) nYSize = actual_YSize;
+      if (outXSize < 1) outXSize = actual_XSize;
+      if (outYSize < 1) outYSize = actual_YSize;
+      
+      
+    }
+    
+    scale = rasterBand->GetScale(&hasScale);
+    offset = rasterBand->GetOffset(&hasOffset);
+    //Rprintf("scale: %f\n", scale); 
+    //Rprintf("offset: %f\n", offset); 
+    
+    // if scale is 1 or 0 then don't override the type
+    if (abs(scale - 1.0) <= 1.0e-05 || abs(scale) < 1.0e-05) {
+      hasScale = 0; 
+    }
+    // if hasScale we ignore integer or byte and go with float
+    if ((src_band_type == GDT_Float64) || (src_band_type == GDT_Float32) || hasScale) {
+      std::vector<double> double_scanline( static_cast<size_t>( outXSize * outYSize ));
+      err = rasterBand->RasterIO(GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+                                 &double_scanline[0], outXSize, outYSize, GDT_Float64,
+                                 0, 0, &psExtraArg);
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      NumericVector res(outXSize * outYSize  );
+      
+      // consider doing at R level, at least for MEM
+      double dval;
+      double naflag = rasterBand->GetNoDataValue(&hasNA);// GDALGetRasterNoDataValue(rasterBand, &hasNA);
+      if (hasNA && (!std::isnan(naflag))) {
+        if (naflag < -3.4e+37) {
+          naflag = -3.4e+37;
+          
+          for (size_t i=0; i< double_scanline.size(); i++) {
+            if (double_scanline[i] <= naflag) {
+              double_scanline[i] = NA_REAL; 
+            }
+          }
+        } else {
+          
+          std::replace(double_scanline.begin(), double_scanline.end(), naflag, (double) NAN);
+        }
+      }
+      R_xlen_t isi;
+      
+      for (isi = 0; isi < (static_cast<R_xlen_t>(double_scanline.size())); isi++) {
+        dval = double_scanline[static_cast<size_t>(isi)];
+        if (hasScale) dval = dval * scale;
+        if (hasOffset) dval = dval + offset;
+        res[isi] = dval;
+      }
+      
+      outlist[0] = res[0];
+      band_type_not_supported = false;
+    }
+    // if hasScale we assume to never use scale/offset in integer case (see block above we already dealt)
+    if ((!hasScale) & 
+        ((src_band_type == GDT_Int16) |
+        (src_band_type == GDT_Int32) |
+        (src_band_type == GDT_UInt16) |
+        (src_band_type == GDT_UInt32)))  {
+      std::vector<int32_t> integer_scanline(static_cast<size_t>( outXSize * outYSize ));
+      err = rasterBand->RasterIO(GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+                                 &integer_scanline[0], outXSize, outYSize, GDT_Int32,
+                                 0, 0, &psExtraArg);
+      
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      IntegerVector res(outXSize * outYSize );
+      
+      // consider doing at R level, at least for MEM
+      int dval;
+      double naflag = GDALGetRasterNoDataValue(rasterBand, &hasNA);
+      
+      R_xlen_t isi;
+      for (isi = 0; isi < (static_cast<R_xlen_t>(integer_scanline.size())); isi++) {
+        dval = integer_scanline[static_cast<size_t>(isi)];
+        if (static_cast<double>(dval) <= naflag) {
+          dval = NA_INTEGER;
+        }
+        res[isi] = dval;
+      }
+      outlist[0] = res[0];
+      band_type_not_supported = false;
+    }
+    
+    // if hasScale we assume to never use scale/offset in integer case (see block above we already dealt)
+    
+    if (!hasScale & (src_band_type == GDT_Byte)) {
+      std::vector<uint8_t> byte_scanline( static_cast<size_t>( outXSize * outYSize ) );
+      err = rasterBand->RasterIO(GF_Read, Xoffset, Yoffset, nXSize, nYSize,
+                                 &byte_scanline[0], outXSize, outYSize, GDT_Byte,
+                                 0, 0, &psExtraArg);
+      
+      if (err) Rprintf("we have a problem at RasterIO\n");
+      RawVector res(outXSize * outYSize );
+      
+      
+      
+      R_xlen_t isi;
+      for (isi = 0; isi < (static_cast<R_xlen_t>(byte_scanline.size())); isi++) {
+        res[isi] = byte_scanline[static_cast<size_t>(isi)];
+      }
+      outlist[0] = res[0];
+      band_type_not_supported = false;
+    }
+    
+    
+    
+  }
+  // safe but lazy way of not supporting Complex, TypeCount or Unknown types
+  // (see GDT_ checks above)
+  if (band_type_not_supported) {
+    GDALClose(hRet); 
+    Rcpp::stop("band type not supported (is it Complex? report at hypertidy/vapour/issues)");
+  }
+  
+  return outlist; 
+}
 
 
   inline List gdal_read_dataset_values(GDALDataset *hRet, 
@@ -800,7 +987,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
     psExtraArg = init_resample_alg(resample);
     CPLErr err;
     
-    rasterBand = GDALDataset::FromHandle(hRet)->GetRasterBand(bands_to_read[0]);
+    rasterBand = ((GDALDataset *)hRet)->GetRasterBand(bands_to_read[0]);
     actual_XSize = rasterBand->GetXSize();
     actual_YSize = rasterBand->GetYSize();
     
@@ -846,7 +1033,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
         }
       }
       R_xlen_t isi;
-      for (isi = 0; isi < (double_scanline.size()); isi++) {
+      for (isi = 0; isi < (static_cast<R_xlen_t>(double_scanline.size())); isi++) {
         dval = double_scanline[static_cast<size_t>(isi)];
         if (hasScale) dval = dval * scale;
         if (hasOffset) dval = dval + offset;
@@ -879,7 +1066,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
         
       }
       R_xlen_t isi;
-      for (isi = 0; isi < (integer_scanline.size()); isi++) {
+      for (isi = 0; isi < (static_cast<R_xlen_t>(integer_scanline.size())); isi++) {
         dval = integer_scanline[static_cast<size_t>(isi)];
         // if (hasScale) dval = dval * scale;
         // if (hasOffset) dval = dval + offset;
@@ -908,7 +1095,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
         
       }
       R_xlen_t isi;
-      for (isi = 0; isi < (byte_scanline.size()); isi++) {
+      for (isi = 0; isi < (static_cast<R_xlen_t>(byte_scanline.size())); isi++) {
         res[isi] = byte_scanline[static_cast<size_t>(isi)];
       }
       outlist[0] = res;
@@ -960,7 +1147,8 @@ inline List gdal_raster_io(CharacterVector dsn,
                            IntegerVector window,
                            IntegerVector band,
                            CharacterVector resample,
-                           CharacterVector band_output_type)
+                           CharacterVector band_output_type, 
+                           LogicalVector unscale)
 {
   
   GDALDataset  *poDataset;
@@ -979,7 +1167,7 @@ inline List gdal_raster_io(CharacterVector dsn,
   } else {
     for (int i = 0; i < band.size(); i++) bands_to_read[static_cast<size_t>(i)] = band[i];
   }
-  List out = gdal_read_band_values(poDataset, window, bands_to_read, band_output_type, resample, false);
+  List out = gdal_read_band_values(poDataset, window, bands_to_read, band_output_type, resample, unscale);
   // close up
   GDALClose(poDataset );
   return out;

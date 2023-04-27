@@ -1,15 +1,15 @@
-## vapour 0.9.0
+## vapour 0.9.5
 
-Resubmission, failures previous picked up in UBSAN incorrect use of NaN for raw/integer. I think I've fixed it by removing the offending code
-which couldn't have worked and is only relevant when a user specifies an output type - so they get what they ask for. 
+* Patched CRAN supplied diff for Makevars.ucrt. 
 
-Thank you! 
+Thanks! 
+
 
 ## Test environments
 
 * win-builder (devel)
-* Linux ubuntu 4.2.1
-* Rhub:  macos-highsierra-release-cran
+* mac-builder
+* Linux ubuntu (and clang with -Wconversion)
 
 ## R CMD check results
 
@@ -17,9 +17,5 @@ Thank you!
 
 There is a note about the size of installed directories  because 
  of the GDAL and PROJ folders. 
-
-## Reverse dependenices
-
-The single revdep 'lazyraster' passes check with this version. 
 
 

@@ -1,3 +1,62 @@
+# vapour 0.9.5
+
+* `vapour_vrt()` gains an 'overview' argument. Wish of https://github.com/hypertidy/vapour/issues/186
+
+* `gdal_raster_data()`, `gdal_raster_dsn()`, and `gdal_raster_image()` now allow a source with geolocation arrays to be warped to a non-longlat projection. 
+
+* The extent reported by 'vapour_raster_info()' is now correct for the general case including non-zero skew geotransforms. 
+
+* 'vapour_raster_info()' gains a  'corners' element. 
+
+* All functions that read or query data source/s now check for tilde "~" at the beginning of the string/s, and normalize the path as needed. Reported by @Sibada in #193. 
+
+* vapour now imports nanoarrow and includes internal experimental support for GDAL (>= 3.6) stream reading (RFC 86). Nothing is
+exposed for general use yet.
+
+* New Makevars.ucrt with patch contributed by CRAN, Tomas Kalibera. 
+
+* raster read gains "unscale" argument, `TRUE` by default which means offset and scale values are applied and return value is of type Float64, set to `FALSE` to avoid applying scale/offset to band values (this was always implicitly false (no offset scale applied) if the output type wasn't suitable). . 
+
+* Fix inefficiency in gdal_raster_data() which was warping all bands in MEM lol. 
+
+* Fix for `vapour_vrt()` where 'geolocation' was not being included. Fixes #192. 
+
+* New capability to drop dataset and band metdata, used by functions `vapour_vrt()` and `vapour_warp_raster()` which gain a new argument 'nomd', which
+is FALSE by default. If TRUE, the dataset and band metadata are removed from an open dataset before it is converted to VRT. 
+
+This particularly makes VRT DSN strings a lot smaller, for use by whatarelief and raadtools for example.  There should be no change to current default uses, the argument 'nomd' must be specified for the change. 
+
+
+* New function `vapour_crs_is_lonlat()` to test crs string. 
+
+* Removed C++11 requirement. 
+
+* remove LDFLAGS from configure, as per sf #1369 and vapour #188, thanks to @gremms1 and @sgoslee for 
+ report on Fedora. 
+
+* Removed FromHandle (introduced GDAL 2.3) and undeclared use of down_cast, and now tested on GDAL 2.2.3. 
+
+* New Makevars.ucrt with patch contributed by CRAN, and removed outdated C++11 requirement.
+
+# vapour 0.9.3
+
+* Update to CRAN Makevars.ucrt. 
+
+# vapour 0.9.2
+
+* Resubmit after 0.9.1 was rejected, fixed configure.ac and checked on on M1MAC/macbuilder. 
+
+* The SQL dialect in use for the 'sql' argument can now be controlled, it is set to "" by default. See `?vapour-package` for details. 
+
+* 'vapour_layer_info' now supports spatial filter, the 'extent' argument in
+'vapour_layer_info' is now for limiting the spatial extent of a layer query (was
+for controlling whether extent calculated or not).
+
+* 'gdal_read_names' removed from gdallibrary, and 'read_names_gdal_cpp' renamed to 'read_fids_gdal_cpp' and now returns a numeric vector rather than a list.  
+
+* Fixed another stray cast (int), now checking more robustly for nodata value for integer bands. We have made some
+inroads into better consistency of use of long integer values in the code base, but vapour does not yet support long vectors. 
+
 # vapour 0.9.0
 
 * Big cleanup. 

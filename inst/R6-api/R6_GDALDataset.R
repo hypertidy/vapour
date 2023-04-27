@@ -48,7 +48,7 @@ GDALDataset <- R6Class("GDALDataset",
                       srcdim <- self$dimension()
                       window <- c(0L, 0L, 
                                   as.integer(c(srcdim[1L], srcdim[2L], dimension[1L], dimension[2L])))
-                      matrix(vapour:::gh_GDALRasterio(self$ptr, window, resample), dimension[2L], byrow = TRUE)
+                      matrix(vapour:::gh_GDALRasterIO(self$ptr, window, resample), dimension[2L], byrow = TRUE)
                                             
                     },
                      set_ptr = function(val) {

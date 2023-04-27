@@ -1,0 +1,6 @@
+index,name,WKT
+1,one,MULTIPOINT ((1 1))
+2,two,"MULTIPOINT ((2 1), (2 2))"
+3,three,"MULTIPOINT ((3 1), (3 2), (3 3))"
+4,four,"MULTIPOINT ((4 1), (4 2), (4 3), (4 4))"
+5,five,"MULTIPOINT ((5 1), (5 2), (5 3), (5 4), (5 5))"

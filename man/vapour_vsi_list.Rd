@@ -26,7 +26,7 @@ use this function interactively to determine a  useable \verb{/vsiPREFIX/dsource
 source string.
 }
 \examples{
-pointzipfile <- system.file("extdata/vsi/point_shp.zip", package = "vapour", mustWork = TRUE)
+pointzipfile <- system.file("extdata/vsi/point_shp.zip", package = "vapour")
 vapour_vsi_list(sprintf("/vsizip/\%s", pointzipfile))
 \donttest{
 \dontrun{
