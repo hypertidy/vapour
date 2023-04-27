@@ -6,7 +6,7 @@
 <!-- badges: start -->
 [![R_build_status](https://github.com/hypertidy/vapour/workflows/R-CMD-check/badge.svg)](https://github.com/hypertidy/vapour/actions)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
-[![CRAN_Download_Badge](http://cranlogs.r-pkg.org/badges/vapour)](https://cran.r-project.org/package=vapour)
+[![CRAN_Download_Badge](http://cranlogs.r-pkg.org/badges/vapour)](http://cranlogs.r-pkg.org/badges/vapour)
 <!-- badges: end -->
 
 ## Overview
@@ -174,7 +174,7 @@ image(x)
 
 ## or as a spatial object
 library(terra)
-#> terra 1.7.21
+#> terra 1.7.23
 r <- rast(ext(ex), nrows = dm[2], ncols = dm[1], crs = crs, vals = vals[[1]])
 contour(r, add = TRUE)
 ```
