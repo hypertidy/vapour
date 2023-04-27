@@ -4,7 +4,9 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
   ## but also don't prevent access to non-files
   if (file.exists(x)) x <- base::normalizePath(x, mustWork = FALSE)
   ## use sds wrapper to target the first by default
-  datavars <- data.frame(datsource = x, subdataset = vapour_sds_names(x), stringsAsFactors = FALSE)
+  subdatasets <- try(vapour_sds_names(x), silent = TRUE)
+  if (inherits(subdatasets, "try-error")) stop("GDAL was unable to open ^^")
+  datavars <- data.frame(datsource = x, subdataset = subdatasets, stringsAsFactors = FALSE)
 
   ## catch for l1b where we end up with the GCP conflated with the data set #48
   if (nrow(datavars) < 2) return(x)  ## shortcut to avoid #48
@@ -144,6 +146,9 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
   sd <- if (is.null(sds)) 0 else sds
   x <- .check_dsn_single(x)
   info <- gdalinfo_internal(x[1L], json  = TRUE, stats = min_max, sd = sd, ...)
+  if (is.na(info)) {
+    stop("GDAL was unable to open ^^")
+  }
   json <- jsonlite::fromJSON(info)
   sds <- NULL
   if (!is.null(json$metadata$SUBDATASETS)) {
@@ -260,6 +265,8 @@ vapour_raster_gcp <- function(x, ...) {
 vapour_sds_names <- function(x) {
   x <- .check_dsn_single(x)
   info <- gdalinfo_internal(x[1L], json  = TRUE)
+
+  if (is.na(info)) stop("GDAL was unable to open ^^")
   json <- jsonlite::fromJSON(info)
   if (!is.null(json$metadata$SUBDATASETS)) {
    sources <- unlist(json$metadata$SUBDATASETS[grep("NAME$", 

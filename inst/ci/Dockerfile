@@ -22,13 +22,20 @@ RUN flags="-O2 -g -Wunneeded-internal-declaration -Winvalid-utf8 -Wformat -Wsize
 
 RUN apt-get install -y nano git libxml2-dev libfontconfig1-dev libharfbuzz-dev  libproj-dev libgeos-dev libgdal-dev
 
-RUN export MAKEFLAGS=-j15
+## for devtools
+RUN apt-get install -y libharfbuzz-dev libfribidi-dev 
 
-RUN R -e 'options(Ncpus = 15); install.packages("remotes"); remotes::install_cran(c("markdown", "spelling", "jsonlite"));'
+RUN export MAKEFLAGS=-j30
+
+RUN R -e 'options(Ncpus = 30); install.packages("pak"); pak::pkg_install(c("markdown", "spelling", "jsonlite", "nanoarrow", "testthat", "rmarkdown", "devtools"), ask = FALSE);'
 
 #docker build . -t hypertidy/clang-wconversion
-#docker run -it --rm -v $(pwd):/vapour  hypertidy/clang-wconversion
+#docker run -it --rm -v $(pwd)../../..:/vapour  hypertidy/clang-wconversion
 
 ## now edit src/Makevars.in to put -Wconversion ito CPPFLAGS, and: 
 #R CMD build vapour --no-build-vignettes
-#R CMD INSTALL vapour_0.?.?.tar.gz > INSTALL.out 2>&1
+#R CMD INSTALL vapour_0.9.5.tar.gz > vapour/inst/ci/INSTALL.out 2>&1
+#R CMD check vapour_0.9.5.tar.gz --no-manual --no-build-vignettes --ignore-vignettes --no-vignettes > vapour/inst/ci/CHECK.out 2>&1
+#Rscript -e "devtools::test('vapour')" > vapour/inst/ci/TEST.out 2>&1
+
+

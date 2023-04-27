@@ -13,7 +13,8 @@ vapour_vrt(
   geolocation = NULL,
   ...,
   relative_to_vrt = FALSE,
-  nomd = FALSE
+  nomd = FALSE,
+  overview = -1L
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ vapour_vrt(
 \item{relative_to_vrt}{default \code{FALSE}, if \code{TRUE} input strings that identify as files on the system are left as-is (by default they are made absolute at the R level)}
 
 \item{nomd}{if \code{TRUE} the Metadata tag is removed from the resulting VRT (it can be quite substantial)}
+
+\item{overview}{pick an integer overview from the source (0L is highest resolution, default -1L does nothing)}
 }
 \value{
 VRT character string (for use by GDAL-capable tools, i.e. reading raster)
@@ -96,7 +99,7 @@ See the following links to GDAL and PROJ documentation:
 }
 
 \examples{
-tif <- system.file("extdata", "sst.tif", package = "vapour", mustWork = TRUE)
+tif <- system.file("extdata", "sst.tif", package = "vapour")
 vapour_vrt(tif)
 
 vapour_vrt(tif, bands = c(1, 1))

@@ -186,7 +186,7 @@ expect_identical(s1, s2)
 
 })
 test_that("sanity prevails", {
-  expect_error(vapour_layer_names(""), "Open failed.")
+  expect_error(vapour_layer_names(""), "Not a valid character string")
 })
 
 test_that("index geometry read works", {

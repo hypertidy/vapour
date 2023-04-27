@@ -116,16 +116,17 @@ inline List gdal_warp_general(CharacterVector dsn,
     if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
    const char *st = NULL;
     st = ((GDALDataset *)poSrcDS[0])->GetProjectionRef(); 
+
+    papszArg = CSLAddString(papszArg, "-t_srs");
+    papszArg = CSLAddString(papszArg, target_crs[0]);
     
     if( *st != '\0') {
-       // we add our target projection iff a) source crs is valid b) target crs is valid c) transformation source->target is valid
-        // user may have augmented the array of datasets with source_projection
-        // if the source is just not defined we ignore the target with a warning
-        papszArg = CSLAddString(papszArg, "-t_srs");
-        papszArg = CSLAddString(papszArg, target_crs[0]);
-      } else {
+        // we also should be checking if no geolocation arrays and no gcps
         Rcpp::warning("no source crs, target crs is ignored\n");
-      }
+      } 
+
+        
+      
 
   }
   
@@ -168,13 +169,6 @@ inline List gdal_warp_general(CharacterVector dsn,
     papszArg = CSLAddString(papszArg, options[gwopt]);
   }
   
-  
-
-  // List out = List::create(1);
-  // CharacterVector sss(CSLCount (papszArg));
-  // for (int sii = 0; sii < sss.size(); sii++) sss[sii] = papszArg[sii];
-  // out[0] = sss;
-  // return out;
 
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);

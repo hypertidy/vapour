@@ -1,39 +1,47 @@
 
 
-#' General warper functions
+#' General raster read and convert
 #' 
-#' The warper is used to convert source/s to an output file or data in memory. 
+#' The warper is used to convert source/s to an output file or to data in memory. 
 #'
 #' Two functions 'gdal_raster_data' and 'gdal_raster_dsn' act like the gdalwarp command line
-#' tool. 
-#' @param dsn 
-#' @param target_crs 
-#' @param target_dim 
-#' @param target_ext 
-#' @param target_res 
-#' @param resample 
-#' @param bands 
-#'
-#' @return pixel values in a list vector per band, or a list of file paths
-#' @noRd
+#' tool, a convenience third function 'gdal_raster_image()' works especially for image data. 
+#' 
+#' @param dsn data sources, files, urls, db strings, vrt, etc
+#' @param target_crs projection of the target grid
+#' @param target_dim dimension of the target grid
+#' @param target_ext extent of the target grid
+#' @param target_res resolution of the target grid
+#' @param resample resampling algorithm used
+#' @param bands band or bands to include, default is first band only (use NULL or a value less that one to obtain all bands)
+#' @param band_output_type specify the band type, see [vapour_read_raster]
+#' @param options general options passed to gdal warper
+#' @param out_dsn use with [gdal_raster_dsn] optionally set the output file name (or one will be generated)
+#' @export
+#' @returns pixel values in a list vector per band, or a list of file paths
 #'
 #' @examples
-#' dsn <- "inst/extdata/sst.tif"
+#' dsn <- system.file("extdata/sst.tif", package = "vapour")
 #' par(mfrow = c(2, 2))
 #' ## do nothing, get native
 #' X <- gdal_raster_data(dsn)
-#' imfun(X)
 #' 
-#' ## set resolution (or dimension, extent, crs, or combination thereof - GDAL will report/resolve incompatible opts)
+#' ## set resolution (or dimension, extent, crs, or combination thereof - GDAL 
+#' ## will report/resolve incompatible opts)
 #' X1 <- gdal_raster_data(dsn,  target_res = 1)
-#' imfun(X1)
+#' 
+#' ## add a cutline, and cut to it using gdal warp args
+#' cutline <- system.file("extdata/cutline_sst.gpkg", package = "vapour")
+#' X1c <- gdal_raster_data(dsn,  target_res = .1, options = c("-cutline",cutline, "-crop_to_cutline" ))
+#' 
 #' ## warp whole grid to give res
 #' X2 <- gdal_raster_data(dsn,  target_res = 25000, target_crs = "EPSG:32755")
-#' imfun(X2)
 #' 
 #' ## specify exactly (as per vapour originally)
-#' X3 <- gdal_raster_data(dsn,  target_ext = c(-1, 1, -1, 1) * 8e6, target_dim = c(512, 678), target_crs = "+proj=stere +lon_0=147 +lat_0=-90")
-#' imfun(X3)
+#' X3 <- gdal_raster_data(dsn,  target_ext = c(-1, 1, -1, 1) * 8e6, 
+#'  target_dim = c(512, 678), target_crs = "+proj=stere +lon_0=147 +lat_0=-90")
+#'  
+#' X4 <- gdal_raster_dsn(dsn, out_dsn = tempfile(fileext = ".tif"))
 gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
                          resample = "near", bands = 1L, band_output_type = NULL, options = character()) {
   
@@ -80,8 +88,10 @@ gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
                              dsn_outname = "")
 }
 
+#' @name gdal_raster_data
+#' @export
 gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
-                             resample = "near", bands = 1L, band_output_type = NULL, options = character(), out_dsn = tempfile(fileext = ".tif")) {
+                             resample = "near", bands = NULL, band_output_type = NULL, options = character(), out_dsn = tempfile(fileext = ".tif")) {
   
   if (is.null(target_crs)) target_crs <- "" 
   if (is.null(target_ext)) {
@@ -118,7 +128,12 @@ gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ex
   ## currently always COG
   options <- c(options, "-of",  "COG")
   
-  #}
+ if (!is.null(bands) || (is.integer(bands) && !length(bands) == 1 && bands[1] > 0)) {
+   stop("bands cannot be set for gdal_raster_dsn, please use an upfront call to 'vapour_vrt(dsn,  bands = )' to create the dsn")
+ } else {
+   bands <- -1
+ }
+  
   warp_general_cpp(dsn, target_crs, 
                             target_ext, 
                             target_dim, 
@@ -129,8 +144,11 @@ gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ex
                             options = options, 
                             dsn_outname = out_dsn[1L])
 }
+
+#' @name gdal_raster_data
+#' @export
 gdal_raster_image <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
-                               resample = "near", bands = 1:3, band_output_type = NULL, options = character()) {
+                               resample = "near", bands = NULL, band_output_type = NULL, options = character()) {
   
   if (length(target_res) > 0 ) target_res <- as.numeric(rep(target_res, length.out = 2L))
   if (is.null(target_crs)) target_crs <- "" 
@@ -138,6 +156,10 @@ gdal_raster_image <- function(dsn, target_crs = NULL, target_dim = NULL, target_
   if (is.null(target_dim)) target_dim <- integer() #info$dimension
   if (is.null(target_res)) target_res <- numeric() ## TODO
   if (is.null(band_output_type)) band_output_type <- "UInt8"
+  if (is.null(bands)) {
+    nbands <- vapour_raster_info(dsn[1])$bands
+    bands <- seq(min(c(nbands, 4L)))
+  }
   bytes <- warp_general_cpp(dsn, target_crs, 
                             target_ext, 
                             target_dim, 

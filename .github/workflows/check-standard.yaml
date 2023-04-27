@@ -39,10 +39,7 @@ jobs:
            brew install geos
            brew install gdal
     
-      - name: ZapRtools
-        if: runner.os == 'windows' && matrix.config.binary == 'rwinlib'
-        run: rm src/Makevars.ucrt
-        
+      
       - uses: actions/checkout@v3
 
       - uses: r-lib/actions/setup-pandoc@v2
