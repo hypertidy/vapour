@@ -65,7 +65,8 @@ inline CharacterVector gdal_create(CharacterVector filename, CharacterVector dri
                                 extent[3], 0, (extent[2] - extent[3])/ dimension[1]};
   poDstDS->SetGeoTransform( adfGeoTransform );
   
-  
+  if( poDstDS != NULL )
+    GDALClose( (GDALDatasetH) poDstDS );
   if (oTargetSRS != nullptr) {
     delete oTargetSRS;
   }
