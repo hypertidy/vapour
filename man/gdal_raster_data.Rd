@@ -76,7 +76,6 @@ tool, a convenience third function 'gdal_raster_image()' works especially for im
 }
 \examples{
 dsn <- system.file("extdata/sst.tif", package = "vapour")
-par(mfrow = c(2, 2))
 ## do nothing, get native
 X <- gdal_raster_data(dsn)
 
@@ -91,11 +90,11 @@ if (interactive()) {
  wkt <- "POLYGON ((142 -41, 149 -41, 146 -58, 142 -41))"
  write.csv(data.frame(id = 1, WKT = wkt), cutline, row.names = FALSE)
  X1c <- gdal_raster_data(dsn,  target_res = .5, 
-     options = c("-cutline",cutline, "-crop_to_cutline" ))
+     options = c("-cutline",cutline, "-crop_to_cutline"))
  file.remove(cutline)
 }
 
-## warp whole grid to give res
+## warp whole grid to given res
 X2 <- gdal_raster_data(dsn,  target_res = 25000, target_crs = "EPSG:32755")
 
 ## specify exactly (as per vapour originally)

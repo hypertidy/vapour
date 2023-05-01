@@ -36,7 +36,7 @@
 #'  wkt <- "POLYGON ((142 -41, 149 -41, 146 -58, 142 -41))"
 #'  write.csv(data.frame(id = 1, WKT = wkt), cutline, row.names = FALSE)
 #'  X1c <- gdal_raster_data(dsn,  target_res = .5, 
-#'      options = c("-cutline",cutline, "-crop_to_cutline", " ))
+#'      options = c("-cutline",cutline, "-crop_to_cutline"))
 #'  file.remove(cutline)
 #' }
 #' 
