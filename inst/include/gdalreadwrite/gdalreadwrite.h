@@ -15,17 +15,14 @@ using namespace Rcpp;
 
 
 inline GDALDataType init_datatype(CharacterVector datatype) {
-  // Byte/Int8/Int16/UInt16/UInt32/Int32/UInt64/Int64/Float32/Float64/
-  //   CInt16/CInt32/CFloat32/CFloat64
-  //
+  // Byte/Int8/Int16/UInt16/
+  //UInt32/Int32/UInt64/Int64/
+  // Float32/Float64/CInt16/CInt32/
+  // CFloat32/CFloat64
+  // Unknown
   if (datatype[0] == "Byte") {
     return GDT_Byte;
   }
-#if (GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 7)
-  if (datatype[0] == "Int8") {
-    return GDT_Int8;
-  }
-#endif
   
   if (datatype[0] == "Int16") {
     return GDT_Int16;
@@ -39,14 +36,9 @@ inline GDALDataType init_datatype(CharacterVector datatype) {
   if (datatype[0] == "Int32") {
     return GDT_Int32;
   }
-  if (datatype[0] == "UInt64") {
-    return GDT_UInt64;
-  }
+
   if (datatype[0] == "Float32") {
     return GDT_Float32;
-  }
-  if (datatype[0] == "Int64") {
-    return GDT_Int64;
   }
   if (datatype[0] == "Float64") {
     return GDT_Float64;
@@ -63,6 +55,21 @@ inline GDALDataType init_datatype(CharacterVector datatype) {
   if (datatype[0] == "CFloat64") {
     return GDT_CFloat64;
   }
+#if (GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 7)
+  if (datatype[0] == "Int8") {
+    return GDT_Int8;
+  }
+#endif
+  
+#if (GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 5)
+  
+  if (datatype[0] == "UInt64") {
+    return GDT_UInt64;
+  }
+  if (datatype[0] == "Int64") {
+    return GDT_Int64;
+  }
+#endif
   
  // Rcpp::stop("datatype not suppported %s\n", datatype[0]);
   return GDT_Unknown;
