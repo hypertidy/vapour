@@ -12,14 +12,76 @@ namespace gdalreadwrite{
 
 using namespace Rcpp;
 
+
+
+inline GDALDataType init_datatype(CharacterVector datatype) {
+  // Byte/Int8/Int16/UInt16/UInt32/Int32/UInt64/Int64/Float32/Float64/
+  //   CInt16/CInt32/CFloat32/CFloat64
+  //
+  if (datatype[0] == "Byte") {
+    return GDT_Byte;
+  }
+#if (GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 7)
+  if (datatype[0] == "Int8") {
+    return GDT_Int8;
+  }
+#endif
+  
+  if (datatype[0] == "Int16") {
+    return GDT_Int16;
+  }
+  if (datatype[0] == "UInt16") {
+    return GDT_UInt16;
+  }
+  if (datatype[0] == "UInt32") {
+    return GDT_UInt32;
+  }
+  if (datatype[0] == "Int32") {
+    return GDT_Int32;
+  }
+  if (datatype[0] == "UInt64") {
+    return GDT_UInt64;
+  }
+  if (datatype[0] == "Float32") {
+    return GDT_Float32;
+  }
+  if (datatype[0] == "Int64") {
+    return GDT_Int64;
+  }
+  if (datatype[0] == "Float64") {
+    return GDT_Float64;
+  }
+  if (datatype[0] == "CInt16") {
+    return GDT_CInt16;
+  }
+  if (datatype[0] == "CInt32") {
+    return GDT_CInt32;
+  }
+  if (datatype[0] == "CFLoat32") {
+    return GDT_CFloat32;
+  }
+  if (datatype[0] == "CFloat64") {
+    return GDT_CFloat64;
+  }
+  
+ // Rcpp::stop("datatype not suppported %s\n", datatype[0]);
+  return GDT_Unknown;
+}
+
+
+
 inline CharacterVector gdal_create(CharacterVector filename, CharacterVector driver,
                                    NumericVector extent, IntegerVector dimension,
                                    CharacterVector projection,
-                                   IntegerVector n_bands) {
+                                   IntegerVector n_bands, 
+                                   CharacterVector datatype,
+                                   CharacterVector options) {
   
   // const char *pszFormat;
   // pszFormat = (const char *)driver[0];
-  
+
+  GDALDataType gdt_type = init_datatype(datatype); 
+  //GDALDataType gdt_type = GDT_Float32; 
   OGRSpatialReference* oTargetSRS = nullptr;
   oTargetSRS = new OGRSpatialReference;
   OGRErr target_chk =  oTargetSRS->SetFromUserInput(projection[0]);
@@ -31,42 +93,71 @@ inline CharacterVector gdal_create(CharacterVector filename, CharacterVector dri
   }
   
   char **papszOptions = NULL;
-  if (driver[0] == "GTiff") {
-    papszOptions = CSLSetNameValue( papszOptions, "SPARSE_OK", "YES" );
-    papszOptions = CSLSetNameValue( papszOptions, "TILED", "YES" );
-    papszOptions = CSLSetNameValue( papszOptions, "BLOCKXSIZE", "512" );
-    papszOptions = CSLSetNameValue( papszOptions, "BLOCKYSIZE", "512" );
-    papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "DEFLATE" );
+  if (options.size() > 0) {
+  for (int i = 0; i < options.size(); i++) {
+// do this in R
+    // if (EQUAL(options[i], "-co") || CSLPartialFindString(options[i], "=") > -1) {
+    //   Rcpp::warning("create options should not include '-co' or '='")
+    // }
+    Rprintf("option: %s\n", (const char *)options[i]); 
+    papszOptions = CSLAddString(papszOptions, options[i]); 
   }
+  }
+    // if (driver[0] == "GTiff") {
+  //   papszOptions = CSLSetNameValue( papszOptions, "SPARSE_OK", "YES" );
+  //   papszOptions = CSLSetNameValue( papszOptions, "TILED", "YES" );
+  //   papszOptions = CSLSetNameValue( papszOptions, "BLOCKXSIZE", "512" );
+  //   papszOptions = CSLSetNameValue( papszOptions, "BLOCKYSIZE", "512" );
+  //   papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "DEFLATE" );
+  // }
+ 
  
  
     GDALDriver *poDriver;
-  poDriver = GetGDALDriverManager()->GetDriverByName(driver[0]);
+  poDriver = GetGDALDriverManager()->GetDriverByName("VRT");
   if( poDriver == NULL ) {
     return Rcpp::CharacterVector::create(NA_STRING); 
   }
-  char **papszMetadata;
-  papszMetadata = poDriver->GetMetadata();
-  if( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) ) {
-    Rprintf( "Driver %s supports Create() method.\n", (const char *)driver[0]);
-  } else {
-    Rprintf( "Driver %s does not support Create() method.\n", (const char *)driver[0]);
-    return Rcpp::CharacterVector::create(NA_STRING); 
-  }
-  GDALDataset *poDstDS;
-  poDstDS = poDriver->Create(filename[0], dimension[0], dimension[1], n_bands[0], GDT_Float32, papszOptions);
-  if (poDstDS == NULL) {
-    Rprintf( "Failed to Create %s. \n", (const char *)filename[0]);
+  // char **papszMetadata;
+  // papszMetadata = poDriver->GetMetadata();
+  // if( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) ) {
+  //   Rprintf( "Driver %s supports Create() method.\n", (const char *)driver[0]);
+  // } else {
+  //   Rprintf( "Driver %s does not support Create() method.\n", (const char *)driver[0]);
+  //   return Rcpp::CharacterVector::create(NA_STRING); 
+  // }
+  GDALDataset *poVrtDS;
+  poVrtDS = poDriver->Create("", dimension[0], dimension[1], n_bands[0], gdt_type, NULL);
+  if (poVrtDS == NULL) {
+    Rprintf( "Failed to Create virtual datase\n");
     
     return Rcpp::CharacterVector::create(NA_STRING); 
   }
   
   double adfGeoTransform[6] = { extent[0], (extent[1] - extent[0])/ dimension[0], 0, 
                                 extent[3], 0, (extent[2] - extent[3])/ dimension[1]};
-  poDstDS->SetGeoTransform( adfGeoTransform );
+  poVrtDS->SetGeoTransform( adfGeoTransform );
+  poVrtDS->SetSpatialRef(oTargetSRS); 
   
-  if( poDstDS != NULL )
-    GDALClose( (GDALDatasetH) poDstDS );
+  char **papszMetadata;
+  GDALDriver *outDriver; 
+  outDriver = GetGDALDriverManager()->GetDriverByName(driver[0]); 
+  
+  papszMetadata = outDriver->GetMetadata();
+  if( !CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE ) ) {
+    if( poVrtDS != NULL )
+      GDALClose( (GDALDatasetH) poVrtDS );
+    Rcpp::stop("driver does not support CreateCopy: %s", driver); 
+    
+  }
+  
+  GDALDataset *poDS; 
+  poDS = outDriver->CreateCopy(filename[0], poVrtDS,  false, papszOptions, NULL, NULL); 
+  if( poDS != NULL )
+    GDALClose( (GDALDatasetH) poDS );
+  
+  if( poVrtDS != NULL )
+    GDALClose( (GDALDatasetH) poVrtDS );
   if (oTargetSRS != nullptr) {
     delete oTargetSRS;
   }

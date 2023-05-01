@@ -1,6 +1,9 @@
 # vapour dev
 
+* `vapour_create()` gets creation options, data type options, and driver options. 
+
 * Fixed failure to close file created by `vapour_create()` fixes #202. 
+
 # vapour 0.9.5
 
 * `vapour_vrt()` gains an 'overview' argument. Wish of https://github.com/hypertidy/vapour/issues/186

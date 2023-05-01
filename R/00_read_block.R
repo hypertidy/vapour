@@ -1,3 +1,25 @@
+#' @name vapour_create
+#' @export
+vapour_create_options <- function(driver = "GTiff") {
+
+  
+    if (driver[1] == "GTiff")  {
+      default_options = c(
+  "SPARSE_OK=YES", 
+  "TILED=YES", "BLOCKXSIZE=512", "BLOCKYSIZE=512", 
+  "COMPRESS=DEFLATE", "BIGTIFF=IF_SAFER") 
+    } else if (driver[1] == "COG") {
+      default_options <- c(
+        "SPARSE_OK=YES", 
+         "BLOCKSIZE=512", 
+        "COMPRESS=DEFLATE", "BIGTIFF=IF_SAFER") 
+    } else {
+      default_options <- character(0)
+    }
+  default_options
+}
+
+
 #' Create raster file
 #'
 #' This is in an incomplete interface to raster writing, for exploring. 
@@ -5,8 +27,14 @@
 #' If GeoTIFF is used (`driver = "GTiff"`, recommended) then the output is tiled 512x512, and has DEFLATE compression, and
 #' is sparse when created (no values are initiated, so the file is tiny). 
 #' 
-#' Note that there is no restriction on where you can read or write from, the responsibility is yours. In future we will 
-#' allow control of output tiling and data type etc. 
+#' Note that there is no restriction on where you can read or write from, the responsibility is yours. There is no auto driver detection
+#' done for the file format, it's up to you to set the file extension _and_ the driver. 
+#' 
+#' File is created using CreateCopy from a VRT in memory. This is so that we can instantiate COG layer with 'driver = "COG"'. 
+#' Please note that performance is best for GTiff itself, with 'SPARSE_OK=YES'. We don't yet know how to instantiate a large
+#' COG with overviews. 
+#' 
+#' There are default creation options set for COG and GTiff drivers, see 'vapour_create_options(driver "GTiff")' for what those are. 
 #' 
 #' @param filename filename/path to create
 #' @param driver GDAL driver to use (GTiff is default, and recommended)
@@ -15,6 +43,8 @@
 #' @param projection projection of the output, best to use a full WKT but any string accepted
 #' @param n_bands number of bands in the output, default is 1
 #' @param overwrite not TRUE by default
+#' @param datatype the name of a GDAL datatype ('Float32', 'Int64', etc)
+#' @param options character vector of creation of options for the driver in use `c('COMPRESS=DEFLATE')` note how these are constructed (no '-co' element)
 #'
 #' @return the file path that was created
 #' @export
@@ -28,11 +58,30 @@
 #'  file.remove(tfile)
 #' }
 vapour_create <- function(filename, driver = "GTiff", extent = c(-180, 180, -90, 90), 
-                          dimension = c(2048, 1024), projection = "OGC:CRS84", n_bands = 1L, overwrite = FALSE) {
+                          dimension = c(2048, 1024), projection = "OGC:CRS84", n_bands = 1L, overwrite = FALSE, 
+                          datatype = "Float32",
+                          options = vapour_create_options(driver)) {
 
   if (!overwrite && file.exists(filename)) stop("'filename' exists")
  
-  vapour_create_cpp(filename, driver, extent, dimension, projection, n_bands)
+  driver <- driver[1L]
+  if (length(driver) < 1 || !nzchar(driver) || is.na(driver)) {
+    stop("driver name is not valid")
+  }
+  stopifnot(is.numeric(extent))
+  stopifnot(length(extent) == 4L)
+  df <- diff(extent)[c(1L, 3L)]
+  if(!df[1] > 0) stop("extent is not valid, must be c(xmin, xmax, ymin, ymax) :  xmax !> xmin")
+  if(!df[2] > 0) stop("extent is not valid, must be c(xmin, xmax, ymin, ymax) :  ymax !> ymin")
+  
+  if (is.null(options)) {
+    options <- vapour_create_options(driver)
+  } 
+  if (!is.character(options)) options <- character()
+  if (length(options) < 1) options <- character()
+  if (!nzchar(options[1])) options <- character()
+  if (is.na(options[1])) options <- character()
+  vapour_create_cpp(filename, driver, extent, dimension, projection, n_bands, datatype, options)
 }
 
 

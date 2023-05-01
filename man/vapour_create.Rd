@@ -2,8 +2,11 @@
 % Please edit documentation in R/00_read_block.R
 \name{vapour_create}
 \alias{vapour_create}
+\alias{vapour_create_options}
 \title{Create raster file}
 \usage{
+vapour_create_options(driver = "GTiff")
+
 vapour_create(
   filename,
   driver = "GTiff",
@@ -11,13 +14,15 @@ vapour_create(
   dimension = c(2048, 1024),
   projection = "OGC:CRS84",
   n_bands = 1L,
-  overwrite = FALSE
+  overwrite = FALSE,
+  datatype = "Float32",
+  options = vapour_create_options(driver)
 )
 }
 \arguments{
-\item{filename}{filename/path to create}
-
 \item{driver}{GDAL driver to use (GTiff is default, and recommended)}
+
+\item{filename}{filename/path to create}
 
 \item{extent}{xmin,xmax,ymin,ymax 4-element vector}
 
@@ -28,6 +33,10 @@ vapour_create(
 \item{n_bands}{number of bands in the output, default is 1}
 
 \item{overwrite}{not TRUE by default}
+
+\item{datatype}{the name of a GDAL datatype ('Float32', 'Int64', etc)}
+
+\item{options}{character vector of creation of options for the driver in use \code{c('COMPRESS=DEFLATE')} note how these are constructed (no '-co' element)}
 }
 \value{
 the file path that was created
@@ -39,8 +48,14 @@ This is in an incomplete interface to raster writing, for exploring.
 If GeoTIFF is used (\code{driver = "GTiff"}, recommended) then the output is tiled 512x512, and has DEFLATE compression, and
 is sparse when created (no values are initiated, so the file is tiny).
 
-Note that there is no restriction on where you can read or write from, the responsibility is yours. In future we will
-allow control of output tiling and data type etc.
+Note that there is no restriction on where you can read or write from, the responsibility is yours. There is no auto driver detection
+done for the file format, it's up to you to set the file extension \emph{and} the driver.
+
+File is created using CreateCopy from a VRT in memory. This is so that we can instantiate COG layer with 'driver = "COG"'.
+Please note that performance is best for GTiff itself, with 'SPARSE_OK=YES'. We don't yet know how to instantiate a large
+COG with overviews.
+
+There are default creation options set for COG and GTiff drivers, see 'vapour_create_options(driver "GTiff")' for what those are.
 }
 \examples{
 tfile <- tempfile(fileext = ".tif")
