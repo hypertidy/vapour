@@ -81,7 +81,7 @@ test_that("empty geometry set as expected", {
   file.copy(efile, emptygeomfile)
   empty <- vapour_geom_summary(emptygeomfile)
   expect_true(!any(empty$valid_geometry))
-  unlink(emptygeomfile)
+  file.remove(emptygeomfile)
 })
 
 

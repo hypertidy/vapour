@@ -85,8 +85,15 @@ X <- gdal_raster_data(dsn)
 X1 <- gdal_raster_data(dsn,  target_res = 1)
 
 ## add a cutline, and cut to it using gdal warp args
-cutline <- system.file("extdata/cutline_sst.gpkg", package = "vapour")
-X1c <- gdal_raster_data(dsn,  target_res = .1, options = c("-cutline",cutline, "-crop_to_cutline" ))
+
+if (interactive()) {
+ cutline <- tempfile(fileext = ".csv")
+ wkt <- "POLYGON ((142 -41, 149 -41, 146 -58, 142 -41))"
+ write.csv(data.frame(id = 1, WKT = wkt), cutline, row.names = FALSE)
+ X1c <- gdal_raster_data(dsn,  target_res = .5, 
+     options = c("-cutline",cutline, "-crop_to_cutline" ))
+ file.remove(cutline)
+}
 
 ## warp whole grid to give res
 X2 <- gdal_raster_data(dsn,  target_res = 25000, target_crs = "EPSG:32755")
