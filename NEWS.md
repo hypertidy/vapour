@@ -1,5 +1,8 @@
 # vapour dev
 
+* `vapour_vrt()` called with geolocation arrays now scrubs the geotransform from the output (which ensures the
+ warper uses the arrays without setting '-geoloc'). 
+
 * `vapour_create()` gets creation options, data type options, and driver options. 
 
 * Fixed failure to close file created by `vapour_create()` fixes #202. 

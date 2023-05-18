@@ -19,7 +19,11 @@
 #' 
 #' `vapour_vrt()` is vectorized, it will return multiple VRT strings for multiple inputs in 
 #' a "length > 1" character vector. These are all independent, this is different to the function
-#' `vapour_warp_raster()` where multiple inputs are merged (possibly by sequential overlapping).  
+#' `vapour_warp_raster()` where multiple inputs are merged (possibly by sequential overlapping). 
+#' 
+#' If `geolocation` is set the '<GeoTransform>' element is forcibly removed from the vrt output, in order
+#' to avoid https://github.com/hypertidy/vapour/issues/210 (there might be a better fix). 
+#' 
 #' @section Rationale:
 #' 
 #' For a raster, the basic essentials we can specify or modify for a source  are
@@ -132,7 +136,12 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
   overview <- as.integer(overview[1])
   if (is.na(overview)) overview <- -1L
 
-  raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation, nomd, overview)
+  out <- raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation, nomd, overview)
+  ## scrub any transform, because of #210
+  if (nzchar(geolocation[1L])) {
+    out <- gsub("<GeoTransform.*GeoTransform>", "", out)
+  }
+  out
 }
 
   
