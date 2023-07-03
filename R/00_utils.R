@@ -18,11 +18,14 @@ gdalinfo_internal <- function(x, json = TRUE,
   }
   if (length(sd) > 1) message("'sd' argument cannot be vectorized over 'dsn', ignoring all but first value")
   
+  version <- vapour_gdal_version()
+  v3 <- TRUE
+  if (grepl("GDAL 2", version )) v3 <- FALSE
   extra <- c(if(json) "-json",
              if (is.numeric(sd) && sd[1L] > 0) c("-sd", sd[1L]),
              if (stats) "-stats",
              if (checksum) "-checksum",
-             if (nchar(wkt_format[1]) > 0) c("-wkt_format", wkt_format[1L]),
+             if (nchar(wkt_format[1]) > 0 && v3) c("-wkt_format", wkt_format[1L]),
              if (length(oo) > 0 && any(nchar(oo) > 0) ) rep_zip("-oo", oo[nchar(oo) > 0]),
              if (length(initial_format) > 0 && any(nchar(initial_format) > 0)) rep_zip("-if", initial_format[nchar(initial_format) > 0]))
   

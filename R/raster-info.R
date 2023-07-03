@@ -4,7 +4,9 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
   ## but also don't prevent access to non-files
   if (file.exists(x)) x <- base::normalizePath(x, mustWork = FALSE)
   ## use sds wrapper to target the first by default
-  datavars <- data.frame(datsource = x, subdataset = vapour_sds_names(x), stringsAsFactors = FALSE)
+  subdatasets <- try(vapour_sds_names(x), silent = TRUE)
+  if (inherits(subdatasets, "try-error")) stop("GDAL was unable to open ^^")
+  datavars <- data.frame(datsource = x, subdataset = subdatasets, stringsAsFactors = FALSE)
 
   ## catch for l1b where we end up with the GCP conflated with the data set #48
   if (nrow(datavars) < 2) return(x)  ## shortcut to avoid #48
@@ -52,6 +54,8 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' \item{overviews}{the number and size of any available overviews}
 #' \item{filelist}{the list of files involved (may be none, and so will be a single NA character value)}
 #' \item{datatype}{the band type name, in GDAL form 'Byte', 'Int16', 'Float32', etc.}
+#' \item{subdatasets}{any subdataset DSNs is present, otherwise `NULL` }
+#' \item{corners}{corner coordinates of the data, for non-zero skew geotransforms a 2-column matrix with rows upperLeft, lowerLeft, lowerRight, upperRight, and center}
 #' }
 #'
 #' Note that the geotransform is a kind of obscure combination of the extent and dimension, I don't find it
@@ -140,19 +144,27 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' vapour_raster_info(f)
 vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
   sd <- if (is.null(sds)) 0 else sds
+  x <- .check_dsn_single(x)
   info <- gdalinfo_internal(x[1L], json  = TRUE, stats = min_max, sd = sd, ...)
+  if (is.na(info)) {
+    stop("GDAL was unable to open ^^")
+  }
   json <- jsonlite::fromJSON(info)
   sds <- NULL
   if (!is.null(json$metadata$SUBDATASETS)) {
     sds <- unlist(json$metadata$SUBDATASETS[grep("NAME$", names(json$metadata$SUBDATASETS))], use.names = FALSE)
   }
-  extent <- c(json$cornerCoordinates$upperLeft, json$cornerCoordinates$lowerRight)[c(1, 3, 4, 2)]
+  
+
+  corners <- do.call(rbind, json$cornerCoordinates)
+  extent <- c(range(corners[,1]), range(corners[,2]))
   if (is.null(json$geoTransform)) {
     geoTransform <- c(extent[1], diff(extent[c(1,2)])/json$size[1], 0, 
                       extent[4], 0, diff(extent[c(4:3)])/json$size[2])
   } else {
     geoTransform <- json$geoTransform
   }
+
   list(geotransform = geoTransform, 
        dimension = json$size,  ## or/and dimXY
        dimXY = json$size,
@@ -167,7 +179,8 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
        filelist = json$files, 
        datatype = json$bands$type[1L], 
        extent = extent, 
-       subdatasets = sds)
+       subdatasets = sds, 
+       corners = corners)
 }
 
 
@@ -252,6 +265,8 @@ vapour_raster_gcp <- function(x, ...) {
 vapour_sds_names <- function(x) {
   x <- .check_dsn_single(x)
   info <- gdalinfo_internal(x[1L], json  = TRUE)
+
+  if (is.na(info)) stop("GDAL was unable to open ^^")
   json <- jsonlite::fromJSON(info)
   if (!is.null(json$metadata$SUBDATASETS)) {
    sources <- unlist(json$metadata$SUBDATASETS[grep("NAME$", 

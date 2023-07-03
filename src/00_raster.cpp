@@ -27,8 +27,9 @@ List raster_io_gdal_cpp(CharacterVector dsn,
                         IntegerVector window,
                         IntegerVector band,
                         CharacterVector resample,
-                        CharacterVector band_output_type) {
-  return gdalraster::gdal_raster_io(dsn, window, band, resample, band_output_type);
+                        CharacterVector band_output_type, 
+                        LogicalVector unscale) {
+  return gdalraster::gdal_raster_io(dsn, window, band, resample, band_output_type, unscale);
 }
 
 // [[Rcpp::export]]
@@ -58,7 +59,8 @@ List warp_in_memory_gdal_cpp(CharacterVector dsn,
                              LogicalVector silent,
                              CharacterVector band_output_type, 
                      
-                             CharacterVector options) {
+                             CharacterVector options, 
+                             LogicalVector nomd, IntegerVector overview) {
   return gdalwarpmem::gdal_warp_in_memory(dsn,
                                           source_WKT,
                                           target_WKT,
@@ -69,5 +71,5 @@ List warp_in_memory_gdal_cpp(CharacterVector dsn,
                                           resample,
                                           silent,
                                           band_output_type, 
-                                        options);
+                                        options, nomd, overview);
 }

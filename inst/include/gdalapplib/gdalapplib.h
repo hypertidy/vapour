@@ -241,35 +241,22 @@ inline List gdalwarp_applib(CharacterVector source_filename,
     OGRSpatialReference *oTargetSRS = nullptr;
     oTargetSRS = new OGRSpatialReference;
     OGRErr target_chk =  oTargetSRS->SetFromUserInput(target_crs[0]);
-    if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
+    if (oTargetSRS != nullptr) {
+      delete oTargetSRS; 
+    }
+    if (target_chk != OGRERR_NONE) {
+      Rcpp::stop("cannot initialize target projection");
+    }
+    const char *st = NULL;
+    st = ((GDALDataset *)poSrcDS[0])->GetProjectionRef(); 
     
-    
-    //    const OGRSpatialReference *oSourceSRS = ((GDALDataset *)poSrcDS[0])->GetSpatialRef();
-    
-    OGRSpatialReference *oSourceSRS = nullptr;
-    oSourceSRS = new OGRSpatialReference;
-    char *st = NULL;
-    ((GDALDataset *)poSrcDS[0])->GetSpatialRef()->exportToWkt(&st);
-    
-    OGRErr source_chk =  oSourceSRS->SetFromUserInput(st);
-    if (source_chk != OGRERR_NONE) Rcpp::stop("cannot initialize source projection");
-    // 
-    // 
-    OGRCoordinateTransformation *poCT;
-    poCT = OGRCreateCoordinateTransformation(oSourceSRS, oTargetSRS);
-    if( poCT == NULL )	{
-      delete oTargetSRS;
-      delete oSourceSRS;
-      
+    if(*st == '\0')	{
       Rcpp::stop( "Transformation to this target CRS not possible from this source dataset, target CRS given: \n\n %s \n\n", 
                   (char *)  target_crs[0] );
-      
     }
-    delete oTargetSRS;
-    delete oSourceSRS;
-    
+
     papszArg = CSLAddString(papszArg, "-t_srs");
- papszArg = CSLAddString(papszArg, target_crs[0]);
+  papszArg = CSLAddString(papszArg, target_crs[0]);
     
  }
   

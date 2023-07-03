@@ -1,18 +1,15 @@
-## vapour 0.9.2
+## vapour 0.9.5
 
-* Removed hardcoded -lsqlite3 from configure.ac, as per helpful CRAN email. 
-
-New submission after confirmation on mac builder,  same pkg-config --libs as expected from CRAN email, use LDFLAGS in load tests. 
-
-Macbuilder results are here: https://mac.r-project.org/macbuilder/results/1668480796-f750737d607cc85b/
+* Patched CRAN supplied diff for Makevars.ucrt. 
 
 Thanks! 
 
 
 ## Test environments
 
-* win-builder (devel and release)
-* Linux ubuntu 4.2.1
+* win-builder (devel)
+* mac-builder
+* Linux ubuntu (and clang with -Wconversion)
 
 ## R CMD check results
 

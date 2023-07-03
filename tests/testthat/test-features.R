@@ -81,7 +81,7 @@ test_that("empty geometry set as expected", {
   file.copy(efile, emptygeomfile)
   empty <- vapour_geom_summary(emptygeomfile)
   expect_true(!any(empty$valid_geometry))
-  unlink(emptygeomfile)
+  file.remove(emptygeomfile)
 })
 
 
@@ -186,7 +186,7 @@ expect_identical(s1, s2)
 
 })
 test_that("sanity prevails", {
-  expect_error(vapour_layer_names(""), "Open failed.")
+  expect_error(vapour_layer_names(""), "Not a valid character string")
 })
 
 test_that("index geometry read works", {

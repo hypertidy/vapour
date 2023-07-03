@@ -41,8 +41,11 @@
 #' vapour_layer_info(mvfile, extent = c(412000,  420000, 5352612.8, 5425154.3), 
 #'   sql = "SELECT * FROM list_locality_postcode_meander_valley")$count
 vapour_layer_info <- function(dsource, layer = 0L, sql = "", extent = NA, count = TRUE, ...) {
-
-  layer_names <- vapour_layer_names(dsource)
+  dsource <- .check_dsn_single(dsource)
+  layer_names <- try(vapour_layer_names(dsource))
+  if (inherits(layer_names, "try-error") && grepl("rest.*FeatureServer/0", dsource)) {
+    message("looks like dsource is a ESRI Feature Services, try constructing the DSN as \n \ https://<_>rest/services/<sources>/<layerset>/FeatureServer/0query?where=objectid+%3D+objectid&outfields=*&f=json\n see ESRIJSON document in gdal.org and this example https://gist.github.com/mdsumner/c54bdc119accf95138f5ad7ab574337d\n")
+  }
   layer_name <- layer
   if (!is.numeric(layer)) layer <- match(layer_name, layer_names) - 1
   if (is.numeric(layer_name)) layer_name <- layer_names[layer + 1]
@@ -87,6 +90,7 @@ vapour_layer_info <- function(dsource, layer = 0L, sql = "", extent = NA, count 
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' vapour_layer_extent(mvfile)
 vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ...) {
+  dsource <- .check_dsn_single(dsource)
   layer_names <- vapour_layer_names(dsource)
   layer_name <- layer
   if (!is.numeric(layer)) layer <- match(layer_name, layer_names) - 1
@@ -161,6 +165,7 @@ vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ...) 
 #' @export
 #' @name vapour_read_geometry
 vapour_read_geometry <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+  dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
@@ -170,6 +175,7 @@ vapour_read_geometry <- function(dsource, layer = 0L, sql = "", limit_n = NULL, 
 #' @export
 #' @rdname vapour_read_geometry
 vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat = "json", limit_n = NULL, skip_n = 0, extent = NA) {
+  dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   textformat = match.arg (tolower (textformat), c ("json", "gml", "kml", "wkt"))
   limit_n <- validate_limit_n(limit_n)
@@ -182,6 +188,7 @@ vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat 
 #' @rdname vapour_read_geometry
 #' @export
 vapour_read_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+  dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
@@ -198,6 +205,7 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL, sk
 #' @rdname vapour_read_geometry
 #' @export
 vapour_read_type <- function(dsource, layer = 0L,  sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+  dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)

@@ -1,17 +1,18 @@
 test_that("with with no source crs works", {
-  skip("skip fixme")
+  #skip("skip fixme")
   f <- system.file("extdata/volcano.png", package = "vapour", mustWork = TRUE)
   info <- vapour_raster_info(f)
-  #vapour_warp_raster(f, dimension = info$dimension, 
-  #                   extent = c(0, 1, 0, 1))
+  ok <- vapour_warp_raster(f, dimension = info$dimension, 
+                     extent = c(0, 1, 0, 1), transformation_options = c("SRC_METHOD=NO_GEOTRANSFORM"))
   
- # sds <- "NETCDF:/rdsi/PUBLIC/raad/data/www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr/198109/oisst-avhrr-v02r01.19810901.nc:sst"
+  if (dir.exists("/rdsi/PUBLIC/raad/data/www.ncei.noaa.gov")) {
+  sds <- "NETCDF:/rdsi/PUBLIC/raad/data/www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr/198109/oisst-avhrr-v02r01.19810901.nc:sst"
   ## expect no crashy crashy
-#  expect_silent(vapour_warp_raster(sds, extent = c(0, 1, 0, 1), dimension = c(4, 4)))
- # expect_silent(vapour_warp_raster(sds, extent = c(0, 1, 0, 1), dimension = c(4, 4), source_projection = "+proj=laea"))
- ## expect_warning(vapour_warp_raster(sds, extent = c(0, 1, 0, 1), dimension = c(4, 4), projection = "OGC:CRS84"))
-  
-  
+  expect_silent(vapour_warp_raster(sds, extent = c(0, 1, 0, 1), dimension = c(4, 4)))
+  expect_silent(vapour_warp_raster(sds, extent = c(0, 1, 0, 1), dimension = c(4, 4), source_projection = "+proj=laea"))
+  expect_warning(vapour_warp_raster(sds, extent = c(0, 1, 0, 1), dimension = c(4, 4), projection = "OGC:CRS84"))
+ }
+
 
   ## this file is written upside down so the geoloc screws up (or something, not quite there yet)  
   badnc <- system.file("extdata/gdal", "bad_netcdf_geoloc_arrays.nc", package = "vapour")

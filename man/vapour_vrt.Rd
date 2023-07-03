@@ -12,7 +12,9 @@ vapour_vrt(
   bands = NULL,
   geolocation = NULL,
   ...,
-  relative_to_vrt = FALSE
+  relative_to_vrt = FALSE,
+  nomd = FALSE,
+  overview = -1L
 )
 }
 \arguments{
@@ -31,6 +33,10 @@ vapour_vrt(
 \item{...}{ignored}
 
 \item{relative_to_vrt}{default \code{FALSE}, if \code{TRUE} input strings that identify as files on the system are left as-is (by default they are made absolute at the R level)}
+
+\item{nomd}{if \code{TRUE} the Metadata tag is removed from the resulting VRT (it can be quite substantial)}
+
+\item{overview}{pick an integer overview from the source (0L is highest resolution, default -1L does nothing)}
 }
 \value{
 VRT character string (for use by GDAL-capable tools, i.e. reading raster)
@@ -57,6 +63,9 @@ in any order and contain repetitions.
 \code{vapour_vrt()} is vectorized, it will return multiple VRT strings for multiple inputs in
 a "length > 1" character vector. These are all independent, this is different to the function
 \code{vapour_warp_raster()} where multiple inputs are merged (possibly by sequential overlapping).
+
+If \code{geolocation} is set the '\if{html}{\out{<GeoTransform>}}' element is forcibly removed from the vrt output, in order
+to avoid https://github.com/hypertidy/vapour/issues/210 (there might be a better fix).
 }
 \section{Rationale}{
 
@@ -79,7 +88,7 @@ well. More features may come with a 'VRTBuilder' interface.
 \section{Projections}{
 
 Common inputs for \code{projection} are WKT variants, "AUTH:CODE"s e.g.
-"EPSG:3031", the "OGC:CRS84" for long,lat WGS84, "ESRI:\if{html}{\out{<code>}}" and other
+"EPSG:3031", the "OGC:CRS84" for long,lat WGS84, "ESRI:code" and other
 authority variants, and datum names such as 'WGS84','NAD27' recognized by
 PROJ itself.
 
@@ -93,7 +102,7 @@ See the following links to GDAL and PROJ documentation:
 }
 
 \examples{
-tif <- system.file("extdata", "sst.tif", package = "vapour", mustWork = TRUE)
+tif <- system.file("extdata", "sst.tif", package = "vapour")
 vapour_vrt(tif)
 
 vapour_vrt(tif, bands = c(1, 1))

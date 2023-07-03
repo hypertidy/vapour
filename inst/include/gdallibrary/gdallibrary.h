@@ -658,15 +658,27 @@ inline List gdal_read_geometry(CharacterVector dsn,
 
 
 inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
-  OGRSpatialReference oSRS;
+  OGRSpatialReference *oSRS = nullptr;
+  oSRS = new OGRSpatialReference; 
   char *pszWKT = NULL;
-  oSRS.SetFromUserInput(proj_str[0]);
-  oSRS.exportToWkt(&pszWKT);
+  oSRS->SetFromUserInput(proj_str[0]);
+  oSRS->exportToWkt(&pszWKT);
   CharacterVector out =  Rcpp::CharacterVector::create(pszWKT);
   CPLFree(pszWKT);
+  if (oSRS != nullptr) delete oSRS; 
+  return out;
+}
+
+inline LogicalVector gdal_crs_is_lonlat(CharacterVector proj_str) {
+  OGRSpatialReference oSRS;
+  
+  oSRS.SetFromUserInput(proj_str[0]);
+  LogicalVector out(1); 
+  out[0] = oSRS.IsGeographic() > 0; 
   
   return out;
 }
+
 
 inline List gdal_projection_info(CharacterVector dsn,
                                  IntegerVector layer,

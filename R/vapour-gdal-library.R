@@ -54,7 +54,7 @@ vapour_get_config  <- function(option) {
 #' give the output as WKT. If it's an error in GDAL it's an error in R.
 #'
 #' Common inputs are WKT variants,
-#' 'AUTH:CODE's e.g. 'EPSG:3031', the 'OGC:CRS84' for long,lat WGS84, 'ESRI:<code>' and other authority variants, and
+#' 'AUTH:CODE's e.g. 'EPSG:3031', the 'OGC:CRS84' for long,lat WGS84, 'ESRI:code' and other authority variants, and
 #' datum names such as 'WGS84','NAD27' recognized by PROJ itself.
 #'
 #' See help for 'SetFromUserInput' in 'OGRSpatialReference', and 'proj_create_crs_to_crs'.
@@ -75,6 +75,29 @@ vapour_srs_wkt <- function(crs) {
 }
 
 
+#' Is the CRS string representative of angular coordinates
+#' 
+#' Returns `TRUE` if this is longitude latitude data. Missing, malformed, zero-length values are disallowed. 
+#'
+#' @param crs character string of length 1
+#'
+#' @return logical value `TRUE` for lonlat, `FALSE` otherwise
+#' @export
+#'
+#' @examples
+#' vapour_crs_is_lonlat("+proj=laea")
+#' vapour_crs_is_lonlat("+proj=longlat")
+#' vapour_crs_is_lonlat("+init=EPSG:4326")
+#' vapour_crs_is_lonlat("OGC:CRS84")
+#' vapour_crs_is_lonlat("WGS84")
+#' vapour_crs_is_lonlat("NAD27")
+#' vapour_crs_is_lonlat("EPSG:3031")
+vapour_crs_is_lonlat <- function(crs) {
+  crs_in <- crs[1L]
+  if (length(crs) > 1L) message("multiple crs input is not supported, using the first only")
+  if (is.na(crs_in) || is.null(crs_in) || length(crs_in) < 1L || !nzchar(crs_in)) stop(sprintf("problem with input crs: %s", crs_in))
+  crs_is_lonlat_cpp(crs)
+}
 
 #' Summary of available geometry
 #'
@@ -102,6 +125,7 @@ vapour_srs_wkt <- function(crs) {
 #' text(gsum$xmin, gsum$ymin, labels = gsum$FID)
 vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
   #limit_n <- validate_limit_n(limit_n)
+  dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(x = dsource, layername = layer)
   extent <- validate_extent(extent, sql, warn = FALSE)
 

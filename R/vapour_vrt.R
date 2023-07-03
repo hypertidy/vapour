@@ -19,7 +19,11 @@
 #' 
 #' `vapour_vrt()` is vectorized, it will return multiple VRT strings for multiple inputs in 
 #' a "length > 1" character vector. These are all independent, this is different to the function
-#' `vapour_warp_raster()` where multiple inputs are merged (possibly by sequential overlapping).  
+#' `vapour_warp_raster()` where multiple inputs are merged (possibly by sequential overlapping). 
+#' 
+#' If `geolocation` is set the '<GeoTransform>' element is forcibly removed from the vrt output, in order
+#' to avoid https://github.com/hypertidy/vapour/issues/210 (there might be a better fix). 
+#' 
 #' @section Rationale:
 #' 
 #' For a raster, the basic essentials we can specify or modify for a source  are
@@ -36,7 +40,7 @@
 #' 
 #' @section Projections:
 #' Common inputs for `projection` are WKT variants, "AUTH:CODE"s e.g.
-#' "EPSG:3031", the "OGC:CRS84" for long,lat WGS84, "ESRI:<code>" and other
+#' "EPSG:3031", the "OGC:CRS84" for long,lat WGS84, "ESRI:code" and other
 #' authority variants, and datum names such as 'WGS84','NAD27' recognized by
 #' PROJ itself.
 #'
@@ -57,15 +61,17 @@
 #' @param relative_to_vrt default `FALSE`, if `TRUE` input strings that identify as files on the system are left as-is (by default they are made absolute at the R level)
 #' @param geolocation vector of 2 dsn to longitude, latitude geolocation array sources
 #' @return VRT character string (for use by GDAL-capable tools, i.e. reading raster)
+#' @param nomd if `TRUE` the Metadata tag is removed from the resulting VRT (it can be quite substantial)
+#' @param overview  pick an integer overview from the source (0L is highest resolution, default -1L does nothing)
 #' @export
 #'
 #' @examples
-#' tif <- system.file("extdata", "sst.tif", package = "vapour", mustWork = TRUE)
+#' tif <- system.file("extdata", "sst.tif", package = "vapour")
 #' vapour_vrt(tif)
 #' 
 #' vapour_vrt(tif, bands = c(1, 1))
 #' 
-vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = NULL, geolocation = NULL, ..., relative_to_vrt = FALSE) {
+vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = NULL, geolocation = NULL, ..., relative_to_vrt = FALSE, nomd = FALSE, overview = -1L) {
   x <- .check_dsn_multiple_naok(x)
   
   if (!relative_to_vrt) { 
@@ -125,8 +131,17 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
   }
    if (!is.null(geolocation) && (length(geolocation) != 2 || !is.character(geolocation) || anyNA(geolocation))) {
     geolocation <- ""
+   }
+  if (is.null(overview)) overview <- -1L
+  overview <- as.integer(overview[1])
+  if (is.na(overview)) overview <- -1L
+
+  out <- raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation, nomd, overview)
+  ## scrub any transform, because of #210
+  if (nzchar(geolocation[1L])) {
+    out <- gsub("<GeoTransform.*GeoTransform>", "", out)
   }
-  raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation)
+  out
 }
 
   
