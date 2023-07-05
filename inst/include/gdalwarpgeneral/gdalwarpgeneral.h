@@ -16,18 +16,22 @@ using namespace Rcpp;
 
 
 List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
-  GDALDataset* poSrcDS = (GDALDataset*) gdalraster::gdalH_open_dsn(dsn[0],  0);
-  double        adfGeoTransform[6];
-  poSrcDS->GetGeoTransform( adfGeoTransform );
- 
-  int nXSize, nYSize;
-  double adfExtent[4]; 
-  GDALTransformerFunc pfnTransformer; 
-  pfnTransformer = GDALGenImgProjTransform;
   
-  void *pfnTransformerArg = nullptr;
-  pfnTransformerArg =
-    GDALCreateGenImgProjTransformer( poSrcDS,
+  
+  List out(dsn.size()); 
+  for (int i = 0; i < dsn.size(); i++) {
+    GDALDataset* poSrcDS = (GDALDataset*) gdalraster::gdalH_open_dsn(dsn[0],  0);
+    double        adfGeoTransform[6];
+    poSrcDS->GetGeoTransform( adfGeoTransform );
+ 
+    int nXSize, nYSize;
+    double adfExtent[4]; 
+    GDALTransformerFunc pfnTransformer; 
+    pfnTransformer = GDALGenImgProjTransform;
+  
+    void *pfnTransformerArg = nullptr;
+    pfnTransformerArg =
+     GDALCreateGenImgProjTransformer( poSrcDS,
                                      nullptr,
                                      nullptr,
                                      target_crs[0],
@@ -35,7 +39,9 @@ List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
   GDALSuggestedWarpOutput2(poSrcDS, pfnTransformer, pfnTransformerArg,
                            adfGeoTransform, &nXSize, &nYSize, adfExtent,
                            0); 
-  
+  if (!(poSrcDS == nullptr)) {
+    GDALClose(poSrcDS); 
+  }
   IntegerVector dimension(2);
   dimension[0] = nXSize;
   dimension[1] = nYSize;
@@ -47,10 +53,11 @@ List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
   extent[3] = adfExtent[3]; 
   
   
-  List out(3); 
-  out[0] = extent; 
-  out[1] = dimension; 
-  out[2] = target_crs; 
+  List out_i(2); 
+  out_i[0] = extent; 
+  out_i[1] = dimension; 
+  out[i] = out_i; 
+  }
   return out; 
 }
 
@@ -72,7 +79,8 @@ inline List gdal_warp_general(CharacterVector dsn,
                               LogicalVector silent,
                               CharacterVector band_output_type, 
                               CharacterVector options, 
-                              CharacterVector dsn_outname) {
+                              CharacterVector dsn_outname, 
+                              LogicalVector include_meta) {
   
   
   GDALDatasetH *poSrcDS;
@@ -235,7 +243,7 @@ inline List gdal_warp_general(CharacterVector dsn,
   
   
   
-  
+  if (include_meta[0]) {
   // shove the grid details on as attributes
   // get the extent ...
   R_xlen_t dimx =  ((GDALDataset*)hRet)->GetRasterXSize(); 
@@ -255,7 +263,7 @@ inline List gdal_warp_general(CharacterVector dsn,
   outlist.attr("dimension") = NumericVector::create(dimx, dimy);
   outlist.attr("extent") = NumericVector::create(xmin, xmax, ymin, ymax);
   outlist.attr("projection") = CharacterVector::create(proj);
-  
+  }  
   GDALClose( hRet );
   return outlist;
 }

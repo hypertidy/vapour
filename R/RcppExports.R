@@ -5,8 +5,8 @@ gdal_dsn_read_vector_stream <- function(stream_xptr, dsn, layer, sql, options, q
     .Call('_vapour_gdal_dsn_read_vector_stream', PACKAGE = 'vapour', stream_xptr, dsn, layer, sql, options, quiet, drivers, wkt_filter, dsn_exists, dsn_isdb, fid_column_name, width)
 }
 
-warp_general_cpp <- function(dsn, target_crs, target_extent, target_dim, target_res, bands, resample, silent, band_output_type, options, dsn_outname) {
-    .Call('_vapour_warp_general_cpp', PACKAGE = 'vapour', dsn, target_crs, target_extent, target_dim, target_res, bands, resample, silent, band_output_type, options, dsn_outname)
+warp_general_cpp <- function(dsn, target_crs, target_extent, target_dim, target_res, bands, resample, silent, band_output_type, options, dsn_outname, include_meta) {
+    .Call('_vapour_warp_general_cpp', PACKAGE = 'vapour', dsn, target_crs, target_extent, target_dim, target_res, bands, resample, silent, band_output_type, options, dsn_outname, include_meta)
 }
 
 warp_suggest_cpp <- function(dsn, target_crs) {

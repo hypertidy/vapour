@@ -49,7 +49,7 @@
 #'  
 #' X4 <- gdal_raster_dsn(dsn, out_dsn = tempfile(fileext = ".tif"))
 gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
-                         resample = "near", bands = 1L, band_output_type = NULL, options = character()) {
+                         resample = "near", bands = 1L, band_output_type = NULL, options = character(), include_meta = TRUE) {
   
    if (is.null(target_crs)) target_crs <- "" 
    if (is.null(target_ext)) {
@@ -83,6 +83,7 @@ gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
    }
    if (is.null(band_output_type)) band_output_type <- "Float64"
    if (is.null(bands)) bands <- -1
+   include_meta <- isTRUE(include_meta)
    warp_general_cpp(dsn, target_crs, 
                              as.numeric(target_ext), 
                              as.integer(target_dim), 
@@ -91,7 +92,8 @@ gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
                              resample = resample, 
                              silent = FALSE, band_output_type = band_output_type, 
                              options = options, 
-                             dsn_outname = "")
+                             dsn_outname = "", 
+                    include_meta = include_meta)
 }
 
 #' @name gdal_raster_data
@@ -154,7 +156,7 @@ gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ex
 #' @name gdal_raster_data
 #' @export
 gdal_raster_image <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
-                               resample = "near", bands = NULL, band_output_type = NULL, options = character()) {
+                               resample = "near", bands = NULL, band_output_type = NULL, options = character(), include_meta = TRUE) {
   
   if (length(target_res) > 0 ) target_res <- as.numeric(rep(target_res, length.out = 2L))
   if (is.null(target_crs)) target_crs <- "" 
@@ -166,6 +168,7 @@ gdal_raster_image <- function(dsn, target_crs = NULL, target_dim = NULL, target_
     nbands <- vapour_raster_info(dsn[1])$bands
     bands <- seq(min(c(nbands, 4L)))
   }
+  include_meta <- isTRUE(include_meta)
   bytes <- warp_general_cpp(dsn, target_crs, 
                             target_ext, 
                             target_dim, 
@@ -173,7 +176,7 @@ gdal_raster_image <- function(dsn, target_crs = NULL, target_dim = NULL, target_
                             bands = bands, 
                             resample = resample, 
                             silent = FALSE, band_output_type = band_output_type, 
-                            options = options, dsn_outname = "")
+                            options = options, dsn_outname = "", include_meta = include_meta)
   atts <- attributes(bytes)
   out <- list(as.vector(grDevices::as.raster(array(unlist(bytes, use.names = FALSE), c(length(bytes[[1]]), 1, max(c(3, length(bytes))))))))
   attributes(out) <- atts

@@ -33,8 +33,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // warp_general_cpp
-List warp_general_cpp(CharacterVector dsn, CharacterVector target_crs, NumericVector target_extent, IntegerVector target_dim, NumericVector target_res, IntegerVector bands, CharacterVector resample, LogicalVector silent, CharacterVector band_output_type, CharacterVector options, CharacterVector dsn_outname);
-RcppExport SEXP _vapour_warp_general_cpp(SEXP dsnSEXP, SEXP target_crsSEXP, SEXP target_extentSEXP, SEXP target_dimSEXP, SEXP target_resSEXP, SEXP bandsSEXP, SEXP resampleSEXP, SEXP silentSEXP, SEXP band_output_typeSEXP, SEXP optionsSEXP, SEXP dsn_outnameSEXP) {
+List warp_general_cpp(CharacterVector dsn, CharacterVector target_crs, NumericVector target_extent, IntegerVector target_dim, NumericVector target_res, IntegerVector bands, CharacterVector resample, LogicalVector silent, CharacterVector band_output_type, CharacterVector options, CharacterVector dsn_outname, LogicalVector include_meta);
+RcppExport SEXP _vapour_warp_general_cpp(SEXP dsnSEXP, SEXP target_crsSEXP, SEXP target_extentSEXP, SEXP target_dimSEXP, SEXP target_resSEXP, SEXP bandsSEXP, SEXP resampleSEXP, SEXP silentSEXP, SEXP band_output_typeSEXP, SEXP optionsSEXP, SEXP dsn_outnameSEXP, SEXP include_metaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -49,7 +49,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type band_output_type(band_output_typeSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type options(optionsSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type dsn_outname(dsn_outnameSEXP);
-    rcpp_result_gen = Rcpp::wrap(warp_general_cpp(dsn, target_crs, target_extent, target_dim, target_res, bands, resample, silent, band_output_type, options, dsn_outname));
+    Rcpp::traits::input_parameter< LogicalVector >::type include_meta(include_metaSEXP);
+    rcpp_result_gen = Rcpp::wrap(warp_general_cpp(dsn, target_crs, target_extent, target_dim, target_res, bands, resample, silent, band_output_type, options, dsn_outname, include_meta));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -747,7 +748,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_vapour_gdal_dsn_read_vector_stream", (DL_FUNC) &_vapour_gdal_dsn_read_vector_stream, 12},
-    {"_vapour_warp_general_cpp", (DL_FUNC) &_vapour_warp_general_cpp, 11},
+    {"_vapour_warp_general_cpp", (DL_FUNC) &_vapour_warp_general_cpp, 12},
     {"_vapour_warp_suggest_cpp", (DL_FUNC) &_vapour_warp_suggest_cpp, 2},
     {"_vapour_set_gdal_config_cpp", (DL_FUNC) &_vapour_set_gdal_config_cpp, 2},
     {"_vapour_get_gdal_config_cpp", (DL_FUNC) &_vapour_get_gdal_config_cpp, 1},
