@@ -14,34 +14,19 @@ namespace gdalwarpgeneral{
 using namespace Rcpp;
 
 
-
-List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
-  
-  
-  List out(dsn.size()); 
-  for (int i = 0; i < dsn.size(); i++) {
-    GDALDataset* poSrcDS = (GDALDataset*) gdalraster::gdalH_open_dsn(dsn[0],  0);
-    double        adfGeoTransform[6];
+List gdal_suggest_warp(GDALDataset* poSrcDS, void *pfnTransformerArg) {
+  double        adfGeoTransform[6];
     poSrcDS->GetGeoTransform( adfGeoTransform );
  
     int nXSize, nYSize;
     double adfExtent[4]; 
+    
     GDALTransformerFunc pfnTransformer; 
     pfnTransformer = GDALGenImgProjTransform;
   
-    void *pfnTransformerArg = nullptr;
-    pfnTransformerArg =
-     GDALCreateGenImgProjTransformer( poSrcDS,
-                                     nullptr,
-                                     nullptr,
-                                     target_crs[0],
-                                               FALSE, 0.0, 1 );
   GDALSuggestedWarpOutput2(poSrcDS, pfnTransformer, pfnTransformerArg,
                            adfGeoTransform, &nXSize, &nYSize, adfExtent,
                            0); 
-  if (!(poSrcDS == nullptr)) {
-    GDALClose(poSrcDS); 
-  }
   IntegerVector dimension(2);
   dimension[0] = nXSize;
   dimension[1] = nYSize;
@@ -52,11 +37,31 @@ List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
   extent[2] = adfExtent[1];
   extent[3] = adfExtent[3]; 
   
-  
   List out_i(2); 
   out_i[0] = extent; 
   out_i[1] = dimension; 
-  out[i] = out_i; 
+  return out_i;
+}
+
+List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
+  List out(dsn.size()); 
+  for (int i = 0; i < dsn.size(); i++) {
+    GDALDataset* poSrcDS = (GDALDataset*) gdalraster::gdalH_open_dsn(dsn[0],  0);
+    GDALTransformerFunc pfnTransformer; 
+    pfnTransformer = GDALGenImgProjTransform;
+  
+    void *pfnTransformerArg = nullptr;
+    pfnTransformerArg =
+     GDALCreateGenImgProjTransformer( poSrcDS,
+                                     nullptr,
+                                     nullptr,
+                                     target_crs[0],
+                                               FALSE, 0.0, 1 );
+    
+  out[i] = gdal_suggest_warp(poSrcDS, pfnTransformerArg);  
+  if (!(poSrcDS == nullptr)) {
+    GDALClose(poSrcDS); 
+  }
   }
   return out; 
 }
