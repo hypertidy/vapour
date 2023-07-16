@@ -24,6 +24,7 @@ List gdal_suggest_warp(GDALDataset* poSrcDS, void *pfnTransformerArg) {
     GDALTransformerFunc pfnTransformer; 
     pfnTransformer = GDALGenImgProjTransform;
   
+
   GDALSuggestedWarpOutput2(poSrcDS, pfnTransformer, pfnTransformerArg,
                            adfGeoTransform, &nXSize, &nYSize, adfExtent,
                            0); 
@@ -133,7 +134,7 @@ inline List gdal_warp_general(CharacterVector dsn,
     papszArg = CSLAddString(papszArg, "-t_srs");
     papszArg = CSLAddString(papszArg, target_crs[0]);
     
-    if( *st != '\0') {
+    if( *st == '\0') {
         // we also should be checking if no geolocation arrays and no gcps
         Rcpp::warning("no source crs, target crs is ignored\n");
       } 
