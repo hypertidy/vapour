@@ -13,6 +13,11 @@ LogicalVector raster_has_geolocation_gdal_cpp(CharacterVector dsn, IntegerVector
   return gdalraster::gdal_has_geolocation(dsn, sds);
 }
 // [[Rcpp::export]]
+List raster_list_geolocation_gdal_cpp(CharacterVector dsn, IntegerVector sds) {
+  return gdalraster::gdal_list_geolocation(dsn, sds);
+}
+
+// [[Rcpp::export]]
 List raster_info_gdal_cpp(CharacterVector dsn, LogicalVector min_max) {
   return gdalraster::gdal_raster_info(dsn, min_max);
 }

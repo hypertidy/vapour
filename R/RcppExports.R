@@ -145,6 +145,10 @@ raster_has_geolocation_gdal_cpp <- function(dsn, sds) {
     .Call('_vapour_raster_has_geolocation_gdal_cpp', PACKAGE = 'vapour', dsn, sds)
 }
 
+raster_list_geolocation_gdal_cpp <- function(dsn, sds) {
+    .Call('_vapour_raster_list_geolocation_gdal_cpp', PACKAGE = 'vapour', dsn, sds)
+}
+
 raster_info_gdal_cpp <- function(dsn, min_max) {
     .Call('_vapour_raster_info_gdal_cpp', PACKAGE = 'vapour', dsn, min_max)
 }

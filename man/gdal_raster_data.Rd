@@ -15,7 +15,8 @@ gdal_raster_data(
   resample = "near",
   bands = 1L,
   band_output_type = NULL,
-  options = character()
+  options = character(),
+  include_meta = TRUE
 )
 
 gdal_raster_dsn(
@@ -40,7 +41,8 @@ gdal_raster_image(
   resample = "near",
   bands = NULL,
   band_output_type = NULL,
-  options = character()
+  options = character(),
+  include_meta = TRUE
 )
 }
 \arguments{

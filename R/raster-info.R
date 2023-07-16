@@ -277,4 +277,26 @@ vapour_sds_names <- function(x) {
  sources
 }
 
-
+#' Retrieve geolocation information for a dataset
+#' 
+#' Value is a named vector in a list. 
+#' 
+#' If no geolocation exist the return value is an empty list. 
+#'
+#' @inheritParams vapour_raster_info
+#' 
+#' @return list with a single character vector
+#' @export
+#'
+#' @examples
+#' drivers <- vapour_all_drivers()
+#' ok <- drivers$raster[ drivers$driver == "netCDF"]
+#' if (isTRUE(ok)) {
+#'  vapour_geolocation(system.file("extdata/gdal/geos_rad.nc", package = "vapour"), 0L)
+#' }
+vapour_geolocation <- function(x, sds = NULL) {
+  sd <- if (is.null(sds)) 0L else as.integer(sds[1L])
+  if (is.na(sd) || length(sd) < 1L) sd <- 0L
+  x <- .check_dsn_single(x)
+  raster_list_geolocation_gdal_cpp(x, as.integer(sds)[1L])
+}
