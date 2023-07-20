@@ -1192,6 +1192,42 @@ inline LogicalVector gdal_has_geolocation(CharacterVector dsn, IntegerVector sds
   return out;
 }
 
+inline List gdal_list_geolocation(CharacterVector dsn, IntegerVector sds) {
+
+  List out(1);
+  
+  if (!gdal_has_geolocation(dsn, sds)[0]) {
+    return out;     
+  }
+  GDALDataset* poDataset;
+  poDataset = (GDALDataset*)gdalH_open_dsn(dsn[0], sds);
+  
+  bool has_geol = false;
+  auto papszGeolocationInfo = poDataset->GetMetadata("GEOLOCATION");
+
+  if( papszGeolocationInfo == nullptr ) {
+      GDALClose(poDataset);
+    return out; 
+  }
+  CharacterVector ret(11);
+
+  ret[0] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "X_DATASET" ) );  
+  ret[1] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "Y_DATASET" ) );
+  ret[2] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "X_BAND" ) );  
+  ret[3] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "Y_BAND" ) );
+  ret[4] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "Z_DATASET" ) );
+  ret[5] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "Z_BAND" ) );  
+  
+  ret[6] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "SRS" ) );  
+  ret[7] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "PIXEL_OFFSET" ) );
+  ret[8] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "LINE_OFFSET" ) );  
+  ret[9] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "LINE_STEP" ) );
+  ret[10] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "GEOREFERENCING_CONVENTION" ) );
+
+  out[0] = ret; 
+  
+  return out;
+}
 
 
 // -------------------------------------------------------------------

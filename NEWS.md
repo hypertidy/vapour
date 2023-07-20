@@ -1,5 +1,7 @@
 # vapour dev
 
+* New function `vapour_geolocation()` retrieves any existing geolocation information. 
+
 * `vapour_vrt()` called with geolocation arrays now scrubs the geotransform from the output (which ensures the
  warper uses the arrays without setting '-geoloc'). 
 

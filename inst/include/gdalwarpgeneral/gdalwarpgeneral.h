@@ -14,28 +14,20 @@ namespace gdalwarpgeneral{
 using namespace Rcpp;
 
 
-
-List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
-  GDALDataset* poSrcDS = (GDALDataset*) gdalraster::gdalH_open_dsn(dsn[0],  0);
+List gdal_suggest_warp(GDALDataset* poSrcDS, void *pfnTransformerArg) {
   double        adfGeoTransform[6];
-  poSrcDS->GetGeoTransform( adfGeoTransform );
+    poSrcDS->GetGeoTransform( adfGeoTransform );
  
-  int nXSize, nYSize;
-  double adfExtent[4]; 
-  GDALTransformerFunc pfnTransformer; 
-  pfnTransformer = GDALGenImgProjTransform;
+    int nXSize, nYSize;
+    double adfExtent[4]; 
+    
+    GDALTransformerFunc pfnTransformer; 
+    pfnTransformer = GDALGenImgProjTransform;
   
-  void *pfnTransformerArg = nullptr;
-  pfnTransformerArg =
-    GDALCreateGenImgProjTransformer( poSrcDS,
-                                     nullptr,
-                                     nullptr,
-                                     target_crs[0],
-                                               FALSE, 0.0, 1 );
+
   GDALSuggestedWarpOutput2(poSrcDS, pfnTransformer, pfnTransformerArg,
                            adfGeoTransform, &nXSize, &nYSize, adfExtent,
                            0); 
-  
   IntegerVector dimension(2);
   dimension[0] = nXSize;
   dimension[1] = nYSize;
@@ -46,11 +38,32 @@ List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
   extent[2] = adfExtent[1];
   extent[3] = adfExtent[3]; 
   
+  List out_i(2); 
+  out_i[0] = extent; 
+  out_i[1] = dimension; 
+  return out_i;
+}
+
+List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
+  List out(dsn.size()); 
+  for (int i = 0; i < dsn.size(); i++) {
+    GDALDataset* poSrcDS = (GDALDataset*) gdalraster::gdalH_open_dsn(dsn[0],  0);
+    GDALTransformerFunc pfnTransformer; 
+    pfnTransformer = GDALGenImgProjTransform;
   
-  List out(3); 
-  out[0] = extent; 
-  out[1] = dimension; 
-  out[2] = target_crs; 
+    void *pfnTransformerArg = nullptr;
+    pfnTransformerArg =
+     GDALCreateGenImgProjTransformer( poSrcDS,
+                                     nullptr,
+                                     nullptr,
+                                     target_crs[0],
+                                               FALSE, 0.0, 1 );
+    
+  out[i] = gdal_suggest_warp(poSrcDS, pfnTransformerArg);  
+  if (!(poSrcDS == nullptr)) {
+    GDALClose(poSrcDS); 
+  }
+  }
   return out; 
 }
 
@@ -72,7 +85,8 @@ inline List gdal_warp_general(CharacterVector dsn,
                               LogicalVector silent,
                               CharacterVector band_output_type, 
                               CharacterVector options, 
-                              CharacterVector dsn_outname) {
+                              CharacterVector dsn_outname, 
+                              LogicalVector include_meta) {
   
   
   GDALDatasetH *poSrcDS;
@@ -114,16 +128,16 @@ inline List gdal_warp_general(CharacterVector dsn,
     const char * strforuin = (const char *)target_crs[0];
     OGRErr target_chk =  oTargetSRS->SetFromUserInput(strforuin);
     if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
-   const char *st = NULL;
+    const char *st = NULL;
     st = ((GDALDataset *)poSrcDS[0])->GetProjectionRef(); 
 
     papszArg = CSLAddString(papszArg, "-t_srs");
     papszArg = CSLAddString(papszArg, target_crs[0]);
     
-    if( *st != '\0') {
+    if(!st || !st[0]) {
         // we also should be checking if no geolocation arrays and no gcps
         Rcpp::warning("no source crs, target crs is ignored\n");
-      } 
+    } 
 
         
       
@@ -235,7 +249,7 @@ inline List gdal_warp_general(CharacterVector dsn,
   
   
   
-  
+  if (include_meta[0]) {
   // shove the grid details on as attributes
   // get the extent ...
   R_xlen_t dimx =  ((GDALDataset*)hRet)->GetRasterXSize(); 
@@ -255,7 +269,7 @@ inline List gdal_warp_general(CharacterVector dsn,
   outlist.attr("dimension") = NumericVector::create(dimx, dimy);
   outlist.attr("extent") = NumericVector::create(xmin, xmax, ymin, ymax);
   outlist.attr("projection") = CharacterVector::create(proj);
-  
+  }  
   GDALClose( hRet );
   return outlist;
 }
