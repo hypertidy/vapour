@@ -120,7 +120,8 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
                                     NumericVector extent, 
                                     CharacterVector projection, 
                                     IntegerVector sds, IntegerVector bands, CharacterVector geolocation, 
-                                    IntegerVector overview) {
+                                    IntegerVector overview, 
+                                    CharacterVector options) {
   
   CPLStringList translate_argv;
   translate_argv.AddString("-of");
@@ -185,7 +186,9 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
     }
   }
 
-  
+  for (int iopt = 0; iopt < options.size(); iopt++) {
+    translate_argv.AddString(options[iopt]);    
+  }
   GDALTranslateOptions* psTransOptions = GDALTranslateOptionsNew(translate_argv.List(), nullptr);
 
   GDALDatasetH a_DS = GDALTranslate("", oDS, psTransOptions, nullptr);
@@ -204,12 +207,12 @@ inline GDALDatasetH* gdalH_open_multiple(CharacterVector dsn, IntegerVector sds)
   return poHDS;
 }
 inline GDALDatasetH* gdalH_open_avrt_multiple(CharacterVector dsn, NumericVector extent, 
-                                              CharacterVector projection, IntegerVector sds, IntegerVector bands) {
+                                              CharacterVector projection, IntegerVector sds, IntegerVector bands, CharacterVector options) {
   
   GDALDatasetH* poHDS;
   // whoever calls this will have to CPLFree() this
   poHDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * static_cast<size_t>(dsn.size())));
-  for (int i = 0; i < dsn.size(); i++) poHDS[i] = gdalH_open_avrt(dsn[i],  extent, projection, sds, bands, "", -1);
+  for (int i = 0; i < dsn.size(); i++) poHDS[i] = gdalH_open_avrt(dsn[i],  extent, projection, sds, bands, "", -1, options);
   return poHDS;
 }
 // convert an opened GDALDataset to chunk-of-text VRT, if it is VRT you get it direct
@@ -245,12 +248,13 @@ inline const char* gdal_vrt_text(GDALDataset* poSrcDS, LogicalVector nomd) {
 inline CharacterVector gdal_dsn_vrt(CharacterVector dsn, NumericVector extent, CharacterVector projection, 
                                     IntegerVector sds, IntegerVector bands, 
                                     CharacterVector geolocation, LogicalVector nomd, 
-                                    IntegerVector overview) {
+                                    IntegerVector overview, CharacterVector options) {
+  
   CharacterVector out(dsn.size());
   GDALDatasetH DS;
   for (int i = 0; i < out.size(); i++) {
-    if (extent.size() == 4 || (!projection[0].empty()) || bands[0] > 0 || (!geolocation[0].empty() ) || sds[0] > 1 || overview[0] > -1) {
-      DS = gdalH_open_avrt(dsn[i], extent, projection, sds, bands, geolocation, overview);
+    if (extent.size() == 4 || (!projection[0].empty()) || bands[0] > 0 || (!geolocation[0].empty() ) || sds[0] > 1 || overview[0] > -1 || options.size() > 0) {
+      DS = gdalH_open_avrt(dsn[i], extent, projection, sds, bands, geolocation, overview, options);
     } else {
       DS = gdalH_open_dsn(dsn[i], sds);
     }

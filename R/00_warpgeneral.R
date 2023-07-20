@@ -99,7 +99,7 @@ gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
 #' @name gdal_raster_data
 #' @export
 gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
-                             resample = "near", bands = NULL, band_output_type = NULL, options = character(), out_dsn = tempfile(fileext = ".tif")) {
+                             resample = "near", bands = NULL, band_output_type = NULL, options = character(), out_dsn = tempfile(fileext = ".tif"),  include_meta = TRUE) {
   
   if (is.null(target_crs)) target_crs <- "" 
   if (is.null(target_ext)) {
@@ -133,15 +133,18 @@ gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ex
   if (is.null(band_output_type)) band_output_type <- "Float64"
   #if (grepl("tif$", out_dsn)) {
     ## we'll have to do some work here
-  ## currently always COG
-  options <- c(options, "-of",  "COG")
   
+ if (!any(options == "-of")) {
+   ## currently always COG
+   options <- c(options, "-of",  "COG")
+   
+ } 
  if (!is.null(bands) || (is.integer(bands) && !length(bands) == 1 && bands[1] > 0)) {
    stop("bands cannot be set for gdal_raster_dsn, please use an upfront call to 'vapour_vrt(dsn,  bands = )' to create the dsn")
  } else {
    bands <- -1
  }
-  
+  include_meta <- isTRUE(include_meta)
   warp_general_cpp(dsn, target_crs, 
                             target_ext, 
                             target_dim, 
@@ -150,7 +153,7 @@ gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ex
                             resample = resample, 
                             silent = FALSE, band_output_type = band_output_type, 
                             options = options, 
-                            dsn_outname = out_dsn[1L])
+                            dsn_outname = out_dsn[1L], include_meta = include_meta)
 }
 
 #' @name gdal_raster_data

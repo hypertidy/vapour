@@ -71,7 +71,8 @@
 #' 
 #' vapour_vrt(tif, bands = c(1, 1))
 #' 
-vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = NULL, geolocation = NULL, ..., relative_to_vrt = FALSE, nomd = FALSE, overview = -1L) {
+vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = NULL, geolocation = NULL, ..., 
+                       relative_to_vrt = FALSE, nomd = FALSE, overview = -1L, options = character()) {
   x <- .check_dsn_multiple_naok(x)
   
   if (!relative_to_vrt) { 
@@ -136,7 +137,7 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
   overview <- as.integer(overview[1])
   if (is.na(overview)) overview <- -1L
 
-  out <- raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation, nomd, overview)
+  out <- raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation, nomd, overview, options)
   ## scrub any transform, because of #210
   if (nzchar(geolocation[1L])) {
     out <- gsub("<GeoTransform.*GeoTransform>", "", out)

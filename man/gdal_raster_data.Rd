@@ -29,7 +29,8 @@ gdal_raster_dsn(
   bands = NULL,
   band_output_type = NULL,
   options = character(),
-  out_dsn = tempfile(fileext = ".tif")
+  out_dsn = tempfile(fileext = ".tif"),
+  include_meta = TRUE
 )
 
 gdal_raster_image(

@@ -719,8 +719,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // raster_vrt_cpp
-CharacterVector raster_vrt_cpp(CharacterVector dsn, NumericVector extent, CharacterVector projection, IntegerVector sds, IntegerVector bands, CharacterVector geolocation, LogicalVector nomd, IntegerVector overview);
-RcppExport SEXP _vapour_raster_vrt_cpp(SEXP dsnSEXP, SEXP extentSEXP, SEXP projectionSEXP, SEXP sdsSEXP, SEXP bandsSEXP, SEXP geolocationSEXP, SEXP nomdSEXP, SEXP overviewSEXP) {
+CharacterVector raster_vrt_cpp(CharacterVector dsn, NumericVector extent, CharacterVector projection, IntegerVector sds, IntegerVector bands, CharacterVector geolocation, LogicalVector nomd, IntegerVector overview, CharacterVector options);
+RcppExport SEXP _vapour_raster_vrt_cpp(SEXP dsnSEXP, SEXP extentSEXP, SEXP projectionSEXP, SEXP sdsSEXP, SEXP bandsSEXP, SEXP geolocationSEXP, SEXP nomdSEXP, SEXP overviewSEXP, SEXP optionsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -732,7 +732,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type geolocation(geolocationSEXP);
     Rcpp::traits::input_parameter< LogicalVector >::type nomd(nomdSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type overview(overviewSEXP);
-    rcpp_result_gen = Rcpp::wrap(raster_vrt_cpp(dsn, extent, projection, sds, bands, geolocation, nomd, overview));
+    Rcpp::traits::input_parameter< CharacterVector >::type options(optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_vrt_cpp(dsn, extent, projection, sds, bands, geolocation, nomd, overview, options));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -810,7 +811,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_blocks_cpp1", (DL_FUNC) &_vapour_blocks_cpp1, 3},
     {"_vapour_blocks_cpp", (DL_FUNC) &_vapour_blocks_cpp, 3},
     {"_vapour_raster_gdalinfo_app_cpp", (DL_FUNC) &_vapour_raster_gdalinfo_app_cpp, 2},
-    {"_vapour_raster_vrt_cpp", (DL_FUNC) &_vapour_raster_vrt_cpp, 8},
+    {"_vapour_raster_vrt_cpp", (DL_FUNC) &_vapour_raster_vrt_cpp, 9},
     {"_vapour_raster_warp_file_cpp", (DL_FUNC) &_vapour_raster_warp_file_cpp, 11},
     {NULL, NULL, 0}
 };

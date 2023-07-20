@@ -116,9 +116,18 @@ inline List gdal_warp_general(CharacterVector dsn,
     papszArg = CSLAddString(papszArg, "MEM");
     
   } else {
-    papszArg = CSLAddString(papszArg, "-of");
-    papszArg = CSLAddString(papszArg, "GTiff");
-    
+    // no need for this because GTiff is the default (we don't get auto-choose)
+    // bool do_format = true; 
+    // // first check if user requests a format
+    // for (int iopt = 0; iopt < options.size(); iopt++) {
+    //   if (EQUAL(options[iopt], "-of")) {
+    //     do_format = false; 
+    //   }
+    // }
+    // if (do_format) {
+    //  papszArg = CSLAddString(papszArg, "-of");
+    //  papszArg = CSLAddString(papszArg, "GTiff");
+    // }  
     write_dsn = true; 
   }
   

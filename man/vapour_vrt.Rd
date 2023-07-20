@@ -14,7 +14,8 @@ vapour_vrt(
   ...,
   relative_to_vrt = FALSE,
   nomd = FALSE,
-  overview = -1L
+  overview = -1L,
+  options = character()
 )
 }
 \arguments{

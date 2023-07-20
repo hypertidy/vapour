@@ -1,9 +1,14 @@
 # vapour dev
 
+* `vapour_vrt()` gains 'options' argument, so we can in particular do `options = c("-expand", "rgb", "-ot", "Byte")` to warp
+16-bit integer colour palettes from GTiff to PNG. :)
+ 
+* `gdal_raster_dsn()` can now write to non-GTiff/COG via `options = c("-of", DRIVER)`. 
+
 * New function `vapour_geolocation()` retrieves any existing geolocation information. 
 
 * `vapour_vrt()` called with geolocation arrays now scrubs the geotransform from the output (which ensures the
- warper uses the arrays without setting '-geoloc'). 
+warper uses the arrays without setting '-geoloc').
 
 * `vapour_create()` gets creation options, data type options, and driver options. 
 
