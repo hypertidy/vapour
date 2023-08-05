@@ -146,3 +146,78 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
 }
 
   
+
+#' Vector VRT
+#'
+#' Just a simple text generator to generate the VRT for a vector layer, First layer is chosen if not
+#' othwerwise specified. 
+#' 
+#' Using 'sql' overrides the 'layer', and using 'projection' results in the geometries being transformed. 
+#' No check is made of the layer source projection. 
+#' 
+#' Use 'a_srs' to ensure the source has a source crs (that might be the only thing you use this for, even if not reprojecting). 
+#' 
+#' It's expected that if you use this with a source without a source projection,
+#' you'll get "Failed to import source SRS", so use argument "a_srs" to set it
+#' if needed (or many other GDAL other facilities that do this).
+#' @param x data source name
+#' @param layer layer index (1-based) or name
+#' @param projection crs of the output
+#' @param sql SQL for ExecuteSQL to define the layer
+#' @param a_srs set the source crs
+#' @return single element character vector
+#' @export
+#'
+#' @examples
+#' file <- "list_locality_postcode_meander_valley.tab"
+#' ## A MapInfo TAB file with polygons
+#' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
+#' vector_vrt(mvfile, sql = "SELECT * FROM list_locality_postcode_meander_valley LIMIT 5 OFFSET 4")
+#' 
+#' ## read this with vapour_read_geometry() and it will be projected to VicGrid
+#' vector_vrt(mvfile, projection = "EPSG:3111")
+#' 
+vector_vrt <- function(x, layer = 1L, projection = NULL, sql = NULL, a_srs = NULL) {
+ 
+  if(!is.character(layer)) {
+    layer <- vapour::vapour_layer_names(x)[layer]
+  }
+  layer_srs <- ""
+  if (!is.null(a_srs)) {
+    layer_srs <- sprintf('<LayerSRS>%s</LayerSRS>', a_srs)
+  }
+  if (is.null(sql)) {
+    
+    
+    layer <- sprintf('<OGRVRTLayer name="%s">
+    <SrcDataSource>%s</SrcDataSource>
+    <SrcLayer>%s</SrcLayer> %s
+    </OGRVRTLayer>', layer, x, layer, layer_srs)
+  } else {
+    layer <- sprintf('<OGRVRTLayer name="%s">
+    <SrcDataSource>%s</SrcDataSource>
+    <SrcSQL>%s</SrcSQL> %s
+    </OGRVRTLayer>', layer, x, sql, layer_srs)
+  }
+  
+  
+  if (file.exists(x)) {
+    x <- normalizePath(x)
+  }
+  
+  if (is.null(projection)) {
+    out <- sprintf('<OGRVRTDataSource>
+     %s
+ </OGRVRTDataSource>', layer)
+    
+  } else {
+    out <- sprintf('<OGRVRTDataSource>
+  <OGRVRTWarpedLayer>
+     %s
+    <TargetSRS>%s</TargetSRS>
+    </OGRVRTWarpedLayer>
+ </OGRVRTDataSource>', layer, projection)
+  }
+  out
+}
+

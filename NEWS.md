@@ -1,5 +1,7 @@
 # vapour dev
 
+* New function `vector_vrt()` to generate VRT for SQL and/or reprojection. 
+
 * `vapour_vrt()` gains 'options' argument, so we can in particular do `options = c("-expand", "rgb", "-ot", "Byte")` to warp
 16-bit integer colour palettes from GTiff to PNG. :)
  
