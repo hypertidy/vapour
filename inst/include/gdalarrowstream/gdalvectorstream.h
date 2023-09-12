@@ -97,7 +97,7 @@ inline Rcpp::List ogr_layer_setup(Rcpp::CharacterVector datasource, Rcpp::Charac
                                bool quiet, 
                                //Rcpp::CharacterVector drivers,
                                Rcpp::CharacterVector wkt_filter,
-                               bool dsn_exists,
+                      
                                bool dsn_isdb,
                                int width) {
   // adapted from the OGR tutorial @ www.gdal.org
@@ -108,17 +108,8 @@ inline Rcpp::List ogr_layer_setup(Rcpp::CharacterVector datasource, Rcpp::Charac
           // drivers.size() ? drivers_v.data() : NULL, open_options.data(), NULL );
           NULL, NULL, NULL );
   if( poDS == NULL ) {
-    // could not open dsn
-    if( dsn_isdb ) {
-      Rcpp::stop("Cannot open %s; Check connection parameters.", datasource);
-    }
-    if( dsn_exists ) {
-      Rcpp::stop("Cannot open %s; %s %s",
-                 datasource,
-                 "The source could be corrupt or not supported.",
-                 "See `st_drivers()` for a list of supported formats.");
-    }
-    Rcpp::stop("Cannot open %s; The file doesn't seem to exist.", datasource);
+    
+    Rcpp::stop("Cannot open %s; ", datasource);
   }
   
   // Will close the dataset if some early return/exception prevents GDALClose() from being
@@ -261,7 +252,7 @@ inline Rcpp::List read_gdal_stream(
                                         quiet,  
                                         //drivers,
                                         wkt_filter,
-                                        dsn_exists, dsn_isdb, width);
+                                        dsn_isdb, width);
   OGRDataSource* poDS = (OGRDataSource*)(R_ExternalPtrAddr(prep[0]));
   OGRLayer* poLayer = (OGRLayer*)R_ExternalPtrAddr(prep[1]);
   auto stream_out = reinterpret_cast<struct ArrowArrayStream*>(

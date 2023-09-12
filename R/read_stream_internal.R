@@ -13,7 +13,7 @@
   if (nchar(dsn) < 1L) {
     stop("`dsn` must describe a valid data source name for GDAL (input wasan empty string).", call. = FALSE)
   }
-  dsn_exists <-  file.exists(dsn)  ## good to see this finally stuck in sf
+  dsn_exists <-  file.exists(dsn)  
 
   if (length(dsn) == 1 && dsn_exists) {
     dsn = enc2utf8(normalizePath(dsn))
@@ -25,8 +25,8 @@
     info = gdal_dsn_read_vector_stream(stream, dsn, layer, sql, as.character(options), quiet,
                                 drivers, wkt_filter, dsn_exists, dsn_isdb  = FALSE, fid_column_name, 80L)
 
-    browser()
-    if (return_stream) return(stream)
+  
+  #  if (return_stream) return(stream)
     ##// layer has been freed as this point
     # geometry_column <- unlist(lapply(
     #   stream$get_schema()$children, function(s) identical(s$metadata[["ARROW:extension:name"]], "ogc.wkb")
