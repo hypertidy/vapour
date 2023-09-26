@@ -11,8 +11,8 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // gdal_dsn_read_vector_stream
-List gdal_dsn_read_vector_stream(RObject stream_xptr, CharacterVector dsn, CharacterVector layer, CharacterVector sql, Rcpp::CharacterVector options, bool quiet, Rcpp::CharacterVector drivers, Rcpp::CharacterVector wkt_filter, bool dsn_exists, bool dsn_isdb, Rcpp::CharacterVector fid_column_name, int width);
-RcppExport SEXP _vapour_gdal_dsn_read_vector_stream(SEXP stream_xptrSEXP, SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP optionsSEXP, SEXP quietSEXP, SEXP driversSEXP, SEXP wkt_filterSEXP, SEXP dsn_existsSEXP, SEXP dsn_isdbSEXP, SEXP fid_column_nameSEXP, SEXP widthSEXP) {
+List gdal_dsn_read_vector_stream(RObject stream_xptr, CharacterVector dsn, CharacterVector layer, CharacterVector sql, std::vector<std::string> options, bool quiet, std::vector<std::string> drivers, Rcpp::NumericVector extent, bool dsn_exists, Rcpp::CharacterVector fid_column_name, int width);
+RcppExport SEXP _vapour_gdal_dsn_read_vector_stream(SEXP stream_xptrSEXP, SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP optionsSEXP, SEXP quietSEXP, SEXP driversSEXP, SEXP extentSEXP, SEXP dsn_existsSEXP, SEXP fid_column_nameSEXP, SEXP widthSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -20,15 +20,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type layer(layerSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type options(optionsSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type options(optionsSEXP);
     Rcpp::traits::input_parameter< bool >::type quiet(quietSEXP);
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type drivers(driversSEXP);
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type wkt_filter(wkt_filterSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type drivers(driversSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type extent(extentSEXP);
     Rcpp::traits::input_parameter< bool >::type dsn_exists(dsn_existsSEXP);
-    Rcpp::traits::input_parameter< bool >::type dsn_isdb(dsn_isdbSEXP);
     Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type fid_column_name(fid_column_nameSEXP);
     Rcpp::traits::input_parameter< int >::type width(widthSEXP);
-    rcpp_result_gen = Rcpp::wrap(gdal_dsn_read_vector_stream(stream_xptr, dsn, layer, sql, options, quiet, drivers, wkt_filter, dsn_exists, dsn_isdb, fid_column_name, width));
+    rcpp_result_gen = Rcpp::wrap(gdal_dsn_read_vector_stream(stream_xptr, dsn, layer, sql, options, quiet, drivers, extent, dsn_exists, fid_column_name, width));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -758,9 +757,54 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gdal_ptrs_cpp
+List gdal_ptrs_cpp(CharacterVector dsn, CharacterVector layer);
+RcppExport SEXP _vapour_gdal_ptrs_cpp(SEXP dsnSEXP, SEXP layerSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type layer(layerSEXP);
+    rcpp_result_gen = Rcpp::wrap(gdal_ptrs_cpp(dsn, layer));
+    return rcpp_result_gen;
+END_RCPP
+}
+// timesTwo
+NumericVector timesTwo(std::vector<std::string> x);
+RcppExport SEXP _vapour_timesTwo(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(timesTwo(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// n_layers
+IntegerVector n_layers(SEXP xp);
+RcppExport SEXP _vapour_n_layers(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(n_layers(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ptr_query
+CharacterVector ptr_query(SEXP xp);
+RcppExport SEXP _vapour_ptr_query(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(ptr_query(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_vapour_gdal_dsn_read_vector_stream", (DL_FUNC) &_vapour_gdal_dsn_read_vector_stream, 12},
+    {"_vapour_gdal_dsn_read_vector_stream", (DL_FUNC) &_vapour_gdal_dsn_read_vector_stream, 11},
     {"_vapour_warp_general_cpp", (DL_FUNC) &_vapour_warp_general_cpp, 12},
     {"_vapour_warp_suggest_cpp", (DL_FUNC) &_vapour_warp_suggest_cpp, 2},
     {"_vapour_set_gdal_config_cpp", (DL_FUNC) &_vapour_set_gdal_config_cpp, 2},
@@ -813,6 +857,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_raster_gdalinfo_app_cpp", (DL_FUNC) &_vapour_raster_gdalinfo_app_cpp, 2},
     {"_vapour_raster_vrt_cpp", (DL_FUNC) &_vapour_raster_vrt_cpp, 9},
     {"_vapour_raster_warp_file_cpp", (DL_FUNC) &_vapour_raster_warp_file_cpp, 11},
+    {"_vapour_gdal_ptrs_cpp", (DL_FUNC) &_vapour_gdal_ptrs_cpp, 2},
+    {"_vapour_timesTwo", (DL_FUNC) &_vapour_timesTwo, 1},
+    {"_vapour_n_layers", (DL_FUNC) &_vapour_n_layers, 1},
+    {"_vapour_ptr_query", (DL_FUNC) &_vapour_ptr_query, 1},
     {NULL, NULL, 0}
 };
 

@@ -2,13 +2,17 @@
 #define GDALVECTORSTREAM_H
 
 // WIP https://gdal.org/development/rfc/rfc86_column_oriented_api.html
-// written entirely by Dewey Dunnington and the GDAL project
+// written by Dewey Dunnington and the GDAL project
 // https://github.com/paleolimbot/sf/tree/stream-reading
 
 #include <Rcpp.h>
-
 #include <ogrsf_frmts.h>
-#if (GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 6)
+#include "common/common_vapour.h"
+
+
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+
 
 #include <ogr_recordbatch.h>
 
@@ -17,7 +21,7 @@ class GDALStreamWrapper {
 public:
   static void Make(struct ArrowArrayStream* stream, Rcpp::List shelter,
                    struct ArrowArrayStream* stream_out) {
-                     stream_out->get_schema = &get_schema_wrap;
+    stream_out->get_schema = &get_schema_wrap;
     stream_out->get_next = &get_next_wrap;
     stream_out->get_last_error = &get_last_error_wrap;
     stream_out->release = &release_wrap;
@@ -72,17 +76,11 @@ private:
   }
 };
 
-#endif
+
+
 
 namespace gdalvectorstream {
 using namespace Rcpp; 
-
-#if (GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 6)
-
-
-
-
-
 
 static void finalize_dataset_xptr(SEXP dataset_xptr) {
   GDALDataset *poDS = (GDALDataset*)R_ExternalPtrAddr(dataset_xptr);
@@ -91,22 +89,85 @@ static void finalize_dataset_xptr(SEXP dataset_xptr) {
   }
 }
 
-inline Rcpp::List ogr_layer_setup(Rcpp::CharacterVector datasource, Rcpp::CharacterVector layer,
+
+inline Rcpp::List ogr_ptrs(Rcpp::CharacterVector datasource,
+                                  Rcpp::CharacterVector layer) {
+
+  GDALDataset *poDS;
+
+  poDS = (GDALDataset *) GDALOpenEx( datasource[0], GDAL_OF_VECTOR | GDAL_OF_READONLY,
+          NULL, NULL,NULL );
+
+  if( poDS == NULL ) {
+
+    Rcpp::stop("Cannot open %s; ", datasource);
+  }
+
+
+  // Will close the dataset if some early return/exception prevents GDALClose() from being
+  // called/allows the result to be accessed by the caller.
+  Rcpp::RObject dataset_xptr = R_MakeExternalPtr(poDS, R_NilValue, R_NilValue);
+  R_RegisterCFinalizer(dataset_xptr, &finalize_dataset_xptr);
+
+
+ OGRLayer *poLayer;
+  if (layer.size() == 0 ) { // no layer specified
+    switch (poDS->GetLayerCount()) {
+    case 0: { // error:
+    Rcpp::stop("No layers in datasource.");
+  }
+    case 1: { // silent:
+      poLayer = poDS->GetLayer(0);
+      layer = Rcpp::CharacterVector::create(poLayer->GetName());
+      break;
+    }
+    default: { // select first layer: message + warning:
+      poLayer = poDS->GetLayer(0);
+      layer = Rcpp::CharacterVector::create(poLayer->GetName());
+    }
+    }
+  }
+
+  poLayer = 	poDS->GetLayerByName(layer[0]);
+  if (poLayer == NULL) {
+    Rcpp::Rcout << "Cannot open layer " << layer[0] << std::endl;
+    Rcpp::stop("Opening layer failed.\n");
+  }
+
+
+  // Keeps the dataset external pointer alive as long as the layer external pointer is alive
+  Rcpp::RObject layer_xptr = R_MakeExternalPtr(poLayer, R_NilValue, dataset_xptr);
+  
+  // This lets us pass it around in R
+   R_SetExternalPtrAddr(dataset_xptr, poDS); 
+  R_SetExternalPtrAddr(layer_xptr, poLayer); 
+
+  return Rcpp::List::create(dataset_xptr, layer_xptr);
+}
+
+inline Rcpp::List ogr_layer_setup(Rcpp::CharacterVector datasource, 
+                                  Rcpp::CharacterVector layer,
                                Rcpp::CharacterVector query,
-                               //Rcpp::CharacterVector options, 
+                               std::vector<std::string> options, 
                                bool quiet, 
-                               //Rcpp::CharacterVector drivers,
-                               Rcpp::CharacterVector wkt_filter,
-                      
-                               bool dsn_isdb,
+                               std::vector<std::string> drivers,
+                               Rcpp::NumericVector ex,
+                    
                                int width) {
   // adapted from the OGR tutorial @ www.gdal.org
-  //std::vector <char *> open_options = create_options(options, quiet);
-  //std::vector <char *> drivers_v = create_options(drivers, quiet);
+  std::vector <char *> open_options;
+  if (options.size() > 0) {
+     open_options = string_to_charptr(options);
+  }
+
+  std::vector <char *> drivers_v = string_to_charptr(drivers);
   GDALDataset *poDS;
+
   poDS = (GDALDataset *) GDALOpenEx( datasource[0], GDAL_OF_VECTOR | GDAL_OF_READONLY,
-          // drivers.size() ? drivers_v.data() : NULL, open_options.data(), NULL );
-          NULL, NULL, NULL );
+          drivers.size() ? drivers_v.data() : NULL, 
+          open_options.size() ? open_options.data() : NULL, 
+          NULL );
+
   if( poDS == NULL ) {
     
     Rcpp::stop("Cannot open %s; ", datasource);
@@ -117,6 +178,7 @@ inline Rcpp::List ogr_layer_setup(Rcpp::CharacterVector datasource, Rcpp::Charac
   Rcpp::RObject dataset_xptr = R_MakeExternalPtr(poDS, R_NilValue, R_NilValue);
   R_RegisterCFinalizer(dataset_xptr, &finalize_dataset_xptr);
   
+
   if (layer.size() == 0 && Rcpp::CharacterVector::is_na(query[0])) { // no layer specified
     switch (poDS->GetLayerCount()) {
     case 0: { // error:
@@ -142,9 +204,38 @@ inline Rcpp::List ogr_layer_setup(Rcpp::CharacterVector datasource, Rcpp::Charac
     }
   }
   
+  
+  OGRPolygon poly;
+  OGRLinearRing ring;
+  
+  // set spatial filter?
+  bool use_extent_filter = false;
+  if (ex.length() == 4) {
+        if (ex[1] <= ex[0] || ex[3] <= ex[2]) {
+          if (ex[1] <= ex[0]) {
+            Rcpp::warning("extent filter invalid (xmax <= xmin), ignoring");
+          }
+          if (ex[3] <= ex[2]) {
+            Rcpp::warning("extent filter invalid (ymax <= ymin), ignoring");
+          }
+        } else {    
+          use_extent_filter = true;
+          ring.addPoint(ex[0], ex[2]); //xmin, ymin
+          ring.addPoint(ex[0], ex[3]); //xmin, ymax
+          ring.addPoint(ex[1], ex[3]); //xmax, ymax
+          ring.addPoint(ex[1], ex[2]); //xmax, ymin
+          ring.closeRings();
+          poly.addRing(&ring);
+          if (Rcpp::CharacterVector::is_na(query[0]) ) {
+            query[0] =  CPLSPrintf("SELECT * FROM %s", (char *) layer[0]);
+          }
+        }
+  }
+  
   OGRLayer *poLayer;
-  if (! Rcpp::CharacterVector::is_na(query[0])) {
-    poLayer = poDS->ExecuteSQL(query[0], NULL, NULL);
+  if (! Rcpp::CharacterVector::is_na(query[0])) {// [[Rcpp::export]]
+  // FIXME we need dialect here
+    poLayer = poDS->ExecuteSQL(query[0], &poly, NULL);
     if (poLayer == NULL)
       Rcpp::stop("Query execution failed, cannot open layer.\n"); // #nocov
     if (layer.size())
@@ -154,23 +245,6 @@ inline Rcpp::List ogr_layer_setup(Rcpp::CharacterVector datasource, Rcpp::Charac
   if (poLayer == NULL) {
     Rcpp::Rcout << "Cannot open layer " << layer[0] << std::endl;
     Rcpp::stop("Opening layer failed.\n");
-  }
-  
-  // set spatial filter?
-  if (wkt_filter.size()) {
-    char *wkt = wkt_filter[0];
-    OGRGeometry *new_geom;
-#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-    OGRErr err = OGRGeometryFactory::createFromWkt(&wkt, poLayer->GetSpatialRef(), &new_geom);
-#else
-    OGRErr err = OGRGeometryFactory::createFromWkt((const char *) wkt, poLayer->GetSpatialRef(), &new_geom);
-#endif
-    if (err != OGRERR_NONE) {
-      Rcpp::Rcout << "Cannot create geometry from: " << wkt_filter[0] << std::endl;
-      Rcpp::stop("wkt parse error.\n");
-    }
-    poLayer->SetSpatialFilter(new_geom);
-    OGRGeometryFactory::destroyGeometry(new_geom);
   }
   
   if (! quiet) {
@@ -193,52 +267,22 @@ inline Rcpp::List ogr_layer_setup(Rcpp::CharacterVector datasource, Rcpp::Charac
   
   // Keeps the dataset external pointer alive as long as the layer external pointer is alive
   Rcpp::RObject layer_xptr = R_MakeExternalPtr(poLayer, R_NilValue, dataset_xptr);
-  
+  Rprintf("%s", "ogr_layer_setup:\n"); 
   return Rcpp::List::create(dataset_xptr, layer_xptr);
 }
 
 
-// inline Rcpp::List read_ogr(Rcpp::CharacterVector datasource, Rcpp::CharacterVector layer,
-//                         Rcpp::CharacterVector query,
-//                         Rcpp::CharacterVector options, bool quiet, Rcpp::NumericVector toTypeUser,
-//                         Rcpp::CharacterVector fid_column_name, Rcpp::CharacterVector drivers,
-//                         Rcpp::CharacterVector wkt_filter,
-//                         bool promote_to_multi = true, bool int64_as_string = false,
-//                         bool dsn_exists = true,
-//                         bool dsn_isdb = false,
-//                         int width = 80) {
-//   Rcpp::List prep = ogr_layer_setup(datasource, layer, query, 
-//                                         //options,
-//                                         quiet,  
-//                                         //drivers,
-//                                         wkt_filter,
-//                                         dsn_exists, dsn_isdb, width);
-//   OGRDataSource* poDS = (OGRDataSource*)(R_ExternalPtrAddr(prep[0]));
-//   OGRLayer* poLayer = (OGRLayer*)R_ExternalPtrAddr(prep[1]);
-//   
-//   Rcpp::List out; // = sf_from_ogrlayer(poLayer, quiet, int64_as_string, toTypeUser, fid_column_name,
-//   //                promote_to_multi);
-//   
-//   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-//   if (! Rcpp::CharacterVector::is_na(query[0]))
-//     poDS->ReleaseResultSet(poLayer);
-//   
-//   GDALClose(poDS);
-//   R_SetExternalPtrAddr(prep[0], nullptr);
-//   return out;
-// }
 
 inline Rcpp::List read_gdal_stream(
     Rcpp::RObject stream_xptr,
     Rcpp::CharacterVector datasource, 
     Rcpp::CharacterVector layer,
     Rcpp::CharacterVector query,
-    Rcpp::CharacterVector options, 
+    std::vector<std::string> options, 
     bool quiet, 
-    Rcpp::CharacterVector drivers,
-    Rcpp::CharacterVector wkt_filter,
+    std::vector<std::string> drivers,
+    Rcpp::NumericVector extent,
     bool dsn_exists,
-    bool dsn_isdb,
     Rcpp::CharacterVector fid_column,
     int width) {
   
@@ -248,11 +292,11 @@ inline Rcpp::List read_gdal_stream(
   }
   
   Rcpp::List prep = ogr_layer_setup(datasource, layer, query, 
-                                        //options,
+                                        options,
                                         quiet,  
-                                        //drivers,
-                                        wkt_filter,
-                                        dsn_isdb, width);
+                                        drivers,
+                                        extent,
+                                        width);
   OGRDataSource* poDS = (OGRDataSource*)(R_ExternalPtrAddr(prep[0]));
   OGRLayer* poLayer = (OGRLayer*)R_ExternalPtrAddr(prep[1]);
   auto stream_out = reinterpret_cast<struct ArrowArrayStream*>(
@@ -263,7 +307,7 @@ inline Rcpp::List read_gdal_stream(
   std::string wkt_str; 
   if (crs) {
     crs->exportToWkt(&wkt_out);
-    wkt_str = "yaba"; 
+    wkt_str = wkt_out; 
   } else {
     wkt_str = ""; 
   }
@@ -276,12 +320,6 @@ inline Rcpp::List read_gdal_stream(
   
   GDALStreamWrapper::Make(&stream_temp, prep, stream_out);
   
-    // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-    if (! Rcpp::CharacterVector::is_na(query[0]))
-      poDS->ReleaseResultSet(poLayer);
-
-    GDALClose(poDS);
-    R_SetExternalPtrAddr(prep[0], nullptr);
 
   // The reported feature count is incorrect if there is a query
   double num_features;
@@ -291,6 +329,10 @@ inline Rcpp::List read_gdal_stream(
     num_features = -1;
   }
   
+  if (! Rcpp::CharacterVector::is_na(query[0])) {
+		//poDS->ReleaseResultSet(poLayer);
+  }
+
   return Rcpp::List::create(wkt_str, Rcpp::NumericVector::create(num_features));
 }
 
@@ -301,12 +343,11 @@ inline Rcpp::List read_gdal_stream(
     Rcpp::CharacterVector datasource, 
     Rcpp::CharacterVector layer,
     Rcpp::CharacterVector query,
-    Rcpp::CharacterVector options, 
+    std::vector<std::string> options, 
     bool quiet, 
     Rcpp::CharacterVector drivers,
-    Rcpp::CharacterVector wkt_filter,
+    Rcpp::NumericVector extent,
     bool dsn_exists,
-    bool dsn_isdb,
     Rcpp::CharacterVector fid_column,
     int width) {
   Rcpp::stop("read_stream() requires GDAL >= 3.6");
@@ -317,3 +358,4 @@ inline Rcpp::List read_gdal_stream(
 } // gdalvectorstream
 
 #endif
+

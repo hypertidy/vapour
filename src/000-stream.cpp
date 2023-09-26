@@ -10,15 +10,16 @@ List gdal_dsn_read_vector_stream(RObject stream_xptr,
                            CharacterVector dsn, 
                           CharacterVector layer,
                            CharacterVector sql, 
-                           Rcpp::CharacterVector options, 
+                           std::vector<std::string> options, 
                            bool quiet, 
-                           Rcpp::CharacterVector drivers,
-                           Rcpp::CharacterVector wkt_filter,
+                           std::vector<std::string> drivers,
+                           Rcpp::NumericVector extent,
                            bool dsn_exists,
-                           bool dsn_isdb,
                            Rcpp::CharacterVector fid_column_name,
                            int width) {
   return gdalvectorstream::read_gdal_stream(stream_xptr, dsn, layer, sql, 
-                                               options, quiet, drivers, wkt_filter, dsn_exists, dsn_isdb, 
+                                               options, quiet, drivers, extent, dsn_exists, 
                                                fid_column_name, width);
 }
+
+
