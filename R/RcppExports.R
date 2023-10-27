@@ -209,6 +209,10 @@ raster_vrt_cpp <- function(dsn, extent, projection, sds, bands, geolocation, nom
     .Call('_vapour_raster_vrt_cpp', PACKAGE = 'vapour', dsn, extent, projection, sds, bands, geolocation, nomd, overview, options)
 }
 
+raster_buildvrt_cpp <- function(dsn, options) {
+    .Call('_vapour_raster_buildvrt_cpp', PACKAGE = 'vapour', dsn, options)
+}
+
 raster_warp_file_cpp <- function(source_filename, target_crs, target_extent, target_dim, target_filename, bands, resample, silent, band_output_type, warp_options, transformation_options) {
     .Call('_vapour_raster_warp_file_cpp', PACKAGE = 'vapour', source_filename, target_crs, target_extent, target_dim, target_filename, bands, resample, silent, band_output_type, warp_options, transformation_options)
 }

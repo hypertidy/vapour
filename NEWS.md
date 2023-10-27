@@ -1,5 +1,7 @@
 # vapour dev
 
+* New function `buildvrt()` as a special-case for -separate from gdalbuildvrt app. 
+
 * `vapour_vrt()` gains 'options' argument, so we can in particular do `options = c("-expand", "rgb", "-ot", "Byte")` to warp
 16-bit integer colour palettes from GTiff to PNG. :)
  

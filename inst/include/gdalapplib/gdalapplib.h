@@ -7,6 +7,7 @@
 #include "cpl_string.h"
 #include "ogr_spatialref.h"  // for OGRCreateCoordinateTransformation
 
+#include "common/common_vapour.h"
 
 #include "gdalwarper.h"
 //#include "gdal_utils.h"  // for GDALWarpAppOptions
@@ -320,5 +321,18 @@ inline List gdalwarp_applib(CharacterVector source_filename,
   List out(0);
   return out;
 }
+
+inline CharacterVector gdalbuildvrt_applib(std::vector<std::string> dsn, 
+                                           std::vector<std::string> options) {
+  CharacterVector out(1); 
+  int err;
+  GDALBuildVRTOptions* opt = GDALBuildVRTOptionsNew(string_to_charptr(options).data(), nullptr);
+  GDALDataset *vrt = (GDALDataset*)GDALBuildVRT("", dsn.size(), nullptr, string_to_charptr(dsn).data(), opt, &err); 
+  out[0] = vrt->GetMetadata("xml:VRT")[0];
+  GDALClose(vrt); 
+  return out;
+}
+
+
 } //  namespace gdalapplib
 #endif

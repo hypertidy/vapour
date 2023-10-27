@@ -736,6 +736,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// raster_buildvrt_cpp
+CharacterVector raster_buildvrt_cpp(std::vector<std::string> dsn, std::vector<std::string> options);
+RcppExport SEXP _vapour_raster_buildvrt_cpp(SEXP dsnSEXP, SEXP optionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type options(optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_buildvrt_cpp(dsn, options));
+    return rcpp_result_gen;
+END_RCPP
+}
 // raster_warp_file_cpp
 List raster_warp_file_cpp(CharacterVector source_filename, CharacterVector target_crs, NumericVector target_extent, IntegerVector target_dim, CharacterVector target_filename, IntegerVector bands, CharacterVector resample, LogicalVector silent, CharacterVector band_output_type, CharacterVector warp_options, CharacterVector transformation_options);
 RcppExport SEXP _vapour_raster_warp_file_cpp(SEXP source_filenameSEXP, SEXP target_crsSEXP, SEXP target_extentSEXP, SEXP target_dimSEXP, SEXP target_filenameSEXP, SEXP bandsSEXP, SEXP resampleSEXP, SEXP silentSEXP, SEXP band_output_typeSEXP, SEXP warp_optionsSEXP, SEXP transformation_optionsSEXP) {
@@ -856,6 +868,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_blocks_cpp", (DL_FUNC) &_vapour_blocks_cpp, 3},
     {"_vapour_raster_gdalinfo_app_cpp", (DL_FUNC) &_vapour_raster_gdalinfo_app_cpp, 2},
     {"_vapour_raster_vrt_cpp", (DL_FUNC) &_vapour_raster_vrt_cpp, 9},
+    {"_vapour_raster_buildvrt_cpp", (DL_FUNC) &_vapour_raster_buildvrt_cpp, 2},
     {"_vapour_raster_warp_file_cpp", (DL_FUNC) &_vapour_raster_warp_file_cpp, 11},
     {"_vapour_gdal_ptrs_cpp", (DL_FUNC) &_vapour_gdal_ptrs_cpp, 2},
     {"_vapour_timesTwo", (DL_FUNC) &_vapour_timesTwo, 1},
