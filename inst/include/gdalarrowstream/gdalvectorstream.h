@@ -8,12 +8,13 @@
 #include <Rcpp.h>
 #include <ogrsf_frmts.h>
 #include "common/common_vapour.h"
-#include <ogr_recordbatch.h>
 using namespace Rcpp; 
 
 namespace gdalvectorstream {
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+
+#include <ogr_recordbatch.h>
 
 class GDALStreamWrapper {
 public:
