@@ -336,7 +336,7 @@ inline Rcpp::List read_gdal_stream(
     Rcpp::CharacterVector query,
     std::vector<std::string> options, 
     bool quiet, 
-    Rcpp::CharacterVector drivers,
+    std::vector<std::string> drivers,
     Rcpp::NumericVector extent,
     bool dsn_exists,
     Rcpp::CharacterVector fid_column,
