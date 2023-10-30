@@ -8,14 +8,12 @@
 #include <Rcpp.h>
 #include <ogrsf_frmts.h>
 #include "common/common_vapour.h"
+#include <ogr_recordbatch.h>
+using namespace Rcpp; 
 
-
+namespace gdalvectorstream {
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
-
-
-#include <ogr_recordbatch.h>
-
 
 class GDALStreamWrapper {
 public:
@@ -77,18 +75,12 @@ private:
 };
 
 
-
-
-namespace gdalvectorstream {
-using namespace Rcpp; 
-
 static void finalize_dataset_xptr(SEXP dataset_xptr) {
   GDALDataset *poDS = (GDALDataset*)R_ExternalPtrAddr(dataset_xptr);
   if (poDS != nullptr) {
     GDALClose(poDS);
   }
 }
-
 
 inline Rcpp::List ogr_ptrs(Rcpp::CharacterVector datasource,
                                   Rcpp::CharacterVector layer) {
@@ -271,8 +263,6 @@ inline Rcpp::List ogr_layer_setup(Rcpp::CharacterVector datasource,
   return Rcpp::List::create(dataset_xptr, layer_xptr);
 }
 
-
-
 inline Rcpp::List read_gdal_stream(
     Rcpp::RObject stream_xptr,
     Rcpp::CharacterVector datasource, 
@@ -357,5 +347,5 @@ inline Rcpp::List read_gdal_stream(
 
 } // gdalvectorstream
 
-#endif
 
+#endif
