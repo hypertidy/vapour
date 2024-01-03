@@ -1,3 +1,5 @@
+#include <vector>
+
 
 // written by R Hijmans in terra
 inline std::vector<char *> string_to_charptr(std::vector<std::string> s) {
