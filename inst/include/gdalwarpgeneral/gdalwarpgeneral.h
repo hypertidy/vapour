@@ -48,8 +48,8 @@ List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
   List out(dsn.size()); 
   for (int i = 0; i < dsn.size(); i++) {
     GDALDataset* poSrcDS = (GDALDataset*) gdalraster::gdalH_open_dsn(dsn[0],  0);
-    GDALTransformerFunc pfnTransformer; 
-    pfnTransformer = GDALGenImgProjTransform;
+    //GDALTransformerFunc pfnTransformer; 
+    //pfnTransformer = GDALGenImgProjTransform;
   
     void *pfnTransformerArg = nullptr;
     pfnTransformerArg =

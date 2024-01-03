@@ -68,7 +68,6 @@ Rcpp::NumericVector vapour_read_raster_value_cpp(CharacterVector dsource,
   GDALRasterBand * poBand = ((GDALDataset*) ds)->GetRasterBand(band[0]); 
   GDALRasterIOExtraArg psExtraArg;
   psExtraArg = gdalraster::init_resample_alg(resample); 
-  CPLErr err;
   
   for (int i = 0; i < col.size(); i++) {
     
