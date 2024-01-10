@@ -39,6 +39,6 @@ Suggests:
     spelling
 SystemRequirements: libgdal-dev, GDAL (>= 2.2.3), PROJ (>= 4.8.0)
 VignetteBuilder: knitr
-URL: https://github.com/hypertidy/vapour
+URL: https://github.com/hypertidy/vapour, https://hypertidy.github.io/vapour/
 BugReports: https://github.com/hypertidy/vapour/issues
 Language: en-US
