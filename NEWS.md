@@ -1,5 +1,7 @@
 # vapour dev
 
+* Fix cross-compilation for ARM on universe, thanks to Jeroen Ooms. 
+
 * New function `buildvrt()` as a special-case for -separate from gdalbuildvrt app. 
 
 * `vapour_vrt()` gains 'options' argument, so we can in particular do `options = c("-expand", "rgb", "-ot", "Byte")` to warp
