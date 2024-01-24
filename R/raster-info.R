@@ -157,10 +157,11 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
   
   corners <- NULL
   extent <- NULL
-  if (!is.null(json$cornerCoodinates)) {
+  if (!is.null(json$cornerCoordinates)) {
     corners <- do.call(rbind, json$cornerCoordinates)
     extent <- c(range(corners[,1]), range(corners[,2]))
   }
+
 
   if (is.null(json$geoTransform) && !is.null(extent)) {
     geoTransform <- c(extent[1], diff(extent[c(1,2)])/json$size[1], 0, 

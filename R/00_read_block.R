@@ -169,7 +169,7 @@ vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band
 #'                dimension = c(2L, 3L), band = 1L))
 #' if (file.exists(tf)) file.remove(tf)
 vapour_write_raster_block <- function(dsource, data, offset, dimension, band = 1L, overwrite = FALSE) {
-  if (!file.exists(dsource)) stop("file dsource must exist")
+ ## if (!file.exists(dsource)) stop("file dsource must exist")
   if (!overwrite) stop(sprintf("set 'overwrite' to TRUE if you really mean to write to file %s", dsource))
   if (anyNA(band) || length(band) < 1L) stop("missing band value")
   band <- as.integer(band[1L])

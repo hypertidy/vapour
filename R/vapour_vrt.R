@@ -145,7 +145,7 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
   out
 }
 
-  
+
 
 #' Vector VRT
 #'
@@ -221,3 +221,19 @@ vector_vrt <- function(x, layer = 1L, projection = NULL, sql = NULL, a_srs = NUL
   out
 }
 
+
+#' Build vrt, special case "-separate"
+#'
+#' @param dsn one or more raster sources
+#'
+#' @return a character string of the builtvrt, multiple sources treated as bands
+#' @export
+#'
+#' @examples
+#' f <- system.file("extdata/sst.tif", package = "vapour", mustWork = TRUE)
+#' vrt <- buildvrt(c(f, vapour_vrt(f)))
+#' writeLines(vrt)
+buildvrt <- function(dsn) {
+   options = c("-separate")
+   raster_buildvrt_cpp(dsn, options)
+ } 

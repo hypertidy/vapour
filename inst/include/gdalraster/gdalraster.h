@@ -1206,7 +1206,7 @@ inline List gdal_list_geolocation(CharacterVector dsn, IntegerVector sds) {
   GDALDataset* poDataset;
   poDataset = (GDALDataset*)gdalH_open_dsn(dsn[0], sds);
   
-  bool has_geol = false;
+
   auto papszGeolocationInfo = poDataset->GetMetadata("GEOLOCATION");
 
   if( papszGeolocationInfo == nullptr ) {
