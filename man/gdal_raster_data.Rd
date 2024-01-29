@@ -4,6 +4,7 @@
 \alias{gdal_raster_data}
 \alias{gdal_raster_dsn}
 \alias{gdal_raster_image}
+\alias{gdal_raster_nara}
 \title{General raster read and convert}
 \usage{
 gdal_raster_data(
@@ -34,6 +35,19 @@ gdal_raster_dsn(
 )
 
 gdal_raster_image(
+  dsn,
+  target_crs = NULL,
+  target_dim = NULL,
+  target_ext = NULL,
+  target_res = NULL,
+  resample = "near",
+  bands = NULL,
+  band_output_type = NULL,
+  options = character(),
+  include_meta = TRUE
+)
+
+gdal_raster_nara(
   dsn,
   target_crs = NULL,
   target_dim = NULL,

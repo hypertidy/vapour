@@ -30,7 +30,8 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                 // CharacterVector output_dataset_options,
                                 CharacterVector options, 
                                 LogicalVector nomd, 
-                                IntegerVector overview) {
+                                IntegerVector overview, 
+                                LogicalVector nara) {
   
   
   GDALDatasetH *poSrcDS;
@@ -190,7 +191,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
                                                    bands_to_read,
                                                    band_output_type,
                                                    resample,
-                                                   unscale);
+                                                   unscale, nara);
   
   GDALClose( hRet );
   return outlist;

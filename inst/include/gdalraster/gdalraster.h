@@ -6,6 +6,13 @@
 #include "vrtdataset.h"
 #include <ogr_spatialref.h>
 
+#include <Rinternals.h>
+
+
+#define R_RGB(r,g,b)	  ((r)|((g)<<8)|((b)<<16)|0xFF000000)
+#define R_RGBA(r,g,b,a)	((r)|((g)<<8)|((b)<<16)|((a)<<24))
+
+
 namespace gdalraster {
 using namespace Rcpp;
 
@@ -21,6 +28,63 @@ using namespace Rcpp;
 //   gdalmin:::open_gdal(c(file, topos))
 //
 
+inline SEXP C_native_rgb(SEXP b0, SEXP b1, SEXP b2, SEXP dm) {
+  SEXP res_ = PROTECT(Rf_allocVector(INTSXP, Rf_length(b0)));
+  for (int i = 0; i < Rf_length(b0); i++) {
+    INTEGER(res_)[i] = (int)R_RGB(RAW(b0)[i], RAW(b1)[i], RAW(b2)[i]);
+  }
+  SEXP dim;
+  dim = Rf_allocVector(INTSXP, 2);
+  INTEGER(dim)[0] = INTEGER(dm)[1];
+  INTEGER(dim)[1] = INTEGER(dm)[0];
+  Rf_setAttrib(res_, R_DimSymbol, dim);
+  Rf_setAttrib(res_, R_ClassSymbol, Rf_mkString("nativeRaster"));
+  {
+    SEXP chsym = Rf_install("channels");
+    Rf_setAttrib(res_, chsym, Rf_ScalarInteger(3));
+  }
+  UNPROTECT(1);
+  return res_;
+}
+
+
+inline SEXP C_native_rgba(SEXP b0, SEXP b1, SEXP b2, SEXP b3, SEXP dm) {
+  SEXP res_ = PROTECT(Rf_allocVector(INTSXP, Rf_length(b0)));
+  for (int i = 0; i < Rf_length(b0); i++) {
+    INTEGER(res_)[i] = (int)R_RGBA(RAW(b0)[i], RAW(b1)[i], RAW(b2)[i], RAW(b3)[i]);
+  }
+  SEXP dim;
+  dim = Rf_allocVector(INTSXP, 2);
+  INTEGER(dim)[0] = INTEGER(dm)[1];
+  INTEGER(dim)[1] = INTEGER(dm)[0];
+  Rf_setAttrib(res_, R_DimSymbol, dim);
+  Rf_setAttrib(res_, R_ClassSymbol, Rf_mkString("nativeRaster"));
+  {
+    SEXP chsym = Rf_install("channels");
+    Rf_setAttrib(res_, chsym, Rf_ScalarInteger(4));
+  }
+  UNPROTECT(1);
+  return res_;
+}
+
+
+inline List replace_nativeRaster(List inputlist, R_xlen_t dimx, R_xlen_t dimy) {
+  List outlist_nara = List();
+  
+  // GREY
+  if (inputlist.size() == 1) {
+    outlist_nara.push_back(C_native_rgb(inputlist[0], inputlist[0], inputlist[0], IntegerVector::create(dimx, dimy)));
+  }
+  // RGB
+  if (inputlist.size() == 3) {
+    outlist_nara.push_back(C_native_rgb(inputlist[0], inputlist[1], inputlist[2], IntegerVector::create(dimx, dimy)));
+  }
+  // RGBA (we ignore bands above 4)
+  if (inputlist.size() >= 4) {
+    outlist_nara.push_back(C_native_rgba(inputlist[0], inputlist[1], inputlist[2], inputlist[3], IntegerVector::create(dimx, dimy)));
+  }
+  return outlist_nara; 
+}
 
 // does it have subdatasets?
 inline bool gdal_has_subdataset(GDALDataset *poDataset) {
@@ -570,7 +634,8 @@ inline List gdal_read_band_values(GDALDataset *hRet,
                                   std::vector<int> bands_to_read, 
                                   CharacterVector band_output_type, 
                                   CharacterVector resample,
-                                  LogicalVector unscale) 
+                                  LogicalVector unscale, 
+                                  LogicalVector nara) 
 {
   int Xoffset = window[0];
   int Yoffset = window[1];
@@ -747,7 +812,12 @@ inline List gdal_read_band_values(GDALDataset *hRet,
     GDALClose(hRet); 
     Rcpp::stop("band type not supported (is it Complex? report at hypertidy/vapour/issues)");
   }
+  Rprintf("%s\n", (const char *)band_output_type[0]); 
+  Rprintf("%i\n", (int)nara[0]); 
   
+  if (nara[0] && band_output_type[0] == "Byte") {
+    return replace_nativeRaster(outlist, (R_xlen_t) outXSize, (R_xlen_t) outYSize); 
+  } 
   return outlist; 
 }
 
@@ -1152,7 +1222,8 @@ inline List gdal_raster_io(CharacterVector dsn,
                            IntegerVector band,
                            CharacterVector resample,
                            CharacterVector band_output_type, 
-                           LogicalVector unscale)
+                           LogicalVector unscale, 
+                           LogicalVector nara)
 {
   
   GDALDataset  *poDataset;
@@ -1171,7 +1242,7 @@ inline List gdal_raster_io(CharacterVector dsn,
   } else {
     for (int i = 0; i < band.size(); i++) bands_to_read[static_cast<size_t>(i)] = band[i];
   }
-  List out = gdal_read_band_values(poDataset, window, bands_to_read, band_output_type, resample, unscale);
+  List out = gdal_read_band_values(poDataset, window, bands_to_read, band_output_type, resample, unscale, nara);
   // close up
   GDALClose(poDataset );
   return out;

@@ -1,5 +1,7 @@
 # vapour dev
 
+* New function `gdal_raster_nara()` to return nativeRaster in a list understood by `ximage()`. 
+
 * New function `vector_vrt()` to generate VRT for SQL and/or reprojection. 
 
 * Fix cross-compilation for ARM on universe, thanks to Jeroen Ooms. 

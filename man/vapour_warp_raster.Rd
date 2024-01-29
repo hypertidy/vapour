@@ -22,7 +22,8 @@ vapour_warp_raster(
   open_options = "",
   options = "",
   nomd = FALSE,
-  overview = -1L
+  overview = -1L,
+  nara = FALSE
 )
 }
 \arguments{

@@ -86,7 +86,8 @@ inline List gdal_warp_general(CharacterVector dsn,
                               CharacterVector band_output_type, 
                               CharacterVector options, 
                               CharacterVector dsn_outname, 
-                              LogicalVector include_meta) {
+                              LogicalVector include_meta, 
+                              LogicalVector nara) {
   
   
   GDALDatasetH *poSrcDS;
@@ -253,7 +254,7 @@ inline List gdal_warp_general(CharacterVector dsn,
                                                 bands_to_read,
                                                 band_output_type,
                                                 resample,
-                                                unscale);
+                                                unscale, nara);
   }
   
   

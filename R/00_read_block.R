@@ -137,7 +137,7 @@ vapour_create_copy <- function(dsource, filename, overwrite = FALSE, driver = "G
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' v <- vapour_read_raster_block(f, c(0L, 0L), dimension = c(2L, 3L), band = 1L)
-vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band_output_type = "", unscale = TRUE) {
+vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band_output_type = "", unscale = TRUE, nara = FALSE) {
   dsource <- .check_dsn_single(dsource)
   if (anyNA(band) || length(band) < 1L) stop("missing band value")
   if (file.exists(dsource)) {
@@ -146,7 +146,7 @@ vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band
   vapour_read_raster_block_cpp(dsource, as.integer(rep(offset, length.out = 2L)),
                                as.integer(rep(dimension, length.out = 2L)), band = as.integer(band[1L]),
                                band_output_type = band_output_type, 
-                               unscale = unscale)
+                               unscale = unscale, nara = nara)
 }
 #' Write data to a block *in an existing file*.
 #'

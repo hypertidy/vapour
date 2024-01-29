@@ -16,7 +16,8 @@ List warp_general_cpp(CharacterVector dsn,
                       CharacterVector band_output_type, 
                       CharacterVector options, 
                       CharacterVector dsn_outname, 
-                      LogicalVector include_meta) {
+                      LogicalVector include_meta,
+                      LogicalVector nara) {
   return gdalwarpgeneral::gdal_warp_general(dsn,
                                           target_crs, 
                                           target_extent, 
@@ -28,7 +29,8 @@ List warp_general_cpp(CharacterVector dsn,
                                           band_output_type, 
                                           options, 
                                           dsn_outname, 
-                                          include_meta); 
+                                          include_meta, 
+                                          nara); 
 }
 // [[Rcpp::export]]
 List warp_suggest_cpp(CharacterVector dsn, CharacterVector target_crs) {

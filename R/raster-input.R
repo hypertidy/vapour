@@ -352,7 +352,7 @@ vapour_warp_raster <- function(x, bands = NULL,
                                transformation_options = "", 
                                open_options = "",
                                options = "", 
-                               nomd = FALSE, overview = -1L) {
+                               nomd = FALSE, overview = -1L, nara = FALSE) {
   x <- .check_dsn_multiple(x)
   if (!is.null(bands) && (anyNA(bands) || length(bands) < 1 || !is.numeric(bands))) {
     stop("'bands' must be a valid set of band integers (1-based)")
@@ -516,7 +516,7 @@ vapour_warp_raster <- function(x, bands = NULL,
                                   resample = resample,
                                   silent = silent,
                                   band_output_type = band_output_type, 
-                                  options = options, nomd = nomd, overview)
+                                  options = options, nomd = nomd, overview, nara = nara)
   # ##// if we Dataset->RasterIO we don't have separated bands'
   # nbands <- length(vals[[1L]]) / prod(as.integer(dimension))
   # if (nbands > 1) vals <- split(vals[[1L]], rep(seq_len(nbands), each = prod(as.integer(dimension))))

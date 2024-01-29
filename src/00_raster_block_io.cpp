@@ -9,8 +9,8 @@ using namespace Rcpp;
 Rcpp::List vapour_read_raster_block_cpp(CharacterVector dsource,
                                         IntegerVector offset, IntegerVector dimension, IntegerVector band,
                                         CharacterVector band_output_type, 
-                                        LogicalVector unscale) {
-  return gdalreadwrite::gdal_read_block(dsource, offset, dimension, band, band_output_type, unscale);
+                                        LogicalVector unscale, LogicalVector nara) {
+  return gdalreadwrite::gdal_read_block(dsource, offset, dimension, band, band_output_type, unscale, nara);
 }
 
 // [[Rcpp::export]]
