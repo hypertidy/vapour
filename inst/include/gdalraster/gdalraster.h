@@ -812,9 +812,7 @@ inline List gdal_read_band_values(GDALDataset *hRet,
     GDALClose(hRet); 
     Rcpp::stop("band type not supported (is it Complex? report at hypertidy/vapour/issues)");
   }
-  Rprintf("%s\n", (const char *)band_output_type[0]); 
-  Rprintf("%i\n", (int)nara[0]); 
-  
+
   if (nara[0] && band_output_type[0] == "Byte") {
     return replace_nativeRaster(outlist, (R_xlen_t) outXSize, (R_xlen_t) outYSize); 
   } 

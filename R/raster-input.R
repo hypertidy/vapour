@@ -50,6 +50,7 @@
 #' @param set_na specify whether NA values should be set for the NODATA
 #' @param band_output_type numeric type of band to apply (else the native type if ''), is mapped to one of 'Byte', 'Int32', or 'Float64'
 #' @param unscale default is `TRUE` so native values will be converted by offset and scale to floating point
+#' @param nara logical whether to return a (scaled) nativeRaster
 #' @export
 #' @return list of numeric vectors (only one for 'band')
 #' @examples
@@ -63,7 +64,7 @@
 #' ## the method can be used to up-sample as well
 #' str(matrix(vapour_read_raster(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 #'
-vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL, native = FALSE, set_na = TRUE, band_output_type = "", unscale = TRUE) {
+vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL, native = FALSE, set_na = TRUE, band_output_type = "", unscale = TRUE, nara = FALSE) {
   x <- .check_dsn_single(x)
   if (!length(native) == 1L || is.na(native[1]) || !is.logical(native)) {
     stop("'native' must be a single 'TRUE' or 'FALSE'")
@@ -105,7 +106,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
   ## pull a swifty here with [[  to return numeric or integer
   ##vals <- raster_io_gdal_cpp(dsn = datasourcename, window  = window, band = band, resample = resample[1L], band_output_type = band_output_type)
   vals <- lapply(band, function(iband) {
-    raster_io_gdal_cpp(dsn = datasourcename, window  = window, band = iband, resample = resample[1L], band_output_type = band_output_type, unscale = unscale)[[1L]]
+    raster_io_gdal_cpp(dsn = datasourcename, window  = window, band = iband, resample = resample[1L], band_output_type = band_output_type, unscale = unscale, nara = nara)[[1L]]
   })
   if (set_na && !is.raw(vals[[1L]][1L])) {
     for (i in seq_along(vals)) {
@@ -134,9 +135,9 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
 vapour_read_raster_raw <- function(x, band = 1,
                                    window,
                                    resample = "nearestneighbour", ...,
-                                   sds = NULL, native = FALSE, set_na = TRUE) {
+                                   sds = NULL, native = FALSE, set_na = TRUE, nara = FALSE) {
   
-  
+  if (nara) message("nara incompatible with raw output, ignoring")
   if (length(band) > 1) message("_raw output implies one band, using only the first")
   vapour_read_raster(x, band = band, window = window, resample = resample, ..., sds = sds,
                      native = native, set_na = set_na, band_output_type = "Byte")[[1L]]

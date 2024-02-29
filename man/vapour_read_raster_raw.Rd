@@ -16,7 +16,8 @@ vapour_read_raster_raw(
   ...,
   sds = NULL,
   native = FALSE,
-  set_na = TRUE
+  set_na = TRUE,
+  nara = FALSE
 )
 
 vapour_read_raster_int(
@@ -79,6 +80,8 @@ vapour_read_raster_hex(
 \item{native}{apply the full native window for read, \code{FALSE} by default}
 
 \item{set_na}{specify whether NA values should be set for the NODATA}
+
+\item{nara}{logical whether to return a (scaled) nativeRaster}
 }
 \value{
 atomic vector of the nominated type raw, int, dbl, or character (hex)
