@@ -62,7 +62,9 @@
 #' @param geolocation vector of 2 dsn to longitude, latitude geolocation array sources
 #' @return VRT character string (for use by GDAL-capable tools, i.e. reading raster)
 #' @param nomd if `TRUE` the Metadata tag is removed from the resulting VRT (it can be quite substantial)
+#' @param options pass in options to the VRT creation, like 'c("-expand", "rgb", "-ot", "Byte"('
 #' @param overview  pick an integer overview from the source (0L is highest resolution, default -1L does nothing)
+#'
 #' @export
 #'
 #' @examples

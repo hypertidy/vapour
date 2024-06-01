@@ -15,8 +15,9 @@
 #' @param resample resampling algorithm used
 #' @param bands band or bands to include, default is first band only (use NULL or a value less that one to obtain all bands)
 #' @param band_output_type specify the band type, see [vapour_read_raster]
+#' @param include_meta metadata is attached, turn off by setting this to `FALSE`
 #' @param options general options passed to gdal warper
-#' @param out_dsn use with [gdal_raster_dsn] optionally set the output file name (or one will be generated)
+#'
 #' @export
 #' @returns pixel values in a list vector per band, or a list of file paths
 #'

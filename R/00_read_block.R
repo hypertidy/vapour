@@ -130,6 +130,7 @@ vapour_create_copy <- function(dsource, filename, overwrite = FALSE, driver = "G
 #' @param band_output_type numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'
 #' @param band which band to read (1-based)
 #' @param unscale default is `TRUE` so native values will be converted by offset and scale to floating point
+#' @param nara if 'TRUE' return in nativeRaster format
 #'
 #' @return a list with a vector of data from the band read
 #' @export
