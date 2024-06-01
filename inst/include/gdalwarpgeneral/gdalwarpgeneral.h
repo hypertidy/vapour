@@ -197,7 +197,7 @@ inline List gdal_warp_general(CharacterVector dsn,
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
-
+Rprintf("about to warp\n"); 
 
     GDALDatasetH hRet = GDALWarp(dsn_outname[0], nullptr,
                                   static_cast<int>(dsn.size()), poSrcDS,

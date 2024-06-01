@@ -196,7 +196,7 @@ inline List gdalwarp_applib(CharacterVector source_filename,
 inline CharacterVector gdalbuildvrt_applib(std::vector<std::string> dsn, 
                                            std::vector<std::string> options) {
   CharacterVector out(1); 
-  int err;
+  
   GDALBuildVRTOptions* opt = GDALBuildVRTOptionsNew(string_to_charptr(options).data(), nullptr);
   GDALDataset *vrt = (GDALDataset*)GDALBuildVRT("", dsn.size(), nullptr, string_to_charptr(dsn).data(), opt, &err); 
   out[0] = vrt->GetMetadata("xml:VRT")[0];

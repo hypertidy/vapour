@@ -534,7 +534,7 @@ inline List gdal_read_geometry(CharacterVector dsn,
   }
   
   
-  int warncount = 0;
+  //int warncount = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL )
   {
     
@@ -543,7 +543,7 @@ inline List gdal_read_geometry(CharacterVector dsn,
       OGRGeometry *poGeometry;
       poGeometry = poFeature->GetGeometryRef();
       if (poGeometry == NULL) {
-        warncount++;
+        //warncount++;
         feature_xx.push_back(R_NilValue);
         //if (warncount == 1) Rcpp::warning("at least one geometry is NULL, perhaps the 'sql' argument excludes the native geometry?\n(use 'SELECT * FROM ..') ");
       } else {
