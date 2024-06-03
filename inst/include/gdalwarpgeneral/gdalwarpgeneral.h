@@ -161,10 +161,10 @@ inline List gdal_warp_general(CharacterVector dsn,
     double dfMaxY = target_extent[3];
     
     papszArg = CSLAddString(papszArg, "-te");
-    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
-    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
-    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
-    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g", dfMinX));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g", dfMinY));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g", dfMaxX));
+    papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g", dfMaxY));
   }
  
   if (target_dim.size() > 0) {

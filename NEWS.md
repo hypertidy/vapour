@@ -1,4 +1,8 @@
-# vapour dev
+# vapour 0.10.0
+
+* Urgent release to fix segfault on CRAN, incorrect format string for "-te". 
+
+* Use pkg-config on Windows when available, thanks Tomas Kalibera and CRAN. 
 
 * New function `gdal_raster_nara()` to return nativeRaster in a list understood by `ximage()`. 
 

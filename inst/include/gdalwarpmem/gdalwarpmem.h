@@ -100,10 +100,10 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   double dfMaxY = target_extent[3];
   
   papszArg = CSLAddString(papszArg, "-te");
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinX));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMinY));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxX));
-  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g,", dfMaxY));
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g", dfMinX));
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g", dfMinY));
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g", dfMaxX));
+  papszArg = CSLAddString(papszArg, CPLSPrintf("%.18g", dfMaxY));
   
   // we otherwise set a dud dimension, the user didn't set it (so they get native for the extent)
   if (target_dim.size() > 1) {
