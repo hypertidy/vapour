@@ -45,8 +45,8 @@ Rcpp::NumericVector vapour_read_raster_value_cpp(CharacterVector dsource,
   dimension[0] = 1; 
   dimension[1] = 1; 
   IntegerVector offset(2);
-  
-  GDALDatasetH ds = gdalraster::gdalH_open_dsn(dsource[0],   0);  
+  IntegerVector sds0 = IntegerVector::create(0); 
+  GDALDatasetH ds = gdalraster::gdalH_open_dsn(dsource[0],   sds0);  
   
   NumericVector vals(col.size()); 
   NumericVector L(1); 
@@ -86,7 +86,8 @@ Rcpp::NumericVector vapour_read_raster_value_cpp(CharacterVector dsource,
 Rcpp::List blocks_cpp1(CharacterVector dsource, IntegerVector iblock, LogicalVector read) {                                                 
 
   //https://gdal.org/doxygen/classGDALRasterBand.html#a09e1d83971ddff0b43deffd54ef25eef
-  GDALDatasetH ds = gdalraster::gdalH_open_dsn(dsource[0],   0);  
+  IntegerVector sds0 = IntegerVector::create(0); 
+  GDALDatasetH ds = gdalraster::gdalH_open_dsn(dsource[0],   sds0);  
   GDALRasterBand * poBand = ((GDALDataset*) ds)->GetRasterBand(1); 
   
   if (! (poBand->GetRasterDataType() == GDT_Float32 )) Rcpp::stop("\n");
@@ -137,7 +138,8 @@ Rcpp::List blocks_cpp(CharacterVector dsource, IntegerVector iblock, LogicalVect
   
   
   //https://gdal.org/doxygen/classGDALRasterBand.html#a09e1d83971ddff0b43deffd54ef25eef
-  GDALDatasetH ds = gdalraster::gdalH_open_dsn(dsource[0],   0);  
+  IntegerVector sds0 = IntegerVector::create(0); 
+  GDALDatasetH ds = gdalraster::gdalH_open_dsn(dsource[0],   sds0);  
   GDALRasterBand * poBand = ((GDALDataset*) ds)->GetRasterBand(1); 
   
   int nXBlockSize, nYBlockSize;

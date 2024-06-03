@@ -46,8 +46,9 @@ List gdal_suggest_warp(GDALDataset* poSrcDS, void *pfnTransformerArg) {
 
 List gdal_suggest_warp(CharacterVector dsn, CharacterVector target_crs) {
   List out(dsn.size()); 
+  IntegerVector sds0 = IntegerVector::create(0); 
   for (int i = 0; i < dsn.size(); i++) {
-    GDALDataset* poSrcDS = (GDALDataset*) gdalraster::gdalH_open_dsn(dsn[0],  0);
+    GDALDataset* poSrcDS = (GDALDataset*) gdalraster::gdalH_open_dsn(dsn[0],  sds0);
     //GDALTransformerFunc pfnTransformer; 
     //pfnTransformer = GDALGenImgProjTransform;
   
@@ -93,8 +94,9 @@ inline List gdal_warp_general(CharacterVector dsn,
   GDALDatasetH *poSrcDS;
   poSrcDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * static_cast<size_t>(dsn.size())));
   
+  IntegerVector sds0 = IntegerVector::create(0); 
   for (int i = 0; i < dsn.size(); i++) {
-    poSrcDS[i] = gdalraster::gdalH_open_dsn(dsn[i],   0); 
+    poSrcDS[i] = gdalraster::gdalH_open_dsn(dsn[i],   sds0); 
     // unwind everything, and stop (why not unwind if all are null, message how many succeed)
     if (poSrcDS[i] == nullptr) {
       if (i > 0) {

@@ -41,13 +41,16 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   
   CharacterVector emptyoptions(0); 
   
+  IntegerVector sds0 = IntegerVector::create(0); 
+  IntegerVector bands0 = IntegerVector::create(0); 
+  CharacterVector geol0 = CharacterVector::create(""); 
   for (int i = 0; i < source_filename.size(); i++) {
     if (augment) {
       // not dealing with subdatasets here atm
       // not dealing with source bands here, bands applies at read beloew
-      poSrcDS[i] = gdalraster::gdalH_open_avrt(source_filename[i],   source_extent, source_WKT, 0, 0, "", overview, emptyoptions);
+      poSrcDS[i] = gdalraster::gdalH_open_avrt(source_filename[i],   source_extent, source_WKT, sds0, bands0, geol0, overview, emptyoptions);
     } else {
-      poSrcDS[i] = gdalraster::gdalH_open_dsn(source_filename[i],   0); 
+      poSrcDS[i] = gdalraster::gdalH_open_dsn(source_filename[i],   sds0); 
       
     }
     // unwind everything, and stop
