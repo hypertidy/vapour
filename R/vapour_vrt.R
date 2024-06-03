@@ -152,7 +152,7 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
 #' Vector VRT
 #'
 #' Just a simple text generator to generate the VRT for a vector layer, First layer is chosen if not
-#' othwerwise specified. 
+#' otherwise specified. 
 #' 
 #' Using 'sql' overrides the 'layer', and using 'projection' results in the geometries being transformed. 
 #' No check is made of the layer source projection. 
@@ -228,7 +228,7 @@ vector_vrt <- function(x, layer = 1L, projection = NULL, sql = NULL, a_srs = NUL
 #'
 #' @param dsn one or more raster sources
 #'
-#' @return a character string of the builtvrt, multiple sources treated as bands
+#' @return a character string of the built vrt, multiple sources treated as bands
 #' @export
 #'
 #' @examples

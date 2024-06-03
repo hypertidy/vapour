@@ -83,10 +83,9 @@
 #'  
 #' @name vapour-package
 #' @aliases vapour
-#' @docType package
 #' @useDynLib vapour
 #' @importFrom Rcpp sourceCpp
-NULL
+"_PACKAGE"
 
 #' SST contours
 #'

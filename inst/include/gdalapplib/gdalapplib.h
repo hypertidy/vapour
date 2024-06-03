@@ -171,6 +171,8 @@ inline List gdalwarp_applib(CharacterVector source_filename,
     papszArg = CSLAddString(papszArg, "-to");
     papszArg = CSLAddString(papszArg, transformation_options[topt]);
   }
+
+
   
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);

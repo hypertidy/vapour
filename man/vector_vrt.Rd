@@ -22,7 +22,7 @@ single element character vector
 }
 \description{
 Just a simple text generator to generate the VRT for a vector layer, First layer is chosen if not
-othwerwise specified.
+otherwise specified.
 }
 \details{
 Using 'sql' overrides the 'layer', and using 'projection' results in the geometries being transformed.

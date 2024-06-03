@@ -323,7 +323,7 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' @param options character vectors of options as per the gdalwarp command line 
 #' @param nomd if `TRUE` the Metadata tag is removed from the resulting VRT (it can be quite substantial)
 #' @param overview pick an integer overview from the source (0L is highest resolution, default -1L does nothing)
-#' nara if 'TRUE' return in nativeRaster format
+#' @param  nara if 'TRUE' return in nativeRaster format
 #' @export
 #' @seealso vapour_read_raster vapour_read_raster_raw vapour_read_raster_int vapour_read_raster_dbl vapour_read_raster_chr vapour_read_raster_hex
 #' @return list of vectors (only 1 for 'band') of numeric values, in raster order

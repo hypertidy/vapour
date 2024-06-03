@@ -115,6 +115,7 @@ Other contributors:
   \item Even Rouault (primary author of the COG format and its use of the GDALwarp app-library, example code used by the warper function here) [contributor]
   \item Robert Hijmans (code in terra package used as example/inspiration) [contributor]
   \item Dewey Dunnington (wrote the columnar-access mode streaming Arrow support) [contributor]
+  \item Tomas Kalibera [contributor]
 }
 
 }

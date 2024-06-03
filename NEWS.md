@@ -49,7 +49,7 @@ exposed for general use yet.
 
 * Fix for `vapour_vrt()` where 'geolocation' was not being included. Fixes #192. 
 
-* New capability to drop dataset and band metdata, used by functions `vapour_vrt()` and `vapour_warp_raster()` which gain a new argument 'nomd', which
+* New capability to drop dataset and band metadata, used by functions `vapour_vrt()` and `vapour_warp_raster()` which gain a new argument 'nomd', which
 is FALSE by default. If TRUE, the dataset and band metadata are removed from an open dataset before it is converted to VRT. 
 
 This particularly makes VRT DSN strings a lot smaller, for use by whatarelief and raadtools for example.  There should be no change to current default uses, the argument 'nomd' must be specified for the change. 

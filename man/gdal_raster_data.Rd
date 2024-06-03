@@ -80,6 +80,8 @@ gdal_raster_nara(
 \item{options}{general options passed to gdal warper}
 
 \item{include_meta}{metadata is attached, turn off by setting this to \code{FALSE}}
+
+\item{out_dsn}{file name for output "_dsn"}
 }
 \value{
 pixel values in a list vector per band, or a list of file paths

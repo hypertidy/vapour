@@ -17,7 +17,7 @@
 #' @param band_output_type specify the band type, see [vapour_read_raster]
 #' @param include_meta metadata is attached, turn off by setting this to `FALSE`
 #' @param options general options passed to gdal warper
-#'
+#' @param out_dsn file name for output "_dsn"
 #' @export
 #' @returns pixel values in a list vector per band, or a list of file paths
 #'

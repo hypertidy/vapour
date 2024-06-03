@@ -10,7 +10,7 @@ buildvrt(dsn)
 \item{dsn}{one or more raster sources}
 }
 \value{
-a character string of the builtvrt, multiple sources treated as bands
+a character string of the built vrt, multiple sources treated as bands
 }
 \description{
 Build vrt, special case "-separate"

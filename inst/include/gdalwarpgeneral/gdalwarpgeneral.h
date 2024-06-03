@@ -144,7 +144,7 @@ inline List gdal_warp_general(CharacterVector dsn,
     papszArg = CSLAddString(papszArg, "-t_srs");
     papszArg = CSLAddString(papszArg, target_crs[0]);
     
-    if(!st || !st[0]) {
+    if(st == NULL) {
         // we also should be checking if no geolocation arrays and no gcps
         Rcpp::warning("no source crs, target crs is ignored\n");
     } 
@@ -193,11 +193,10 @@ inline List gdal_warp_general(CharacterVector dsn,
     papszArg = CSLAddString(papszArg, options[gwopt]);
   }
   
-
+        
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
-Rprintf("about to warp\n"); 
 
     GDALDatasetH hRet = GDALWarp(dsn_outname[0], nullptr,
                                   static_cast<int>(dsn.size()), poSrcDS,

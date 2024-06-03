@@ -121,6 +121,9 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   for (int gwopt = 0; gwopt < options.length(); gwopt++) {
     papszArg = CSLAddString(papszArg, options[gwopt]);
   }
+  
+  
+
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
