@@ -1,6 +1,10 @@
 # vapour 0.10.0
 
-* Urgent release to fix segfault on CRAN, incorrect format string for "-te". 
+* Fixed type problem in internal get projection strings. 
+
+* Urgent release to fix segfault on CRAN, instances of int instead of IntegerVector for R devel. 
+
+* Fix incorrect format string for "-te". 
 
 * Use pkg-config on Windows when available, thanks Tomas Kalibera and CRAN. 
 
