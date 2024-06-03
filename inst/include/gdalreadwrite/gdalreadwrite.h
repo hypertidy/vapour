@@ -106,17 +106,12 @@ inline CharacterVector gdal_create(CharacterVector filename, CharacterVector dri
     // if (EQUAL(options[i], "-co") || CSLPartialFindString(options[i], "=") > -1) {
     //   Rcpp::warning("create options should not include '-co' or '='")
     // }
-    Rprintf("option: %s\n", (const char *)options[i]); 
+    if (!options[i].empty()) {
     papszOptions = CSLAddString(papszOptions, options[i]); 
+    }
   }
   }
-    // if (driver[0] == "GTiff") {
-  //   papszOptions = CSLSetNameValue( papszOptions, "SPARSE_OK", "YES" );
-  //   papszOptions = CSLSetNameValue( papszOptions, "TILED", "YES" );
-  //   papszOptions = CSLSetNameValue( papszOptions, "BLOCKXSIZE", "512" );
-  //   papszOptions = CSLSetNameValue( papszOptions, "BLOCKYSIZE", "512" );
-  //   papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "DEFLATE" );
-  // }
+
  
  
  
