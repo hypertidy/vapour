@@ -112,38 +112,37 @@ inline OGRLayer *gdal_layer(GDALDataset *poDS, IntegerVector layer, CharacterVec
   
   bool use_extent_filter = false;
   if (ex.length() == 4) {
-        if (ex[1] <= ex[0] || ex[3] <= ex[2]) {
-          if (ex[1] <= ex[0]) {
-            Rcpp::warning("extent filter invalid (xmax <= xmin), ignoring");
-          }
-          if (ex[3] <= ex[2]) {
-            Rcpp::warning("extent filter invalid (ymax <= ymin), ignoring");
-          }
-        } else {    
-          use_extent_filter = true;
-          ring.addPoint(ex[0], ex[2]); //xmin, ymin
-          ring.addPoint(ex[0], ex[3]); //xmin, ymax
-          ring.addPoint(ex[1], ex[3]); //xmax, ymax
-          ring.addPoint(ex[1], ex[2]); //xmax, ymin
-          ring.closeRings();
-          poly.addRing(&ring);
-        }
+    if (ex[1] <= ex[0] || ex[3] <= ex[2]) {
+      if (ex[1] <= ex[0]) {
+        Rcpp::warning("extent filter invalid (xmax <= xmin), ignoring");
+      }
+      if (ex[3] <= ex[2]) {
+        Rcpp::warning("extent filter invalid (ymax <= ymin), ignoring");
+      }
+    } else {    
+      use_extent_filter = true;
+      ring.addPoint(ex[0], ex[2]); //xmin, ymin
+      ring.addPoint(ex[0], ex[3]); //xmin, ymax
+      ring.addPoint(ex[1], ex[3]); //xmax, ymax
+      ring.addPoint(ex[1], ex[2]); //xmax, ymin
+      ring.closeRings();
+      poly.addRing(&ring);
+    }
   }
-        
   
   // Rcpp::Function vapour_getenv_sql_dialect("vapour_getenv_dialect"); 
   // const char *sql_dialect = (const char *) vapour_getenv_sql_dialect(); 
   // 
   Environment vapour = Environment::namespace_env("vapour");
- 
+  
   // Picking up  function from this package
   Function vapour_getenv_sql_dialect = vapour["vapour_getenv_sql_dialect"];
   //const char *sql_dialect = (const char *) vapour_getenv_sql_dialect();
   CharacterVector R_dialect = vapour_getenv_sql_dialect(); 
   const char *sql_dialect = (const char *)R_dialect[0]; 
- 
- 
- 
+  
+  
+  
   if (sql[0] != "") {
     if (use_extent_filter) {
       poLayer =  poDS->ExecuteSQL(sql[0],
@@ -166,6 +165,7 @@ inline OGRLayer *gdal_layer(GDALDataset *poDS, IntegerVector layer, CharacterVec
       //Rprintf("layer index: %i\n", layer[0]);
       Rcpp::stop("layer index exceeds layer count");
     }
+    
     poLayer =  poDS->GetLayer(layer[0]);
   }
   if (poLayer == NULL) {
@@ -231,7 +231,7 @@ inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, R_xlen_t n_featu
   Rcpp::CharacterVector names(n);
   for (int i = 0; i < poFDefn->GetFieldCount(); i++) {
     OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn(i);
-
+    
     /// stolen directly from sf and adapted thanks Edzer Pebesma
     switch (poFieldDefn->GetType()) {
     case OFTWideString:
@@ -313,7 +313,7 @@ inline List gdal_read_fields(CharacterVector dsn,
   //double  nFeature = force_layer_feature_count(poLayer);
   // trying to fix SQL problem 2020-10-05
   R_xlen_t nFeature = (R_xlen_t)poLayer->GetFeatureCount();
-
+  
   
   //Rprintf("%i\n", nFeature);
   if (nFeature > MAX_INT) {
@@ -415,8 +415,8 @@ inline List gdal_read_fields(CharacterVector dsn,
 }
 
 
- inline NumericVector gdal_feature_count(CharacterVector dsn,
-                                       IntegerVector layer, CharacterVector sql, NumericVector ex) {
+inline NumericVector gdal_feature_count(CharacterVector dsn,
+                                        IntegerVector layer, CharacterVector sql, NumericVector ex) {
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
@@ -684,23 +684,19 @@ inline List gdal_projection_info(CharacterVector dsn,
                                  IntegerVector layer,
                                  CharacterVector sql)
 {
-  GDALDataset       *poDS;
+  
+  GDALDataset     *poDS = nullptr;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
+  
+  if( poDS == nullptr )
   {
     Rcpp::stop("Open failed.\n");
   }
+  
   NumericVector zero(1);
   zero[0] = 0.0;
   OGRLayer *poLayer = gdal_layer(poDS, layer, sql, zero);
-  
   OGRSpatialReference *SRS =  poLayer->GetSpatialRef();
-  
-  
-  
-  
-  
-  
   
   //  char *proj;  // this gets cleaned up lower in the SRS==NULL else
   List info_out(6);
@@ -712,52 +708,51 @@ inline List gdal_projection_info(CharacterVector dsn,
   outnames[3] = "Wkt";
   outnames[4] = "EPSG";
   outnames[5] = "XML";
-  info_out.attr("names") = outnames;
   
-  if (SRS == NULL) {
+  info_out.attr("names") = outnames;
+  if (SRS == nullptr) {
     //Rcpp::warning("null");
     // do nothing, or warn
     // e.g. .shp with no .prj
-  } else {
-    // Rcpp::warning("not null");
-    // SRS is not NULL, so explore validation
-    //  OGRErr err = SRS->Validate();
-    char *proj4 = NULL;
+  }  else {
+    //   // Rcpp::warning("not null");
+    //   // SRS is not NULL, so explore validation
+    //   //  OGRErr err = SRS->Validate();
+    char *proj4 = nullptr;
     SRS->exportToProj4(&proj4);
-    outproj[0] = proj4;
-    info_out[0] = Rcpp::clone(outproj);
-    CPLFree(proj4);
-    
-    char *MI = NULL;
+    if (proj4 != nullptr) {
+      info_out[0] = CharacterVector::create(proj4); 
+      CPLFree(proj4);
+    }
+    char *MI = nullptr;
     SRS->exportToMICoordSys(&MI);
-    outproj[0] = MI;
-    info_out[1] = Rcpp::clone(outproj);
-    CPLFree(MI);
-    
-    char *PWKT = NULL;
-    SRS->exportToPrettyWkt(&PWKT, false);
-    outproj[0] = PWKT;
-    info_out[2] = Rcpp::clone(outproj);
-    CPLFree(PWKT);
-    
-    char *UWKT = NULL;
-    SRS->exportToWkt(&UWKT);
-    outproj[0] = UWKT;
-    info_out[3] = Rcpp::clone(outproj);
-    CPLFree(UWKT);
-    
+    if (MI != nullptr) {
+      info_out[1] = CharacterVector::create(MI); 
+      CPLFree(MI);
+    } 
+    char *pwkt = nullptr;
+    SRS->exportToPrettyWkt(&pwkt);
+    if (pwkt != nullptr) {
+      info_out[2] = CharacterVector::create(pwkt); 
+      CPLFree(pwkt);
+    } 
+    char *uwkt = nullptr;
+    SRS->exportToWkt(&uwkt);
+    if (uwkt != nullptr) {
+      info_out[3] = CharacterVector::create(uwkt); 
+      CPLFree(uwkt);
+    } 
     int epsg = SRS->GetEPSGGeogCS();
-    info_out[4] = epsg;
+    info_out[4] =  IntegerVector::create(epsg);  
     
-    char *XML = NULL;
-    SRS->exportToXML(&XML);
-    outproj[0] = XML;
-    info_out[5] = Rcpp::clone(outproj);
-    CPLFree(XML);
+    char *xml = nullptr;
+    SRS->exportToXML(&xml);
+    if (xml != nullptr) {
+      info_out[5] = CharacterVector::create(xml); 
+      CPLFree(xml);
+    }
   }
-  
-  
-  
+
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
     poDS->ReleaseResultSet(poLayer);
