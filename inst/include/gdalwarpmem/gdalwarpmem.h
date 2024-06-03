@@ -122,7 +122,9 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
   papszArg = CSLAddString(papszArg, resample[0]);
   
   for (int gwopt = 0; gwopt < options.length(); gwopt++) {
-    papszArg = CSLAddString(papszArg, options[gwopt]);
+    if (!options[gwopt].empty()) {
+       papszArg = CSLAddString(papszArg, options[gwopt]);
+    }
   }
   
   
