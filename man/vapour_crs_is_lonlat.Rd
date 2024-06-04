@@ -16,8 +16,8 @@ logical value \code{TRUE} for lonlat, \code{FALSE} otherwise
 Returns \code{TRUE} if this is longitude latitude data. Missing, malformed, zero-length values are disallowed.
 }
 \examples{
-vapour_crs_is_lonlat("+proj=laea")
-vapour_crs_is_lonlat("+proj=longlat")
+vapour_crs_is_lonlat("+proj=laea +type=crs")
+vapour_crs_is_lonlat("+proj=longlat +type=crs")
 vapour_crs_is_lonlat("+init=EPSG:4326")
 vapour_crs_is_lonlat("OGC:CRS84")
 vapour_crs_is_lonlat("WGS84")
