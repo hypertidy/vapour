@@ -670,12 +670,12 @@ inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
 }
 
 inline LogicalVector gdal_crs_is_lonlat(CharacterVector proj_str) {
-  OGRSpatialReference oSRS;
-  
-  oSRS.SetFromUserInput(proj_str[0]);
+  OGRSpatialReference *oSRS = nullptr;
+  oSRS = new OGRSpatialReference; 
+  oSRS->SetFromUserInput(proj_str[0]);
   LogicalVector out(1); 
-  out[0] = oSRS.IsGeographic() > 0; 
-  
+  out[0] = oSRS->IsGeographic() > 0; 
+  if (oSRS != nullptr) delete oSRS; 
   return out;
 }
 

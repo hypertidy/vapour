@@ -3,7 +3,6 @@
 * Fixed putting bad options in (empty strings). 
 
 * Fixed type problem in internal get projection strings. 
-
 * Urgent release to fix segfault on CRAN, instances of int instead of IntegerVector for R devel. 
 
 * Fix incorrect format string for "-te". 
