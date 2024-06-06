@@ -46,7 +46,8 @@ test_that("warper no transformation works", {
 
 test_that("warper no transformation and no dimension works", {
   expect_that(vapour_warp_raster(f, extent = c(145, 146, -50, -48)), is_a("list"))
-  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), projection = "+proj=laea"), "'dimension' must be numeric")
+  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), projection = "+proj=laea"), 
+               "could not be processed")
 
 })
 
@@ -71,7 +72,7 @@ test_that("warper gives the right number of values", {
   expect_length(vapour_warp_raster(f, bands = 1, extent = c(145, 146, -50, -48), dimension = c(2L, 2L))[[1L]], 4L)
   expect_length(vapour_warp_raster(f, bands = 1, extent = c(145, 146, -50, -48), dimension = c(2L, 12L))[[1L]], 24L)
   expect_length(vapour_warp_raster(f, bands = 1, extent = c(145, 146, -50, -48), dimension = c(1L, 1200L))[[1L]], 1200L)
-  expect_message(vapour_warp_raster(f, bands = 1, extent = c(145, 146, 90, -48), dimension = c(300L, 301L))[[1L]], "expert use")
+  expect_error(vapour_warp_raster(f, bands = 1, extent = c(145, 146, 90, -48), dimension = c(300L, 301L))[[1L]], "all 'target_ext' values must be xmin < xmax, ymin < ymax")
 
 })
 

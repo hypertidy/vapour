@@ -53,30 +53,30 @@ List sds_list_list_gdal_cpp(CharacterVector dsn) {
 }
 
 
-// [[Rcpp::export]]
-List warp_in_memory_gdal_cpp(CharacterVector dsn,
-                             CharacterVector source_WKT,
-                             CharacterVector target_WKT,
-                             NumericVector target_extent,
-                             IntegerVector target_dim,
-                             IntegerVector bands,
-                             NumericVector source_extent,
-                             CharacterVector resample,
-                             LogicalVector silent,
-                             CharacterVector band_output_type, 
-                     
-                             CharacterVector options, 
-                             LogicalVector nomd, IntegerVector overview, 
-                             LogicalVector nara) {
-  return gdalwarpmem::gdal_warp_in_memory(dsn,
-                                          source_WKT,
-                                          target_WKT,
-                                          target_extent,
-                                          target_dim,
-                                          bands,
-                                          source_extent,
-                                          resample,
-                                          silent,
-                                          band_output_type, 
-                                        options, nomd, overview, nara);
-}
+// // [[Rcpp::export]]
+// List warp_in_memory_gdal_cpp(CharacterVector dsn,
+//                              CharacterVector source_WKT,
+//                              CharacterVector target_WKT,
+//                              NumericVector target_extent,
+//                              IntegerVector target_dim,
+//                              IntegerVector bands,
+//                              NumericVector source_extent,
+//                              CharacterVector resample,
+//                              LogicalVector silent,
+//                              CharacterVector band_output_type, 
+//                      
+//                              CharacterVector options, 
+//                              LogicalVector nomd, IntegerVector overview, 
+//                              LogicalVector nara) {
+//   return gdalwarpmem::gdal_warp_in_memory(dsn,
+//                                           source_WKT,
+//                                           target_WKT,
+//                                           target_extent,
+//                                           target_dim,
+//                                           bands,
+//                                           source_extent,
+//                                           resample,
+//                                           silent,
+//                                           band_output_type, 
+//                                         options, nomd, overview, nara);
+// }

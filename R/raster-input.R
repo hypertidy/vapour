@@ -383,9 +383,12 @@ vapour_warp_raster <- function(x, bands = NULL,
   
   ## bands
   if (is.numeric(bands) && any(bands < 1)) stop("all 'bands' index must be >= 1")
-  if (is.null(bands)) bands <- 0
-  if(length(bands) < 1 || anyNA(bands) || !is.numeric(bands)) stop("'bands' must be numeric (integer), start at 1")
-  bands <- as.integer(bands)
+  #if (is.null(bands)) bands <- 0
+
+  if (!is.null(bands)) {
+    if (length(bands) < 1 || anyNA(bands)) stop("'bands' must be numeric (integer), start at 1")
+    bands <- as.integer(bands)
+  }
   ##if ("projection" %in% names(list(...))) message("argument 'projection' input is ignored, warper functions use 'wkt = ' to specify target projection (any format is ok)")
   # dud_extent <- FALSE
   # if (is.null(extent)) {
@@ -413,9 +416,9 @@ vapour_warp_raster <- function(x, bands = NULL,
   
   ## if (dud_extent) extent <- 0.0
   ## hmm, we can't rely on gdalwarp to give a sensibleish dimension if not specified, it goes for the native-res
-  dud_dimension <- FALSE
+  #dud_dimension <- FALSE
   ## we dud it if no target projection is set, so you get native from the extent
-  if (is.null(dimension) && nchar(projection) < 1) {
+  if (!is.null(dimension)) {
     ## NO. We can't heuristic dimension or extent because we don't have a format to return those values with
     ##  we make a simple raster, the image() thing and go with that
     
@@ -429,14 +432,15 @@ vapour_warp_raster <- function(x, bands = NULL,
     ## ##  that has to be set in the C++, but we need to send down a message that the default is used (so do it all in C is the summ))
     ## set it to native with a max
     ## set it to native with a warn/override
-    dud_dimension <- TRUE
-    dimension <- c(2, 2)
+    #dud_dimension <- TRUE
+    #dimension <- c(2, 2)
+    if(!is.numeric(dimension)) stop("'dimension' must be numeric")
+    if(!length(dimension) == 2L) stop("'dimension must be of length 2'")
+    if(!all(dimension > 0)) stop("'dimension' values must be greater than 0")
+    if(!all(is.finite(dimension))) stop("'dimension' values must be finite and non-missing")
+    
   }
-  if(!is.numeric(dimension)) stop("'dimension' must be numeric")
-  if(!length(dimension) == 2L) stop("'dimension must be of length 2'")
-  if(!all(dimension > 0)) stop("'dimension' values must be greater than 0")
-  if(!all(is.finite(dimension))) stop("'dimension' values must be finite and non-missing")
-  if (dud_dimension) dimension <- 0
+  #if (dud_dimension) dimension <- 0
   
   
   if (length(source_extent) > 1) {
@@ -444,12 +448,14 @@ vapour_warp_raster <- function(x, bands = NULL,
       stop("'source_extent' must be numeric, of length 4 c(xmin, xmax, ymin, ymax)")
     }
     if (!all(is.finite(source_extent))) stop("'source_extent' values must be finite and non missing")
+    x <- vapour_vrt(x, source_extent = source_extent)
   }
   if(!is.null(source_projection)) {
     if (!is.character(source_projection)) stop("source_projection must be character")
     if(!silent) {
       if(!nchar(source_projection) > 10) message("short 'source_projection', possibly invalid?")
     }
+    x <- vapour_vrt(x, projection = source_projection)
   }
   
   if (!silent) {
@@ -510,16 +516,29 @@ vapour_warp_raster <- function(x, bands = NULL,
   } 
   if (any(grepl("-te_srs", options))) stop("setting '-te_srs' projection of target extent is not supported") 
 
-  vals <- warp_in_memory_gdal_cpp(x, source_WKT = source_projection,
-                                  target_WKT = projection,
-                                  target_extent = as.numeric(extent),
-                                  target_dim = as.integer(dimension),
-                                  bands = as.integer(bands),
-                                  source_extent = as.numeric(source_extent),
-                                  resample = resample,
-                                  silent = silent,
-                                  band_output_type = band_output_type, 
-                                  options = options, nomd = nomd, overview, nara = nara)
+  # vals <- warp_in_memory_gdal_cpp(x, source_WKT = source_projection,
+  #                                 target_WKT = projection,
+  #                                 target_extent = as.numeric(extent),
+  #                                 target_dim = as.integer(dimension),
+  #                                 bands = as.integer(bands),
+  #                                 source_extent = as.numeric(source_extent),
+  #                                 resample = resample,
+  #                                 silent = silent,
+  #                                 band_output_type = band_output_type, 
+  #                                 options = options, nomd = nomd, overview, nara = nara)
+  # 
+
+  if (nara) {
+    vals <- gdal_raster_nara(x, target_crs = projection, target_ext = extent, target_dim = dimension, 
+                             bands = bands, resample = resample, band_output_type = band_output_type, 
+                             options = options, include_meta = !nomd)
+  } else {
+  ## FIXME deal with nara and source projection source extent
+    if (is.null(bands)) bands <- 1L
+  vals <- gdal_raster_data(x, target_crs = projection, target_ext = extent, target_dim = dimension, 
+                           bands = bands, resample = resample, band_output_type = band_output_type, 
+                           options = options, include_meta = !nomd)
+  }
   # ##// if we Dataset->RasterIO we don't have separated bands'
   # nbands <- length(vals[[1L]]) / prod(as.integer(dimension))
   # if (nbands > 1) vals <- split(vals[[1L]], rep(seq_len(nbands), each = prod(as.integer(dimension))))

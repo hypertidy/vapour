@@ -60,7 +60,7 @@ gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
      
      if (anyNA(target_ext)) stop("NA values in 'target_ext'")
      dif <- diff(target_ext)[c(1L, 3L)]
-     if (any(!dif > 0)) stop("all 'target_ext' values must xmin < xmax, ymin < ymax")
+     if (any(!dif > 0)) stop("all 'target_ext' values must be xmin < xmax, ymin < ymax")
      
    }
    if (is.null(target_dim)) {
@@ -110,7 +110,7 @@ gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ex
     
     if (anyNA(target_ext)) stop("NA values in 'target_ext'")
     dif <- diff(target_ext)[c(1L, 3L)]
-    if (any(!dif > 0)) stop("all 'target_ext' values must xmin < xmax, ymin < ymax")
+    if (any(!dif > 0)) stop("all 'target_ext' values must be xmin < xmax, ymin < ymax")
     
   }
   if (is.null(target_dim)) {

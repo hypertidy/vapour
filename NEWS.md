@@ -1,5 +1,7 @@
 # vapour 0.10.0
 
+* Old warper code is removed, now uses 'gdal_raster_'. 
+
 * Fixed putting bad options in (empty strings). 
 
 * Fixed type problem in internal get projection strings. 

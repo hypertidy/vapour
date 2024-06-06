@@ -22,14 +22,15 @@ test_that("with with no source crs works", {
   ex <- c(-3077504,  3968504, -2763621,  3472383)
   vrt <- vapour_vrt(sds[3], geolocation = sds[2:1], bands = 1)
   info <- vapour_raster_info(vrt)
-  expect_warning(im <- vapour_warp_raster_dbl(vrt, extent = ex, dimension = info$dimension, projection = lcc
-                               , transformation_options = c("SRC_METHOD=NO_GEOTRANSFORM")))
+  expect_type(im <- vapour_warp_raster_dbl(vrt, extent = ex, dimension = info$dimension, projection = lcc
+                               , transformation_options = c("SRC_METHOD=NO_GEOTRANSFORM")), "double")
+
   
   ex <- c(-180, 180, -90, 90)
   dm <- c(512, 1024)
   vrt <- vapour_vrt(sds[3], geolocation = sds[2:1], bands = 1)
   vapour::vapour_set_config("GDAL_NETCDF_BOTTOMUP", 'NO')
-  expect_warning(  im <- vapour_warp_raster_dbl(vrt, extent = ex, dimension = dm, projection = "OGC:CRS84"
-                              , transformation_options = c("SRC_METHOD=GEOLOC_ARRAY")))
+  expect_type(  im <- vapour_warp_raster_dbl(vrt, extent = ex, dimension = dm, projection = "OGC:CRS84"
+                              , transformation_options = c("SRC_METHOD=GEOLOC_ARRAY")), "double")
 
 })
