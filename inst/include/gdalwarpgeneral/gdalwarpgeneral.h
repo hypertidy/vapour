@@ -135,10 +135,9 @@ inline List gdal_warp_general(CharacterVector dsn,
   }
   
   if (!target_crs[0].empty()) {
-    OGRSpatialReference *oTargetSRS = nullptr;
-    oTargetSRS = new OGRSpatialReference;
-    const char * strforuin = (const char *)target_crs[0];
-    OGRErr target_chk =  oTargetSRS->SetFromUserInput(strforuin);
+    OGRSpatialReference oTargetSRS;
+    //const char * strforuin = (const char *)target_crs[0];
+    OGRErr target_chk =  oTargetSRS.SetFromUserInput(target_crs[0]);
     if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
     const char *st = NULL;
     st = ((GDALDataset *)poSrcDS[0])->GetProjectionRef(); 
