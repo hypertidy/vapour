@@ -658,21 +658,23 @@ inline List gdal_read_geometry(CharacterVector dsn,
 inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
    OGRSpatialReference oSRS;
    char *pszWKT = nullptr;
-  oSRS.SetFromUserInput(proj_str[0]);
-#if GDAL_VERSION_MAJOR >= 3
-  const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
-  OGRErr err = oSRS.exportToWkt(&pszWKT, options);
-#else
-  OGRErr err = oSRS.exportToWkt(&pszWKT);
-#endif
+//   oSRS.SetFromUserInput(proj_str[0]);
+// #if GDAL_VERSION_MAJOR >= 3
+//   const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+//   OGRErr err = oSRS.exportToWkt(&pszWKT, options);
+// #else
+//   OGRErr err = oSRS.exportToWkt(&pszWKT);
+// #endif
+
+if (pszWKT != nullptr) CPLFree(pszWKT);
 
   CharacterVector out = Rcpp::CharacterVector::create("not a WKT string"); 
-   if (err) {
-  //   out =  Rcpp::CharacterVector::create(NA_STRING);
-     CPLFree(pszWKT);
-   } else {
-  //   out =  Rcpp::CharacterVector::create(pszWKT);
-   }
+  //  if (err) {
+  // //   out =  Rcpp::CharacterVector::create(NA_STRING);
+  //    //CPLFree(pszWKT);
+  //  } else {
+  // //   out =  Rcpp::CharacterVector::create(pszWKT);
+  //  }
 
   return out;
 }
