@@ -85,12 +85,12 @@ vapour_srs_wkt <- function(crs) {
 #' @export
 #'
 #' @examples
-#' vapour_crs_is_lonlat("+proj=longlat")
+#' vapour_gdal_version() ## versions to catch problems with string input
+#' vapour_proj_version()
+#' vapour_crs_is_lonlat("+proj=aeqd +lon_0=147 +lat_0=-42")
 #' vapour_crs_is_lonlat("EPSG:4326")
 #' vapour_srs_wkt("+proj=laea")
 #' vapour_crs_is_lonlat("+proj=laea +type=crs")
-#' #vapour_crs_is_lonlat("+proj=longlat +type=crs")
-#' vapour_crs_is_lonlat("EPSG:4326")
 #' vapour_crs_is_lonlat("OGC:CRS84")
 #' vapour_crs_is_lonlat("WGS84")
 #' vapour_crs_is_lonlat("NAD27")
