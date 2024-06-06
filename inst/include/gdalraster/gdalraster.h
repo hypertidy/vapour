@@ -204,7 +204,7 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
   if (!projection[0].empty()) {
     // have to validate this
     OGRSpatialReference *srs = new OGRSpatialReference;
-    if (srs->SetFromUserInput(projection[0]) != OGRERR_NONE) {
+    if (srs->SetFromUserInput((const char*)projection[0]) != OGRERR_NONE) {
       Rprintf("cannot set projection (CRS) from input 'projection' argument, ignoring: '%s'\n", (const char*)projection[0]);
     } else {
       translate_argv.AddString("-a_srs");
@@ -219,7 +219,7 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
   if (geolocation.size() == 2) {
     OGRSpatialReference  *geolsrs = new OGRSpatialReference; 
     char *pszGeoSrsWKT = nullptr;
-    geolsrs->SetFromUserInput("OGC:CRS84");
+    geolsrs->SetFromUserInput("EPSG:4326");
     geolsrs->exportToWkt(&pszGeoSrsWKT);
     
     oDS->SetMetadataItem( "SRS", pszGeoSrsWKT, "GEOLOCATION" ); 

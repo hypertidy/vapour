@@ -79,7 +79,7 @@ inline List gdal_warp_in_memory(CharacterVector source_filename,
       // if supplied check that it's valid
       OGRSpatialReference *oTargetSRS = nullptr;
       oTargetSRS = new OGRSpatialReference;
-      OGRErr target_chk =  oTargetSRS->SetFromUserInput(target_WKT[0]);
+      OGRErr target_chk =  oTargetSRS->SetFromUserInput((const char*)target_WKT[0]);
        delete oTargetSRS; 
       if (target_chk != OGRERR_NONE) {
        

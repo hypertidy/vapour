@@ -91,7 +91,7 @@ inline CharacterVector gdal_create(CharacterVector filename, CharacterVector dri
   //GDALDataType gdt_type = GDT_Float32; 
   OGRSpatialReference* oTargetSRS = nullptr;
   oTargetSRS = new OGRSpatialReference;
-  OGRErr target_chk =  oTargetSRS->SetFromUserInput(projection[0]);
+  OGRErr target_chk =  oTargetSRS->SetFromUserInput((const char*)projection[0]);
   if (target_chk != OGRERR_NONE) {
     if (oTargetSRS != nullptr) {
       delete oTargetSRS;

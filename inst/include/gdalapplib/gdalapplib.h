@@ -112,7 +112,7 @@ inline List gdalwarp_applib(CharacterVector source_filename,
     // if supplied check that it's valid
     OGRSpatialReference *oTargetSRS = nullptr;
     oTargetSRS = new OGRSpatialReference;
-    OGRErr target_chk =  oTargetSRS->SetFromUserInput(target_crs[0]);
+    OGRErr target_chk =  oTargetSRS->SetFromUserInput((const char*)target_crs[0]);
     if (oTargetSRS != nullptr) {
       delete oTargetSRS; 
     }
