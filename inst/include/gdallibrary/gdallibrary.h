@@ -667,12 +667,12 @@ inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
 #endif
 
   CharacterVector out = Rcpp::CharacterVector::create("not a WKT string"); 
-  if (err) {
-    out =  Rcpp::CharacterVector::create(NA_STRING);
-    CPLFree(pszWKT);
-  } else {
-    out =  Rcpp::CharacterVector::create(pszWKT);
-  }
+   if (err) {
+  //   out =  Rcpp::CharacterVector::create(NA_STRING);
+     CPLFree(pszWKT);
+   } else {
+  //   out =  Rcpp::CharacterVector::create(pszWKT);
+   }
 
   return out;
 }
