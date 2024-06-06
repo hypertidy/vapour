@@ -661,7 +661,7 @@ inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
    
    //const char*  crs_in[] = {CHAR(STRING_ELT(proj_str, 0))};
    
-   oSRS.SetFromUserInput(const char* proj_str[0]);
+   oSRS.SetFromUserInput((const char*) proj_str[0]);
 // #if GDAL_VERSION_MAJOR >= 3
 //   const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
 //   OGRErr err = oSRS.exportToWkt(&pszWKT, options);
