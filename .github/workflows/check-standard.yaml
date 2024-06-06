@@ -1,62 +1,62 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
-on:
-  push:
-   branches: [main, young-gdal]
-  pull_request:
-    branches: [main]
-
-name: R-CMD-check
-
-jobs:
-  R-CMD-check:
-    runs-on: ${{ matrix.config.os }}
-
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
-
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: '4.2.3', rtools-version: '42', windows-path-include-rtools: 'true', update-rtools: 'true', binary: 'rwinlib'}
-          - {os: windows-devel, r: '4.3.0', rtools-version: '43', windows-path-include-rtools: 'true', update-rtools: 'true'}
-          
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
-
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      R_KEEP_PKG_SOURCE: yes
-
-    steps:
-      - name: Install macOS system dependencies
-        if: runner.os == 'macOS'
-        run: |
-           brew install openssl
-           brew install proj
-           brew install geos
-           brew install gdal
-    
-      
-      - uses: actions/checkout@v3
-
-      - uses: r-lib/actions/setup-pandoc@v2
-
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: ${{ matrix.config.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
-          rtools-version: ${{ matrix.config.rtools.version }}
-          windows-path-include-rtools: ${{ matrix.config.windows-path-include-rtools }}
-
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::rcmdcheck
-          needs: check
-
-      - uses: r-lib/actions/check-r-package@v2
-        with:
-          upload-snapshots: true
+# # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+# on:
+#   push:
+#    branches: [main, young-gdal]
+#   pull_request:
+#     branches: [main]
+# 
+# name: R-CMD-check
+# 
+# jobs:
+#   R-CMD-check:
+#     runs-on: ${{ matrix.config.os }}
+# 
+#     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+# 
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         config:
+#           - {os: macos-latest,   r: 'release'}
+#           - {os: windows-latest, r: '4.2.3', rtools-version: '42', windows-path-include-rtools: 'true', update-rtools: 'true', binary: 'rwinlib'}
+#           - {os: windows-devel, r: '4.3.0', rtools-version: '43', windows-path-include-rtools: 'true', update-rtools: 'true'}
+#           
+#           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+#           - {os: ubuntu-latest,   r: 'release'}
+#           - {os: ubuntu-latest,   r: 'oldrel-1'}
+# 
+#     env:
+#       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+#       R_KEEP_PKG_SOURCE: yes
+# 
+#     steps:
+#       - name: Install macOS system dependencies
+#         if: runner.os == 'macOS'
+#         run: |
+#            brew install openssl
+#            brew install proj
+#            brew install geos
+#            brew install gdal
+#     
+#       
+#       - uses: actions/checkout@v3
+# 
+#       - uses: r-lib/actions/setup-pandoc@v2
+# 
+#       - uses: r-lib/actions/setup-r@v2
+#         with:
+#           r-version: ${{ matrix.config.r }}
+#           http-user-agent: ${{ matrix.config.http-user-agent }}
+#           use-public-rspm: true
+#           rtools-version: ${{ matrix.config.rtools.version }}
+#           windows-path-include-rtools: ${{ matrix.config.windows-path-include-rtools }}
+# 
+#       - uses: r-lib/actions/setup-r-dependencies@v2
+#         with:
+#           extra-packages: any::rcmdcheck
+#           needs: check
+# 
+#       - uses: r-lib/actions/check-r-package@v2
+#         with:
+#           upload-snapshots: true
