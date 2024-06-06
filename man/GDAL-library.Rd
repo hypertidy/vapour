@@ -4,9 +4,12 @@
 \alias{vapour_gdal_version}
 \alias{vapour_all_drivers}
 \alias{vapour_driver}
+\alias{vapour_proj_version}
 \title{GDAL version and drivers.}
 \usage{
 vapour_gdal_version()
+
+vapour_proj_version()
 
 vapour_all_drivers()
 

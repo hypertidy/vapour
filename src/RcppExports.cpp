@@ -163,6 +163,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// version_proj_cpp
+IntegerVector version_proj_cpp();
+RcppExport SEXP _vapour_version_proj_cpp() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(version_proj_cpp());
+    return rcpp_result_gen;
+END_RCPP
+}
 // vsi_list_gdal_cpp
 CharacterVector vsi_list_gdal_cpp(CharacterVector dsn);
 RcppExport SEXP _vapour_vsi_list_gdal_cpp(SEXP dsnSEXP) {
@@ -767,6 +777,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_crs_is_lonlat_cpp", (DL_FUNC) &_vapour_crs_is_lonlat_cpp, 1},
     {"_vapour_register_gdal_cpp", (DL_FUNC) &_vapour_register_gdal_cpp, 0},
     {"_vapour_version_gdal_cpp", (DL_FUNC) &_vapour_version_gdal_cpp, 0},
+    {"_vapour_version_proj_cpp", (DL_FUNC) &_vapour_version_proj_cpp, 0},
     {"_vapour_vsi_list_gdal_cpp", (DL_FUNC) &_vapour_vsi_list_gdal_cpp, 1},
     {"_vapour_feature_count_gdal_cpp", (DL_FUNC) &_vapour_feature_count_gdal_cpp, 4},
     {"_vapour_projection_info_gdal_cpp", (DL_FUNC) &_vapour_projection_info_gdal_cpp, 3},

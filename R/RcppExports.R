@@ -53,6 +53,10 @@ version_gdal_cpp <- function() {
     .Call('_vapour_version_gdal_cpp', PACKAGE = 'vapour')
 }
 
+version_proj_cpp <- function() {
+    .Call('_vapour_version_proj_cpp', PACKAGE = 'vapour')
+}
+
 vsi_list_gdal_cpp <- function(dsn) {
     .Call('_vapour_vsi_list_gdal_cpp', PACKAGE = 'vapour', dsn)
 }

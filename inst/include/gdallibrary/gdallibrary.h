@@ -5,7 +5,7 @@
 #include "gdal_priv.h"
 #include "CollectorList.h"
 #include "gdalraster/gdalraster.h"
-
+#include "ogr_srs_api.h"
 
 namespace gdallibrary {
 using namespace Rcpp;
@@ -97,6 +97,19 @@ inline R_xlen_t force_layer_feature_count(OGRLayer *poLayer) {
   }
   return out;
 }
+inline IntegerVector proj_version()
+{
+  Rcpp::IntegerVector out(3);
+
+   
+  int num1; int num2; int num3; 
+  OSRGetPROJVersion(&num1, &num2, &num3); 
+  out[0] = num1; 
+  out[1] = num2; 
+  out[2] = num3; 
+  return out;
+}
+
 inline CharacterVector gdal_version()
 {
   Rcpp::CharacterVector out(1);

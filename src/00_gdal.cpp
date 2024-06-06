@@ -57,7 +57,10 @@ LogicalVector register_gdal_cpp() {
 CharacterVector version_gdal_cpp() {
   return gdallibrary::gdal_version();
 }
-
+// [[Rcpp::export]]
+IntegerVector version_proj_cpp() {
+  return gdallibrary::proj_version();
+}
 // [[Rcpp::export]]
 CharacterVector vsi_list_gdal_cpp(CharacterVector dsn) {
   return gdallibrary::gdal_vsi_list(dsn);
