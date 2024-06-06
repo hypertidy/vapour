@@ -6,6 +6,9 @@
 #include "CollectorList.h"
 #include "gdalraster/gdalraster.h"
 
+#include <Rinternals.h>
+#include <R.h>
+
 namespace gdallibrary {
 using namespace Rcpp;
 
@@ -657,10 +660,12 @@ inline List gdal_read_geometry(CharacterVector dsn,
 
 
 
-inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
+inline CharacterVector gdal_proj_to_wkt(SEXP proj_str) {
   OGRSpatialReference oSRS;
   char *pszWKT = nullptr;
-  oSRS.SetFromUserInput(proj_str[0]);
+  const char*  crs_in[] = {CHAR(STRING_ELT(proj_str, 0))};
+  
+  oSRS.SetFromUserInput(*crs_in);
 #if GDAL_VERSION_MAJOR >= 3
   const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
   OGRErr err = oSRS.exportToWkt(&pszWKT, options);
@@ -668,14 +673,15 @@ inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
   OGRErr err = oSRS.exportToWkt(&pszWKT);
 #endif
   
-  CharacterVector out; 
+  //CharacterVector out; 
+  SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
+
   if (err) {
-    out =  Rcpp::CharacterVector::create(NA_STRING);
-    CPLFree(pszWKT);
+    SET_STRING_ELT(out, 0, NA_STRING);
   } else {
-    out =  Rcpp::CharacterVector::create(pszWKT);
+    SET_STRING_ELT(out, 0, Rf_mkChar(pszWKT));
   }
-  
+  UNPROTECT(1); 
   return out;
 }
 
