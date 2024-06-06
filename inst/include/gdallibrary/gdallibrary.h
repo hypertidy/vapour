@@ -659,23 +659,33 @@ inline List gdal_read_geometry(CharacterVector dsn,
 
 inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
   OGRSpatialReference oSRS;
-  //oSRS = new OGRSpatialReference; 
-  char *pszWKT = NULL;
+  char *pszWKT = nullptr;
   oSRS.SetFromUserInput(proj_str[0]);
-  oSRS.exportToWkt(&pszWKT);
-  CharacterVector out =  Rcpp::CharacterVector::create(pszWKT);
-  CPLFree(pszWKT);
-  //if (oSRS != nullptr) delete oSRS; 
+#if GDAL_VERSION_MAJOR >= 3
+  const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+  OGRErr err = oSRS.exportToWkt(&pszWKT, options);
+#else
+  OGRErr err = oSRS.exportToWkt(&pszWKT);
+#endif
+  
+  CharacterVector out; 
+  if (err) {
+    out =  Rcpp::CharacterVector::create(NA_STRING);
+    CPLFree(pszWKT);
+  } else {
+    out =  Rcpp::CharacterVector::create(pszWKT);
+  }
+  
   return out;
 }
 
 inline LogicalVector gdal_crs_is_lonlat(CharacterVector proj_str) {
-  OGRSpatialReference *oSRS = nullptr;
-  oSRS = new OGRSpatialReference; 
-  oSRS->SetFromUserInput(proj_str[0]);
-  LogicalVector out(1); 
-  out[0] = oSRS->IsGeographic() > 0; 
-  if (oSRS != nullptr) delete oSRS; 
+  OGRSpatialReference oSRS; 
+  oSRS.SetFromUserInput(proj_str[0]);
+  LogicalVector out = LogicalVector::create(false); 
+  if (oSRS.IsGeographic()) {
+    out[0] = true; 
+  }
   return out;
 }
 
