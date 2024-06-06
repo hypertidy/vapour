@@ -399,13 +399,10 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
     }
     int nXSize = GDALGetRasterXSize(hDataset);
     int nYSize = GDALGetRasterYSize(hDataset);
-    
-    
+
     double        adfGeoTransform[6];
-    
     //poDataset->GetGeoTransform( adfGeoTransform );
     GDALGetGeoTransform(hDataset, adfGeoTransform );
-    
     
     // bail out NOW (we have no SDS and/or no rasters)
     // #f <- system.file("h5ex_t_enum.h5", package = "h5")
@@ -437,11 +434,10 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
     CSLDestroy(pfilelist);
     GDALRasterBandH  hBand;
     int             nBlockXSize, nBlockYSize;
-    //int             bGotMin, bGotMax;
     double          adfMinMax[2];
     
     hBand = GDALGetRasterBand(hDataset, 1);
-    // if we don't bail out above with no rasters things go bad here
+
     GDALGetBlockSize(hBand, &nBlockXSize, &nBlockYSize);
     if (min_max[0]) {
       GDALComputeRasterMinMax(hBand, TRUE, adfMinMax);
