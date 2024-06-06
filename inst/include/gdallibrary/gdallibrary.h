@@ -656,7 +656,7 @@ inline List gdal_read_geometry(CharacterVector dsn,
 }
 
 inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
-//   OGRSpatialReference oSRS;
+   OGRSpatialReference oSRS;
 //   char *pszWKT = nullptr;
 //   oSRS.SetFromUserInput(proj_str[0]);
 // #if GDAL_VERSION_MAJOR >= 3
