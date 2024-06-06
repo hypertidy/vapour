@@ -24,7 +24,7 @@ control over specific GDAL behaviours.
 \details{
 Configuration options may also be set as environment variables.
 
-See \href{https://trac.osgeo.org/gdal/wiki/ConfigOptions}{GDAL config options} for
+See \href{https://gdal.org/user/configoptions.html}{GDAL config options} for
 details on available options.
 }
 \examples{

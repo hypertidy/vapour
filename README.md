@@ -4,9 +4,11 @@
 # vapour <img src="man/figures/logo.png" align="right" height="228" />
 
 <!-- badges: start -->
+
 [![R_build_status](https://github.com/hypertidy/vapour/workflows/R-CMD-check/badge.svg)](https://github.com/hypertidy/vapour/actions)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
-[![CRAN_Download_Badge](http://cranlogs.r-pkg.org/badges/vapour)](http://cranlogs.r-pkg.org/badges/vapour)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/vapour)](https://CRAN.R-project.org/package=vapour)
 <!-- badges: end -->
 
 ## Overview
@@ -174,7 +176,10 @@ image(x)
 
 ## or as a spatial object
 library(terra)
-#> terra 1.7.23
+#> terra 1.7.78
+```
+
+``` r
 r <- rast(ext(ex), nrows = dm[2], ncols = dm[1], crs = crs, vals = vals[[1]])
 contour(r, add = TRUE)
 ```
@@ -196,6 +201,9 @@ vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension 
 #> name        : lyr.1 
 #> min value   :   562 
 #> max value   :   742
+```
+
+``` r
 plot(r, col = hcl.colors(24))
 ```
 
@@ -228,7 +236,7 @@ See the vignettes and documentation for examples WIP.
 
 Examples of packages that use vapour are in development, especially
 [whatarelief](https://github.com/hypertidy/whatarelief) and
-[ggdal](https://github.com/hypertidy/ggdal).
+[ggdal](https://github.com/rgdal-dev/ggdal).
 
 Limitations, work-in-progress and other discussion:
 

@@ -17,10 +17,10 @@ knitr::opts_chunk$set(
 # vapour  <img src="man/figures/logo.png" align="right" height="228" />
 
 
- <!-- badges: start -->
+<!-- badges: start -->
 [![R_build_status](https://github.com/hypertidy/vapour/workflows/R-CMD-check/badge.svg)](https://github.com/hypertidy/vapour/actions)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
-[![CRAN_Download_Badge](http://cranlogs.r-pkg.org/badges/vapour)](http://cranlogs.r-pkg.org/badges/vapour)
+[![CRAN status](https://www.r-pkg.org/badges/version/vapour)](https://CRAN.R-project.org/package=vapour)
 <!-- badges: end -->
 
 
@@ -200,7 +200,7 @@ See the vignettes and documentation for examples WIP.
 
 ## Context
 
-Examples of packages that use vapour are in development, especially [whatarelief](https://github.com/hypertidy/whatarelief) and [ggdal](https://github.com/hypertidy/ggdal). 
+Examples of packages that use vapour are in development, especially [whatarelief](https://github.com/hypertidy/whatarelief) and [ggdal](https://github.com/rgdal-dev/ggdal). 
 
 
 Limitations, work-in-progress and other discussion: 

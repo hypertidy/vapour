@@ -21,7 +21,7 @@
 #' a "length > 1" character vector. These are all independent, this is different to the function
 #' `vapour_warp_raster()` where multiple inputs are merged (possibly by sequential overlapping). 
 #' 
-#' If `geolocation` is set the '<GeoTransform>' element is forcibly removed from the vrt output, in order
+#' If `geolocation` is set the 'GeoTransform' element is forcibly removed from the vrt output, in order
 #' to avoid https://github.com/hypertidy/vapour/issues/210 (there might be a better fix). 
 #' 
 #' @section Rationale:

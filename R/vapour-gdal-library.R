@@ -5,7 +5,7 @@
 #' 
 #' Configuration options may also be set as environment variables. 
 #' 
-#' See [GDAL config options](https://trac.osgeo.org/gdal/wiki/ConfigOptions) for
+#' See [GDAL config options](https://gdal.org/user/configoptions.html) for
 #' details on available options. 
 #' 
 #' @param option GDAL config name (see Details), character string
