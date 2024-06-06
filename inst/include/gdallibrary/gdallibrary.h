@@ -6,8 +6,6 @@
 #include "CollectorList.h"
 #include "gdalraster/gdalraster.h"
 
-#include <Rinternals.h>
-#include <R.h>
 
 namespace gdallibrary {
 using namespace Rcpp;
@@ -657,41 +655,68 @@ inline List gdal_read_geometry(CharacterVector dsn,
   return(feature_xx.vector());
 }
 
-
-
-
-inline CharacterVector gdal_proj_to_wkt(SEXP proj_str) {
-  OGRSpatialReference oSRS;
-  char *pszWKT = nullptr;
-  const char*  crs_in[] = {CHAR(STRING_ELT(proj_str, 0))};
-  
-  oSRS.SetFromUserInput(*crs_in);
-#if GDAL_VERSION_MAJOR >= 3
-  const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
-  OGRErr err = oSRS.exportToWkt(&pszWKT, options);
-#else
-  OGRErr err = oSRS.exportToWkt(&pszWKT);
-#endif
-  
-  //CharacterVector out; 
-  SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
-
-  if (err) {
-    SET_STRING_ELT(out, 0, NA_STRING);
-  } else {
-    SET_STRING_ELT(out, 0, Rf_mkChar(pszWKT));
-  }
-  UNPROTECT(1); 
+inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
+//   OGRSpatialReference oSRS;
+//   char *pszWKT = nullptr;
+//   oSRS.SetFromUserInput(proj_str[0]);
+// #if GDAL_VERSION_MAJOR >= 3
+//   const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+//   OGRErr err = oSRS.exportToWkt(&pszWKT, options);
+// #else
+//   OGRErr err = oSRS.exportToWkt(&pszWKT);
+// #endif
+//   
+  CharacterVector out = Rcpp::CharacterVector::create("not a WKT string"); 
+  // if (err) {
+  //   out =  Rcpp::CharacterVector::create(NA_STRING);
+  //   CPLFree(pszWKT);
+  // } else {
+  //   out =  Rcpp::CharacterVector::create(pszWKT);
+  // }
+  // 
   return out;
 }
 
-inline LogicalVector gdal_crs_is_lonlat(CharacterVector proj_str) {
+
+// R version
+// inline CharacterVector gdal_proj_to_wkt(SEXP proj_str) {
+//   OGRSpatialReference oSRS;
+//   char *pszWKT = nullptr;
+//   const char*  crs_in[] = {CHAR(STRING_ELT(proj_str, 0))};
+//   
+//   oSRS.SetFromUserInput(*crs_in);
+// #if GDAL_VERSION_MAJOR >= 3
+//   const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+//   OGRErr err = oSRS.exportToWkt(&pszWKT, options);
+// #else
+//   OGRErr err = oSRS.exportToWkt(&pszWKT);
+// #endif
+//   
+//   //CharacterVector out; 
+//   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
+// 
+//   if (err) {
+//     SET_STRING_ELT(out, 0, NA_STRING);
+//   } else {
+//     SET_STRING_ELT(out, 0, Rf_mkChar(pszWKT));
+//   }
+//   UNPROTECT(1); 
+//   return out;
+// }
+
+inline LogicalVector gdal_crs_is_lonlat(SEXP proj_str) {
+  const char*  crs_in[] = {CHAR(STRING_ELT(proj_str, 0))};
+  
   OGRSpatialReference oSRS; 
-  oSRS.SetFromUserInput(proj_str[0]);
-  LogicalVector out = LogicalVector::create(false); 
+  oSRS.SetFromUserInput(*crs_in);
+  //LogicalVector out = LogicalVector::create(false); 
+  SEXP out = PROTECT(Rf_allocVector(LGLSXP, 1));
+  SET_LOGICAL_ELT(out, 0, false); 
   if (oSRS.IsGeographic()) {
-    out[0] = true; 
+    SET_LOGICAL_ELT(out, 0, true); 
+
   }
+  UNPROTECT(1); 
   return out;
 }
 
