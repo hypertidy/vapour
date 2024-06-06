@@ -658,7 +658,7 @@ inline List gdal_read_geometry(CharacterVector dsn,
 inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
    OGRSpatialReference oSRS;
    char *pszWKT = nullptr;
-//   oSRS.SetFromUserInput(proj_str[0]);
+   oSRS.SetFromUserInput(proj_str[0]);
 // #if GDAL_VERSION_MAJOR >= 3
 //   const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
 //   OGRErr err = oSRS.exportToWkt(&pszWKT, options);
