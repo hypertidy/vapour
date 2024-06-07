@@ -107,7 +107,7 @@ inline CharacterVector gdal_create(CharacterVector filename, CharacterVector dri
     //   Rcpp::warning("create options should not include '-co' or '='")
     // }
     if (!options[i].empty()) {
-    papszOptions = CSLAddString(papszOptions, options[i]); 
+    papszOptions = CSLAddString(papszOptions, (const char*) options[i]); 
     }
   }
   }
