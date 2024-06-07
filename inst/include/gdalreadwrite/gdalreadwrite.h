@@ -155,6 +155,7 @@ inline CharacterVector gdal_create(CharacterVector filename, CharacterVector dri
   
   GDALDataset *poDS; 
   poDS = outDriver->CreateCopy(filename[0], poVrtDS,  false, papszOptions, NULL, NULL); 
+  CPLFree(papszOptions); 
   if( poDS != NULL )
     GDALClose( (GDALDatasetH) poDS );
   
