@@ -30,15 +30,17 @@ inline CharacterVector gdalinfo_applib_cpp(CharacterVector dsn,
   
 //put -json in the input options for this call
  //Rcpp::CharacterVector argv = {"-json", "-stats", "-hist"};
-std::vector<char *> opt(options.size() + 1);
+ char** papszArg = nullptr;
 for (R_xlen_t i = 0; i < options.size(); ++i) {
-   opt[i] = (char *) (options[i]);
+  if (!options[0].empty()) {
+    papszArg = CSLAddString(papszArg, options[i]);
+  }
 }
-opt[options.size()] = nullptr;
-   GDALInfoOptions* psOptions = GDALInfoOptionsNew(opt.data(), nullptr);
-  if (psOptions == nullptr)
+  GDALInfoOptions* psOptions = GDALInfoOptionsNew(papszArg, nullptr);
+  CSLDestroy(papszArg); 
+  if (psOptions == nullptr) {
     Rcpp::stop("creation of GDALInfoOptions failed");
-  
+  }
   CharacterVector out(dsn.size()); 
   for (R_xlen_t i = 0; i < out.size(); i++) {
   
