@@ -432,7 +432,7 @@ inline List gdal_read_fields(CharacterVector dsn,
 inline NumericVector gdal_feature_count(CharacterVector dsn,
                                         IntegerVector layer, CharacterVector sql, NumericVector ex) {
   GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_READONLY | GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
   {
     Rcpp::stop("Open failed.\n");
@@ -452,7 +452,7 @@ inline NumericVector gdal_feature_count(CharacterVector dsn,
   if (sql[0] != "") {
     poDS->ReleaseResultSet(poLayer);
   }
-  GDALClose( poDS );
+  GDALClose( (GDALDatasetH) poDS );
   
   NumericVector out(1);
   out[0] = static_cast<double>(nFeature);
@@ -463,7 +463,7 @@ inline CharacterVector gdal_driver(CharacterVector dsn)
 {
   
   GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GA_ReadOnly, NULL, NULL, NULL );  // gdal_driver(<any-type>)
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_READONLY | GDAL_OF_VECTOR, NULL, NULL, NULL );  // gdal_driver(<any-type>)
   if( poDS == NULL )
   {
     Rcpp::stop("Open failed.\n");
