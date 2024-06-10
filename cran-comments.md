@@ -1,15 +1,17 @@
-## vapour 0.9.5
+## vapour 0.10.0
 
-* Patched CRAN supplied diff for Makevars.ucrt. 
+To fix errors on CRAN. 
 
-Thanks! 
+vapour is now passing ubuntu-clang and clang-asan via rhub and not segfaulting on the systems reported on 
+CRAN results. 
 
+There are valgrind messages but I think these are internal to GDAL from CSLAddString, CPLRealloc, GDALInfo and others and I will investigate further. 
 
 ## Test environments
 
 * win-builder (devel)
-* mac-builder
-* Linux ubuntu (and clang with -Wconversion)
+* macos on rhub
+* Linux ubuntu-clang, clang-asan on rhub. 
 
 ## R CMD check results
 

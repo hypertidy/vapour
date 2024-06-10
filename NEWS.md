@@ -1,6 +1,8 @@
 # vapour 0.10.0
 
-* Old warper code is removed, now uses 'gdal_raster_'. 
+* Cleaned up a number of address sanitize issues and segfaults, thanks to CRAN. 
+
+* Old warper code is removed, now uses 'gdal_raster_' from warpgeneral. 
 
 * Fixed putting bad options in (empty strings). 
 
