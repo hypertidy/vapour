@@ -12,7 +12,7 @@ vapour_create(
   driver = "GTiff",
   extent = c(-180, 180, -90, 90),
   dimension = c(2048, 1024),
-  projection = "OGC:CRS84",
+  projection = "EPSG:4326",
   n_bands = 1L,
   overwrite = FALSE,
   datatype = "Float32",

@@ -58,7 +58,7 @@ vapour_create_options <- function(driver = "GTiff") {
 #'  file.remove(tfile)
 #' }
 vapour_create <- function(filename, driver = "GTiff", extent = c(-180, 180, -90, 90), 
-                          dimension = c(2048, 1024), projection = "OGC:CRS84", n_bands = 1L, overwrite = FALSE, 
+                          dimension = c(2048, 1024), projection = "EPSG:4326", n_bands = 1L, overwrite = FALSE, 
                           datatype = "Float32",
                           options = vapour_create_options(driver)) {
 
@@ -80,8 +80,10 @@ vapour_create <- function(filename, driver = "GTiff", extent = c(-180, 180, -90,
   if (!is.character(options)) options <- character()
   if (length(options) < 1) options <- character()
   if (!nzchar(options[1])) options <- character()
-  if (is.na(options[1])) options <- character()
-  vapour_create_cpp(filename, driver, extent, dimension, projection, n_bands, datatype, options)
+  if (length(options) == 0 || is.na(options[1])) options <- list()
+  if (length(options) > 0) options <- strsplit(options, "=")
+  ## options must a split list of name/values pairs
+  vapour_create_cpp(filename, driver, as.numeric(extent), as.integer(dimension), projection, as.integer(n_bands), datatype, options)
 }
 
 

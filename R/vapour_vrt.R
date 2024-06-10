@@ -92,7 +92,6 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
   if (is.na(sds[1]) || length(sds) > 1L || !is.numeric(sds) || sds < 1) {
     stop("'sds' must be a valid name or integer for a GDAL-subdataset (1-based)")
   }
-  
   ## FIXME: we can't do bands atm, also what else does boilerplate checks do that the new C++ in gdalraster doesn't do?
    # x <- sds_boilerplate_checks(x, sds)
    # if (!is.null(bands))  {
@@ -138,6 +137,21 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
   if (is.null(overview)) overview <- -1L
   overview <- as.integer(overview[1])
   if (is.na(overview)) overview <- -1L
+
+  
+  # 
+  # CharacterVector dsn, 
+  # NumericVector extent, 
+  # CharacterVector projection, 
+  # IntegerVector sds, 
+  # IntegerVector bands, 
+  # CharacterVector geolocation, 
+  # LogicalVector nomd, 
+  # IntegerVector overview, 
+  # CharacterVector options
+  # 
+  # 
+  
 
   out <- raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation, nomd, overview, options)
   ## scrub any transform, because of #210

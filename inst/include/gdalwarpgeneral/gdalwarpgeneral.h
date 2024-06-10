@@ -206,7 +206,7 @@ inline List gdal_warp_general(CharacterVector dsn,
                                   psOptions, nullptr);
   
   GDALWarpAppOptionsFree(psOptions);
-
+ 
   CPLAssert( hRet != NULL );
   for (int si = 0; si < dsn.size(); si++) {
     GDALClose( (GDALDataset *)poSrcDS[si] );

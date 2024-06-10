@@ -115,6 +115,7 @@ inline CharacterVector gdal_subdataset_1(GDALDataset *poDataset, int i_sds) {
   // owned by the object
   CharacterVector ret(1);
   
+  // owned by the dataset
   char **SDS2 = poDataset->GetMetadata("SUBDATASETS");
   while (SDS2 && SDS2[sdi] != NULL) {
 
@@ -330,6 +331,7 @@ inline CharacterVector gdal_dsn_vrt(CharacterVector dsn, NumericVector extent, C
       GDALClose(DS);
     }
   }
+  
   return out;
 }
 
@@ -413,25 +415,19 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
     Rcpp::DoubleVector trans(6);
     for (int ii = 0; ii < 6; ii++) trans[ii] = adfGeoTransform[ii];
     
-    char **pfilelist = GDALGetFileList(hDataset);
-    int fdi = 0;
-    while (pfilelist && pfilelist[fdi] != NULL) {
-      fdi++; // count
-    }
-    int ilist = fdi;
-    if (ilist < 1) {
-      ilist = 1; 
-    }
-    CharacterVector FileList(ilist);
-    // might be no files, because image server
-    if (pfilelist == nullptr) {
-      FileList[0] = NA_STRING;
-    } else {
-      for (int ifile = 0; ifile < fdi; ifile++) {
-        FileList[ifile] = pfilelist[ifile]; 
+    
+    
+    
+    char **filelist = GDALGetFileList(hDataset);
+    //std::vector <std::string> files;
+    CharacterVector files(0); 
+    if (filelist != NULL) {
+      for (size_t i=0; filelist[i] != NULL; i++) {
+        files.push_back(filelist[i]);
       }
     }
-    CSLDestroy(pfilelist);
+    CSLDestroy( filelist );
+    
     GDALRasterBandH  hBand;
     int             nBlockXSize, nBlockYSize;
     double          adfMinMax[2];
@@ -491,6 +487,7 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
 #else
     oSRS->importFromWkt( (const char**) cwkt);
 #endif
+    CSLDestroy(cwkt); 
     oSRS->exportToProj4(&stri);
     out[6] =  Rcpp::CharacterVector::create(stri); //Rcpp::CharacterVector::create(stri);
     names[6] = "projstring";
@@ -524,7 +521,7 @@ inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
     out[8] = oviews;
     names[8] = "overviews";
     
-    out[9] = FileList;
+    out[9] = files; 
     names[9] = "filelist";
     
     
@@ -1251,6 +1248,7 @@ inline LogicalVector gdal_has_geolocation(CharacterVector dsn, IntegerVector sds
   poDataset = (GDALDataset*)gdalH_open_dsn(dsn[0], sds);
   
   bool has_geol = false;
+  // owned by the dataset
   char **papszGeolocationInfo = poDataset->GetMetadata("GEOLOCATION");
   if( papszGeolocationInfo != nullptr ) {
     has_geol = true;
@@ -1271,8 +1269,8 @@ inline List gdal_list_geolocation(CharacterVector dsn, IntegerVector sds) {
   GDALDataset* poDataset;
   poDataset = (GDALDataset*)gdalH_open_dsn(dsn[0], sds);
   
-
-  auto papszGeolocationInfo = poDataset->GetMetadata("GEOLOCATION");
+  // owned by the dataset
+  char  **papszGeolocationInfo = poDataset->GetMetadata("GEOLOCATION");
 
   if( papszGeolocationInfo == nullptr ) {
       GDALClose(poDataset);

@@ -616,8 +616,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // vapour_create_cpp
-Rcpp::CharacterVector vapour_create_cpp(CharacterVector filename, CharacterVector driver, NumericVector extent, IntegerVector dimension, CharacterVector projection, IntegerVector n_bands, CharacterVector datatype, CharacterVector options);
-RcppExport SEXP _vapour_vapour_create_cpp(SEXP filenameSEXP, SEXP driverSEXP, SEXP extentSEXP, SEXP dimensionSEXP, SEXP projectionSEXP, SEXP n_bandsSEXP, SEXP datatypeSEXP, SEXP optionsSEXP) {
+Rcpp::CharacterVector vapour_create_cpp(CharacterVector filename, CharacterVector driver, NumericVector extent, IntegerVector dimension, CharacterVector projection, IntegerVector n_bands, CharacterVector datatype, List options_list_pairs);
+RcppExport SEXP _vapour_vapour_create_cpp(SEXP filenameSEXP, SEXP driverSEXP, SEXP extentSEXP, SEXP dimensionSEXP, SEXP projectionSEXP, SEXP n_bandsSEXP, SEXP datatypeSEXP, SEXP options_list_pairsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -628,8 +628,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type projection(projectionSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type n_bands(n_bandsSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type datatype(datatypeSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type options(optionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(vapour_create_cpp(filename, driver, extent, dimension, projection, n_bands, datatype, options));
+    Rcpp::traits::input_parameter< List >::type options_list_pairs(options_list_pairsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_create_cpp(filename, driver, extent, dimension, projection, n_bands, datatype, options_list_pairs));
     return rcpp_result_gen;
 END_RCPP
 }

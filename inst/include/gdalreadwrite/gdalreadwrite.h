@@ -36,7 +36,7 @@ inline GDALDataType init_datatype(CharacterVector datatype) {
   if (datatype[0] == "Int32") {
     return GDT_Int32;
   }
-
+  
   if (datatype[0] == "Float32") {
     return GDT_Float32;
   }
@@ -71,116 +71,109 @@ inline GDALDataType init_datatype(CharacterVector datatype) {
   }
 #endif
   
- // Rcpp::stop("datatype not suppported %s\n", datatype[0]);
+  // Rcpp::stop("datatype not suppported %s\n", datatype[0]);
   return GDT_Unknown;
 }
 
 
 
-inline CharacterVector gdal_create(CharacterVector filename, CharacterVector driver,
-                                   NumericVector extent, IntegerVector dimension,
+inline CharacterVector gdal_create(CharacterVector filename, 
+                                   CharacterVector driver,
+                                   NumericVector extent, 
+                                   IntegerVector dimension,
                                    CharacterVector projection,
                                    IntegerVector n_bands, 
                                    CharacterVector datatype,
-                                   CharacterVector options) {
+                                   List options_list_pairs) {
   
-  // const char *pszFormat;
-  // pszFormat = (const char *)driver[0];
-
+  
   GDALDataType gdt_type = init_datatype(datatype); 
-  //GDALDataType gdt_type = GDT_Float32; 
-  OGRSpatialReference* oTargetSRS = nullptr;
-  oTargetSRS = new OGRSpatialReference;
-  OGRErr target_chk =  oTargetSRS->SetFromUserInput((const char*)projection[0]);
-  if (target_chk != OGRERR_NONE) {
-    if (oTargetSRS != nullptr) {
-      delete oTargetSRS;
-    }
-    Rcpp::stop("cannot initialize target projection");
-  }
   
-  char **papszOptions = NULL;
-  if (options.size() > 0) {
-  for (int i = 0; i < options.size(); i++) {
-// do this in R
-    // if (EQUAL(options[i], "-co") || CSLPartialFindString(options[i], "=") > -1) {
-    //   Rcpp::warning("create options should not include '-co' or '='")
-    // }
-    if (!options[i].empty()) {
-    papszOptions = CSLAddString(papszOptions, (const char*) options[i]); 
-    }
-  }
-  }
-
- 
- 
- 
-    GDALDriver *poDriver;
-  poDriver = GetGDALDriverManager()->GetDriverByName("VRT");
-  if( poDriver == NULL ) {
-    return Rcpp::CharacterVector::create(NA_STRING); 
-  }
-  // char **papszMetadata;
-  // papszMetadata = poDriver->GetMetadata();
-  // if( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) ) {
-  //   Rprintf( "Driver %s supports Create() method.\n", (const char *)driver[0]);
-  // } else {
-  //   Rprintf( "Driver %s does not support Create() method.\n", (const char *)driver[0]);
-  //   return Rcpp::CharacterVector::create(NA_STRING); 
-  // }
-  GDALDataset *poVrtDS;
-  poVrtDS = poDriver->Create("", dimension[0], dimension[1], n_bands[0], gdt_type, NULL);
-  if (poVrtDS == NULL) {
-    Rprintf( "Failed to Create virtual datase\n");
+  OGRSpatialReference oSRS;
+  oSRS.SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
+  
+  if (oSRS.SetFromUserInput(projection[0]) != OGRERR_NONE)
+  {
+    Rcpp::warning(
+      "Failed to process 'projection' definition");
     
-    return Rcpp::CharacterVector::create(NA_STRING); 
   }
   
-  double adfGeoTransform[6] = { extent[0], (extent[1] - extent[0])/ dimension[0], 0, 
+  char *pszWKT = nullptr;
+#if GDAL_VERSION_MAJOR >= 3
+  const char *optionsWKT[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+  OGRErr err = oSRS.exportToWkt(&pszWKT, optionsWKT);
+#else
+  OGRErr err = oSRS.exportToWkt(&pszWKT);
+#endif
+  
+  
+  GDALDriverH hDriver;
+  hDriver = GDALGetDriverByName(driver[0]);
+  if( hDriver == nullptr ) {
+    //delete(poTargetSRS); 
+    Rcpp::stop("failed to get nominated 'driver'"); 
+  }
+  
+  
+  
+  
+  char **papszOptions = nullptr;
+  if (options_list_pairs.size() > 0) {
+    for (int i = 0; i < options_list_pairs.size(); i++) {
+      CharacterVector options2 = options_list_pairs[i]; 
+      if (options2.size() == 2) {
+        //Rprintf("options: %s %s\n", (char *)options2[0], (char *)options2[1]); 
+        papszOptions = CSLSetNameValue(papszOptions, (char *)options2[0], (char *)options2[1]);
+      }
+    }
+  }
+  
+  
+  
+  GDALDatasetH hDS = nullptr;
+  hDS = GDALCreate(hDriver, filename[0],
+                   dimension[0], dimension[1], n_bands[0], gdt_type,
+                   papszOptions);
+  
+  
+  if (hDS == nullptr) {
+    Rprintf( "Failed to create dataset\n");
+    if (pszWKT != nullptr)  CPLFree(pszWKT); 
+     CSLDestroy(papszOptions); 
+    
+    return Rcpp::CharacterVector::create(NA_STRING);
+  }
+  
+  double adfGeoTransform[6] = { extent[0], (extent[1] - extent[0])/ dimension[0], 0,
                                 extent[3], 0, (extent[2] - extent[3])/ dimension[1]};
-  poVrtDS->SetGeoTransform( adfGeoTransform );
-  poVrtDS->SetSpatialRef(oTargetSRS); 
+  GDALSetGeoTransform(hDS, adfGeoTransform );
+  GDALSetProjection(hDS, pszWKT); 
   
-  char **papszMetadata;
-  GDALDriver *outDriver; 
-  outDriver = GetGDALDriverManager()->GetDriverByName(driver[0]); 
+  if (pszWKT != nullptr) CPLFree(pszWKT); 
+  CSLDestroy(papszOptions); 
   
-  papszMetadata = outDriver->GetMetadata();
-  if( !CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE ) ) {
-    if( poVrtDS != NULL )
-      GDALClose( (GDALDatasetH) poVrtDS );
-    Rcpp::stop("driver does not support CreateCopy: %s", driver); 
-    
-  }
   
-  GDALDataset *poDS; 
-  poDS = outDriver->CreateCopy(filename[0], poVrtDS,  false, papszOptions, NULL, NULL); 
-  CPLFree(papszOptions); 
-  if( poDS != NULL )
-    GDALClose( (GDALDatasetH) poDS );
-  
-  if( poVrtDS != NULL )
-    GDALClose( (GDALDatasetH) poVrtDS );
-  if (oTargetSRS != nullptr) {
-    delete oTargetSRS;
-  }
-  return Rcpp::CharacterVector::create(filename[0]);
+  if( hDS != nullptr ) GDALClose( hDS );
+  return filename; 
 }
+
+
+
+
+
 inline CharacterVector gdal_create_copy(CharacterVector dsource, CharacterVector dtarget, CharacterVector driver) {
   
-  const char *pszFormat;
-  pszFormat = (const char *)driver[0];
   GDALDriver *poDriver;
   //char **papszMetadata;
-  poDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
-  
+  poDriver = GetGDALDriverManager()->GetDriverByName(driver[0]);
   
   GDALDataset *poSrcDS = (GDALDataset *) GDALOpen( dsource[0], GA_ReadOnly );
   if (poSrcDS == NULL ) stop("unable to open raster source for reading: %s", (char *)dsource[0]);
   
   // 
   GDALDataset *poDstDS;
-  char **papszOptions = NULL;
+  char **papszOptions = nullptr;
   papszOptions = CSLSetNameValue( papszOptions, "SPARSE_OK", "YES" );
   poDstDS = poDriver->CreateCopy( dtarget[0], poSrcDS, FALSE,
                                   papszOptions, NULL, NULL );
@@ -189,11 +182,13 @@ inline CharacterVector gdal_create_copy(CharacterVector dsource, CharacterVector
   if( poDstDS == NULL ) {
     GDALClose( (GDALDatasetH) poSrcDS );
     Rprintf("unable to open raster source for CreateCopy: %s", (char *)dtarget[0]);
+    CSLDestroy(papszOptions); 
     return CharacterVector::create("");
-  } else {
-    GDALClose( (GDALDatasetH) poDstDS );
-  }
-  GDALClose( (GDALDatasetH) poSrcDS );
+  } 
+  CSLDestroy(papszOptions); 
+  
+  GDALClose( (GDALDatasetH) poDstDS );
+  
   
   
   return dtarget;

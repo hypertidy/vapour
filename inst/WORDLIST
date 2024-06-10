@@ -41,6 +41,7 @@ GTiff
 GeoJSON
 GeoPackage
 GeoTIFF
+GeoTransform
 Geodatabase
 GeometryCollection
 Geopackage
@@ -53,6 +54,7 @@ Hillshade
 IJ
 ImageServer
 Inaki
+IntegerVector
 JPL
 JSON
 KML
@@ -155,7 +157,6 @@ gdalbuildvrt
 gdalheaders
 gdalio
 gdallibrary
-gdalmin
 gdalraster
 gdalwarp
 gdalwarpmem

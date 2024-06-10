@@ -32,8 +32,8 @@ Rcpp::CharacterVector vapour_create_cpp(CharacterVector filename, CharacterVecto
                                         CharacterVector projection,
                                         IntegerVector n_bands, 
                                         CharacterVector datatype,
-                                        CharacterVector options) {
-  return gdalreadwrite::gdal_create(filename, driver, extent, dimension, projection, n_bands, datatype, options);   
+                                        List options_list_pairs) {
+  return gdalreadwrite::gdal_create(filename, driver, extent, dimension, projection, n_bands, datatype, options_list_pairs);   
 }
 
 

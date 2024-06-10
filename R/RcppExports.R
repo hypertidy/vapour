@@ -181,8 +181,8 @@ vapour_create_copy_cpp <- function(dsource, dtarget, driver) {
     .Call('_vapour_vapour_create_copy_cpp', PACKAGE = 'vapour', dsource, dtarget, driver)
 }
 
-vapour_create_cpp <- function(filename, driver, extent, dimension, projection, n_bands, datatype, options) {
-    .Call('_vapour_vapour_create_cpp', PACKAGE = 'vapour', filename, driver, extent, dimension, projection, n_bands, datatype, options)
+vapour_create_cpp <- function(filename, driver, extent, dimension, projection, n_bands, datatype, options_list_pairs) {
+    .Call('_vapour_vapour_create_cpp', PACKAGE = 'vapour', filename, driver, extent, dimension, projection, n_bands, datatype, options_list_pairs)
 }
 
 vapour_read_raster_value_cpp <- function(dsource, col, row, band, band_output_type) {
