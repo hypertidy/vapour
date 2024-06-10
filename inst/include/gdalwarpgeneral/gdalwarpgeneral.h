@@ -119,18 +119,7 @@ inline List gdal_warp_general(CharacterVector dsn,
     papszArg = CSLAddString(papszArg, "MEM");
     
   } else {
-    // no need for this because GTiff is the default (we don't get auto-choose)
-    // bool do_format = true; 
-    // // first check if user requests a format
-    // for (int iopt = 0; iopt < options.size(); iopt++) {
-    //   if (EQUAL(options[iopt], "-of")) {
-    //     do_format = false; 
-    //   }
-    // }
-    // if (do_format) {
-    //  papszArg = CSLAddString(papszArg, "-of");
-    //  papszArg = CSLAddString(papszArg, "GTiff");
-    // }  
+
     write_dsn = true; 
   }
   
@@ -139,20 +128,10 @@ inline List gdal_warp_general(CharacterVector dsn,
     //const char * strforuin = (const char *)target_crs[0];
     OGRErr target_chk =  oTargetSRS.SetFromUserInput((const char*)target_crs[0]);
     if (target_chk != OGRERR_NONE) Rcpp::stop("cannot initialize target projection");
-    const char *st = NULL;
-    st = ((GDALDataset *)poSrcDS[0])->GetProjectionRef(); 
-
+  
     papszArg = CSLAddString(papszArg, "-t_srs");
     papszArg = CSLAddString(papszArg, target_crs[0]);
     
-    if(st == NULL) {
-        // we also should be checking if no geolocation arrays and no gcps
-        Rcpp::warning("no source crs, target crs is ignored\n");
-    } 
-
-        
-      
-
   }
   
   if (target_extent.size() > 0) {
