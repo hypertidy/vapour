@@ -206,7 +206,7 @@ inline List gdal_warp_general(CharacterVector dsn,
                                   psOptions, nullptr);
   
   GDALWarpAppOptionsFree(psOptions);
-  CSLDestroy(papszArg);
+  //CSLDestroy(papszArg);
   
   
   CPLAssert( hRet != NULL );
