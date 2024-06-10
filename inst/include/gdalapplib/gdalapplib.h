@@ -187,12 +187,13 @@ inline List gdalwarp_applib(CharacterVector source_filename,
   
   CPLAssert( hRet != NULL );
   GDALWarpAppOptionsFree(psOptions);
+
+  GDALClose((GDALDataset*) hRet);
   for (int si = 0; si < source_filename.size(); si++) {
     GDALClose( (GDALDataset *)poSrcDS[si] );
   }
   CPLFree(poSrcDS);
   
-  GDALClose((GDALDataset*) hRet);
   List out(0);
   return out;
 }

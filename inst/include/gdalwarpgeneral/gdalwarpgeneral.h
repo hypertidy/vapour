@@ -188,9 +188,9 @@ inline List gdal_warp_general(CharacterVector dsn,
   GDALWarpAppOptionsFree(psOptions);
   
   
-  CPLAssert( hRet != NULL );
+
   for (int si = 0; si < dsn.size(); si++) {
-    GDALClose( (GDALDataset *)poSrcDS[si] );
+    GDALReleaseDataset( (GDALDataset *)poSrcDS[si] );
   }
   CPLFree(poSrcDS);
   
