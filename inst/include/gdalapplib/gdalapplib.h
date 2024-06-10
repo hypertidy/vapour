@@ -48,7 +48,7 @@ for (R_xlen_t i = 0; i < options.size(); ++i) {
     if (hDataset == nullptr) {
       out[i] = NA_STRING; 
     } else {
-      std::string outstr = GDALInfo(hDataset, psOptions);
+      const char *outstr = GDALInfo(hDataset, psOptions);
       out[i] = outstr;  
       GDALClose(hDataset); 
   }
