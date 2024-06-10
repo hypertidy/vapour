@@ -198,7 +198,7 @@ inline List gdal_warp_general(CharacterVector dsn,
   
         
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
-  CSLDestroy(papszArg);
+  
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
 
     GDALDatasetH hRet = GDALWarp(dsn_outname[0], nullptr,
@@ -206,7 +206,9 @@ inline List gdal_warp_general(CharacterVector dsn,
                                   psOptions, nullptr);
   
   GDALWarpAppOptionsFree(psOptions);
- 
+  CSLDestroy(papszArg);
+  
+  
   CPLAssert( hRet != NULL );
   for (int si = 0; si < dsn.size(); si++) {
     GDALClose( (GDALDataset *)poSrcDS[si] );
