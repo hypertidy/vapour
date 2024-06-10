@@ -431,7 +431,7 @@ inline List gdal_read_fields(CharacterVector dsn,
 
 inline NumericVector gdal_feature_count(CharacterVector dsn,
                                         IntegerVector layer, CharacterVector sql, NumericVector ex) {
-  GDALDataset       *poDS;
+  GDALDataset       *poDS = nullptr;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_READONLY | GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
   {
