@@ -198,6 +198,7 @@ inline List gdal_warp_general(CharacterVector dsn,
   
         
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
+  CSLDestroy(papszArg);
   
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
 
@@ -206,7 +207,6 @@ inline List gdal_warp_general(CharacterVector dsn,
                                   psOptions, nullptr);
   
   GDALWarpAppOptionsFree(psOptions);
-  //CSLDestroy(papszArg);
   
   
   CPLAssert( hRet != NULL );
