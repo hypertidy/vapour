@@ -463,7 +463,7 @@ inline CharacterVector gdal_driver(CharacterVector dsn)
 {
   
   GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_READONLY | GDAL_OF_VECTOR, NULL, NULL, NULL );  // gdal_driver(<any-type>)
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_READONLY , NULL, NULL, NULL );  // gdal_driver(<any-type>)
   if( poDS == NULL )
   {
     Rcpp::stop("Open failed.\n");
