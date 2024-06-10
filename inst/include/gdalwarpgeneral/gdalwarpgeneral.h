@@ -91,11 +91,12 @@ inline List gdal_warp_general(CharacterVector dsn,
                               LogicalVector nara) {
   
   
-  GDALDatasetH *poSrcDS;
-  poSrcDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * static_cast<size_t>(dsn.size())));
+  GDALDatasetH *poSrcDS = nullptr;;
   
   IntegerVector sds0 = IntegerVector::create(0); 
   for (int i = 0; i < dsn.size(); i++) {
+    poSrcDS = static_cast<GDALDatasetH *>(CPLRealloc(poSrcDS, sizeof(GDALDatasetH) * static_cast<size_t>(dsn.size())));
+    
     poSrcDS[i] = gdalraster::gdalH_open_dsn(dsn[i],   sds0); 
     // unwind everything, and stop (why not unwind if all are null, message how many succeed)
     if (poSrcDS[i] == nullptr) {
