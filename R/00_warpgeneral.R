@@ -146,6 +146,7 @@ gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ex
    bands <- -1
  }
   include_meta <- isTRUE(include_meta)
+
   warp_general_cpp(dsn, target_crs, 
                             target_ext, 
                             target_dim, 

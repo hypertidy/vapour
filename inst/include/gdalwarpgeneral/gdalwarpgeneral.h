@@ -196,7 +196,7 @@ inline List gdal_warp_general(CharacterVector dsn,
   
 
   for (int si = 0; si < dsn.size(); si++) {
-    GDALReleaseDataset( (GDALDataset *)src_ds[si] );
+    GDALClose( src_ds[si] );
   }
  // CPLFree(poSrcDS);
   
