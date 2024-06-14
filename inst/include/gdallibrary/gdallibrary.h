@@ -90,8 +90,11 @@ inline R_xlen_t force_layer_feature_count(OGRLayer *poLayer) {
   if (out == -1) {
     out = 0;
     poLayer->ResetReading();
-    while(poLayer->GetNextFeature() != NULL) {
-      out++;
+    OGRFeature *poFeature;  
+    while( (poFeature = poLayer->GetNextFeature()) != NULL )
+    {
+      out++; 
+      OGRFeature::DestroyFeature( poFeature );
     }
     poLayer->ResetReading();
   }
