@@ -48,13 +48,13 @@ for (R_xlen_t i = 0; i < options.size(); ++i) {
     if (hDataset == nullptr) {
       out[i] = NA_STRING; 
     } else {
-      const char *outstr = GDALInfo(hDataset, psOptions);
+      char *outstr = GDALInfo(hDataset, psOptions);
       out[i] = outstr;  
+      CPLFree(outstr); 
       GDALClose(hDataset); 
   }
   }
     GDALInfoOptionsFree(psOptions);
-  
 
   return out;
 }
