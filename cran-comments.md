@@ -1,17 +1,14 @@
 ## vapour 0.10.0
 
-To fix errors on CRAN. 
+Second submission. Fixed memory leaks detected with valgrind. 
 
-vapour is now passing ubuntu-clang and clang-asan via rhub and not segfaulting on the systems reported on 
-CRAN results. 
-
-There are valgrind messages but I think these are internal to GDAL from CSLAddString, CPLRealloc, GDALInfo and others and I will investigate further. 
+Thanks!
 
 ## Test environments
 
 * win-builder (devel)
 * macos on rhub
-* Linux ubuntu-clang, clang-asan on rhub. 
+* Linux ubuntu-clang, clang-asan, and valgrind on rhub. 
 
 ## R CMD check results
 

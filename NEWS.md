@@ -1,5 +1,7 @@
 # vapour 0.10.0
 
+* Fixed leaks from valgrind, thanks CRAN. 
+
 * Cleaned up a number of address sanitize issues and segfaults, thanks to CRAN. 
 
 * Old warper code is removed, now uses 'gdal_raster_' from warpgeneral. 
