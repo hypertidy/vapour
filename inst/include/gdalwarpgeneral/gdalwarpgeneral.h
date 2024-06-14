@@ -98,7 +98,7 @@ inline List gdal_warp_general(CharacterVector dsn,
   
   IntegerVector sds0 = IntegerVector::create(0); 
   for (int i = 0; i < dsn.size(); i++) {
-    GDALDatasetH hDS = GDALOpenShared(dsn[i], GA_ReadOnly);
+    GDALDatasetH hDS = GDALOpen(dsn[i], GA_ReadOnly);
     //src_ds[i] = gdalraster::gdalH_open_dsn(dsn[i],   sds0); 
     // unwind everything, and stop (why not unwind if all are null, message how many succeed)
     if (hDS == nullptr) {
@@ -181,7 +181,8 @@ inline List gdal_warp_general(CharacterVector dsn,
   }
   
         
-  auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
+  GDALWarpAppOptions* psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
+  
   CSLDestroy(papszArg);
   
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
