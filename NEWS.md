@@ -1,6 +1,6 @@
 # vapour 0.10.0
 
-* Fixed leaks from valgrind, thanks CRAN. 
+* Fixed leaks from valgrind, thanks CRAN and rhub. 
 
 * Cleaned up a number of address sanitize issues and segfaults, thanks to CRAN. 
 

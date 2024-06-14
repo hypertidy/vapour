@@ -39,7 +39,6 @@ GML
 GPKG
 GTiff
 GeoJSON
-GeoPackage
 GeoTIFF
 GeoTransform
 Geodatabase
@@ -250,6 +249,7 @@ virtualize
 vrt
 vsi
 warper
+warpgeneral
 whatarelief
 wkb
 wkt
