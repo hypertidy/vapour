@@ -91,21 +91,25 @@ inline List gdal_warp_general(CharacterVector dsn,
                               LogicalVector nara) {
   
   
-  GDALDatasetH *poSrcDS = nullptr;;
+  ///GDALDatasetH *poSrcDS = nullptr;;
+//  poSrcDS = static_cast<GDALDatasetH *>(CPLRealloc(poSrcDS, sizeof(GDALDatasetH) * static_cast<size_t>(dsn.size())));
+  
+  std::vector<GDALDatasetH> src_ds(dsn.size());
   
   IntegerVector sds0 = IntegerVector::create(0); 
   for (int i = 0; i < dsn.size(); i++) {
-    poSrcDS = static_cast<GDALDatasetH *>(CPLRealloc(poSrcDS, sizeof(GDALDatasetH) * static_cast<size_t>(dsn.size())));
-    
-    poSrcDS[i] = gdalraster::gdalH_open_dsn(dsn[i],   sds0); 
+    GDALDatasetH hDS = GDALOpenShared(dsn[i], GA_ReadOnly);
+    //src_ds[i] = gdalraster::gdalH_open_dsn(dsn[i],   sds0); 
     // unwind everything, and stop (why not unwind if all are null, message how many succeed)
-    if (poSrcDS[i] == nullptr) {
+    if (hDS == nullptr) {
       if (i > 0) {
-        for (int j = 0; j < i; j++) GDALClose(poSrcDS[j]);
+        for (int j = 0; j < i; j++) GDALClose(src_ds[j]);
       }
       Rprintf("input source not readable: %s\n", (char *)dsn[i]); 
-      CPLFree(poSrcDS);
+     // CPLFree(poSrcDS);
       Rcpp::stop(""); 
+    } else {
+      src_ds[i] = hDS; 
     }
   }
   
@@ -183,7 +187,7 @@ inline List gdal_warp_general(CharacterVector dsn,
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
 
     GDALDatasetH hRet = GDALWarp(dsn_outname[0], nullptr,
-                                  static_cast<int>(dsn.size()), poSrcDS,
+                                  static_cast<int>(dsn.size()), src_ds.data(),
                                   psOptions, nullptr);
   
   GDALWarpAppOptionsFree(psOptions);
@@ -191,9 +195,9 @@ inline List gdal_warp_general(CharacterVector dsn,
   
 
   for (int si = 0; si < dsn.size(); si++) {
-    GDALReleaseDataset( (GDALDataset *)poSrcDS[si] );
+    GDALReleaseDataset( (GDALDataset *)src_ds[si] );
   }
-  CPLFree(poSrcDS);
+ // CPLFree(poSrcDS);
   
   if (hRet == nullptr) {
     Rcpp::stop("data source could not be processed with GDALWarp api");
