@@ -176,7 +176,7 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, s
 #'
 #' drv <- vapour_all_drivers()
 #'
-#' f <- system.file("extdata/sst_c.gpkg", package = "vapour")
+#' f <- system.file("extdata/sst_c.fgb", package = "vapour")
 #' vapour_driver(f)
 #'
 #' as.data.frame(drv)[match(vapour_driver(f), drv$driver), ]

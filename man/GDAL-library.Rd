@@ -47,7 +47,7 @@ vapour_gdal_version()
 
 drv <- vapour_all_drivers()
 
-f <- system.file("extdata/sst_c.gpkg", package = "vapour")
+f <- system.file("extdata/sst_c.fgb", package = "vapour")
 vapour_driver(f)
 
 as.data.frame(drv)[match(vapour_driver(f), drv$driver), ]

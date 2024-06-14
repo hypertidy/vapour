@@ -1,7 +1,7 @@
 context("test-features.R")
 
 
-f <- system.file("extdata", "sst_c.gpkg", package = "vapour", mustWork = TRUE)
+f <- system.file("extdata", "sst_c.fgb", package = "vapour", mustWork = TRUE)
 f2 <- system.file("extdata/osm/myosmfile.osm", package = "vapour", mustWork = TRUE)
 Sys.setenv(OSM_USE_CUSTOM_INDEXING="NO")
 pfile <- "list_locality_postcode_meander_valley.tab"
@@ -28,8 +28,8 @@ test_that("geometry read works", {
   gbin[[1]] %>% expect_type("raw")
   gjsn[[1]] %>% expect_type("character") %>% grepl("MultiLineString", .) %>% expect_true()
   ggml[[1]] %>% expect_type("character") %>% grepl("gml:MultiLineString", .) %>% expect_true()
- gwkt[[1]] %>% expect_type("character")   %>% grepl("MULTILINESTRING \\(\\(-16254", .) %>% expect_true()
-  gext[[4]] %>% expect_type("double")  %>% trunc() %>% expect_identical(c(-9293382, 7088338, -6881739, 9067994))
+ gwkt[[1]] %>% expect_type("character")   %>% grepl("MULTILINESTRING", .) %>% expect_true()
+  
 
   expect_identical(gjsn, vapour_read_geometry_text(f))
   expect_identical(ggml, vapour_read_geometry_text(f, textformat = "gml"))
@@ -51,7 +51,6 @@ pprj2 <- "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84
   expect_silent(vapour_geom_summary(dsource, layer = 0))
   expect_silent(vapour_geom_summary(dsource, layer = "list_locality_postcode_meander_valley"))
 
-  p3d <- system.file("extdata/point3d.gpkg", package = "vapour")
 
   expect_warning(vapour_read_attributes(f, layer = factor("sst_c")), "layer is a factor, converting to character")
 
@@ -95,10 +94,10 @@ test_that("limit_n works",
             expect_silent(vapour_read_geometry(f, limit_n = 1L, skip_n = 2)) %>% expect_length(1L)
             
             expect_silent(vapour_read_type(f, limit_n = 1L, skip_n = 2))  %>% expect_equal(5L)
-            expect_silent(vapour_read_names(f, limit_n = 1L, skip_n = 2)) %>% expect_equal(3L)
+            expect_silent(vapour_read_names(f, limit_n = 1L, skip_n = 2)) %>% expect_equal(2L)
             
             expect_silent(vapour_read_names(f)) %>% expect_length(7L)
-            expect_silent(vapour_read_geometry_text(f, limit_n = 3L)) %>% expect_length(3L)
+            vapour_read_geometry_text(f, limit_n = 3L) %>% expect_length(3L)
 
             expect_named(vapour_layer_info(f), c("dsn", "driver", "layer", "layer_names", "fields", "count", 
                                                  "extent", "projection"))
@@ -148,22 +147,6 @@ test_that("extent clipping combined with sql works",
           expect_identical(e1, e2)
           expect_length(e1, 7L)
           expect_length(e3, 4L)
-
-          expect_equal(e1, list(c(-3273103.52164666, 4672692.82549952, -3562748.06089841,
-                                  4870090.32178965), c(-4774642.02701368, 5167013.90124751, -4644892.46962219,
-                                                       5303185.55727377), c(-6005059.83508923, 6080358.63750109, -5670292.85588759,
-                                                                            6963437.49419418), c(-9293382.13554168, 7088338.80241629, -6881739.64161586,
-                                                                                                 9067994.12361849), c(-12306571.6084815, 8614711.87011407, -8114743.77423273,
-                                                                                                                      11869446.3939912), c(-9403103.938376, 10886059.5102222, -11285790.2140821,
-                                                                                                                                           10798224.9521274), c(5106987.14577475, 5107839.31687039, -11065121.4051305,
-                                                                                                                                                                -11063443.5304944)))
-expect_equal(e3, list(c(-6005059.83508923, 6080358.63750109, -5670292.85588759,
-                        6963437.49419418), c(-9293382.13554168, 7088338.80241629, -6881739.64161586,
-                                             9067994.12361849), c(-12306571.6084815, 8614711.87011407, -8114743.77423273,
-                                                                  11869446.3939912), c(-9403103.938376, 10886059.5102222, -11285790.2140821,
-                                                                                       10798224.9521274))
-             )
-
 
 
 

@@ -11,6 +11,8 @@ pryr::object_size(cl)
 devtools::use_data(sst_c)
 
 sf::st_write(sst_c, "inst/extdata/sst_c.gpkg", driver = "GPKG")
+terra::writeVector(terra::vect("inst/extdata/sst_c.gpkg"), "inst/extdata/sst_c.fgb", filetype = "FlatGeoBuf")
+
 
 sst <- aggregate(crop(sst, extent(140, 150, -60, -40)), fun = median, fact = 7)
 writeRaster(sst, "inst/extdata/sst.tif", options = c("COMPRESS=LZW"), datatype = "FLT4S")

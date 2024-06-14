@@ -54,7 +54,7 @@ vapour_read_geometry_text(pfile, textformat = "gml")[2]
 ## don't do this with a non-longlat data set like cfile
 vapour_read_geometry_text(pfile, textformat = "kml")[1:2]
 
-cfile <- system.file("extdata/sst_c.gpkg", package = "vapour")
+cfile <- system.file("extdata/sst_c.fgb", package = "vapour")
 str(vapour_read_geometry_text(cfile, textformat = "wkt")[1:2])
 
 ```

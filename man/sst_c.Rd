@@ -14,13 +14,13 @@ GLOB/JPL/MUR/v4.1/2017/209/
 
 See data-raw/sst_c.R for the derivation column \code{sst_c} in Celsius.
 
-Also stored in GeoPackage format in
-\code{system.file("extdata/sst_c.gpkg", package = "vapour")}
+Also stored in FlatGeoBuf format in
+\code{system.file("extdata/sst_c.fgb", package = "vapour")}
 }
 \examples{
-f <- system.file("extdata/sst_c.gpkg", package = "vapour")
+f <- system.file("extdata/sst_c.fgb", package = "vapour")
 
-## create a class-less form of the data in the 'sst_c.gpkg' file  with GeoJSON geometry
+## create a class-less form of the data in the 'sst_c.fgb' file  with GeoJSON geometry
 atts <- vapour_read_fields(f)
 dat <- as.data.frame(atts, stringsAsFactors = FALSE)
 dat[["json"]] <- vapour_read_geometry_text(f)
