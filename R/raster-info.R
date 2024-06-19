@@ -297,7 +297,7 @@ vapour_sds_names <- function(x) {
 #' drivers <- vapour_all_drivers()
 #' ok <- drivers$raster[ drivers$driver == "netCDF"]
 #' if (isTRUE(ok)) {
-#'  vapour_geolocation(system.file("extdata/gdal/geos_rad.nc", package = "vapour"), 0L)
+#'  ##vapour_geolocation(system.file("extdata/gdal/geos_rad.nc", package = "vapour"), 0L)
 #' }
 vapour_geolocation <- function(x, sds = NULL) {
   sd <- if (is.null(sds)) 0L else as.integer(sds[1L])
