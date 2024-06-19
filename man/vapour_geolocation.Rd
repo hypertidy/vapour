@@ -23,7 +23,7 @@ If no geolocation exist the return value is an empty list.
 \examples{
 drivers <- vapour_all_drivers()
 ok <- drivers$raster[ drivers$driver == "netCDF"]
-if (isTRUE(ok)) {
+if (isTRUE(ok) && interactive()) {
  vapour_geolocation(system.file("extdata/gdal/geos_rad.nc", package = "vapour"), 0L)
 }
 }
