@@ -244,13 +244,12 @@ inline Rcpp::List read_gdal_stream(
   OGRSpatialReference* crs = poLayer->GetSpatialRef();
   char* wkt_out;
   std::string wkt_str;
-  if (crs) {
+  if (crs != nullptr) {
+    char* wkt_out;
     crs->exportToWkt(&wkt_out);
     wkt_str = wkt_out;
-  } else {
-    wkt_str = "";
+    CPLFree(wkt_out);
   }
-  CPLFree(wkt_out);
 
   struct ArrowArrayStream stream_temp;
   if (!poLayer->GetArrowStream(&stream_temp, array_stream_options)) {

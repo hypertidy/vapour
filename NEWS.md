@@ -1,3 +1,9 @@
+# vapour dev
+
+* Stream reading now restored. 
+
+
+
 # vapour 0.10.0
 
 * Fixed leaks from valgrind, thanks CRAN and rhub. 

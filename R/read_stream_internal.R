@@ -1,11 +1,3 @@
-gdal_ptrs <-  function(dsource, layer) {
-    layer <-  if (missing(layer)) {
-    character()
-  } else {
-    enc2utf8(layer)
-  }
-  #gdal_ptrs_cpp(dsource, layer)
-}
 
 gdal_vector_data <-  function(dsource, layer, ..., sql = NA, options = NULL, quiet = FALSE,
                         fid_column_name = character(0),
@@ -20,7 +12,7 @@ gdal_vector_data <-  function(dsource, layer, ..., sql = NA, options = NULL, qui
     enc2utf8(layer)
   }
   if (nchar(dsource) < 1L) {
-    stop("`dsour` must describe a valid source description for GDAL (input was an empty string).", call. = FALSE)
+    stop("`dsource` must describe a valid source description for GDAL (input was an empty string).", call. = FALSE)
   }
   dsn_exists <-  file.exists(dsource)
 
