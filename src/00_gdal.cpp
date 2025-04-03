@@ -38,6 +38,12 @@ CharacterVector proj_to_wkt_gdal_cpp(CharacterVector proj4string) {
 }
 
 // [[Rcpp::export]]
+LogicalVector crs_is_lonlat_cpp(CharacterVector input_string) {
+  return gdallibrary::gdal_crs_is_lonlat(input_string);
+}
+
+
+// [[Rcpp::export]]
 LogicalVector register_gdal_cpp() {
   gdallibrary::gdal_register_all();
   gdallibrary::ogr_register_all();
@@ -51,7 +57,10 @@ LogicalVector register_gdal_cpp() {
 CharacterVector version_gdal_cpp() {
   return gdallibrary::gdal_version();
 }
-
+// [[Rcpp::export]]
+IntegerVector version_proj_cpp() {
+  return gdallibrary::proj_version();
+}
 // [[Rcpp::export]]
 CharacterVector vsi_list_gdal_cpp(CharacterVector dsn) {
   return gdallibrary::gdal_vsi_list(dsn);

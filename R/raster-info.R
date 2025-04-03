@@ -4,7 +4,9 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
   ## but also don't prevent access to non-files
   if (file.exists(x)) x <- base::normalizePath(x, mustWork = FALSE)
   ## use sds wrapper to target the first by default
-  datavars <- as.data.frame(vapour_sds_names(x), stringsAsFactors = FALSE)
+  subdatasets <- try(vapour_sds_names(x), silent = TRUE)
+  if (inherits(subdatasets, "try-error")) stop("GDAL was unable to open ^^")
+  datavars <- data.frame(datsource = x, subdataset = subdatasets, stringsAsFactors = FALSE)
 
   ## catch for l1b where we end up with the GCP conflated with the data set #48
   if (nrow(datavars) < 2) return(x)  ## shortcut to avoid #48
@@ -42,9 +44,9 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' \describe{
 #' \item{extent}{the extent of the data, xmin, xmax, ymin, ymax - these are the lower left and upper right corners of pixels}
 #' \item{geotransform}{the affine transform}
-#' \item{dimXY}{dimensions x-y, columns*rows}
+#' \item{dimension}{dimensions x-y, columns*rows}
 #' \item{minmax}{numeric values of the computed min and max from the first band (optional)}
-#' \item{tilesXY}{dimensions x-y of internal tiling scheme}
+#' \item{block}{dimensions x-y of internal tiling scheme}
 #' \item{projection}{text version of map projection parameter string}
 #' \item{bands}{number of bands in the dataset}
 #' \item{projstring}{the proj string version of 'projection'}
@@ -52,6 +54,8 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' \item{overviews}{the number and size of any available overviews}
 #' \item{filelist}{the list of files involved (may be none, and so will be a single NA character value)}
 #' \item{datatype}{the band type name, in GDAL form 'Byte', 'Int16', 'Float32', etc.}
+#' \item{subdatasets}{any subdataset DSNs is present, otherwise `NULL` }
+#' \item{corners}{corner coordinates of the data, for non-zero skew geotransforms a 2-column matrix with rows upperLeft, lowerLeft, lowerRight, upperRight, and center}
 #' }
 #'
 #' Note that the geotransform is a kind of obscure combination of the extent and dimension, I don't find it
@@ -139,6 +143,54 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' vapour_raster_info(f)
 vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
+  sd <- if (is.null(sds)) 0 else sds
+  x <- .check_dsn_single(x)
+  info <- gdalinfo_internal(x[1L], json  = TRUE, stats = min_max, sd = sd, ...)
+  if (is.na(info)) {
+    stop("GDAL was unable to open ^^")
+  }
+  json <- jsonlite::fromJSON(info)
+  sds <- NULL
+  if (!is.null(json$metadata$SUBDATASETS)) {
+    sds <- unlist(json$metadata$SUBDATASETS[grep("NAME$", names(json$metadata$SUBDATASETS))], use.names = FALSE)
+  }
+  
+  corners <- NULL
+  extent <- NULL
+  if (!is.null(json$cornerCoordinates)) {
+    corners <- do.call(rbind, json$cornerCoordinates)
+    extent <- c(range(corners[,1]), range(corners[,2]))
+  }
+
+
+  if (is.null(json$geoTransform) && !is.null(extent)) {
+    geoTransform <- c(extent[1], diff(extent[c(1,2)])/json$size[1], 0, 
+                      extent[4], 0, diff(extent[c(4:3)])/json$size[2])
+  } else {
+    geoTransform <- json$geoTransform
+  }
+
+  list(geotransform = geoTransform, 
+       dimension = json$size,  ## or/and dimXY
+       dimXY = json$size,
+       ## this needs to be per band
+       minmax = c(json$bands$min[1L], json$bands$max[1L]), 
+       block = json$bands$block[[1L]],  ## or/and dimXY
+       projection = json$coordinateSystem$wkt, 
+       bands = dim(json$bands)[1L], 
+       projstring = json$coordinateSystem$proj4, 
+       nodata_value = json$bands$noDataValue[1L], 
+       overviews = unlist(json$bands$overviews[[1]], use.names = FALSE), ## NULL if there aren't any (was integer(0)), 
+       filelist = json$files, 
+       datatype = json$bands$type[1L], 
+       extent = extent, 
+       subdatasets = sds, 
+       corners = corners)
+}
+
+
+old_vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
+  x <- .check_dsn_single(x)
   datasourcename <- sds_boilerplate_checks(x, sds = sds)
   info <- raster_info_gdal_cpp(dsn = datasourcename, min_max = min_max)
   info[["extent"]] <- .gt_dim_to_extent(info$geotransform, info$dimXY)
@@ -178,6 +230,7 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
 #' vapour_raster_gcp(f1)
 #'
 vapour_raster_gcp <- function(x, ...) {
+  x <- .check_dsn_single(x)
   if (file.exists(x)) x <- normalizePath(x)
   raster_gcp_gdal_cpp(x)
 }
@@ -191,12 +244,18 @@ vapour_raster_gcp <- function(x, ...) {
 #' variable, so we always treat a source as a subdataset, even if there's only
 #' one.
 #'
-#' Returns a list of `datasource` and `subdataset`. In the case of a normal data
-#' source, with no subdatasets the value of both entries is the `datasource`.
+#' Returns a character vector of 'subdatasets`. In the case of a normal data
+#' source, with no subdatasets the value is simply  the `datasource`.
 #'
-#' @param x a data source string, filename, database connection string, Thredds or other URL
+#' If the raw SDS names contain spaces these are replaced by '%20' escape strings. A specific example is  
+#' "WCS:https://elevation.nationalmap.gov:443" with request
+#' "arcgis/services/3DEPElevation/ImageServer/WCSServer?version=2.0.1&coverage=DEP3Elevation_Hillshade Gray". 
+#' This function will return "..DEP3Elevation_Hillshade%20Gray".  
+#' See [wiki post](https://github.com/hypertidy/vapour/wiki/Examples-of-subdatasets) for more details. 
+#' 
+#' @param x a data source string, filename, database connection string,  or other URL
 #'
-#' @return list of character vectors, see Details
+#' @return character vector of subdataset names, or just the source itself if no SDS are present
 #' @export
 #'
 #' @examples
@@ -207,19 +266,42 @@ vapour_raster_gcp <- function(x, ...) {
 #'   print(result)
 #' }
 #' vapour_sds_names(system.file("extdata", "sst.tif", package = "vapour"))
+#' 
 vapour_sds_names <- function(x) {
-  if (file.exists(x)) x <- normalizePath(x)
-  stopifnot(length(x) == 1L)
-  sources <- sds_list_gdal_cpp(x)
-  
-  if (length(sources) > 1) {
-    if (length(sources) %% 2 != 0) warning(sprintf("length of subdataset info not a factor of 2 (NAME and DESC expected)"))
-    sources0 <- sources
-    if (!sum(grepl("NAME=", sources)) == length(sources)/2) warning("sds mismatch")
-    sources <- sources[seq(1, length(sources), by = 2L)]
-    sources <- unlist(lapply(strsplit(sources, "="), function(xx) paste0(xx[-1], collapse = "=")), use.names = FALSE)
+  x <- .check_dsn_single(x)
+  info <- gdalinfo_internal(x[1L], json  = TRUE)
+
+  if (is.na(info)) stop("GDAL was unable to open ^^")
+  json <- jsonlite::fromJSON(info)
+  if (!is.null(json$metadata$SUBDATASETS)) {
+   sources <- unlist(json$metadata$SUBDATASETS[grep("NAME$", 
+                                                    names(json$metadata$SUBDATASETS))], use.names = FALSE)
+  } else {
+    sources <- x[1L]  ## should return 0-vector, or NULL I think
   }
-  list(datasource = rep(x, length(sources)), subdataset = sources)
+ sources
 }
 
-
+#' Retrieve geolocation information for a dataset
+#' 
+#' Value is a named vector in a list. 
+#' 
+#' If no geolocation exist the return value is an empty list. 
+#'
+#' @inheritParams vapour_raster_info
+#' 
+#' @return list with a single character vector
+#' @export
+#'
+#' @examples
+#' drivers <- vapour_all_drivers()
+#' ok <- drivers$raster[ drivers$driver == "netCDF"]
+#' if (isTRUE(ok) && interactive()) {
+#'  vapour_geolocation(system.file("extdata/gdal/geos_rad.nc", package = "vapour"), 0L)
+#' }
+vapour_geolocation <- function(x, sds = NULL) {
+  sd <- if (is.null(sds)) 0L else as.integer(sds[1L])
+  if (is.na(sd) || length(sd) < 1L) sd <- 0L
+  x <- .check_dsn_single(x)
+  raster_list_geolocation_gdal_cpp(x, as.integer(sds)[1L])
+}

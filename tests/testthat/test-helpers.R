@@ -1,8 +1,8 @@
 context("test-helpers")
 
 file <- "list_locality_postcode_meander_valley.tab"
-mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
-gfile <- system.file(file.path("extdata", "sst_c.gpkg"), package="vapour")
+mvfile <- system.file(file.path("extdata/tab", file), package="vapour", mustWork = TRUE)
+gfile <- system.file(file.path("extdata", "sst_c.fgb"), package="vapour", mustWork = TRUE)
 osmfile <- system.file(file.path("extdata/osm", "osm-ways.osm"), package="vapour")
 ##dput(vapour_geom_summary(mvfile, sql = sprintf("SELECT FID FROM %s WHERE FID = 15", vapour_layer_names(mvfile)[1L])))
 sql_bench <- list(FID = 15L, valid_geometry = TRUE, type = 3L, xmin = 455980.34, xmax = 463978.72,
@@ -17,7 +17,7 @@ test_that("helpers work", {
   #
 
   expect_error(validate_limit_n(-2))
-  expect_equal(vapour_read_names(gfile, sql = "SELECT FID FROM sst_c LIMIT 2"), c(1, 2))
+  expect_equal(vapour_read_names(gfile, sql = "SELECT FID FROM sst_c LIMIT 2"), c(0, 1))
   expect_equal(vapour_read_names(mvfile), 1:58)
 })
 

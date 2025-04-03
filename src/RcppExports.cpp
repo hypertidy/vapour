@@ -10,6 +10,85 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// gdal_dsn_read_vector_stream
+List gdal_dsn_read_vector_stream(RObject stream_xptr, CharacterVector dsn, CharacterVector layer, CharacterVector sql, std::vector<std::string> options, bool quiet, std::vector<std::string> drivers, Rcpp::NumericVector extent, bool dsn_exists, Rcpp::CharacterVector fid_column_name, int width);
+RcppExport SEXP _vapour_gdal_dsn_read_vector_stream(SEXP stream_xptrSEXP, SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP optionsSEXP, SEXP quietSEXP, SEXP driversSEXP, SEXP extentSEXP, SEXP dsn_existsSEXP, SEXP fid_column_nameSEXP, SEXP widthSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RObject >::type stream_xptr(stream_xptrSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type options(optionsSEXP);
+    Rcpp::traits::input_parameter< bool >::type quiet(quietSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type drivers(driversSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type extent(extentSEXP);
+    Rcpp::traits::input_parameter< bool >::type dsn_exists(dsn_existsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type fid_column_name(fid_column_nameSEXP);
+    Rcpp::traits::input_parameter< int >::type width(widthSEXP);
+    rcpp_result_gen = Rcpp::wrap(gdal_dsn_read_vector_stream(stream_xptr, dsn, layer, sql, options, quiet, drivers, extent, dsn_exists, fid_column_name, width));
+    return rcpp_result_gen;
+END_RCPP
+}
+// warp_general_cpp
+List warp_general_cpp(CharacterVector dsn, CharacterVector target_crs, NumericVector target_extent, IntegerVector target_dim, NumericVector target_res, IntegerVector bands, CharacterVector resample, LogicalVector silent, CharacterVector band_output_type, CharacterVector options, CharacterVector dsn_outname, LogicalVector include_meta, LogicalVector nara);
+RcppExport SEXP _vapour_warp_general_cpp(SEXP dsnSEXP, SEXP target_crsSEXP, SEXP target_extentSEXP, SEXP target_dimSEXP, SEXP target_resSEXP, SEXP bandsSEXP, SEXP resampleSEXP, SEXP silentSEXP, SEXP band_output_typeSEXP, SEXP optionsSEXP, SEXP dsn_outnameSEXP, SEXP include_metaSEXP, SEXP naraSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type target_crs(target_crsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type target_extent(target_extentSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type target_dim(target_dimSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type target_res(target_resSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type bands(bandsSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type resample(resampleSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type silent(silentSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type band_output_type(band_output_typeSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type options(optionsSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn_outname(dsn_outnameSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type include_meta(include_metaSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type nara(naraSEXP);
+    rcpp_result_gen = Rcpp::wrap(warp_general_cpp(dsn, target_crs, target_extent, target_dim, target_res, bands, resample, silent, band_output_type, options, dsn_outname, include_meta, nara));
+    return rcpp_result_gen;
+END_RCPP
+}
+// warp_suggest_cpp
+List warp_suggest_cpp(CharacterVector dsn, CharacterVector target_crs);
+RcppExport SEXP _vapour_warp_suggest_cpp(SEXP dsnSEXP, SEXP target_crsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type target_crs(target_crsSEXP);
+    rcpp_result_gen = Rcpp::wrap(warp_suggest_cpp(dsn, target_crs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// set_gdal_config_cpp
+IntegerVector set_gdal_config_cpp(CharacterVector option, CharacterVector value);
+RcppExport SEXP _vapour_set_gdal_config_cpp(SEXP optionSEXP, SEXP valueSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type option(optionSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type value(valueSEXP);
+    rcpp_result_gen = Rcpp::wrap(set_gdal_config_cpp(option, value));
+    return rcpp_result_gen;
+END_RCPP
+}
+// get_gdal_config_cpp
+CharacterVector get_gdal_config_cpp(CharacterVector option);
+RcppExport SEXP _vapour_get_gdal_config_cpp(SEXP optionSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type option(optionSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_gdal_config_cpp(option));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cleanup_gdal_cpp
 LogicalVector cleanup_gdal_cpp();
 RcppExport SEXP _vapour_cleanup_gdal_cpp() {
@@ -74,6 +153,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// crs_is_lonlat_cpp
+LogicalVector crs_is_lonlat_cpp(CharacterVector input_string);
+RcppExport SEXP _vapour_crs_is_lonlat_cpp(SEXP input_stringSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type input_string(input_stringSEXP);
+    rcpp_result_gen = Rcpp::wrap(crs_is_lonlat_cpp(input_string));
+    return rcpp_result_gen;
+END_RCPP
+}
 // register_gdal_cpp
 LogicalVector register_gdal_cpp();
 RcppExport SEXP _vapour_register_gdal_cpp() {
@@ -94,6 +184,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// version_proj_cpp
+IntegerVector version_proj_cpp();
+RcppExport SEXP _vapour_version_proj_cpp() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(version_proj_cpp());
+    return rcpp_result_gen;
+END_RCPP
+}
 // vsi_list_gdal_cpp
 CharacterVector vsi_list_gdal_cpp(CharacterVector dsn);
 RcppExport SEXP _vapour_vsi_list_gdal_cpp(SEXP dsnSEXP) {
@@ -106,7 +206,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // feature_count_gdal_cpp
-DoubleVector feature_count_gdal_cpp(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex);
+NumericVector feature_count_gdal_cpp(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex);
 RcppExport SEXP _vapour_feature_count_gdal_cpp(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -116,6 +216,60 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type ex(exSEXP);
     rcpp_result_gen = Rcpp::wrap(feature_count_gdal_cpp(dsn, layer, sql, ex));
+    return rcpp_result_gen;
+END_RCPP
+}
+// projection_info_gdal_cpp
+List projection_info_gdal_cpp(CharacterVector dsn, IntegerVector layer, CharacterVector sql);
+RcppExport SEXP _vapour_projection_info_gdal_cpp(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
+    rcpp_result_gen = Rcpp::wrap(projection_info_gdal_cpp(dsn, layer, sql));
+    return rcpp_result_gen;
+END_RCPP
+}
+// report_fields_gdal_cpp
+CharacterVector report_fields_gdal_cpp(CharacterVector dsn, IntegerVector layer, CharacterVector sql);
+RcppExport SEXP _vapour_report_fields_gdal_cpp(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
+    rcpp_result_gen = Rcpp::wrap(report_fields_gdal_cpp(dsn, layer, sql));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vapour_geom_name_cpp
+Rcpp::CharacterVector vapour_geom_name_cpp(CharacterVector dsource, IntegerVector layer, Rcpp::CharacterVector sql, NumericVector ex);
+RcppExport SEXP _vapour_vapour_geom_name_cpp(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type sql(sqlSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type ex(exSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_geom_name_cpp(dsource, layer, sql, ex));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vapour_layer_extent_cpp
+Rcpp::NumericVector vapour_layer_extent_cpp(CharacterVector dsource, IntegerVector layer, CharacterVector sql, NumericVector ex);
+RcppExport SEXP _vapour_vapour_layer_extent_cpp(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type ex(exSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_layer_extent_cpp(dsource, layer, sql, ex));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -245,9 +399,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// gdal_read_fids_all
-NumericVector gdal_read_fids_all(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex);
-RcppExport SEXP _vapour_gdal_read_fids_all(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP) {
+// gdal_dsn_read_fids_all
+NumericVector gdal_dsn_read_fids_all(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex);
+RcppExport SEXP _vapour_gdal_dsn_read_fids_all(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -255,13 +409,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type ex(exSEXP);
-    rcpp_result_gen = Rcpp::wrap(gdal_read_fids_all(dsn, layer, sql, ex));
+    rcpp_result_gen = Rcpp::wrap(gdal_dsn_read_fids_all(dsn, layer, sql, ex));
     return rcpp_result_gen;
 END_RCPP
 }
-// gdal_read_fids_ij
-NumericVector gdal_read_fids_ij(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex, NumericVector ij);
-RcppExport SEXP _vapour_gdal_read_fids_ij(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP, SEXP ijSEXP) {
+// gdal_dsn_read_fids_ij
+NumericVector gdal_dsn_read_fids_ij(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex, NumericVector ij);
+RcppExport SEXP _vapour_gdal_dsn_read_fids_ij(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP, SEXP ijSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -270,13 +424,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type ex(exSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type ij(ijSEXP);
-    rcpp_result_gen = Rcpp::wrap(gdal_read_fids_ij(dsn, layer, sql, ex, ij));
+    rcpp_result_gen = Rcpp::wrap(gdal_dsn_read_fids_ij(dsn, layer, sql, ex, ij));
     return rcpp_result_gen;
 END_RCPP
 }
-// gdal_read_fids_ia
-NumericVector gdal_read_fids_ia(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex, NumericVector ia);
-RcppExport SEXP _vapour_gdal_read_fids_ia(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP, SEXP iaSEXP) {
+// gdal_dsn_read_fids_ia
+NumericVector gdal_dsn_read_fids_ia(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex, NumericVector ia);
+RcppExport SEXP _vapour_gdal_dsn_read_fids_ia(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP, SEXP iaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -285,53 +439,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type ex(exSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type ia(iaSEXP);
-    rcpp_result_gen = Rcpp::wrap(gdal_read_fids_ia(dsn, layer, sql, ex, ia));
-    return rcpp_result_gen;
-END_RCPP
-}
-// geometry_cpp
-List geometry_cpp(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex, CharacterVector format, NumericVector fid);
-RcppExport SEXP _vapour_geometry_cpp(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP, SEXP formatSEXP, SEXP fidSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type ex(exSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type format(formatSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type fid(fidSEXP);
-    rcpp_result_gen = Rcpp::wrap(geometry_cpp(dsn, layer, sql, ex, format, fid));
-    return rcpp_result_gen;
-END_RCPP
-}
-// geometry_cpp_limit_skip
-List geometry_cpp_limit_skip(CharacterVector dsn, IntegerVector layer, CharacterVector sql, NumericVector ex, CharacterVector format, IntegerVector limit_n, IntegerVector skip_n);
-RcppExport SEXP _vapour_geometry_cpp_limit_skip(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP, SEXP formatSEXP, SEXP limit_nSEXP, SEXP skip_nSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type ex(exSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type format(formatSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type limit_n(limit_nSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type skip_n(skip_nSEXP);
-    rcpp_result_gen = Rcpp::wrap(geometry_cpp_limit_skip(dsn, layer, sql, ex, format, limit_n, skip_n));
-    return rcpp_result_gen;
-END_RCPP
-}
-// projection_info_gdal_cpp
-List projection_info_gdal_cpp(CharacterVector dsn, IntegerVector layer, CharacterVector sql);
-RcppExport SEXP _vapour_projection_info_gdal_cpp(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
-    rcpp_result_gen = Rcpp::wrap(projection_info_gdal_cpp(dsn, layer, sql));
+    rcpp_result_gen = Rcpp::wrap(gdal_dsn_read_fids_ia(dsn, layer, sql, ex, ia));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -370,9 +478,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// read_names_gdal_cpp
-List read_names_gdal_cpp(CharacterVector dsn, IntegerVector layer, CharacterVector sql, IntegerVector limit_n, IntegerVector skip_n, NumericVector ex);
-RcppExport SEXP _vapour_read_names_gdal_cpp(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP limit_nSEXP, SEXP skip_nSEXP, SEXP exSEXP) {
+// read_fids_gdal_cpp
+NumericVector read_fids_gdal_cpp(CharacterVector dsn, IntegerVector layer, CharacterVector sql, IntegerVector limit_n, IntegerVector skip_n, NumericVector ex);
+RcppExport SEXP _vapour_read_fids_gdal_cpp(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP limit_nSEXP, SEXP skip_nSEXP, SEXP exSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -382,48 +490,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type limit_n(limit_nSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type skip_n(skip_nSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type ex(exSEXP);
-    rcpp_result_gen = Rcpp::wrap(read_names_gdal_cpp(dsn, layer, sql, limit_n, skip_n, ex));
-    return rcpp_result_gen;
-END_RCPP
-}
-// report_fields_gdal_cpp
-CharacterVector report_fields_gdal_cpp(CharacterVector dsn, IntegerVector layer, CharacterVector sql);
-RcppExport SEXP _vapour_report_fields_gdal_cpp(SEXP dsnSEXP, SEXP layerSEXP, SEXP sqlSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
-    rcpp_result_gen = Rcpp::wrap(report_fields_gdal_cpp(dsn, layer, sql));
-    return rcpp_result_gen;
-END_RCPP
-}
-// vapour_geom_name_cpp
-Rcpp::CharacterVector vapour_geom_name_cpp(CharacterVector dsource, IntegerVector layer, Rcpp::CharacterVector sql, NumericVector ex);
-RcppExport SEXP _vapour_vapour_geom_name_cpp(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type sql(sqlSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type ex(exSEXP);
-    rcpp_result_gen = Rcpp::wrap(vapour_geom_name_cpp(dsource, layer, sql, ex));
-    return rcpp_result_gen;
-END_RCPP
-}
-// vapour_layer_extent_cpp
-Rcpp::NumericVector vapour_layer_extent_cpp(CharacterVector dsource, IntegerVector layer, CharacterVector sql, NumericVector ex);
-RcppExport SEXP _vapour_vapour_layer_extent_cpp(SEXP dsourceSEXP, SEXP layerSEXP, SEXP sqlSEXP, SEXP exSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type layer(layerSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type sql(sqlSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type ex(exSEXP);
-    rcpp_result_gen = Rcpp::wrap(vapour_layer_extent_cpp(dsource, layer, sql, ex));
+    rcpp_result_gen = Rcpp::wrap(read_fids_gdal_cpp(dsn, layer, sql, limit_n, skip_n, ex));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -435,6 +502,30 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
     rcpp_result_gen = Rcpp::wrap(raster_gcp_gdal_cpp(dsn));
+    return rcpp_result_gen;
+END_RCPP
+}
+// raster_has_geolocation_gdal_cpp
+LogicalVector raster_has_geolocation_gdal_cpp(CharacterVector dsn, IntegerVector sds);
+RcppExport SEXP _vapour_raster_has_geolocation_gdal_cpp(SEXP dsnSEXP, SEXP sdsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type sds(sdsSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_has_geolocation_gdal_cpp(dsn, sds));
+    return rcpp_result_gen;
+END_RCPP
+}
+// raster_list_geolocation_gdal_cpp
+List raster_list_geolocation_gdal_cpp(CharacterVector dsn, IntegerVector sds);
+RcppExport SEXP _vapour_raster_list_geolocation_gdal_cpp(SEXP dsnSEXP, SEXP sdsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type sds(sdsSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_list_geolocation_gdal_cpp(dsn, sds));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -462,8 +553,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // raster_io_gdal_cpp
-List raster_io_gdal_cpp(CharacterVector dsn, IntegerVector window, IntegerVector band, CharacterVector resample, CharacterVector band_output_type);
-RcppExport SEXP _vapour_raster_io_gdal_cpp(SEXP dsnSEXP, SEXP windowSEXP, SEXP bandSEXP, SEXP resampleSEXP, SEXP band_output_typeSEXP) {
+List raster_io_gdal_cpp(CharacterVector dsn, IntegerVector window, IntegerVector band, CharacterVector resample, CharacterVector band_output_type, LogicalVector unscale, LogicalVector nara);
+RcppExport SEXP _vapour_raster_io_gdal_cpp(SEXP dsnSEXP, SEXP windowSEXP, SEXP bandSEXP, SEXP resampleSEXP, SEXP band_output_typeSEXP, SEXP unscaleSEXP, SEXP naraSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -472,7 +563,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type resample(resampleSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type band_output_type(band_output_typeSEXP);
-    rcpp_result_gen = Rcpp::wrap(raster_io_gdal_cpp(dsn, window, band, resample, band_output_type));
+    Rcpp::traits::input_parameter< LogicalVector >::type unscale(unscaleSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type nara(naraSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_io_gdal_cpp(dsn, window, band, resample, band_output_type, unscale, nara));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -498,31 +591,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// warp_in_memory_gdal_cpp
-List warp_in_memory_gdal_cpp(CharacterVector dsn, CharacterVector source_WKT, CharacterVector target_WKT, NumericVector target_extent, IntegerVector target_dim, IntegerVector bands, NumericVector source_extent, CharacterVector resample, LogicalVector silent, CharacterVector band_output_type, CharacterVector warp_options, CharacterVector transformation_options);
-RcppExport SEXP _vapour_warp_in_memory_gdal_cpp(SEXP dsnSEXP, SEXP source_WKTSEXP, SEXP target_WKTSEXP, SEXP target_extentSEXP, SEXP target_dimSEXP, SEXP bandsSEXP, SEXP source_extentSEXP, SEXP resampleSEXP, SEXP silentSEXP, SEXP band_output_typeSEXP, SEXP warp_optionsSEXP, SEXP transformation_optionsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type source_WKT(source_WKTSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type target_WKT(target_WKTSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type target_extent(target_extentSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type target_dim(target_dimSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type bands(bandsSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type source_extent(source_extentSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type resample(resampleSEXP);
-    Rcpp::traits::input_parameter< LogicalVector >::type silent(silentSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type band_output_type(band_output_typeSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type warp_options(warp_optionsSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type transformation_options(transformation_optionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(warp_in_memory_gdal_cpp(dsn, source_WKT, target_WKT, target_extent, target_dim, bands, source_extent, resample, silent, band_output_type, warp_options, transformation_options));
-    return rcpp_result_gen;
-END_RCPP
-}
 // vapour_read_raster_block_cpp
-Rcpp::List vapour_read_raster_block_cpp(CharacterVector dsource, IntegerVector offset, IntegerVector dimension, IntegerVector band, CharacterVector band_output_type);
-RcppExport SEXP _vapour_vapour_read_raster_block_cpp(SEXP dsourceSEXP, SEXP offsetSEXP, SEXP dimensionSEXP, SEXP bandSEXP, SEXP band_output_typeSEXP) {
+Rcpp::List vapour_read_raster_block_cpp(CharacterVector dsource, IntegerVector offset, IntegerVector dimension, IntegerVector band, CharacterVector band_output_type, LogicalVector unscale, LogicalVector nara);
+RcppExport SEXP _vapour_vapour_read_raster_block_cpp(SEXP dsourceSEXP, SEXP offsetSEXP, SEXP dimensionSEXP, SEXP bandSEXP, SEXP band_output_typeSEXP, SEXP unscaleSEXP, SEXP naraSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -531,7 +602,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type dimension(dimensionSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type band_output_type(band_output_typeSEXP);
-    rcpp_result_gen = Rcpp::wrap(vapour_read_raster_block_cpp(dsource, offset, dimension, band, band_output_type));
+    Rcpp::traits::input_parameter< LogicalVector >::type unscale(unscaleSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type nara(naraSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_read_raster_block_cpp(dsource, offset, dimension, band, band_output_type, unscale, nara));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -550,18 +623,165 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vapour_create_copy_cpp
+Rcpp::CharacterVector vapour_create_copy_cpp(CharacterVector dsource, CharacterVector dtarget, CharacterVector driver);
+RcppExport SEXP _vapour_vapour_create_copy_cpp(SEXP dsourceSEXP, SEXP dtargetSEXP, SEXP driverSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type dtarget(dtargetSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type driver(driverSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_create_copy_cpp(dsource, dtarget, driver));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vapour_create_cpp
+Rcpp::CharacterVector vapour_create_cpp(CharacterVector filename, CharacterVector driver, NumericVector extent, IntegerVector dimension, CharacterVector projection, IntegerVector n_bands, CharacterVector datatype, List options_list_pairs);
+RcppExport SEXP _vapour_vapour_create_cpp(SEXP filenameSEXP, SEXP driverSEXP, SEXP extentSEXP, SEXP dimensionSEXP, SEXP projectionSEXP, SEXP n_bandsSEXP, SEXP datatypeSEXP, SEXP options_list_pairsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type filename(filenameSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type driver(driverSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type extent(extentSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type dimension(dimensionSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type projection(projectionSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type n_bands(n_bandsSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type datatype(datatypeSEXP);
+    Rcpp::traits::input_parameter< List >::type options_list_pairs(options_list_pairsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_create_cpp(filename, driver, extent, dimension, projection, n_bands, datatype, options_list_pairs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vapour_read_raster_value_cpp
+Rcpp::NumericVector vapour_read_raster_value_cpp(CharacterVector dsource, IntegerVector col, IntegerVector row, IntegerVector band, CharacterVector band_output_type);
+RcppExport SEXP _vapour_vapour_read_raster_value_cpp(SEXP dsourceSEXP, SEXP colSEXP, SEXP rowSEXP, SEXP bandSEXP, SEXP band_output_typeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type col(colSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type row(rowSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type band_output_type(band_output_typeSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_read_raster_value_cpp(dsource, col, row, band, band_output_type));
+    return rcpp_result_gen;
+END_RCPP
+}
+// blocks_cpp1
+Rcpp::List blocks_cpp1(CharacterVector dsource, IntegerVector iblock, LogicalVector read);
+RcppExport SEXP _vapour_blocks_cpp1(SEXP dsourceSEXP, SEXP iblockSEXP, SEXP readSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type iblock(iblockSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type read(readSEXP);
+    rcpp_result_gen = Rcpp::wrap(blocks_cpp1(dsource, iblock, read));
+    return rcpp_result_gen;
+END_RCPP
+}
+// blocks_cpp
+Rcpp::List blocks_cpp(CharacterVector dsource, IntegerVector iblock, LogicalVector read);
+RcppExport SEXP _vapour_blocks_cpp(SEXP dsourceSEXP, SEXP iblockSEXP, SEXP readSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsource(dsourceSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type iblock(iblockSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type read(readSEXP);
+    rcpp_result_gen = Rcpp::wrap(blocks_cpp(dsource, iblock, read));
+    return rcpp_result_gen;
+END_RCPP
+}
+// raster_gdalinfo_app_cpp
+CharacterVector raster_gdalinfo_app_cpp(CharacterVector dsn, CharacterVector options);
+RcppExport SEXP _vapour_raster_gdalinfo_app_cpp(SEXP dsnSEXP, SEXP optionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type options(optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_gdalinfo_app_cpp(dsn, options));
+    return rcpp_result_gen;
+END_RCPP
+}
+// raster_vrt_cpp
+CharacterVector raster_vrt_cpp(CharacterVector dsn, NumericVector extent, CharacterVector projection, IntegerVector sds, IntegerVector bands, CharacterVector geolocation, LogicalVector nomd, IntegerVector overview, CharacterVector options);
+RcppExport SEXP _vapour_raster_vrt_cpp(SEXP dsnSEXP, SEXP extentSEXP, SEXP projectionSEXP, SEXP sdsSEXP, SEXP bandsSEXP, SEXP geolocationSEXP, SEXP nomdSEXP, SEXP overviewSEXP, SEXP optionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type extent(extentSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type projection(projectionSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type sds(sdsSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type bands(bandsSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type geolocation(geolocationSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type nomd(nomdSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type overview(overviewSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type options(optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_vrt_cpp(dsn, extent, projection, sds, bands, geolocation, nomd, overview, options));
+    return rcpp_result_gen;
+END_RCPP
+}
+// raster_buildvrt_cpp
+CharacterVector raster_buildvrt_cpp(std::vector<std::string> dsn, std::vector<std::string> options);
+RcppExport SEXP _vapour_raster_buildvrt_cpp(SEXP dsnSEXP, SEXP optionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type options(optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_buildvrt_cpp(dsn, options));
+    return rcpp_result_gen;
+END_RCPP
+}
+// raster_warp_file_cpp
+List raster_warp_file_cpp(CharacterVector source_filename, CharacterVector target_crs, NumericVector target_extent, IntegerVector target_dim, CharacterVector target_filename, IntegerVector bands, CharacterVector resample, LogicalVector silent, CharacterVector band_output_type, CharacterVector warp_options, CharacterVector transformation_options);
+RcppExport SEXP _vapour_raster_warp_file_cpp(SEXP source_filenameSEXP, SEXP target_crsSEXP, SEXP target_extentSEXP, SEXP target_dimSEXP, SEXP target_filenameSEXP, SEXP bandsSEXP, SEXP resampleSEXP, SEXP silentSEXP, SEXP band_output_typeSEXP, SEXP warp_optionsSEXP, SEXP transformation_optionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type source_filename(source_filenameSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type target_crs(target_crsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type target_extent(target_extentSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type target_dim(target_dimSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type target_filename(target_filenameSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type bands(bandsSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type resample(resampleSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type silent(silentSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type band_output_type(band_output_typeSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type warp_options(warp_optionsSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type transformation_options(transformation_optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(raster_warp_file_cpp(source_filename, target_crs, target_extent, target_dim, target_filename, bands, resample, silent, band_output_type, warp_options, transformation_options));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_vapour_gdal_dsn_read_vector_stream", (DL_FUNC) &_vapour_gdal_dsn_read_vector_stream, 11},
+    {"_vapour_warp_general_cpp", (DL_FUNC) &_vapour_warp_general_cpp, 13},
+    {"_vapour_warp_suggest_cpp", (DL_FUNC) &_vapour_warp_suggest_cpp, 2},
+    {"_vapour_set_gdal_config_cpp", (DL_FUNC) &_vapour_set_gdal_config_cpp, 2},
+    {"_vapour_get_gdal_config_cpp", (DL_FUNC) &_vapour_get_gdal_config_cpp, 1},
     {"_vapour_cleanup_gdal_cpp", (DL_FUNC) &_vapour_cleanup_gdal_cpp, 0},
     {"_vapour_driver_gdal_cpp", (DL_FUNC) &_vapour_driver_gdal_cpp, 1},
     {"_vapour_driver_id_gdal_cpp", (DL_FUNC) &_vapour_driver_id_gdal_cpp, 1},
     {"_vapour_layer_names_gdal_cpp", (DL_FUNC) &_vapour_layer_names_gdal_cpp, 1},
     {"_vapour_drivers_list_gdal_cpp", (DL_FUNC) &_vapour_drivers_list_gdal_cpp, 0},
     {"_vapour_proj_to_wkt_gdal_cpp", (DL_FUNC) &_vapour_proj_to_wkt_gdal_cpp, 1},
+    {"_vapour_crs_is_lonlat_cpp", (DL_FUNC) &_vapour_crs_is_lonlat_cpp, 1},
     {"_vapour_register_gdal_cpp", (DL_FUNC) &_vapour_register_gdal_cpp, 0},
     {"_vapour_version_gdal_cpp", (DL_FUNC) &_vapour_version_gdal_cpp, 0},
+    {"_vapour_version_proj_cpp", (DL_FUNC) &_vapour_version_proj_cpp, 0},
     {"_vapour_vsi_list_gdal_cpp", (DL_FUNC) &_vapour_vsi_list_gdal_cpp, 1},
     {"_vapour_feature_count_gdal_cpp", (DL_FUNC) &_vapour_feature_count_gdal_cpp, 4},
+    {"_vapour_projection_info_gdal_cpp", (DL_FUNC) &_vapour_projection_info_gdal_cpp, 3},
+    {"_vapour_report_fields_gdal_cpp", (DL_FUNC) &_vapour_report_fields_gdal_cpp, 3},
+    {"_vapour_vapour_geom_name_cpp", (DL_FUNC) &_vapour_vapour_geom_name_cpp, 4},
+    {"_vapour_vapour_layer_extent_cpp", (DL_FUNC) &_vapour_vapour_layer_extent_cpp, 4},
     {"_vapour_gdal_dsn_read_geom_all", (DL_FUNC) &_vapour_gdal_dsn_read_geom_all, 5},
     {"_vapour_gdal_dsn_read_geom_ij", (DL_FUNC) &_vapour_gdal_dsn_read_geom_ij, 6},
     {"_vapour_gdal_dsn_read_geom_ia", (DL_FUNC) &_vapour_gdal_dsn_read_geom_ia, 6},
@@ -570,27 +790,31 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_gdal_dsn_read_fields_ij", (DL_FUNC) &_vapour_gdal_dsn_read_fields_ij, 6},
     {"_vapour_gdal_dsn_read_fields_ia", (DL_FUNC) &_vapour_gdal_dsn_read_fields_ia, 6},
     {"_vapour_gdal_dsn_read_fields_fa", (DL_FUNC) &_vapour_gdal_dsn_read_fields_fa, 6},
-    {"_vapour_gdal_read_fids_all", (DL_FUNC) &_vapour_gdal_read_fids_all, 4},
-    {"_vapour_gdal_read_fids_ij", (DL_FUNC) &_vapour_gdal_read_fids_ij, 5},
-    {"_vapour_gdal_read_fids_ia", (DL_FUNC) &_vapour_gdal_read_fids_ia, 5},
-    {"_vapour_geometry_cpp", (DL_FUNC) &_vapour_geometry_cpp, 6},
-    {"_vapour_geometry_cpp_limit_skip", (DL_FUNC) &_vapour_geometry_cpp_limit_skip, 7},
-    {"_vapour_projection_info_gdal_cpp", (DL_FUNC) &_vapour_projection_info_gdal_cpp, 3},
+    {"_vapour_gdal_dsn_read_fids_all", (DL_FUNC) &_vapour_gdal_dsn_read_fids_all, 4},
+    {"_vapour_gdal_dsn_read_fids_ij", (DL_FUNC) &_vapour_gdal_dsn_read_fids_ij, 5},
+    {"_vapour_gdal_dsn_read_fids_ia", (DL_FUNC) &_vapour_gdal_dsn_read_fids_ia, 5},
     {"_vapour_read_fields_gdal_cpp", (DL_FUNC) &_vapour_read_fields_gdal_cpp, 7},
     {"_vapour_read_geometry_gdal_cpp", (DL_FUNC) &_vapour_read_geometry_gdal_cpp, 8},
-    {"_vapour_read_names_gdal_cpp", (DL_FUNC) &_vapour_read_names_gdal_cpp, 6},
-    {"_vapour_report_fields_gdal_cpp", (DL_FUNC) &_vapour_report_fields_gdal_cpp, 3},
-    {"_vapour_vapour_geom_name_cpp", (DL_FUNC) &_vapour_vapour_geom_name_cpp, 4},
-    {"_vapour_vapour_layer_extent_cpp", (DL_FUNC) &_vapour_vapour_layer_extent_cpp, 4},
+    {"_vapour_read_fids_gdal_cpp", (DL_FUNC) &_vapour_read_fids_gdal_cpp, 6},
     {"_vapour_raster_gcp_gdal_cpp", (DL_FUNC) &_vapour_raster_gcp_gdal_cpp, 1},
+    {"_vapour_raster_has_geolocation_gdal_cpp", (DL_FUNC) &_vapour_raster_has_geolocation_gdal_cpp, 2},
+    {"_vapour_raster_list_geolocation_gdal_cpp", (DL_FUNC) &_vapour_raster_list_geolocation_gdal_cpp, 2},
     {"_vapour_raster_info_gdal_cpp", (DL_FUNC) &_vapour_raster_info_gdal_cpp, 2},
     {"_vapour_raster_extent_cpp", (DL_FUNC) &_vapour_raster_extent_cpp, 1},
-    {"_vapour_raster_io_gdal_cpp", (DL_FUNC) &_vapour_raster_io_gdal_cpp, 5},
+    {"_vapour_raster_io_gdal_cpp", (DL_FUNC) &_vapour_raster_io_gdal_cpp, 7},
     {"_vapour_sds_list_gdal_cpp", (DL_FUNC) &_vapour_sds_list_gdal_cpp, 1},
     {"_vapour_sds_list_list_gdal_cpp", (DL_FUNC) &_vapour_sds_list_list_gdal_cpp, 1},
-    {"_vapour_warp_in_memory_gdal_cpp", (DL_FUNC) &_vapour_warp_in_memory_gdal_cpp, 12},
-    {"_vapour_vapour_read_raster_block_cpp", (DL_FUNC) &_vapour_vapour_read_raster_block_cpp, 5},
+    {"_vapour_vapour_read_raster_block_cpp", (DL_FUNC) &_vapour_vapour_read_raster_block_cpp, 7},
     {"_vapour_vapour_write_raster_block_cpp", (DL_FUNC) &_vapour_vapour_write_raster_block_cpp, 5},
+    {"_vapour_vapour_create_copy_cpp", (DL_FUNC) &_vapour_vapour_create_copy_cpp, 3},
+    {"_vapour_vapour_create_cpp", (DL_FUNC) &_vapour_vapour_create_cpp, 8},
+    {"_vapour_vapour_read_raster_value_cpp", (DL_FUNC) &_vapour_vapour_read_raster_value_cpp, 5},
+    {"_vapour_blocks_cpp1", (DL_FUNC) &_vapour_blocks_cpp1, 3},
+    {"_vapour_blocks_cpp", (DL_FUNC) &_vapour_blocks_cpp, 3},
+    {"_vapour_raster_gdalinfo_app_cpp", (DL_FUNC) &_vapour_raster_gdalinfo_app_cpp, 2},
+    {"_vapour_raster_vrt_cpp", (DL_FUNC) &_vapour_raster_vrt_cpp, 9},
+    {"_vapour_raster_buildvrt_cpp", (DL_FUNC) &_vapour_raster_buildvrt_cpp, 2},
+    {"_vapour_raster_warp_file_cpp", (DL_FUNC) &_vapour_raster_warp_file_cpp, 11},
     {NULL, NULL, 0}
 };
 

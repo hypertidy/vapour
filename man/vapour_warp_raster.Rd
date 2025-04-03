@@ -6,27 +6,30 @@
 \usage{
 vapour_warp_raster(
   x,
-  bands = 1L,
+  bands = NULL,
   extent = NULL,
   dimension = NULL,
   projection = "",
   set_na = TRUE,
-  source_wkt = NULL,
+  source_projection = NULL,
   source_extent = 0,
   resample = "near",
   silent = TRUE,
   ...,
-  source_geotransform = 0,
-  geotransform = NULL,
   band_output_type = "",
   warp_options = "",
-  transformation_options = ""
+  transformation_options = "",
+  open_options = "",
+  options = "",
+  nomd = FALSE,
+  overview = -1L,
+  nara = FALSE
 )
 }
 \arguments{
 \item{x}{vector of data source names (file name or URL or database connection string)}
 
-\item{bands}{index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used)}
+\item{bands}{index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used, the default)}
 
 \item{extent}{extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'}
 
@@ -36,7 +39,7 @@ vapour_warp_raster(
 
 \item{set_na}{NOT IMPLEMENTED logical, should 'NODATA' values be set to \code{NA}}
 
-\item{source_wkt}{optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)}
+\item{source_projection}{optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)}
 
 \item{source_extent}{extent of the source raster, used to override/augment incorrect source metadata}
 
@@ -46,94 +49,128 @@ vapour_warp_raster(
 
 \item{...}{unused}
 
-\item{source_geotransform}{DEPRECATED use 'source_extent' (override the native geotransform of the source)}
-
-\item{geotransform}{DEPRECATED use 'extent' the affine geotransform of the warped raster}
-
 \item{band_output_type}{numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64' but see details in \code{\link[=vapour_read_raster]{vapour_read_raster()}}}
 
 \item{warp_options}{character vector of options, as in gdalwarp -wo - see Details}
 
-\item{transformation_options}{character vector of options, as in gdalwarp -to}
+\item{transformation_options}{character vector of options, as in gdalwarp -to see Details}
+
+\item{open_options}{character vector of options, as in gdalwarp -oo - see Details}
+
+\item{options}{character vectors of options as per the gdalwarp command line}
+
+\item{nomd}{if \code{TRUE} the Metadata tag is removed from the resulting VRT (it can be quite substantial)}
+
+\item{overview}{pick an integer overview from the source (0L is highest resolution, default -1L does nothing)}
+
+\item{nara}{if 'TRUE' return in nativeRaster format}
 }
 \value{
 list of vectors (only 1 for 'band') of numeric values, in raster order
 }
 \description{
 Read a window of data from a GDAL raster source through a warp specification.
-The warp specification is provided by 'extent',
-'dimension', and 'projection' properties of the transformed output.
+The warp specification is provided by 'extent', 'dimension', and 'projection'
+properties of the transformed output.
 }
 \details{
 Any bands may be read, including repeats.
 
 This function is not memory safe, the source is left on disk but the output
 raster is all computed in memory so please be careful with very large values
-for 'dimension'. \code{1000 * 1000 * 8} for 1000 columns, 1000 rows and floating point
-double type will be 8Mb.
+for 'dimension'. \code{1000 * 1000 * 8} for 1000 columns, 1000 rows and floating
+point double type will be 8Mb.
 
-There's control over the output type, and is auto-detected from the source (raw/Byte, integer/Int32, numeric/Float64) or
-can be set with 'band_output_type'.
+There's control over the output type, and is auto-detected from the source
+(raw/Byte, integer/Int32, numeric/Float64) or can be set with
+'band_output_type'.
 
-'projection' refers to the full Well-Known-Text specification of a coordinate reference
-system. See \code{\link[=vapour_srs_wkt]{vapour_srs_wkt()}} for conversion from PROJ.4 string to WKT. Any string
-accepted by GDAL may be used for 'projection' or 'source_wkt', including EPSG strings, PROJ4 strings, and
-file names. Note that this argument was named 'wkt' up until version 0.8.0.
+'projection' refers to any projection string for a CRS understood by GDAL.
+This includes the full Well-Known-Text specification of a coordinate
+reference system, PROJ strings, "AUTH:CODE" types, and others. See
+\code{\link[=vapour_srs_wkt]{vapour_srs_wkt()}} for conversion from PROJ.4 string to WKT, and
+\code{\link[=vapour_raster_info]{vapour_raster_info()}} and \code{\link[=vapour_layer_info]{vapour_layer_info()}} for various formats
+available from a data source. Any string accepted by GDAL may be used for
+'projection' or 'source_projection', including EPSG strings, PROJ4 strings,
+and file names. Note that this argument was named 'wkt' up until version
+0.8.0.
 
 'extent' is the four-figure xmin,xmax,ymin,ymax outer corners of corner pixels
 
 'dimension' is the pixel dimensions of the output, x (ncol) then y (nrow).
 
-Values for missing data are not yet handled, just returned
-as-is. Note that there may be regions of "zero data" in a warped output,
-separate from propagated missing "NODATA" values in the source.
+Options for missing data are not yet handled, just returned as-is. Note that
+there may be regions of "zero data" in a warped output, separate from
+propagated missing "NODATA" values in the source.
 
-Argument 'source_wkt' may be used to assign the projection of the source, 'source_extent'
-to assign the extent of the source. Sometimes both are required.
+Argument 'source_projection' may be used to assign the projection of the
+source, 'source_extent' to assign the extent of the source. Sometimes both
+are required. Note, this is now better done by creating 'VRT', see \code{\link[=vapour_vrt]{vapour_vrt()}}
+for assigning the source projection, extent, and some other options.
 
-If multiple sources are specified via 'x' and either 'source_wkt' or 'source_extent' are provided, these
-are applied to every source even if they have valid values already. If this is not sensible please use VRT
-to wrap the multiple sources first (see the gdalio package for some in-dev ideas).
+If multiple sources are specified via 'x' and either 'source_projection' or
+'source_extent' are provided, these are applied to every source even if they
+have valid values already. If this is not sensible please use VRT to wrap the
+multiple sources first.
 
-Wild combinations of
-'source_extent' and/or 'extent' may be used for arbitrary flip orientations, scale and offset. For
-expert usage only. Old versions allowed transform input for target and source but this is now disabled (maybe we'll write
-a new wrapper for that).
+Wild combinations of 'source_extent' and/or 'extent' may be used for
+arbitrary flip orientations, scale and offset. For expert usage only. Old
+versions allowed transform input for target and source but this is now
+disabled (maybe we'll write a new wrapper for that).
 }
 \section{Options}{
 
 
-The 'warp_options' arguments are for 'warp options -wo',
+The various options are convenience arguments  for 'warp options -wo',
+transformation options -to', 'open options -oo', and 'options' for any other
+arguments in gdalwarp. There are no 'creation options -co' or 'dataset output
+options -doo', because these are not supported by the MEM driver.
 
-'transformation options -to', 'creation options -co',
-'open options -oo', or 'dataset open options -doo', and other arguments that use named options in gdalwarp.
-
-To input use the appropriate argument 'warp_options' for '-wo', 'transformation_options' for '-to'.
-
-'warp_options = c("SAMPLE_GRID=YES", "SAMPLE_STEPS=30") '
-
-Do not include the '-wo' or the '-to', and make sure each is a separate character element. These are added in turn
-with '-wo' or '-to' prepended to the string list in the implementation.
-
-There are no creation options '-co' available, because the MEM driver is used. This might changed, see for example 'vapour_write_raster_block'.
-We might add '-oo', '-doo' in future.
+All 'warp_options' are paired with a '-wo' declaration and similarly for '-to', and '-oo',
+this is purely a convenience, since 'options' itself can be used for these as well but we recommend using
+the individual arguments.
+An example for warp options is  \code{warp_options = c("SAMPLE_GRID=YES", "SAMPLE_STEPS=30")} and one for
+general arguments might be
+'options = c("-ovr", "AUTO", "-nomd", "-cutline", "/path/to/cut.gpkg", "-crop_to_cutline")'.  If they would
+be separated by spaces on the command line then include as separate elements in the options character vector.
 
 See \href{https://gdal.org/api/gdalwarp_cpp.html#_CPPv4N15GDALWarpOptions16papszWarpOptionsE}{GDALWarpOptions} for '-wo'.
 
 See \href{https://gdal.org/api/gdal_alg.html#_CPPv432GDALCreateGenImgProjTransformer212GDALDatasetH12GDALDatasetHPPc}{GDAL transformation options} for '-to'.
 
-Note we already apply the following gdalwarp arguments based on input R arguments to this function.
-\itemize{
-\item \strong{-of}      MEM is hardcoded, but may be extended in future
-\item \strong{-t_srs}   set via 'projection'
-\item \strong{-s_srs}   set via 'source_wkt'
-\item \strong{-te}      set via 'extent'
-\item \strong{-ts}      set via 'dimension'
-\item \strong{-r}       set via 'resample'
+See \href{https://gdal.org/programs/gdalwarp.html}{GDALWARP command line app} for further details.
+
+Note we already apply the following gdalwarp arguments based on input R
+arguments to this function.
+
+\describe{
+\item{-of}{MEM is hardcoded, but may be extended in future}
+\item{-t_srs}{set via 'projection'}
+\item{-s_srs}{set via 'source_projection'}
+\item{-te}{set via 'extent'}
+\item{-ts}{set via 'dimension'}
+\item{-r}{set via 'resample'}
+\item{-ot}{set via 'band_output_type'}
+\item{-te_srs}{ not supported}
+\item{-a_ullr}{(not a gdalwarp argument, but we do analog) set via 'source_extent' use \code{\link[=vapour_vrt]{vapour_vrt()}} instead}
 }
 
-note that 'source_extent' does nothing atm, there's no -se (you have to use VRT and we'll do that via new /vsivrt/ ...)
-bundle any required options into 'options'.
+In future all 'source_*' arguments may be deprecated in favour of
+augmentation by 'vapour_vrt()'.
+
+Common inputs for \code{projection} are WKT variants, 'AUTH:CODE's e.g.
+'EPSG:3031', the 'OGC:CRS84' for lon,lat WGS84, 'ESRI:code' and other
+authority variants, and datum names such as 'WGS84','NAD27' recognized by
+PROJ itself.
+
+See help for 'SetFromUserInput' in 'OGRSpatialReference', and
+'proj_create_crs_to_crs'.
+
+\href{https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs}{c.proj_create_crs_to_crs}
+
+\href{https://proj.org/development/reference/functions.html#c.proj_create}{c.proj_create}
+
+\href{https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796}{SetFromUserInput}
 }
 
 \examples{

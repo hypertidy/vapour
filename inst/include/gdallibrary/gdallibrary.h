@@ -4,6 +4,8 @@
 #include "ogrsf_frmts.h"
 #include "gdal_priv.h"
 #include "CollectorList.h"
+#include "gdalraster/gdalraster.h"
+#include "ogr_srs_api.h"
 
 namespace gdallibrary {
 using namespace Rcpp;
@@ -25,10 +27,30 @@ inline void osr_cleanup() {
   OSRCleanup();
 }
 
+
+inline IntegerVector gdal_set_config_option(CharacterVector option, CharacterVector value) 
+{
+  CPLSetConfigOption( option[0], value[0] );
+  
+  
+  return 1;
+}
+
+inline CharacterVector gdal_get_config_option(CharacterVector option){
+  CharacterVector out(1);
+  const char *str = CPLGetConfigOption(option[0], nullptr);
+  if (str) 
+  {
+    out[0] = str;
+  }
+  return out;
+}
+
+
 inline CharacterVector gdal_layer_geometry_name(OGRLayer *poLayer) {
-
+  
   poLayer->ResetReading();
-
+  
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   int gfields = poFDefn->GetGeomFieldCount();
   CharacterVector out(gfields);
@@ -42,10 +64,13 @@ inline CharacterVector gdal_layer_geometry_name(OGRLayer *poLayer) {
   return out;
 }
 inline NumericVector gdal_layer_extent(OGRLayer *poLayer) {
-    
-  OGREnvelope poEnvelope;
-  double err = poLayer ->GetExtent(&poEnvelope,true);
   
+  OGREnvelope poEnvelope;
+  OGRErr err; 
+  err = poLayer ->GetExtent(&poEnvelope,true);
+  if (err != CE_None) {
+    Rprintf("problem in get extent\n");
+  }
   NumericVector out(4); 
   out[0] = poEnvelope.MinX;
   out[1] = poEnvelope.MaxX;
@@ -56,26 +81,42 @@ inline NumericVector gdal_layer_extent(OGRLayer *poLayer) {
 
 // this force function takes cheap count, checks, then more expensive, checks,
 // then iterates and resets reading
-inline double force_layer_feature_count(OGRLayer *poLayer) {
-  double out;
-  out = (double)poLayer->GetFeatureCount(false);
+inline R_xlen_t force_layer_feature_count(OGRLayer *poLayer) {
+  R_xlen_t out;
+  out = poLayer->GetFeatureCount(false);
   if (out == -1) {
-    out = (double)poLayer->GetFeatureCount(true);
+    out = poLayer->GetFeatureCount(true);
   }
   if (out == -1) {
     out = 0;
     poLayer->ResetReading();
-    while(poLayer->GetNextFeature() != NULL) {
-      out++;
+    OGRFeature *poFeature;  
+    while( (poFeature = poLayer->GetNextFeature()) != NULL )
+    {
+      out++; 
+      OGRFeature::DestroyFeature( poFeature );
     }
     poLayer->ResetReading();
   }
   return out;
 }
+inline IntegerVector proj_version()
+{
+  Rcpp::IntegerVector out(3);
+
+   
+  int num1; int num2; int num3; 
+  OSRGetPROJVersion(&num1, &num2, &num3); 
+  out[0] = num1; 
+  out[1] = num2; 
+  out[2] = num3; 
+  return out;
+}
+
 inline CharacterVector gdal_version()
 {
   Rcpp::CharacterVector out(1);
-
+  
   out[0] = GDALVersionInfo("--version");
   return out;
 }
@@ -85,38 +126,63 @@ inline OGRLayer *gdal_layer(GDALDataset *poDS, IntegerVector layer, CharacterVec
   OGRLayer  *poLayer;
   OGRPolygon poly;
   OGRLinearRing ring;
-
+  
+  bool use_extent_filter = false;
   if (ex.length() == 4) {
-    ring.addPoint(ex[0], ex[2]); //xmin, ymin
-    ring.addPoint(ex[0], ex[3]); //xmin, ymax
-    ring.addPoint(ex[1], ex[3]); //xmax, ymax
-    ring.addPoint(ex[1], ex[2]); //xmax, ymin
-    ring.closeRings();
-    poly.addRing(&ring);
+    if (ex[1] <= ex[0] || ex[3] <= ex[2]) {
+      if (ex[1] <= ex[0]) {
+        Rcpp::warning("extent filter invalid (xmax <= xmin), ignoring");
+      }
+      if (ex[3] <= ex[2]) {
+        Rcpp::warning("extent filter invalid (ymax <= ymin), ignoring");
+      }
+    } else {    
+      use_extent_filter = true;
+      ring.addPoint(ex[0], ex[2]); //xmin, ymin
+      ring.addPoint(ex[0], ex[3]); //xmin, ymax
+      ring.addPoint(ex[1], ex[3]); //xmax, ymax
+      ring.addPoint(ex[1], ex[2]); //xmax, ymin
+      ring.closeRings();
+      poly.addRing(&ring);
+    }
   }
-
+  
+  // Rcpp::Function vapour_getenv_sql_dialect("vapour_getenv_dialect"); 
+  // const char *sql_dialect = (const char *) vapour_getenv_sql_dialect(); 
+  // 
+  Environment vapour = Environment::namespace_env("vapour");
+  
+  // Picking up  function from this package
+  Function vapour_getenv_sql_dialect = vapour["vapour_getenv_sql_dialect"];
+  //const char *sql_dialect = (const char *) vapour_getenv_sql_dialect();
+  CharacterVector R_dialect = vapour_getenv_sql_dialect(); 
+  const char *sql_dialect = (const char *)R_dialect[0]; 
+  
+  
+  
   if (sql[0] != "") {
-    if (ex.length() == 4) {
+    if (use_extent_filter) {
       poLayer =  poDS->ExecuteSQL(sql[0],
                                   &poly,
-                                  NULL );
+                                  sql_dialect );
     } else {
       poLayer =  poDS->ExecuteSQL(sql[0],
                                   NULL,
-                                  NULL );
+                                  sql_dialect );
     }
-
+    
     if (poLayer == NULL) {
       Rcpp::stop("SQL execution failed.\n");
     }
-
+    
   } else {
     int nlayer = poDS->GetLayerCount();
     if (layer[0] >= nlayer) {
-      Rprintf("layer count: %i\n", nlayer);
-      Rprintf("layer index: %i\n", layer[0]);
+      //Rprintf("layer count: %i\n", nlayer);
+      //Rprintf("layer index: %i\n", layer[0]);
       Rcpp::stop("layer index exceeds layer count");
     }
+    
     poLayer =  poDS->GetLayer(layer[0]);
   }
   if (poLayer == NULL) {
@@ -142,13 +208,13 @@ inline List gdal_list_drivers()
   Rcpp::LogicalVector isvirt(n);
   for (int idriver = 0; idriver < n; idriver++) {
     GDALDriver *dr = GetGDALDriverManager()->GetDriver(idriver);
-    sname(idriver) = GDALGetDriverShortName(dr);
-    lname(idriver) = GDALGetDriverLongName(dr);
-    isvector(idriver) = (dr->GetMetadataItem(GDAL_DCAP_VECTOR) != NULL);
-    israster(idriver) = (dr->GetMetadataItem(GDAL_DCAP_RASTER) != NULL);
-    iscopy(idriver) = (dr->GetMetadataItem(GDAL_DCAP_CREATECOPY) != NULL);
-    iscreate(idriver) = (dr->GetMetadataItem(GDAL_DCAP_CREATE) != NULL);
-    isvirt(idriver) = (dr->GetMetadataItem(GDAL_DCAP_VIRTUALIO) != NULL);
+    sname[idriver] = GDALGetDriverShortName(dr);
+    lname[idriver] = GDALGetDriverLongName(dr);
+    isvector[idriver] = (dr->GetMetadataItem(GDAL_DCAP_VECTOR) != NULL);
+    israster[idriver] = (dr->GetMetadataItem(GDAL_DCAP_RASTER) != NULL);
+    iscopy[idriver] = (dr->GetMetadataItem(GDAL_DCAP_CREATECOPY) != NULL);
+    iscreate[idriver] = (dr->GetMetadataItem(GDAL_DCAP_CREATE) != NULL);
+    isvirt[idriver] = (dr->GetMetadataItem(GDAL_DCAP_VIRTUALIO) != NULL);
   }
   Rcpp::List out = Rcpp::List::create(Rcpp::Named("driver") = sname,
                                       Rcpp::Named("name") = lname,
@@ -168,21 +234,28 @@ inline List gdal_list_drivers()
 // (between  names[i] = poFieldDefn->GetNameRef();
 // and out.attr("names") = names;
 // and remove the GetGeomFieldCount from the sum of n fields
-inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, int n_features, bool int64_as_string,
+inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, R_xlen_t n_features, bool int64_as_string,
                                        Rcpp::CharacterVector fid_column) {
-
+  
   if (fid_column.size() > 1)
     Rcpp::stop("FID column name should be a length 1 character vector"); // #nocov
-
+  
   // modified MDS
   //int n = poFDefn->GetFieldCount() + poFDefn->GetGeomFieldCount() + fid_column.size();
-  int n = poFDefn->GetFieldCount() + fid_column.size();
-
+  int n = poFDefn->GetFieldCount(); 
+  
   Rcpp::List out(n);
   Rcpp::CharacterVector names(n);
   for (int i = 0; i < poFDefn->GetFieldCount(); i++) {
     OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn(i);
+    
+    /// stolen directly from sf and adapted thanks Edzer Pebesma
     switch (poFieldDefn->GetType()) {
+    case OFTWideString:
+    case OFTWideStringList: {
+      // don't do anything these are deprecated (and probably will cause version issues ...)
+    }
+      break;
     case OFTInteger: {
       if (poFieldDefn->GetSubType() == OFSTBoolean)
         out[i] = Rcpp::LogicalVector(n_features);
@@ -195,11 +268,12 @@ inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, int n_features, 
       ret.attr("class") = "Date";
       out[i] = ret;
     } break;
+    case OFTTime: 
     case OFTDateTime: {
       Rcpp::NumericVector ret(n_features);
       Rcpp::CharacterVector cls(2);
-      cls(0) = "POSIXct";
-      cls(1) = "POSIXt";
+      cls[0] = "POSIXct";
+      cls[1] = "POSIXt";
       ret.attr("class") = cls;
       out[i] = ret;
     } break;
@@ -222,14 +296,13 @@ inline Rcpp::List allocate_fields_list(OGRFeatureDefn *poFDefn, int n_features, 
       out[i] = Rcpp::List(n_features);
       break;
     case OFTString:
-    default:
       out[i] = Rcpp::CharacterVector(n_features);
       break;
     }
     names[i] = poFieldDefn->GetNameRef();
   }
-
-
+  
+  
   out.attr("names") = names;
   return out;
 }
@@ -251,17 +324,14 @@ inline List gdal_read_fields(CharacterVector dsn,
     Rcpp::stop("Open failed.\n");
   }
   OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
-
+  
   OGRFeature *poFeature;
-
+  
   //double  nFeature = force_layer_feature_count(poLayer);
   // trying to fix SQL problem 2020-10-05
-  double nFeature = poLayer->GetFeatureCount();
-  if (nFeature < 1) {
-    //Rprintf("force count\n");
-    nFeature = force_layer_feature_count(poLayer);
-  }
-
+  R_xlen_t nFeature = (R_xlen_t)poLayer->GetFeatureCount();
+  
+  
   //Rprintf("%i\n", nFeature);
   if (nFeature > MAX_INT) {
     Rcpp::warning("Number of features exceeds maximal number able to be read");
@@ -277,29 +347,29 @@ inline List gdal_read_fields(CharacterVector dsn,
       }
     }
   }
-
+  
   if (nFeature < 1) {
     if (skip_n[0] > 0) {
       Rcpp::stop("no features to be read (is 'skip_n' set too high?");
     }
     Rcpp::stop("no features to be read");
   }
-
+  
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   bool int64_as_string = false;
-  List out = allocate_fields_list(poFDefn, nFeature, int64_as_string, fid_column_name);
+  List out = allocate_fields_list(poFDefn, (int)nFeature, int64_as_string, fid_column_name);
   int iFeature = 0;  // always increment iFeature, it is position through the loop
   int lFeature = 0; // keep a count of the features we actually send out
   while((poFeature = poLayer->GetNextFeature()) != NULL)
   {
-
+    
     if (lFeature >= nFeature) {
       break;
     }
-    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+    //OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
     // only increment lFeature if we actually keep this one
     if (iFeature >= skip_n[0]) {  // we are at skip_n
-
+      
       int iField;
       for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
       {
@@ -309,20 +379,20 @@ inline List gdal_read_fields(CharacterVector dsn,
           nv = out[iField];
           nv[lFeature] = poFeature->GetFieldAsInteger( iField );
         }
-
+        
         if( poFieldDefn->GetType() == OFTReal || poFieldDefn->GetType() == OFTInteger64) {
           NumericVector nv;
           nv = out[iField];
           nv[lFeature] = poFeature->GetFieldAsDouble( iField );
         }
-
+        
         if( poFieldDefn->GetType() == OFTString || poFieldDefn->GetType() == OFTDate || poFieldDefn->GetType() == OFTTime || poFieldDefn->GetType() == OFTDateTime) {
           CharacterVector nv;
           nv = out[iField];
           nv[lFeature] = poFeature->GetFieldAsString( iField );
-
+          
         }
-
+        
         if( poFieldDefn->GetType() == OFTBinary ) {
           Rcpp::List nv;
           nv = out[iField];
@@ -330,13 +400,13 @@ inline List gdal_read_fields(CharacterVector dsn,
           int bytecount;
           const GByte *bin = poFeature->GetFieldAsBinary(iField, &bytecount);
           RawVector rb(bytecount);
-         for (int ib = 0; ib < bytecount; ib++) {
-           rb[ib] = bin[ib];
-         }
-         nv[lFeature] = rb;
+          for (int ib = 0; ib < bytecount; ib++) {
+            rb[ib] = bin[ib];
+          }
+          nv[lFeature] = rb;
         }
-
-
+        
+        
       }
       // so we start counting
       lFeature = lFeature + 1;
@@ -344,6 +414,8 @@ inline List gdal_read_fields(CharacterVector dsn,
     // always increment iFeature, it's position through the loop
     iFeature = iFeature + 1;
     OGRFeature::DestroyFeature( poFeature );
+    //if (iFeature % 1000 == 0)   Rprintf("fields %i\n", iFeature);
+    
   }
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -360,43 +432,41 @@ inline List gdal_read_fields(CharacterVector dsn,
 }
 
 
-inline DoubleVector gdal_feature_count(CharacterVector dsn,
-                                       IntegerVector layer, CharacterVector sql, NumericVector ex) {
-  GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
+inline NumericVector gdal_feature_count(CharacterVector dsn,
+                                        IntegerVector layer, CharacterVector sql, NumericVector ex) {
+  GDALDataset       *poDS = nullptr;
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_READONLY | GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
   {
     Rcpp::stop("Open failed.\n");
   }
-
+  
   OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
-
-  poLayer->ResetReading();
+  
   //  double nFeature = force_layer_feature_count(poLayer);
   // trying to fix SQL problem 2020-10-05
-  double nFeature = poLayer->GetFeatureCount();
+  R_xlen_t nFeature = poLayer->GetFeatureCount();
   if (nFeature < 1) {
-    //Rprintf("force count\n");
     nFeature = force_layer_feature_count(poLayer);
   }
-
+  
   //Rprintf("%i\n", nFeature);
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
     poDS->ReleaseResultSet(poLayer);
   }
-  GDALClose( poDS );
-
-  DoubleVector out(1);
-  out[0] = nFeature;
+  GDALClose( (GDALDatasetH) poDS );
+  
+  NumericVector out(1);
+  out[0] = static_cast<double>(nFeature);
   return(out);
 }
 
 inline CharacterVector gdal_driver(CharacterVector dsn)
 {
-
+  
   GDALDataset       *poDS;
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GA_ReadOnly, NULL, NULL, NULL );
+  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_READONLY , NULL, NULL, NULL );  // gdal_driver(<any-type>)
   if( poDS == NULL )
   {
     Rcpp::stop("Open failed.\n");
@@ -409,8 +479,8 @@ inline CharacterVector gdal_driver(CharacterVector dsn)
 
 inline CharacterVector gdal_layer_names(CharacterVector dsn)
 {
-
-
+  
+  
   // remove sql 2020-05-31
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
@@ -448,29 +518,29 @@ inline List gdal_read_geometry(CharacterVector dsn,
     Rcpp::stop("Open failed.\n");
   }
   OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
-
+  
   OGRFeature *poFeature;
   poLayer->ResetReading();
-
+  
   //OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   CollectorList feature_xx;
   int iFeature = 0;
   int lFeature = 0;
   //int   nFeature = force_layer_feature_count(poLayer);
   // trying to fix SQL problem 2020-10-05
-  double nFeature = poLayer->GetFeatureCount();
+  R_xlen_t nFeature = poLayer->GetFeatureCount();
   if (nFeature < 1) {
     //Rprintf("force count\n");
     nFeature = force_layer_feature_count(poLayer);
   }
-
+  
   if (nFeature > MAX_INT) {
     nFeature = MAX_INT;
     Rcpp::warning("Number of features exceeds maximal number able to be read");
   }
-
-
-
+  
+  
+  
   if (limit_n[0] > 0) {
     if (limit_n[0] < nFeature) {
       nFeature = limit_n[0];
@@ -479,18 +549,18 @@ inline List gdal_read_geometry(CharacterVector dsn,
   if (nFeature < 1) {
     Rcpp::stop("no features to be read");
   }
-
-
-  int warncount = 0;
+  
+  
+  //int warncount = 0;
   while( (poFeature = poLayer->GetNextFeature()) != NULL )
   {
-
+    
     if (iFeature >= skip_n[0]) {  // we are at skip_n
-
+      
       OGRGeometry *poGeometry;
       poGeometry = poFeature->GetGeometryRef();
       if (poGeometry == NULL) {
-        warncount++;
+        //warncount++;
         feature_xx.push_back(R_NilValue);
         //if (warncount == 1) Rcpp::warning("at least one geometry is NULL, perhaps the 'sql' argument excludes the native geometry?\n(use 'SELECT * FROM ..') ");
       } else {
@@ -501,11 +571,11 @@ inline List gdal_read_geometry(CharacterVector dsn,
         if (what[0] == "geometry") {
           //https://github.com/r-spatial/sf/blob/798068d3044a65797c52bf3b42bc4a5d83b45e9a/src/gdal.cpp#L207
           Rcpp::RawVector raw(poGeometry->WkbSize());
-
+          
           //todo we probably need better err handling see sf handle_error
           poGeometry->exportToWkb(wkbNDR, &(raw[0]), wkbVariantIso);
           feature_xx.push_back(raw);
-
+          
         }
         if (what[0] == "text") {
           CharacterVector txt(1);
@@ -517,19 +587,19 @@ inline List gdal_read_geometry(CharacterVector dsn,
           }
           if (textformat[0] == "gml") {
             char *export_txt = NULL;
-
+            
             export_txt = poGeometry->exportToGML();
             txt[0] = export_txt;
             CPLFree(export_txt);
-
+            
           }
           if (textformat[0] == "kml") {
             char *export_txt = NULL;
-
+            
             export_txt = poGeometry->exportToKML();
             txt[0] = export_txt;
             CPLFree(export_txt);
-
+            
           }
           if (textformat[0] == "wkt") {
             //     // see buffer handling for SRS here which is where
@@ -575,11 +645,11 @@ inline List gdal_read_geometry(CharacterVector dsn,
           feature_xx.push_back(r_gtyp);
         }
       }
-
+      
       OGRFeature::DestroyFeature( poFeature );
       lFeature = lFeature + 1;
     }  //    if (iFeature >= skip_n[0]) {  // we are at skip_n
-
+    
     iFeature = iFeature + 1;
     if (limit_n[0] > 0 && lFeature >= limit_n[0]) {
       break;  // short-circuit for limit_n
@@ -594,139 +664,100 @@ inline List gdal_read_geometry(CharacterVector dsn,
     if (skip_n[0] > 0) {
       Rcpp::stop("no features to be read (is 'skip_n' set too high?");
     }
-
+    
     Rcpp::stop("no features to be read");
   }
-
+  
   return(feature_xx.vector());
 }
-
-
-
-inline List gdal_read_names(CharacterVector dsn,
-                            IntegerVector layer,
-                            CharacterVector sql,
-                            IntegerVector limit_n,
-                            IntegerVector skip_n,
-                            NumericVector ex)
-{
-
-  GDALDataset       *poDS;
-
-  poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR | GDAL_OF_READONLY, NULL, NULL, NULL );
-
-  if( poDS == NULL )
-  {
-    Rcpp::stop("Open failed.\n");
-  }
-
-
-  OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
-
-  OGRFeature *poFeature;
-  poLayer->ResetReading();
-
-  //OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-  CollectorList feature_xx;
-  int iFeature = 0;
-  int lFeature = 0;
-  // double   nFeature = force_layer_feature_count(poLayer);
-  // trying to fix SQL problem 2020-10-05
-  double nFeature = poLayer->GetFeatureCount();
-  if (nFeature < 1) {
-    //Rprintf("force count\n");
-    nFeature = force_layer_feature_count(poLayer);
-  }
-
-
-  if (nFeature > MAX_INT) {
-    Rcpp::warning("Number of features exceeds maximal number able to be read");
-    nFeature = MAX_INT;
-  }
-
-  if (limit_n[0] > 0) {
-    if (limit_n[0] < nFeature) {
-      nFeature = limit_n[0];
-
-    }
-  }
-
-  if (nFeature < 1) {
-    if (skip_n[0] > 0) {
-      Rcpp::stop("no features to be read (is 'skip_n' set too high?");
-    }
-
-    Rcpp::stop("no features to be read");
-  }
-
-  double aFID;
-  Rcpp::NumericVector rFID(1);
-
-  while( (poFeature = poLayer->GetNextFeature()) != NULL )
-  {
-
-    if (iFeature >= skip_n[0]) {
-      aFID = (double) poFeature->GetFID();
-      OGRFeature::DestroyFeature( poFeature );
-      rFID[0] = aFID;
-      feature_xx.push_back(Rcpp::clone(rFID));
-      lFeature++;
-    }
-    iFeature++;
-    if (limit_n[0] > 0 && lFeature >= limit_n[0]) {
-      break;  // short-circuit for limit_n
-    }
-
-  }
-  // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
-  if (sql[0] != "") {
-    poDS->ReleaseResultSet(poLayer);
-  }
-  GDALClose( poDS );
-
-  if (lFeature < 1) {
-    if (skip_n[0] > 0) {
-      Rcpp::stop("no features to be read (is 'skip_n' set too high?");
-    }
-
-    Rcpp::stop("no features to be read");
-  }
-  return(feature_xx.vector());
-}
-
 
 inline CharacterVector gdal_proj_to_wkt(CharacterVector proj_str) {
-  OGRSpatialReference oSRS;
-  char *pszWKT = NULL;
-  oSRS.SetFromUserInput(proj_str[0]);
-  oSRS.exportToWkt(&pszWKT);
-  CharacterVector out =  Rcpp::CharacterVector::create(pszWKT);
-  CPLFree(pszWKT);
+   OGRSpatialReference oSRS;
+   char *pszWKT = nullptr;
+   
+   //const char*  crs_in[] = {CHAR(STRING_ELT(proj_str, 0))};
+   
+   oSRS.SetFromUserInput((const char*) proj_str[0]);
+#if GDAL_VERSION_MAJOR >= 3
+   const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+   OGRErr err = oSRS.exportToWkt(&pszWKT, options);
+#else
+   OGRErr err = oSRS.exportToWkt(&pszWKT);
+#endif
 
+
+  CharacterVector out = Rcpp::CharacterVector::create("not a WKT string"); 
+  if (err) {
+     out =  Rcpp::CharacterVector::create(NA_STRING);
+   } else {
+     out =  Rcpp::CharacterVector::create(pszWKT);
+   }
+   if (pszWKT != nullptr) CPLFree(pszWKT);
+   
   return out;
 }
+
+
+// R version
+// inline CharacterVector gdal_proj_to_wkt(SEXP proj_str) {
+//   OGRSpatialReference oSRS;
+//   char *pszWKT = nullptr;
+//   const char*  crs_in[] = {CHAR(STRING_ELT(proj_str, 0))};
+//   
+//   oSRS.SetFromUserInput(*crs_in);
+// #if GDAL_VERSION_MAJOR >= 3
+//   const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+//   OGRErr err = oSRS.exportToWkt(&pszWKT, options);
+// #else
+//   OGRErr err = oSRS.exportToWkt(&pszWKT);
+// #endif
+//   
+//   //CharacterVector out; 
+//   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
+// 
+//   if (err) {
+//     SET_STRING_ELT(out, 0, NA_STRING);
+//   } else {
+//     SET_STRING_ELT(out, 0, Rf_mkChar(pszWKT));
+//   }
+//   UNPROTECT(1); 
+//   return out;
+// }
+
+inline LogicalVector gdal_crs_is_lonlat(SEXP proj_str) {
+  const char*  crs_in[] = {CHAR(STRING_ELT(proj_str, 0))};
+  
+  OGRSpatialReference oSRS; 
+  oSRS.SetFromUserInput(*crs_in);
+  //LogicalVector out = LogicalVector::create(false); 
+  SEXP out = PROTECT(Rf_allocVector(LGLSXP, 1));
+  SET_LOGICAL_ELT(out, 0, false); 
+  if (oSRS.IsGeographic()) {
+    SET_LOGICAL_ELT(out, 0, true); 
+
+  }
+  UNPROTECT(1); 
+  return out;
+}
+
 
 inline List gdal_projection_info(CharacterVector dsn,
                                  IntegerVector layer,
                                  CharacterVector sql)
 {
-  GDALDataset       *poDS;
+  
+  GDALDataset     *poDS = nullptr;
   poDS = (GDALDataset*) GDALOpenEx(dsn[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
-  if( poDS == NULL )
+  
+  if( poDS == nullptr )
   {
     Rcpp::stop("Open failed.\n");
   }
+  
   NumericVector zero(1);
   zero[0] = 0.0;
   OGRLayer *poLayer = gdal_layer(poDS, layer, sql, zero);
-
   OGRSpatialReference *SRS =  poLayer->GetSpatialRef();
-
-  
-  
-  
-  
-  
   
   //  char *proj;  // this gets cleaned up lower in the SRS==NULL else
   List info_out(6);
@@ -738,51 +769,50 @@ inline List gdal_projection_info(CharacterVector dsn,
   outnames[3] = "Wkt";
   outnames[4] = "EPSG";
   outnames[5] = "XML";
+  
   info_out.attr("names") = outnames;
-
-  if (SRS == NULL) {
+  if (SRS == nullptr) {
     //Rcpp::warning("null");
     // do nothing, or warn
     // e.g. .shp with no .prj
-  } else {
-    // Rcpp::warning("not null");
-    // SRS is not NULL, so explore validation
-    //  OGRErr err = SRS->Validate();
-    char *proj4 = NULL;
+  }  else {
+    //   // Rcpp::warning("not null");
+    //   // SRS is not NULL, so explore validation
+    //   //  OGRErr err = SRS->Validate();
+    char *proj4 = nullptr;
     SRS->exportToProj4(&proj4);
-    outproj[0] = proj4;
-    info_out[0] = Rcpp::clone(outproj);
-    CPLFree(proj4);
-
-    char *MI = NULL;
+    if (proj4 != nullptr) {
+      info_out[0] = CharacterVector::create(proj4); 
+      CPLFree(proj4);
+    }
+    char *MI = nullptr;
     SRS->exportToMICoordSys(&MI);
-    outproj[0] = MI;
-    info_out[1] = Rcpp::clone(outproj);
-    CPLFree(MI);
-
-    char *PWKT = NULL;
-    SRS->exportToPrettyWkt(&PWKT, false);
-    outproj[0] = PWKT;
-    info_out[2] = Rcpp::clone(outproj);
-    CPLFree(PWKT);
-
-    char *UWKT = NULL;
-    SRS->exportToWkt(&UWKT);
-    outproj[0] = UWKT;
-    info_out[3] = Rcpp::clone(outproj);
-    CPLFree(UWKT);
-
+    if (MI != nullptr) {
+      info_out[1] = CharacterVector::create(MI); 
+      CPLFree(MI);
+    } 
+    char *pwkt = nullptr;
+    SRS->exportToPrettyWkt(&pwkt);
+    if (pwkt != nullptr) {
+      info_out[2] = CharacterVector::create(pwkt); 
+      CPLFree(pwkt);
+    } 
+    char *uwkt = nullptr;
+    SRS->exportToWkt(&uwkt);
+    if (uwkt != nullptr) {
+      info_out[3] = CharacterVector::create(uwkt); 
+      CPLFree(uwkt);
+    } 
     int epsg = SRS->GetEPSGGeogCS();
-    info_out[4] = epsg;
-
-    char *XML = NULL;
-    SRS->exportToXML(&XML);
-    outproj[0] = XML;
-    info_out[5] = Rcpp::clone(outproj);
-    CPLFree(XML);
+    info_out[4] =  IntegerVector::create(epsg);  
+    
+    char *xml = nullptr;
+    SRS->exportToXML(&xml);
+    if (xml != nullptr) {
+      info_out[5] = CharacterVector::create(xml); 
+      CPLFree(xml);
+    }
   }
-  
-  
 
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
@@ -797,23 +827,23 @@ inline CharacterVector gdal_report_fields(Rcpp::CharacterVector dsource,
                                           Rcpp::IntegerVector layer = 0,
                                           Rcpp::CharacterVector sql = "")
 {
-
+  
   GDALDataset       *poDS;
   poDS = (GDALDataset*) GDALOpenEx(dsource[0], GDAL_OF_VECTOR, NULL, NULL, NULL );
   if( poDS == NULL )
   {
     Rcpp::stop("Open failed.\n");
   }
-
+  
   OGRLayer *poLayer = gdal_layer(poDS, layer, sql, NumericVector::create(0));
-
+  
   OGRFeature *poFeature;
   poLayer->ResetReading();
-
+  
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
   //int iFeature = 0;
   poFeature = poLayer->GetNextFeature();
-
+  
   int fieldcount = poFDefn->GetFieldCount();
   Rcpp::CharacterVector out(fieldcount);
   Rcpp::CharacterVector fieldnames(fieldcount);
@@ -835,7 +865,7 @@ inline CharacterVector gdal_report_fields(Rcpp::CharacterVector dsource,
   //
   if (poFeature != NULL)
   {
-
+    
     int iField;
     for( iField = 0; iField < fieldcount; iField++ )
     {
@@ -884,9 +914,9 @@ inline CharacterVector gdal_report_fields(Rcpp::CharacterVector dsource,
       //   out[iField] = "OFTWideStringList";
       // }
     }
-
+    
     OGRFeature::DestroyFeature( poFeature );
-
+    
   }
   out.attr("names") = fieldnames;
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
@@ -899,7 +929,7 @@ inline CharacterVector gdal_report_fields(Rcpp::CharacterVector dsource,
 
 inline CharacterVector  gdal_vsi_list(CharacterVector urlpath)
 {
-
+  
   // char** VSI_paths;
   // if ( STARTS_WITH(urlpath[0], "/vsizip/") ||
   //      STARTS_WITH(urlpath[0], "/vsitar/") )
@@ -915,454 +945,32 @@ inline CharacterVector  gdal_vsi_list(CharacterVector urlpath)
   while (VSI_paths && VSI_paths[ipath] != NULL) {
     ipath++;
   }
-
+  
   Rcpp::CharacterVector names(ipath);
   for (int i = 0; i < ipath; i++) {
-
+    
     names[i] = VSI_paths[i];
   }
   
   CSLDestroy(VSI_paths);
   return names;
-
-}
-
-inline CharacterVector gdal_sds_list(const char* pszFilename)
-{
-  GDALDataset  *poDataset;
-
-  poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
-  if( poDataset == NULL )
-  {
-    Rcpp::stop("cannot open dataset");
-  }
-
-  char **MDdomain = GDALGetMetadataDomainList(poDataset);
-
-  int mdi = 0; // iterate though MetadataDomainList
-  bool has_sds = false;
-  while (MDdomain && MDdomain[mdi] != NULL) {
-    if (strcmp(MDdomain[mdi], "SUBDATASETS") == 0) {
-      has_sds = true;
-    }
-    mdi++;
-  }
-  //cleanup
-  CSLDestroy(MDdomain);
-
-  int dscount = 1;
-  if (has_sds) {
-    // owned by the object
-    char **SDS = GDALGetMetadata(poDataset, "SUBDATASETS");
-    int sdi = 0;
-    while (SDS && SDS[sdi] != NULL) {
-      sdi++; // count
-    }
-    dscount = sdi;
-  }
-  Rcpp::CharacterVector ret(dscount);
-  if (has_sds) {
-    // we have subdatasets, so list them all
-    // owned by the object
-    char **SDS2 = GDALGetMetadata(poDataset, "SUBDATASETS");
-    for (int ii = 0; ii < dscount; ii++) {
-      ret(ii) = SDS2[ii];
-    }
-  } else {
-    ret[0] = pszFilename;
-  }
-  GDALClose( (GDALDatasetH) poDataset );
-  return ret;
-}
-
-
-inline NumericVector gdal_extent_only(CharacterVector dsn) {
-  GDALDatasetH hDataset;
-
-  hDataset = GDALOpenEx(dsn[0], GA_ReadOnly, nullptr, NULL, nullptr);
-
-  if( hDataset == nullptr )
-  {
-    Rcpp::stop("cannot open dataset");
-  }
-
-  double        adfGeoTransform[6];
-  //poDataset->GetGeoTransform( adfGeoTransform );
-  GDALGetGeoTransform(hDataset, adfGeoTransform );
-  int nXSize = GDALGetRasterXSize(hDataset);
-  int nYSize = GDALGetRasterYSize(hDataset);
-
-  GDALClose( hDataset );
-  NumericVector extent(4); 
-  extent[0] = adfGeoTransform[0];
-  extent[1] = adfGeoTransform[0] + nXSize * adfGeoTransform[1];
-  extent[3] = adfGeoTransform[3]; 
-  extent[2] = adfGeoTransform[3] + nYSize * adfGeoTransform[5]; 
-  return extent; 
-}
-inline List gdal_raster_info(CharacterVector dsn, LogicalVector min_max)
-{
-  GDALDatasetH hDataset;
-
-  hDataset = GDALOpenEx(dsn[0], GA_ReadOnly, nullptr, NULL, nullptr);
-
-  if( hDataset == nullptr )
-  {
-    Rcpp::stop("cannot open dataset");
-  }
-  int nXSize = GDALGetRasterXSize(hDataset);
-  int nYSize = GDALGetRasterYSize(hDataset);
-
-
-  double        adfGeoTransform[6];
-
-  //poDataset->GetGeoTransform( adfGeoTransform );
-  GDALGetGeoTransform(hDataset, adfGeoTransform );
-
-
-  // bail out NOW (we have no SDS and/or no rasters)
-  // #f <- system.file("h5ex_t_enum.h5", package = "h5")
-  if (GDALGetRasterCount(hDataset) < 1) {
-    Rcpp::stop("no rasters found in dataset");
-  }
-
-  Rcpp::DoubleVector trans(6);
-  for (int ii = 0; ii < 6; ii++) trans[ii] = adfGeoTransform[ii];
-
-  char **pfilelist = GDALGetFileList(hDataset);
-  int fdi = 0;
-  while (pfilelist && pfilelist[fdi] != NULL) {
-      fdi++; // count
-  }
-  int ilist = fdi;
-  if (ilist < 1) {
-    ilist = 1; 
-  }
-  CharacterVector FileList(ilist);
-  // might be no files, because image server
-  if (pfilelist == nullptr) {
-    FileList[0] = NA_STRING;
-  } else {
-    for (int ifile = 0; ifile < fdi; ifile++) {
-      FileList[ifile] = pfilelist[ifile]; 
-    }
-  }
-  CSLDestroy(pfilelist);
-  GDALRasterBandH  hBand;
-  int             nBlockXSize, nBlockYSize;
-  //int             bGotMin, bGotMax;
-  double          adfMinMax[2];
-
-  hBand = GDALGetRasterBand(hDataset, 1);
-  // if we don't bail out above with no rasters things go bad here
-  GDALGetBlockSize(hBand, &nBlockXSize, &nBlockYSize);
-  if (min_max[0]) {
-    GDALComputeRasterMinMax(hBand, TRUE, adfMinMax);
-  }
-
-  int nn = 11;
-  Rcpp::List out(nn);
-  Rcpp::CharacterVector names(nn);
-  out[0] = trans;
-  names[0] = "geotransform";
-  out[1] = Rcpp::IntegerVector::create(nXSize, nYSize);
-  names[1] = "dimXY";
-  //GDALGetMetadataDomainList(hBand,  )
-
-
-
-
-  DoubleVector vmmx(2);
-  if (min_max[0]) {
-    vmmx[0] = adfMinMax[0];
-    vmmx[1] = adfMinMax[1];
-  } else {
-    vmmx[0] = NA_REAL;
-    vmmx[1] = NA_REAL;
-  }
-  out[2] = vmmx;
-  names[2] = "minmax";
-
-  out[3] = Rcpp::IntegerVector::create(nBlockXSize, nBlockYSize);
-  names[3] = "tilesXY";
-
-  const char *proj;
-  proj = GDALGetProjectionRef(hDataset);
-  //https://gis.stackexchange.com/questions/164279/how-do-i-create-ogrspatialreference-from-raster-files-georeference-c
-  out[4] = Rcpp::CharacterVector::create(proj);
-  names[4] = "projection";
-
-  // get band number
-  int nBands = GDALGetRasterCount(hDataset);
-  out[5] = nBands;
-  names[5] = "bands";
-
-  char *stri;
-  OGRSpatialReference oSRS;
-  char **cwkt = (char **) &proj;
-#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-  oSRS.importFromWkt(cwkt);
-#else
-  oSRS.importFromWkt( (const char**) cwkt);
-#endif
-  oSRS.exportToProj4(&stri);
-  out[6] =  Rcpp::CharacterVector::create(stri); //Rcpp::CharacterVector::create(stri);
-  names[6] = "projstring";
-
-  int succ;
-  out[7] = GDALGetRasterNoDataValue(hBand, &succ);
-  names[7] = "nodata_value";
-
-  int ocount = GDALGetOverviewCount(hBand);
-  // f <- system.file("extdata/volcano_overview.tif", package = "vapour", mustWork = TRUE)
-  IntegerVector oviews = IntegerVector(ocount * 2);
-  //oviews[0] = ocount;
-  if (ocount > 0) {
-    GDALRasterBandH  oBand;
-    for (int ii = 0; ii < ocount; ii++) {
-      oBand = GDALGetOverview(hBand, ii);
-
-
-      int xsize = GDALGetRasterBandXSize(oBand);
-      int ysize = GDALGetRasterBandYSize(oBand);
-
-      oviews[(ii * 2) + 0 ] = xsize;
-      oviews[(ii * 2) + 1 ] = ysize;
-
-
-
-    }
-  }
-  out[8] = oviews;
-  names[8] = "overviews";
-
-  out[9] = FileList;
-  names[9] = "filelist";
-
-
-  out[10] = CharacterVector::create(GDALGetDataTypeName(GDALGetRasterDataType(hBand))); 
-  names[10] = "datatype"; 
-
-  out.attr("names") = names;
-
-  //CPLFree(stri);
-  // close up
-  GDALClose( hDataset );
-  return out;
-
-}
-
-
-inline List gdal_raster_gcp(CharacterVector dsn) {
-  // get GCPs if any
-  GDALDatasetH hDataset;
-  //GDALDataset  *poDataset;
-
-  hDataset = GDALOpenEx( dsn[0], GA_ReadOnly, nullptr, NULL, nullptr);
-  if( hDataset == nullptr )
-  {
-    Rcpp::stop("cannot open dataset");
-  }
-
-  int gcp_count;
-  gcp_count = GDALGetGCPCount(hDataset);
-  const char *srcWKT = GDALGetGCPProjection(hDataset);
-  Rcpp::List gcpout(6);
-  Rcpp::CharacterVector gcpnames(6);
-  Rcpp::CharacterVector gcpCRS(1);
-  gcpCRS[0] = srcWKT;
-  gcpnames[0] = "Pixel";
-  gcpnames[1] = "Line";
-  gcpnames[2] = "X";
-  gcpnames[3] = "Y";
-  gcpnames[4] = "Z";
-  gcpnames[5] = "CRS";
-  gcpout.attr("names") = gcpnames;
-  if (gcp_count > 0) {
-    Rcpp::NumericVector GCPPixel(gcp_count);
-    Rcpp::NumericVector GCPLine(gcp_count);
-    Rcpp::NumericVector GCPX(gcp_count);
-    Rcpp::NumericVector GCPY(gcp_count);
-    Rcpp::NumericVector GCPZ(gcp_count);
-    for (int igcp = 0; igcp < gcp_count; ++igcp) {
-      const GDAL_GCP *gcp = GDALGetGCPs( hDataset ) + igcp;
-      //const GDAL_GCP *gcp = poDataset->GetGCPs() + igcp;
-      GCPPixel[igcp] = gcp->dfGCPPixel;
-      GCPLine[igcp] = gcp->dfGCPLine;
-      GCPX[igcp] = gcp->dfGCPX;
-      GCPY[igcp] = gcp->dfGCPY;
-      GCPZ[igcp] = gcp->dfGCPZ;
-    }
-    gcpout[0] = GCPPixel;
-    gcpout[1] = GCPLine;
-    gcpout[2] = GCPX;
-    gcpout[3] = GCPY;
-    gcpout[4] = GCPZ;
-    gcpout[5] = gcpCRS;
-    //gcp_proj = poDataset->GetGCPProjection();
-  } else {
-    Rprintf("No GCP (ground control points) found.\n");
-  }
-  GDALClose( hDataset );
-  return gcpout;
-}
-
-
-inline GDALRasterIOExtraArg init_resample_alg(CharacterVector resample) {
-  GDALRasterIOExtraArg psExtraArg;
-  INIT_RASTERIO_EXTRA_ARG(psExtraArg);
-  if (resample[0] == "average") {
-    psExtraArg.eResampleAlg = GRIORA_Average;
-  }
-  if (resample[0] == "bilinear") {
-    psExtraArg.eResampleAlg = GRIORA_Bilinear;
-  }
-  if (resample[0] == "cubic") {
-    psExtraArg.eResampleAlg = GRIORA_Cubic;
-  }
-  if (resample[0] == "cubicspline") {
-    psExtraArg.eResampleAlg = GRIORA_CubicSpline;
-  }
-  if (resample[0] == "gauss") {
-    psExtraArg.eResampleAlg = GRIORA_Gauss;
-  }
-  if (resample[0] == "lanczos") {
-    psExtraArg.eResampleAlg = GRIORA_Lanczos;
-  }
-  if (resample[0] == "mode") {
-    psExtraArg.eResampleAlg = GRIORA_Mode;
-  }
-  if (resample[0] == "nearestneighbour") {
-    psExtraArg.eResampleAlg = GRIORA_NearestNeighbour;
-  }
- return psExtraArg;
-}
-inline List gdal_raster_io(CharacterVector dsn,
-                           IntegerVector window,
-                           IntegerVector band,
-                           CharacterVector resample,
-                           CharacterVector band_output_type)
-{
-
-
-  GDALDataset  *poDataset;
-  GDALAllRegister();
-  poDataset = (GDALDataset *) GDALOpen(dsn[0], GA_ReadOnly );
-  if( poDataset == NULL )
-  {
-    Rcpp::stop("cannot open dataset");
-  }
-
-  int Xoffset = window[0];
-  int Yoffset = window[1];
-  int nXSize = window[2];
-  int nYSize = window[3];
-
-  int outXSize = window[4];
-  int outYSize = window[5];
-
-  if (band[0] < 1) { GDALClose(poDataset);  Rcpp::stop("requested band %i should be 1 or greater", band[0]);  }
-  int nbands = poDataset->GetRasterCount();
-  if (band[0] > nbands) { GDALClose(poDataset);   Rcpp::stop("requested band %i should be equal to or less than number of bands: %i", band[0], nbands); }
-
-  GDALRasterBand  *poBand;
-  poBand = poDataset->GetRasterBand( band[0] );
-  GDALDataType band_type =  poBand->GetRasterDataType();
-
-  // if band_output_type is not empty, possible override:
-  // complex types not supported Byte, UInt16, Int16, UInt32, Int32, Float32, Float64
-  if (band_output_type[0] == "Byte")   band_type = GDT_Byte;
-  if (band_output_type[0] == "UInt16") band_type = GDT_UInt16;
-  if (band_output_type[0] == "Int16")  band_type = GDT_Int16;
   
-  if (band_output_type[0] == "UInt32") band_type = GDT_UInt32;
-  if (band_output_type[0] == "Int32") band_type = GDT_Int32;
-  
-  if (band_output_type[0] == "Float32") band_type = GDT_Float32;
-  if (band_output_type[0] == "Float64") band_type = GDT_Float64;
-  if( poBand == NULL )
-  {
-    Rprintf("cannot access band %i", band[0]);
-    GDALClose(poDataset);
-    Rcpp::stop("");
-  }
-
-  // how to do this is here:
-  // https://stackoverflow.com/questions/45978178/how-to-pass-in-a-gdalresamplealg-to-gdals-rasterio
-
-  GDALRasterIOExtraArg psExtraArg;
-  psExtraArg = init_resample_alg(resample);
-
-  double *double_scanline;
-  int    *integer_scanline;
-  uint8_t *byte_scanline;
-  List out(1);
-  CPLErr err;
-
-  bool band_type_not_supported = true;
-  if (band_type == GDT_Byte) {
-    byte_scanline = (uint8_t *) CPLMalloc(sizeof(uint8_t)*
-      static_cast<unsigned long>(outXSize)*
-      static_cast<unsigned long>(outYSize));
-    err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
-                            byte_scanline, outXSize, outYSize, GDT_Byte,
-                            0, 0, &psExtraArg);
-    RawVector res(outXSize*outYSize);
-    for (int i = 0; i < (outXSize*outYSize); i++) res[i] = byte_scanline[i];
-    CPLFree(byte_scanline);
-    out[0] = res;
-    band_type_not_supported = false;
-  }
-
-  // here we catch byte, int* as R's 32-bit integer
-  // or Float32/64 as R's 64-bit numeric
-  if ((band_type == GDT_Int16) |
-      (band_type == GDT_Int32) |
-      (band_type == GDT_UInt16) |
-      (band_type == GDT_UInt32)) {
-    integer_scanline = (int *) CPLMalloc(sizeof(int)*
-      static_cast<unsigned long>(outXSize)*
-      static_cast<unsigned long>(outYSize));
-    err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
-                            integer_scanline, outXSize, outYSize, GDT_Int32,
-                            0, 0, &psExtraArg);
-    IntegerVector res(outXSize*outYSize);
-    for (int i = 0; i < (outXSize*outYSize); i++) res[i] = integer_scanline[i];
-    CPLFree(integer_scanline);
-    out[0] = res;
-    band_type_not_supported = false;
-  }
-  if ((band_type == GDT_Float64) | (band_type == GDT_Float32)) {
-    double_scanline = (double *) CPLMalloc(sizeof(double)*
-      static_cast<unsigned long>(outXSize)*
-      static_cast<unsigned long>(outYSize));
-    err = poBand->RasterIO( GF_Read, Xoffset, Yoffset, nXSize, nYSize,
-                            double_scanline, outXSize, outYSize, GDT_Float64,
-                            0, 0, &psExtraArg);
-    NumericVector res(outXSize*outYSize);
-    for (int i = 0; i < (outXSize*outYSize); i++) res[i] = double_scanline[i];
-    CPLFree(double_scanline);
-    out[0] = res;
-
-    band_type_not_supported = false;
-  }
-
-
-  // safe but lazy way of not supporting Complex, TypeCount or Unknown types
-  // (see GDT_ checks above)
-  if (band_type_not_supported) {
-    Rcpp::stop("band type not supported (is it Complex? report at hypertidy/vapour/issues)");
-  }
-  if(err != CE_None) {
-    // Report failure somehow.
-    Rcpp::stop("raster read failed");
-  }
-  // close up
-  GDALClose(poDataset );
-
-
-  return out;
 }
+
+
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+
 
 
 } // namespace gdallibrary

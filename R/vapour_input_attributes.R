@@ -17,7 +17,7 @@ validate_limit_n <- function(x) {
   if (is.null(x)) {
     x <- 0L
   } else {
-    if (x < 1) stop("limit_n must be 1 or greater")
+    if (x < 1) stop("limit_n must be 1 or greater (or NULL)")
   }
   stopifnot(is.numeric(x))
   x
@@ -64,6 +64,7 @@ validate_extent <- function(extent, sql, warn = TRUE) {
 #' vapour_layer_names(mvfile)
 #' @export
 vapour_layer_names <- function(dsource, ...) {
+  dsource <- .check_dsn_single(dsource)
   if ("sql" %in% names(list(...))) {
     message("old 'sql' argument is unused")
   }
@@ -88,6 +89,7 @@ vapour_layer_names <- function(dsource, ...) {
 #' file <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package = "vapour")
 #' vapour_geom_name(file)  ## empty string
 vapour_geom_name <- function(dsource, layer = 0L, sql = "") {
+  dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   vapour_geom_name_cpp(dsource = dsource, layer = layer, sql = sql, ex = 0)
 }
@@ -103,6 +105,8 @@ vapour_geom_name <- function(dsource, layer = 0L, sql = "") {
 #'
 #' An earlier version use 'OGRSQL' to obtain these names, which was slow for some
 #' drivers and also clashed with independent use of the `sql` argument.
+
+#' [vapour_read_names()] is an older name, aliased to [vapour_read_fids()]. 
 #' @inheritParams vapour_read_geometry
 #' @export
 #' @return character vector of geometry id 'names'
@@ -111,16 +115,23 @@ vapour_geom_name <- function(dsource, layer = 0L, sql = "") {
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' range(fids <- vapour_read_names(mvfile))
 #' length(fids)
-vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+vapour_read_fids <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+  dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   skip_n <- skip_n[1L]
   if (skip_n < 0) stop("skip_n must be 0, or higher")
   extent <- validate_extent(extent, sql)
-  fids <- read_names_gdal_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent)
-  unlist(lapply(fids, function(x) if (is.null(x)) NA_real_ else x), use.names = FALSE)
+  fids <- read_fids_gdal_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent)
+  fids
 }
 
+#' @name vapour_read_fids
+#' @export
+vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+  dsource <- .check_dsn_single(dsource)
+  vapour_read_fids(dsource, layer, sql, limit_n, skip_n, extent) 
+}
 #' Read feature field types.
 #'
 #' Obtains the internal type-constant name for the data attributes in a source.
@@ -146,6 +157,7 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, ski
 #' vapour_report_fields(mvfile,
 #'   sql = "SELECT POSTCODE, NAME FROM list_locality_postcode_meander_valley")
 vapour_report_fields <- function(dsource, layer = 0L, sql = "") {
+  dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   report_fields_gdal_cpp(dsource, layer, sql = sql)
 }
@@ -153,6 +165,7 @@ vapour_report_fields <- function(dsource, layer = 0L, sql = "") {
 #' @name vapour_report_fields
 #' @export
 vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
+  dsource <- .check_dsn_single(dsource)
   vapour_report_fields(dsource, layer, sql)
 }
 #' Read feature field data
@@ -164,6 +177,12 @@ vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
 #' returned as character, and Integer64 is returned as numeric.
 #'
 #' @inheritParams vapour_read_geometry
+#' 
+#' @return list of vectors one for each field in the source, each will be the same length which will
+#' depend on the values of 'skip_n', 'limit_n', 'sql', and the available records in the source. The
+#' types will be raw, numeric, integer, character, logical depending on the available mapping to the types
+#' in the source for the data there to R's native vectors. 
+#' 
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
@@ -177,6 +196,8 @@ vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
 #' vapour_read_fields(dsource, sql = SQL)
 #' @export
 vapour_read_fields <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+  dsource <- .check_dsn_single(dsource)
+  dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
@@ -189,5 +210,6 @@ vapour_read_fields <- function(dsource, layer = 0L, sql = "", limit_n = NULL, sk
 #' @name vapour_read_fields
 #' @export
 vapour_read_attributes <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+  dsource <- .check_dsn_single(dsource)
  vapour_read_fields(dsource, layer, sql, limit_n, skip_n, extent)
 }

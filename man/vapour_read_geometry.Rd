@@ -70,16 +70,19 @@ vapour_read_type(
 
 \item{textformat}{indicate text output format, available are "json" (default), "gml", "kml", "wkt"}
 }
+\value{
+for \code{\link[=vapour_read_geometry]{vapour_read_geometry()}}, \code{\link[=vapour_read_geometry_ia]{vapour_read_geometry_ia()}} and \code{\link[=vapour_read_geometry_ij]{vapour_read_geometry_ij()}} a raw vector of
+geometry, for \code{\link[=vapour_read_extent]{vapour_read_extent()}} a list of numeric vectors each with 'xmin,xmax,ymin,ymax' respectively for each geometry,
+for \code{\link[=vapour_read_type]{vapour_read_type()}} a character vector. See Details for more information.
+}
 \description{
 Read GDAL geometry as binary blob, text, or numeric extent.
 }
 \details{
 \code{vapour_read_geometry} will read features as binary WKB, \code{vapour_read_geometry_text} as various text formats (geo-json, wkt, kml, gml),
+
 \code{vapour_read_extent} a numeric extent which is the native bounding box, the four numbers (in this order) \verb{xmin, xmax, ymin, ymax}.
 For each function an optional SQL string will be evaluated against the data source before reading.
-
-\code{vapour_read_geometry_cpp} will read a feature for each of the ways listed above and is used by those functions. It's recommended
-to use the more specialist functions rather than this more general one.
 
 \code{vapour_read_geometry_ia} will read features by \emph{arbitrary index}, so any integer between 0 and one less than the number of
 features. These may be duplicated. If 'ia' is greater than the highest index NULL is returned, but if less than 0 the function will error.
@@ -90,7 +93,7 @@ features. These may be duplicated. If 'ia' is greater than the highest index NUL
 \code{vapour_read_type} will read the (wkb) type of the geometry as an integer. These are
 \code{0} unknown, \code{1} Point, \code{2} LineString, \code{3} Polygon, \code{4} MultiPoint, \code{5} MultiLineString,
 \code{6} MultiPolygon, \code{7} GeometryCollection, and the other more exotic types listed in "api/vector_c_api.html" from the
-GDAL home page (as at October 2020).
+GDAL home page (as at October 2020).  A missing value 'NA' indicates an empty geometry.
 
 Note that \code{limit_n} and \code{skip_n} interact with the affect of \code{sql}, first the query is executed on the data source, then
 while looping through available features \code{skip_n} features are ignored, and then a feature-count begins and the loop

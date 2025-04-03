@@ -9,7 +9,9 @@ vapour_read_raster_block(
   offset,
   dimension,
   band = 1L,
-  band_output_type = ""
+  band_output_type = "",
+  unscale = TRUE,
+  nara = FALSE
 )
 }
 \arguments{
@@ -22,9 +24,13 @@ vapour_read_raster_block(
 \item{band}{which band to read (1-based)}
 
 \item{band_output_type}{numeric type of band to apply (else the native type if '') can be one of 'Byte', 'Int32', or 'Float64'}
+
+\item{unscale}{default is \code{TRUE} so native values will be converted by offset and scale to floating point}
+
+\item{nara}{if 'TRUE' return in nativeRaster format}
 }
 \value{
-for vapour_read_raster_block, a list with vector of data
+a list with a vector of data from the band read
 }
 \description{
 Read a 'block' from raster.

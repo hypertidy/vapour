@@ -10,88 +10,98 @@
 \usage{
 vapour_warp_raster_raw(
   x,
-  bands = 1L,
+  bands = NULL,
   extent = NULL,
   dimension = NULL,
   projection = "",
   set_na = TRUE,
-  source_wkt = NULL,
+  source_projection = NULL,
   source_extent = 0,
   resample = "near",
   silent = TRUE,
   ...,
   warp_options = "",
-  transformation_options = ""
+  transformation_options = "",
+  open_options = "",
+  options = ""
 )
 
 vapour_warp_raster_int(
   x,
-  bands = 1L,
+  bands = NULL,
   extent = NULL,
   dimension = NULL,
   projection = "",
   set_na = TRUE,
-  source_wkt = NULL,
+  source_projection = NULL,
   source_extent = 0,
   resample = "near",
   silent = TRUE,
   ...,
   warp_options = "",
-  transformation_options = ""
+  transformation_options = "",
+  open_options = "",
+  options = ""
 )
 
 vapour_warp_raster_dbl(
   x,
-  bands = 1L,
+  bands = NULL,
   extent = NULL,
   dimension = NULL,
   projection = "",
   set_na = TRUE,
-  source_wkt = NULL,
+  source_projection = NULL,
   source_extent = 0,
   resample = "near",
   silent = TRUE,
   ...,
   warp_options = "",
-  transformation_options = ""
+  transformation_options = "",
+  open_options = "",
+  options = ""
 )
 
 vapour_warp_raster_chr(
   x,
-  bands = 1L,
+  bands = NULL,
   extent = NULL,
   dimension = NULL,
   projection = "",
   set_na = TRUE,
-  source_wkt = NULL,
+  source_projection = NULL,
   source_extent = 0,
   resample = "near",
   silent = TRUE,
   ...,
   warp_options = "",
-  transformation_options = ""
+  transformation_options = "",
+  open_options = "",
+  options = ""
 )
 
 vapour_warp_raster_hex(
   x,
-  bands = 1L,
+  bands = NULL,
   extent = NULL,
   dimension = NULL,
   projection = "",
   set_na = TRUE,
-  source_wkt = NULL,
+  source_projection = NULL,
   source_extent = 0,
   resample = "near",
   silent = TRUE,
   ...,
   warp_options = "",
-  transformation_options = ""
+  transformation_options = "",
+  open_options = "",
+  options = ""
 )
 }
 \arguments{
 \item{x}{vector of data source names (file name or URL or database connection string)}
 
-\item{bands}{index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used)}
+\item{bands}{index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used, the default)}
 
 \item{extent}{extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'}
 
@@ -101,7 +111,7 @@ vapour_warp_raster_hex(
 
 \item{set_na}{NOT IMPLEMENTED logical, should 'NODATA' values be set to \code{NA}}
 
-\item{source_wkt}{optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)}
+\item{source_projection}{optional, override or augment the projection of the source (in Well-Known-Text, or any projection string accepted by GDAL)}
 
 \item{source_extent}{extent of the source raster, used to override/augment incorrect source metadata}
 
@@ -113,7 +123,11 @@ vapour_warp_raster_hex(
 
 \item{warp_options}{character vector of options, as in gdalwarp -wo - see Details}
 
-\item{transformation_options}{character vector of options, as in gdalwarp -to}
+\item{transformation_options}{character vector of options, as in gdalwarp -to see Details}
+
+\item{open_options}{character vector of options, as in gdalwarp -oo - see Details}
+
+\item{options}{character vectors of options as per the gdalwarp command line}
 }
 \value{
 atomic vector of the nominated type raw, int, dbl, or character (hex)

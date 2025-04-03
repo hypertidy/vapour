@@ -1,5 +1,5 @@
 f2 <- system.file("extdata/osm/myosmfile.osm", package = "vapour", mustWork = TRUE)
-f <- system.file("extdata", "sst_c.gpkg", package = "vapour", mustWork = TRUE)
+f <- system.file("extdata", "sst_c.fgb", package = "vapour", mustWork = TRUE)
 
 file <- "list_locality_postcode_meander_valley.tab"
 mvfile <- system.file(file.path("extdata/tab", file), package="vapour")

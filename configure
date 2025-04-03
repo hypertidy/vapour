@@ -2049,7 +2049,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-
 # as at 2021-08-12 sf uses the following flags in src/
 #if ((PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 1) || PROJ_VERSION_MAJOR > 7)
 #if (GDAL_VERSION_MINOR >= 2 || GDAL_VERSION_MAJOR > 2)
@@ -2111,9 +2110,9 @@ RVER_MAJOR=`echo ${RVER} | cut  -f1 -d"."`
 RVER_MINOR=`echo ${RVER} | cut  -f2 -d"."`
 RVER_PATCH=`echo ${RVER} | cut  -f3 -d"."`
 
+
 # pick all flags for testing from R
 : ${CC=`"${RBIN}" CMD config CC`}
-: ${CXX=${CXX11} ${CXX11STD}}
 : ${CFLAGS=`"${RBIN}" CMD config CFLAGS`}
 : ${CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`}
 : ${CXXFLAGS=`"${RBIN}" CMD config CXXFLAGS`}
@@ -3488,7 +3487,7 @@ cat > gdal_test.cpp <<_EOCONF
 #ifdef __cplusplus
 extern "C" {
 #endif
-int main() {
+int main(void) {
 GDALAllRegister();
 }
 #ifdef __cplusplus
@@ -3549,19 +3548,6 @@ else
   fi
 fi
 
-GDAL_DATA_TEST_FILE="${GDAL_DATADIR}/pcs.csv"
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: ${GDAL_DATADIR}/pcs.csv readable" >&5
-$as_echo_n "checking GDAL: ${GDAL_DATADIR}/pcs.csv readable... " >&6; }
-if test -r "${GDAL_DATA_TEST_FILE}" ; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-  if test "${GDAL_GE_250}" = "no" ; then
-    as_fn_error $? "pcs.csv not found in GDAL data directory." "$LINENO" 5
-  fi
-fi
 
 # Optional local copy of GDAL datadir and PROJ_LIB
 
@@ -3635,7 +3621,7 @@ _EOCONF
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: checking whether PROJ is available for linking:" >&5
 $as_echo_n "checking GDAL: checking whether PROJ is available for linking:... " >&6; }
-${CXX} ${CPPFLAGS} -o gdal_proj gdal_proj.cpp ${LIBS} 2> errors.txt
+${CXX} ${CPPFLAGS} -o gdal_proj gdal_proj.cpp ${LIBS}  2> errors.txt
 if test `echo $?` -ne 0 ; then
 gdal_has_proj=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -3653,8 +3639,12 @@ $as_echo "$as_me: Install failure: compilation and/or linkage problems." >&6;}
    as_fn_error $? "cannot link projection code" "$LINENO" 5
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: checking whether PROJ is available fur running:" >&5
-$as_echo_n "checking GDAL: checking whether PROJ is available fur running:... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking GDAL: checking whether PROJ is available for running:" >&5
+$as_echo_n "checking GDAL: checking whether PROJ is available for running:... " >&6; }
+if test "x$cross_compiling" = "xyes"; then
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: cross compiling" >&5
+$as_echo "cross compiling" >&6; }
+else
 ./gdal_proj
 if test `echo $?` -ne 0 ; then
 gdal_has_proj=no
@@ -3667,6 +3657,7 @@ $as_echo "yes" >&6; }
 fi
 if test "${gdal_has_proj}" = no; then
    as_fn_error $? "OGRCoordinateTransformation() does not return a coord.trans: PROJ not available?" "$LINENO" 5
+fi
 fi
 rm -fr errors.txt gdal_proj.cpp gdal_proj
 { $as_echo "$as_me:${as_lineno-$LINENO}: GDAL: ${GDAL_VERSION}" >&5
@@ -3808,6 +3799,8 @@ $as_echo "$as_me: PROJ: ${proj_version}" >&6;}
 fi
 
 LIBS="${PROJ_LIBS} ${INLIBS} ${PKG_LIBS}"
+{ $as_echo "$as_me:${as_lineno-$LINENO}: LIBS: ${LIBS}" >&5
+$as_echo "$as_me: LIBS: ${LIBS}" >&6;}
 
 if test "${PROJH}" = no; then
   proj4ok=yes
@@ -3866,7 +3859,7 @@ cat > proj_conf_test.c <<_EOCONF
 #include <stdlib.h>
 #include <proj_api.h>
 
-int main() {
+int main(void) {
     printf("%d\n", PJ_VERSION);
     exit(0);
 }
@@ -3877,7 +3870,7 @@ cat > proj_conf_test.cpp <<_EOCONF
 #include <stdlib.h>
 #include <proj.h>
 
-int main() {
+int main(void) {
 	proj_context_create();
     exit(0);
 }
@@ -3885,7 +3878,10 @@ _EOCONF
   #AC_CHECK_LIB(proj,proj_context_create,,proj6ok=no)
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ: checking whether PROJ and sqlite3 are available for linking:" >&5
 $as_echo_n "checking PROJ: checking whether PROJ and sqlite3 are available for linking:... " >&6; }
-  ${CXX} ${CPPFLAGS} -o proj_conf_test proj_conf_test.cpp ${LIBS} -lsqlite3 2> errors.txt
+  ## LDFLAGS?  CRAN says, I removed -sqlite3 which was a mistake (that's in LIBS already)
+  ## have check on macbuilder that LIBS includes same pkg-config --libs proj as
+  ## BDR (2022-11-15): -L/opt/R/arm64/lib -lproj -lc++ -lm -ldl -lsqlite3 -lz -lcurl -ltiff -lwebp -llzma -ljpeg -lz
+  ${CXX} ${CPPFLAGS} -o proj_conf_test proj_conf_test.cpp ${LIBS}  2> errors.txt
   if test `echo $?` -ne 0 ; then
     proj6ok=no
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -3904,7 +3900,7 @@ cat > proj_conf_test.c <<_EOCONF
 #include <stdlib.h>
 #include <proj.h>
 
-int main() {
+int main(void) {
     printf("%d.%d.%d\n", PROJ_VERSION_MAJOR, PROJ_VERSION_MINOR, PROJ_VERSION_PATCH);
     exit(0);
 }
@@ -3937,7 +3933,7 @@ cat > proj_conf_test.c <<_EOCONF
 FILE *pj_open_lib(projCtx, const char *, const char *);
 #endif
 
-int main() {
+int main(void) {
 #if PJ_VERSION <= 480
     FILE *fp;
 #else
@@ -3996,7 +3992,7 @@ cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
 #include <proj_api.h>
 
-int main() {
+int main(void) {
     PAFile fp;
     projCtx ctx;
     ctx = pj_get_default_ctx();
@@ -4044,7 +4040,7 @@ cat > proj_conf_test.c <<_EOCONF
 FILE *pj_open_lib(projCtx, const char *, const char *);
 #endif
 
-int main() {
+int main(void) {
 #if PJ_VERSION <= 480
     FILE *fp;
 #else

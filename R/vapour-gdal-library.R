@@ -1,3 +1,48 @@
+#' Set and query GDAL configuration options
+#'
+#' These functions can get and set configuration options for GDAL, for fine
+#' control over specific GDAL behaviours. 
+#' 
+#' Configuration options may also be set as environment variables. 
+#' 
+#' See [GDAL config options](https://gdal.org/user/configoptions.html) for
+#' details on available options. 
+#' 
+#' @param option GDAL config name (see Details), character string
+#' @param value value for config option, character string
+#'
+#' @return character string for `vapour_get_config`, integer 1 for successful `vapour_set_config()`
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' (orig <- vapour_get_config("GDAL_CACHEMAX"))
+#' vapour_set_config("GDAL_CACHEMAX", "64")
+#' vapour_get_config("GDAL_CACHEMAX")
+#' vapour_set_config("GDAL_CACHEMAX", orig)
+#' }
+vapour_set_config <- function(option, value) {
+  option <- as.character(option[1L])
+  value <- as.character(value[1])
+  if (length(option) < 1 || nchar(option) < 1 || is.na(option) || is.null(option) ) {
+    stop(sprintf("invalid 'option': %s - must be valid character string"))
+  }
+  if (length(value) < 1 || nchar(value) < 1 || is.na(value) || is.null(value) ) {
+    stop(sprintf("invalid 'value': %s - must be valid character string"))
+  }
+  set_gdal_config_cpp(option, value)
+}
+
+#' @export
+#' @name vapour_set_config
+vapour_get_config  <- function(option) {
+  if (length(option) < 1 || nchar(option) < 1 || is.na(option) || is.null(option) ) {
+    stop(sprintf("invalid 'option': %s - must be valid character string"))
+  }
+  get_gdal_config_cpp(option)
+}
+
+
 #' PROJ4 string to WKT
 #'
 #' Convert a projstring to Well Known Text.
@@ -8,12 +53,18 @@
 #' Note that no sanitizing is done on inputs, we literally just 'OGRSpatialReference.SetFromUserInput(crs)' and
 #' give the output as WKT. If it's an error in GDAL it's an error in R.
 #'
-#' You can get some funky outputs from random strings, so don't do that. Common sensible inputs are WKT variants,
-#' 'AUTH:CODE's e.g. 'EPSG:3031', the 'OGC:CRS84' for long,lat WGS84, 'ESRI:<code>' and other authority variants, and
+#' Common inputs are WKT variants,
+#' 'AUTH:CODE's e.g. 'EPSG:3031', the 'OGC:CRS84' for long,lat WGS84, 'ESRI:code' and other authority variants, and
 #' datum names such as 'WGS84','NAD27' recognized by PROJ itself.
 #'
-#' See help for 'SetFromUserInput' in 'OGRSpatialReference', and 'proj_create_crs_to_crs' in PROJ.
-#'
+#' See help for 'SetFromUserInput' in 'OGRSpatialReference', and 'proj_create_crs_to_crs'.
+#' 
+#' [c.proj_create_crs_to_crs](https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs) 
+#' 
+#' [c.proj_create](https://proj.org/development/reference/functions.html#c.proj_create)
+#' 
+#' [SetFromUserInput](https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796)
+#' 
 #' @param crs projection string, see Details.
 #' @export
 #' @return WKT2 projection string
@@ -24,6 +75,32 @@ vapour_srs_wkt <- function(crs) {
 }
 
 
+#' Is the CRS string representative of angular coordinates
+#' 
+#' Returns `TRUE` if this is longitude latitude data. Missing, malformed, zero-length values are disallowed. 
+#'
+#' @param crs character string of length 1
+#'
+#' @return logical value `TRUE` for lonlat, `FALSE` otherwise
+#' @export
+#'
+#' @examples
+#' vapour_gdal_version() ## versions to catch problems with string input
+#' vapour_proj_version()
+#' vapour_crs_is_lonlat("+proj=aeqd +lon_0=147 +lat_0=-42")
+#' vapour_crs_is_lonlat("EPSG:4326")
+#' vapour_srs_wkt("+proj=laea")
+#' vapour_crs_is_lonlat("+proj=laea +type=crs")
+#' vapour_crs_is_lonlat("OGC:CRS84")
+#' vapour_crs_is_lonlat("WGS84")
+#' vapour_crs_is_lonlat("NAD27")
+#' vapour_crs_is_lonlat("EPSG:3031")
+vapour_crs_is_lonlat <- function(crs) {
+  crs_in <- crs[1L]
+  if (length(crs) > 1L) message("multiple crs input is not supported, using the first only")
+  if (is.na(crs_in) || is.null(crs_in) || length(crs_in) < 1L || !nzchar(crs_in)) stop(sprintf("problem with input crs: %s", crs_in))
+  crs_is_lonlat_cpp(crs)
+}
 
 #' Summary of available geometry
 #'
@@ -51,6 +128,7 @@ vapour_srs_wkt <- function(crs) {
 #' text(gsum$xmin, gsum$ymin, labels = gsum$FID)
 vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
   #limit_n <- validate_limit_n(limit_n)
+  dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(x = dsource, layername = layer)
   extent <- validate_extent(extent, sql, warn = FALSE)
 
@@ -90,7 +168,7 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, s
 #' long name and other properties use `vapour_all_drivers()` and match on 'driver'.
 #'
 #' @export
-#' @aliases vapour_all_drivers vapour_driver
+#' @aliases vapour_all_drivers vapour_driver vapour_proj_version
 #' @rdname GDAL-library
 #' @return please see Details, character vectors or lists of character vectors
 #' @examples
@@ -98,12 +176,18 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, s
 #'
 #' drv <- vapour_all_drivers()
 #'
-#' f <- system.file("extdata/sst_c.gpkg", package = "vapour")
+#' f <- system.file("extdata/sst_c.fgb", package = "vapour")
 #' vapour_driver(f)
 #'
 #' as.data.frame(drv)[match(vapour_driver(f), drv$driver), ]
 vapour_gdal_version <- function() {
   version_gdal_cpp()
+}
+
+#' @rdname GDAL-library
+#' @export 
+vapour_proj_version <- function() {
+  paste0(version_proj_cpp(), collapse = ".")
 }
 #' @rdname GDAL-library
 #' @export
@@ -117,8 +201,7 @@ vapour_all_drivers <- function() {
 #' @export
 #' @param dsource data source string (i.e. file name or URL or database connection string)
 vapour_driver <- function(dsource) {
-  if (!is.character(dsource)) stop("'dsource' must be a character vector")
-  if (!nchar(dsource) > 0) stop("'dsource' is an empty string")
+  dsource <- .check_dsn_single(dsource)
   driver_id_gdal_cpp(dsource);
 }
 

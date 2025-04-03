@@ -7,10 +7,10 @@
 vapour_sds_names(x)
 }
 \arguments{
-\item{x}{a data source string, filename, database connection string, Thredds or other URL}
+\item{x}{a data source string, filename, database connection string,  or other URL}
 }
 \value{
-list of character vectors, see Details
+character vector of subdataset names, or just the source itself if no SDS are present
 }
 \description{
 A \strong{subdataset} is a collection abstraction for a number of \strong{variables}
@@ -22,8 +22,13 @@ variable, so we always treat a source as a subdataset, even if there's only
 one.
 }
 \details{
-Returns a list of \code{datasource} and \code{subdataset}. In the case of a normal data
-source, with no subdatasets the value of both entries is the \code{datasource}.
+Returns a character vector of 'subdatasets\verb{. In the case of a normal data source, with no subdatasets the value is simply  the }datasource`.
+
+If the raw SDS names contain spaces these are replaced by '\%20' escape strings. A specific example is
+"WCS:https://elevation.nationalmap.gov:443" with request
+"arcgis/services/3DEPElevation/ImageServer/WCSServer?version=2.0.1&coverage=DEP3Elevation_Hillshade Gray".
+This function will return "..DEP3Elevation_Hillshade\%20Gray".
+See \href{https://github.com/hypertidy/vapour/wiki/Examples-of-subdatasets}{wiki post} for more details.
 }
 \examples{
 f <- system.file("extdata/gdal", "sds.nc", package = "vapour")
@@ -33,4 +38,5 @@ if (!inherits(result, "try-error")) {
   print(result)
 }
 vapour_sds_names(system.file("extdata", "sst.tif", package = "vapour"))
+
 }

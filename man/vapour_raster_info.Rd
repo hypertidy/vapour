@@ -30,9 +30,9 @@ The structural metadata are
 \describe{
 \item{extent}{the extent of the data, xmin, xmax, ymin, ymax - these are the lower left and upper right corners of pixels}
 \item{geotransform}{the affine transform}
-\item{dimXY}{dimensions x-y, columns*rows}
+\item{dimension}{dimensions x-y, columns*rows}
 \item{minmax}{numeric values of the computed min and max from the first band (optional)}
-\item{tilesXY}{dimensions x-y of internal tiling scheme}
+\item{block}{dimensions x-y of internal tiling scheme}
 \item{projection}{text version of map projection parameter string}
 \item{bands}{number of bands in the dataset}
 \item{projstring}{the proj string version of 'projection'}
@@ -40,6 +40,8 @@ The structural metadata are
 \item{overviews}{the number and size of any available overviews}
 \item{filelist}{the list of files involved (may be none, and so will be a single NA character value)}
 \item{datatype}{the band type name, in GDAL form 'Byte', 'Int16', 'Float32', etc.}
+\item{subdatasets}{any subdataset DSNs is present, otherwise \code{NULL} }
+\item{corners}{corner coordinates of the data, for non-zero skew geotransforms a 2-column matrix with rows upperLeft, lowerLeft, lowerRight, upperRight, and center}
 }
 
 Note that the geotransform is a kind of obscure combination of the extent and dimension, I don't find it
