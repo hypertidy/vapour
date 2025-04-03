@@ -1,3 +1,7 @@
+# vapour 0.9.0
+
+* Removed bashisms, thanks CRAN. 
+
 # vapour 0.8.8
 
 * Patch release for R UCRT changes. Applied patch provided by CRAN. 
