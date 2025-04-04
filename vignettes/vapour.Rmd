@@ -99,7 +99,7 @@ vapour_geom_summary(mvfile, skip_n = 6)$FID
 
 ```
 
-Each geometry function also includes an `extent` argument, which takes a simple vector of four values `xmin, xmax, ymin, ymax` or sp bbox, sf bbox, or raster extent. This is only applied if the sql argument is non empty, and corresponds to the [SpatialFilter argument of ExecuteSQL](https://gdal.org/user/ogr_sql_dialect.html#executesql). 
+Each geometry function also includes an `extent` argument, which takes a simple vector of four values `xmin, xmax, ymin, ymax` or sp bbox, sf bbox, or raster extent. This is only applied if the sql argument is non empty, and corresponds to the [SpatialFilter argument of ExecuteSQL](https://gdal.org/en/stable/user/ogr_sql_dialect.html#executesql). 
 
 ## Raster data
 
@@ -187,7 +187,7 @@ vapour_read_fields(shp, sql = sprintf("SELECT COUNT(*) AS n FROM %s WHERE FID < 
 
 
 
-See https://gdal.org/user/ogr_sql_dialect.html
+See https://gdal.org/en/stable/user/ogr_sql_dialect.html
 
 
 Now we are done with our SQL, so in case something else was using `current_dialect`, restore it. 

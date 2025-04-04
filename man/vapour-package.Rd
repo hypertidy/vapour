@@ -119,30 +119,3 @@ Other contributors:
 }
 
 }
-\seealso{
-Useful links:
-\itemize{
-  \item \url{https://github.com/hypertidy/vapour}
-  \item Report bugs at \url{https://github.com/hypertidy/vapour/issues}
-}
-
-}
-\author{
-\strong{Maintainer}: Michael Sumner \email{mdsumner@gmail.com} (\href{https://orcid.org/0000-0002-2471-7511}{ORCID})
-
-Other contributors:
-\itemize{
-  \item Simon Wotherspoon (figured out the mechanism for the resampling algorithm) [contributor]
-  \item Mark Padgham (helped get started :)) [contributor]
-  \item Edzer Pebesma (wrote allocate_attribute, copied here from sf) [contributor]
-  \item Roger Bivand (wrote configure.ac, adapted here from rgdal) [contributor]
-  \item Jim Hester (wrote CollectorList.h, copied here from fs package) [contributor]
-  \item Timothy Keitt (wrote GetPointsInternal copied here from rgdal2 package) [contributor]
-  \item Jeroen Ooms (tweaked build process, provided Windows build tools) [contributor]
-  \item Dale Maschette (created the hex logo) [contributor]
-  \item Joseph Stachelek [contributor]
-  \item Even Rouault (primary author of the COG format and its use of the GDALwarp app-library, example code used by the warper function here) [contributor]
-  \item Robert Hijmans (wrote some source in the warper, terra package used as example/inspiration) [contributor]
-}
-
-}

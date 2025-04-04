@@ -15,8 +15,8 @@ status](https://www.r-pkg.org/badges/version/vapour)](https://CRAN.R-project.org
 
 The vapour package provides access to the basic *read* functions
 available in [GDAL](https://gdal.org/) for both
-[raster](https://gdal.org/user/raster_data_model.html) and
-[vector](https://gdal.org/user/vector_data_model.html) data sources.
+[raster](https://gdal.org/en/stable/user/raster_data_model.html) and
+[vector](https://gdal.org/en/stable/user/vector_data_model.html) data sources.
 
 The functions are deliberately *lower-level* than these data models and
 provide access to the component entities independently.
@@ -29,10 +29,10 @@ For vector data:
 - read access to the extent of geometries
 - helper functions to summarize feature identity and geometry status
 - limit/skip control on records read
-- execution of [OGRSQL](https://gdal.org/user/ogr_sql_dialect.html) with
+- execution of [OGRSQL](https://gdal.org/en/stable/user/ogr_sql_dialect.html) with
   control of SQL dialect
 - read in the context of a [bounding box spatial
-  filter](https://gdal.org/user/ogr_sql_dialect.html#executesql) can be
+  filter](https://gdal.org/en/stable/user/ogr_sql_dialect.html#executesql) can be
   applied via the `extent` argument
 
 For raster data:
@@ -41,10 +41,10 @@ For raster data:
   source (subdatasets).
 - read access to *structural metadata* for individual raster sources.
 - read access for raw data using GDAL’s [RasterIO
-  framework](https://gdal.org/tutorials/raster_api_tut.html) and its
+  framework](https://gdal.org/en/stable/tutorials/raster_api_tut.html) and its
   dynamic image decimation / replication resampling algorithms.
 - read access for raw data using GDAL’s [Warper
-  framework](https://gdal.org/api/gdalwarp_cpp.html) and its dynamic
+  framework](https://gdal.org/en/stable/api/gdalwarp_cpp.html) and its dynamic
   image warping, a superset of the RasterIO capabilities.
 
 The warper works for data sources that contain *overviews* (or pyramid
