@@ -50,7 +50,7 @@
 #' 
 #' [PROJ documentation: c.proj_create](https://proj.org/development/reference/functions.html#c.proj_create)
 #' 
-#' [GDAL documentation: SetFromUserInput](https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796)
+#' [GDAL documentation: SetFromUserInput](https://gdal.org/en/stable/doxygen/classOGRSpatialReference.html)
 #'  
 #' @param x data source name, filepath, url, database connection string, or VRT text
 #' @param extent (optional) numeric extent, xmin,xmax,ymin,ymax

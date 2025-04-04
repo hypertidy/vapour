@@ -3,7 +3,7 @@
 #' Obtain the names of available items in a virtual file source.
 #'
 #' The `dsource` must begin with a valid form of the special `vsiPREFIX`, for details
-#' see [GDAL Virtual File Systems](https://gdal.org/user/virtual_file_systems.html).
+#' see [GDAL Virtual File Systems](https://gdal.org/en/stable/user/virtual_file_systems.html).
 #'
 #'
 #' Note that the listing is not recursive, and so cannot be used for automation. One would

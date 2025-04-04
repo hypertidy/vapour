@@ -267,11 +267,11 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' be separated by spaces on the command line then include as separate elements in the options character vector. 
 #'
 #' 
-#' See [GDALWarpOptions](https://gdal.org/api/gdalwarp_cpp.html#_CPPv4N15GDALWarpOptions16papszWarpOptionsE) for '-wo'. 
+#' See [GDALWarpOptions](https://gdal.org/en/stable/api/gdalwarp_cpp.html) for '-wo'. 
 #' 
-#' See [GDAL transformation options](https://gdal.org/api/gdal_alg.html#_CPPv432GDALCreateGenImgProjTransformer212GDALDatasetH12GDALDatasetHPPc) for '-to'. 
+#' See [GDAL transformation options](https://gdal.org/en/stable/api/gdal_alg.html) for '-to'. 
 #' 
-#' See [GDALWARP command line app](https://gdal.org/programs/gdalwarp.html) for further details. 
+#' See [GDALWARP command line app](https://gdal.org/en/stable/programs/gdalwarp.html) for further details. 
 #' 
 #' Note we already apply the following gdalwarp arguments based on input R
 #' arguments to this function.
@@ -303,7 +303,7 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' 
 #' [c.proj_create](https://proj.org/development/reference/functions.html#c.proj_create)
 #' 
-#' [SetFromUserInput](https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796)
+#' [SetFromUserInput](https://gdal.org/en/stable/doxygen/classOGRSpatialReference.html)
 #' 
 #' @param x vector of data source names (file name or URL or database connection string)
 #' @param bands index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used, the default)

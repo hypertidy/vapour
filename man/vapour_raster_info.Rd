@@ -77,7 +77,7 @@ dimensions, so this guide does not hold across various systems.
 \section{The Geo Transform}{
 
 
-From \url{https://gdal.org/user/raster_data_model.html}.
+From \url{https://gdal.org/en/stable/user/raster_data_model.html}.
 
 The affine transform consists of six coefficients returned by
 \code{GDALDataset::GetGeoTransform()} which map pixel/line coordinates into
