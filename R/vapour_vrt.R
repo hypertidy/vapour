@@ -156,7 +156,7 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
   out <- raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation, nomd, overview, options)
   ## scrub any transform, because of #210
   if (nzchar(geolocation[1L])) {
-    out <- gsub("<GeoTransform.*GeoTransform>", "", out)
+    out <- stringr::str_replace(out, "<GeoTransform.*GeoTransform>", "")
   }
   out
 }
