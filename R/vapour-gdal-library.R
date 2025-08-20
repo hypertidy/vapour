@@ -5,7 +5,7 @@
 #' 
 #' Configuration options may also be set as environment variables. 
 #' 
-#' See [GDAL config options](https://gdal.org/user/configoptions.html) for
+#' See [GDAL config options](https://gdal.org/en/stable/user/configoptions.html) for
 #' details on available options. 
 #' 
 #' @param option GDAL config name (see Details), character string
@@ -63,7 +63,7 @@ vapour_get_config  <- function(option) {
 #' 
 #' [c.proj_create](https://proj.org/development/reference/functions.html#c.proj_create)
 #' 
-#' [SetFromUserInput](https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796)
+#' [SetFromUserInput](https://gdal.org/en/stable/doxygen/classOGRSpatialReference.html)
 #' 
 #' @param crs projection string, see Details.
 #' @export
@@ -112,7 +112,7 @@ vapour_crs_is_lonlat <- function(crs) {
 #' @return list containing the following
 #' * `FID` the feature id value (an integer, usually sequential)
 #' * `valid_geometry` logical value if a non-empty geometry is available
-#' * `type` integer value of geometry type from [GDAL enumeration](https://gdal.org/doxygen/ogr__core_8h.html#a800236a0d460ef66e687b7b65610f12a)
+#' * `type` integer value of geometry type from [GDAL enumeration](https://gdal.org/en/stable/doxygen/ogr__core_8h.html)
 #' * `xmin, xmax, ymin, ymax` numeric values of the extent (bounding box) of each geometry
 #' @export
 #'

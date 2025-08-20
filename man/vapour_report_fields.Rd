@@ -30,7 +30,7 @@ This and \code{\link[=vapour_read_fields]{vapour_read_fields()}} are aliased to 
 'vapour_read_attributes()', but "field" is a clearer and more sensible name (in our opinion).
 
 These are defined for the enum OGRFieldType in GDAL itself.
-\url{https://gdal.org/doxygen/ogr__core_8h.html#a787194bea637faf12d61643124a7c9fc}
+\url{https://gdal.org/en/stable/doxygen/ogr__core_8h.html}
 }
 \examples{
 file <- "list_locality_postcode_meander_valley.tab"

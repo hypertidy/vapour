@@ -117,6 +117,7 @@ api
 arcgis
 atm
 auth
+bashisms
 bbox
 behaviour
 behaviours
@@ -221,6 +222,7 @@ reprojecting
 reprojection
 rgb
 rgdal
+rhub
 rwinlib
 sds
 sp

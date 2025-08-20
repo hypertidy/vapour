@@ -134,11 +134,11 @@ general arguments might be
 'options = c("-ovr", "AUTO", "-nomd", "-cutline", "/path/to/cut.gpkg", "-crop_to_cutline")'.  If they would
 be separated by spaces on the command line then include as separate elements in the options character vector.
 
-See \href{https://gdal.org/api/gdalwarp_cpp.html#_CPPv4N15GDALWarpOptions16papszWarpOptionsE}{GDALWarpOptions} for '-wo'.
+See \href{https://gdal.org/en/stable/api/gdalwarp_cpp.html}{GDALWarpOptions} for '-wo'.
 
-See \href{https://gdal.org/api/gdal_alg.html#_CPPv432GDALCreateGenImgProjTransformer212GDALDatasetH12GDALDatasetHPPc}{GDAL transformation options} for '-to'.
+See \href{https://gdal.org/en/stable/api/gdal_alg.html}{GDAL transformation options} for '-to'.
 
-See \href{https://gdal.org/programs/gdalwarp.html}{GDALWARP command line app} for further details.
+See \href{https://gdal.org/en/stable/programs/gdalwarp.html}{GDALWARP command line app} for further details.
 
 Note we already apply the following gdalwarp arguments based on input R
 arguments to this function.
@@ -170,7 +170,7 @@ See help for 'SetFromUserInput' in 'OGRSpatialReference', and
 
 \href{https://proj.org/development/reference/functions.html#c.proj_create}{c.proj_create}
 
-\href{https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796}{SetFromUserInput}
+\href{https://gdal.org/en/stable/doxygen/classOGRSpatialReference.html}{SetFromUserInput}
 }
 
 \examples{

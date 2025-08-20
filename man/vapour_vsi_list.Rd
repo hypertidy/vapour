@@ -19,7 +19,7 @@ Obtain the names of available items in a virtual file source.
 }
 \details{
 The \code{dsource} must begin with a valid form of the special \code{vsiPREFIX}, for details
-see \href{https://gdal.org/user/virtual_file_systems.html}{GDAL Virtual File Systems}.
+see \href{https://gdal.org/en/stable/user/virtual_file_systems.html}{GDAL Virtual File Systems}.
 
 Note that the listing is not recursive, and so cannot be used for automation. One would
 use this function interactively to determine a  useable \verb{/vsiPREFIX/dsource} data

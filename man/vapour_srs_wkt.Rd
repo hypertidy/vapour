@@ -32,7 +32,7 @@ See help for 'SetFromUserInput' in 'OGRSpatialReference', and 'proj_create_crs_t
 
 \href{https://proj.org/development/reference/functions.html#c.proj_create}{c.proj_create}
 
-\href{https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796}{SetFromUserInput}
+\href{https://gdal.org/en/stable/doxygen/classOGRSpatialReference.html}{SetFromUserInput}
 }
 \examples{
 vapour_srs_wkt("+proj=laea +datum=WGS84")

@@ -101,7 +101,7 @@ See the following links to GDAL and PROJ documentation:
 
 \href{https://proj.org/development/reference/functions.html#c.proj_create}{PROJ documentation: c.proj_create}
 
-\href{https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796}{GDAL documentation: SetFromUserInput}
+\href{https://gdal.org/en/stable/doxygen/classOGRSpatialReference.html}{GDAL documentation: SetFromUserInput}
 }
 
 \examples{

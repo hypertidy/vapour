@@ -50,7 +50,7 @@
 #' 
 #' [PROJ documentation: c.proj_create](https://proj.org/development/reference/functions.html#c.proj_create)
 #' 
-#' [GDAL documentation: SetFromUserInput](https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796)
+#' [GDAL documentation: SetFromUserInput](https://gdal.org/en/stable/doxygen/classOGRSpatialReference.html)
 #'  
 #' @param x data source name, filepath, url, database connection string, or VRT text
 #' @param extent (optional) numeric extent, xmin,xmax,ymin,ymax
@@ -156,7 +156,7 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
   out <- raster_vrt_cpp(x, extent, projection[1L], sds, bands, geolocation, nomd, overview, options)
   ## scrub any transform, because of #210
   if (nzchar(geolocation[1L])) {
-    out <- gsub("<GeoTransform.*GeoTransform>", "", out)
+    out <- stringr::str_replace(out, "<GeoTransform.*GeoTransform>", "")
   }
   out
 }

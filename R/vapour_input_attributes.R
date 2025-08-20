@@ -143,7 +143,7 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, ski
 #' 'vapour_read_attributes()', but "field" is a clearer and more sensible name (in our opinion).
 #'
 #' These are defined for the enum OGRFieldType in GDAL itself.
-#' \url{https://gdal.org/doxygen/ogr__core_8h.html#a787194bea637faf12d61643124a7c9fc}
+#' \url{https://gdal.org/en/stable/doxygen/ogr__core_8h.html}
 #'
 #' @inheritParams vapour_read_geometry
 #' @export

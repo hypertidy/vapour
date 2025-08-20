@@ -66,15 +66,6 @@ RVER_MAJOR=`echo ${RVER} | cut  -f1 -d"."`
 RVER_MINOR=`echo ${RVER} | cut  -f2 -d"."`
 RVER_PATCH=`echo ${RVER} | cut  -f3 -d"."`
 
-if test [$RVER_MAJOR = "development"]; then
-    CXX=`"${RBIN}" CMD config CXX`
-else
-    if test [$RVER_MAJOR -lt 3] -o [$RVER_MAJOR -eq 3 -a $RVER_MINOR -lt 3]; then
-        AC_MSG_ERROR([vapour is not compatible with R versions before 3.3.0])
-    else
-        CXX=`"${RBIN}" CMD config CXX`
-    fi
-fi
 
 # pick all flags for testing from R
 : ${CC=`"${RBIN}" CMD config CC`}

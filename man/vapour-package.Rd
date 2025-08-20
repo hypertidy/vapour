@@ -82,8 +82,8 @@ dialect in use \cr }
 The SQL dialect can be set to "" (empty string), "OGRSQL", or "SQLITE".
 
 The empty string indicates that the native dialect will be used, see
-\href{https://gdal.org/user/ogr_sql_sqlite_dialect.html}{OGRSQL and SQLITE for GDAL, accessed 2022-11-11} and the
-\href{https://gdal.org/api/raster_c_api.html#c.GDAL_DMD_SUPPORTED_SQL_DIALECTS}{GDAL_DMD_SUPPORTED_SQL_DIALECTS development documentation (since GDAL 3.6)}.
+[OGRSQL and SQLITE for GDAL(https://gdal.org/en/stable/user/ogr_sql_sqlite_dialect.html) and the
+\href{https://gdal.org/en/stable/api/raster_c_api.html}{GDAL_DMD_SUPPORTED_SQL_DIALECTS development documentation}.
 
 Setting "NATIVE" as an alias for "" is quite recent and has not been tested with vapour, similarly no testing has been done
 with non OGRSQL-native or SQLITE-native drivers yet.
