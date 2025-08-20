@@ -78,6 +78,9 @@ Rcpp::NumericVector vapour_read_raster_value_cpp(CharacterVector dsource,
     
   }
   GDALClose(ds); 
+  if (err != OGRERR_NONE) {
+    Rcpp::stop("failed to read band values"); 
+  }
   return vals; 
 }
 

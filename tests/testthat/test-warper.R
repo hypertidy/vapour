@@ -46,8 +46,10 @@ test_that("warper no transformation works", {
 
 test_that("warper no transformation and no dimension works", {
   expect_that(vapour_warp_raster(f, extent = c(145, 146, -50, -48)), is_a("list"))
-  expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), projection = "+proj=laea"), 
-               "could not be processed")
+  ## this used to give 0x0 output which is disallowed, GDAL now harmlessly returns a missing value with 1x1 dim
+  # expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), projection = "+proj=laea"), 
+  #              "could not be processed")
+  
 
 })
 

@@ -1,4 +1,4 @@
 
-## vapour 0.11.0
+## vapour 0.12.0
 
-Fixed bashisms, thanks! 
+Fixed failing test that simply indicated older GDAL behaviour. s 

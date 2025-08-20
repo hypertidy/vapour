@@ -1,4 +1,8 @@
-# vapour dev
+# vapour 0.12.0
+
+* Fixed a number of unused variable warnings, found from mac_release test on CRAN. 
+
+* Removed test that guarded for 0x0 output from GDAL, thanks to CRAN. 
 
 * Stream reading now restored. 
 

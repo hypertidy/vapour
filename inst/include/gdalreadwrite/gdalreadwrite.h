@@ -100,14 +100,18 @@ inline CharacterVector gdal_create(CharacterVector filename,
   }
   
   char *pszWKT = nullptr;
+  OGRErr err; 
+  
 #if GDAL_VERSION_MAJOR >= 3
   const char *optionsWKT[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
-  OGRErr err = oSRS.exportToWkt(&pszWKT, optionsWKT);
+  err = oSRS.exportToWkt(&pszWKT, optionsWKT);
 #else
-  OGRErr err = oSRS.exportToWkt(&pszWKT);
+  err = oSRS.exportToWkt(&pszWKT);
 #endif
   
-  
+  if (err != OGRERR_NONE) {
+     Rcpp::stop("failed to export CRS to WKT"); 
+  }
   GDALDriverH hDriver;
   hDriver = GDALGetDriverByName(driver[0]);
   if( hDriver == nullptr ) {
