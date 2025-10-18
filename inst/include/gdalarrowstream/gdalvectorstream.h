@@ -238,17 +238,20 @@ inline Rcpp::List read_gdal_stream(
   auto stream_out = reinterpret_cast<struct ArrowArrayStream*>(
     R_ExternalPtrAddr(stream_xptr));
 
-  OGRSpatialReference* crs = poLayer->GetSpatialRef();
+  //OGRSpatialReference* crs = poLayer->GetSpatialRef();
+  OGRLayerH hLayer = reinterpret_cast<OGRLayerH>(poLayer);
   
+  OGRSpatialReferenceH hSRS = OGR_L_GetSpatialRef(hLayer);
+
+  char* wkt_out;
   
   std::string wkt_str;
-  if (crs != nullptr) {
-    char* wkt_out;
-    crs->exportToWkt(&wkt_out);
-    wkt_str = wkt_out;
-    CPLFree(wkt_out);
+  if (OSRExportToWkt(hSRS, &wkt_out) != OGRERR_NONE) {
+    Rcpp::stop("error export SRS to Wkt"); 
   }
-
+  wkt_str = wkt_out;
+  CPLFree(wkt_out);
+  
   struct ArrowArrayStream stream_temp;
   if (!poLayer->GetArrowStream(&stream_temp, array_stream_options)) {
     Rcpp::stop("Failed to open ArrayStream from Layer");

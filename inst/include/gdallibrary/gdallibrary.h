@@ -757,8 +757,10 @@ inline List gdal_projection_info(CharacterVector dsn,
   NumericVector zero(1);
   zero[0] = 0.0;
   OGRLayer *poLayer = gdal_layer(poDS, layer, sql, zero);
-  OGRSpatialReference *SRS =  poLayer->GetSpatialRef();
+  OGRLayerH hLayer = reinterpret_cast<OGRLayerH>(poLayer);
   
+//  OGRSpatialReference *SRS =  poLayer->GetSpatialRef();
+  OGRSpatialReferenceH hSRS = OGR_L_GetSpatialRef(hLayer);
   //  char *proj;  // this gets cleaned up lower in the SRS==NULL else
   List info_out(6);
   CharacterVector outproj(1);
@@ -771,7 +773,7 @@ inline List gdal_projection_info(CharacterVector dsn,
   outnames[5] = "XML";
   
   info_out.attr("names") = outnames;
-  if (SRS == nullptr) {
+  if (hSRS == nullptr) {
     //Rcpp::warning("null");
     // do nothing, or warn
     // e.g. .shp with no .prj
@@ -780,39 +782,56 @@ inline List gdal_projection_info(CharacterVector dsn,
     //   // SRS is not NULL, so explore validation
     //   //  OGRErr err = SRS->Validate();
     char *proj4 = nullptr;
-    SRS->exportToProj4(&proj4);
-    if (proj4 != nullptr) {
-      info_out[0] = CharacterVector::create(proj4); 
+//SRS->exportToProj4(&proj4);
+
+    if (OSRExportToProj4(hSRS, &proj4) != OGRERR_NONE)    {
+      Rcpp::stop("error export SRS to proj4"); 
+    }
+    info_out[0] = CharacterVector::create(proj4); 
       CPLFree(proj4);
     }
     char *MI = nullptr;
-    SRS->exportToMICoordSys(&MI);
-    if (MI != nullptr) {
-      info_out[1] = CharacterVector::create(MI); 
-      CPLFree(MI);
-    } 
+    if (OSRExportToMICoordSys(hSRS, &MI) != OGRERR_NONE) {
+      Rcpp::stop("error export SRS to MICoordSys"); 
+      
+    }
+    info_out[1] = CharacterVector::create(MI); 
+    CPLFree(MI);
+     
     char *pwkt = nullptr;
-    SRS->exportToPrettyWkt(&pwkt);
-    if (pwkt != nullptr) {
-      info_out[2] = CharacterVector::create(pwkt); 
-      CPLFree(pwkt);
-    } 
+    if (OSRExportToPrettyWkt(hSRS, &pwkt, 0) != OGRERR_NONE) {
+      Rcpp::stop("error export SRS to PrettyWkt"); 
+    }
+    info_out[2] = CharacterVector::create(pwkt); 
+    CPLFree(pwkt);
+     
     char *uwkt = nullptr;
-    SRS->exportToWkt(&uwkt);
-    if (uwkt != nullptr) {
-      info_out[3] = CharacterVector::create(uwkt); 
-      CPLFree(uwkt);
-    } 
-    int epsg = SRS->GetEPSGGeogCS();
-    info_out[4] =  IntegerVector::create(epsg);  
-    
+    if (OSRExportToWkt(hSRS, &uwkt) != OGRERR_NONE) {
+      Rcpp::stop("error export SRS to WKT"); 
+      
+    }
+    info_out[3] = CharacterVector::create(uwkt); 
+    CPLFree(uwkt);
+
+   // char *auth = nullptr; 
+
+//    if (OSRGetAuthorityCode(hSRS, &auth) != OGRERR_NONE) {
+//      Rcpp::stop("error export SRS to AuthorityCode"); 
+//    }
+//    int epsg = SRS->GetEPSGGeogCS();
+    info_out[4] =  IntegerVector::create(0);  
+   // info_out[4] = CharacterVector::create(auth); 
     char *xml = nullptr;
-    SRS->exportToXML(&xml);
-    if (xml != nullptr) {
+    if (OSRExportToXML(hSRS, &xml, "") != OGRERR_NONE) {
+      Rcpp::warning("unable export SRS to XML"); 
+      
+    } else {
       info_out[5] = CharacterVector::create(xml); 
       CPLFree(xml);
     }
-  }
+
+    
+
 
   // clean up if SQL was used https://www.gdal.org/classGDALDataset.html#ab2c2b105b8f76a279e6a53b9b4a182e0
   if (sql[0] != "") {
