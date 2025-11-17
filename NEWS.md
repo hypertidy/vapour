@@ -1,3 +1,8 @@
+## vapour 0.2.0
+
+Fixed a change in upcoming GDAL for OGRSpatialReference, thanks to CRAN. 
+
+
 # vapour 0.12.0
 
 * Fixed a number of unused variable warnings, found from mac_release test on CRAN. 
