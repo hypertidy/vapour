@@ -1,7 +1,6 @@
-## vapour 0.2.0
+# vapour 0.13.0
 
-Fixed a change in upcoming GDAL for OGRSpatialReference, thanks to CRAN. 
-
+* Fixed a change in upcoming GDAL for OGRSpatialReference, thanks to CRAN. 
 
 # vapour 0.12.0
 

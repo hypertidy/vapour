@@ -75,12 +75,12 @@ Rcpp::NumericVector vapour_read_raster_value_cpp(CharacterVector dsource,
     err = poBand->RasterIO(GF_Read, col[i], row[i], 1, 1,
                            &vals[i], 1, 1, GDT_Float64,
                            0, 0, &psExtraArg);
-    
+    if (err != OGRERR_NONE) {
+      Rcpp::stop("failed to read band values"); 
+    }
   }
   GDALClose(ds); 
-  if (err != OGRERR_NONE) {
-    Rcpp::stop("failed to read band values"); 
-  }
+ 
   return vals; 
 }
 

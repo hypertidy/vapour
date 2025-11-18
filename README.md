@@ -16,7 +16,8 @@ status](https://www.r-pkg.org/badges/version/vapour)](https://CRAN.R-project.org
 The vapour package provides access to the basic *read* functions
 available in [GDAL](https://gdal.org/) for both
 [raster](https://gdal.org/en/stable/user/raster_data_model.html) and
-[vector](https://gdal.org/en/stable/user/vector_data_model.html) data sources.
+[vector](https://gdal.org/en/stable/user/vector_data_model.html) data
+sources.
 
 The functions are deliberately *lower-level* than these data models and
 provide access to the component entities independently.
@@ -29,11 +30,12 @@ For vector data:
 - read access to the extent of geometries
 - helper functions to summarize feature identity and geometry status
 - limit/skip control on records read
-- execution of [OGRSQL](https://gdal.org/en/stable/user/ogr_sql_dialect.html) with
+- execution of
+  [OGRSQL](https://gdal.org/en/stable/user/ogr_sql_dialect.html) with
   control of SQL dialect
 - read in the context of a [bounding box spatial
-  filter](https://gdal.org/en/stable/user/ogr_sql_dialect.html#executesql) can be
-  applied via the `extent` argument
+  filter](https://gdal.org/en/stable/user/ogr_sql_dialect.html#executesql)
+  can be applied via the `extent` argument
 
 For raster data:
 
@@ -41,11 +43,11 @@ For raster data:
   source (subdatasets).
 - read access to *structural metadata* for individual raster sources.
 - read access for raw data using GDAL’s [RasterIO
-  framework](https://gdal.org/en/stable/tutorials/raster_api_tut.html) and its
-  dynamic image decimation / replication resampling algorithms.
+  framework](https://gdal.org/en/stable/tutorials/raster_api_tut.html)
+  and its dynamic image decimation / replication resampling algorithms.
 - read access for raw data using GDAL’s [Warper
-  framework](https://gdal.org/en/stable/api/gdalwarp_cpp.html) and its dynamic
-  image warping, a superset of the RasterIO capabilities.
+  framework](https://gdal.org/en/stable/api/gdalwarp_cpp.html) and its
+  dynamic image warping, a superset of the RasterIO capabilities.
 
 The warper works for data sources that contain *overviews* (or pyramid
 levels-of-detail) as it automatically chooses an appropriate level for
@@ -53,8 +55,7 @@ the request made, files, urls, database connections, online tiled image
 servers, and all the various ways of specifying GDAL data sources.
 
 The workflows available are intended to support development of
-applications in R for these vector and [raster
-data](https://en.wikipedia.org/wiki/Raster_data) without being
+applications in R for these vector and raster data without being
 constrained to any particular data model.
 
 ## Installation
@@ -176,10 +177,7 @@ image(x)
 
 ## or as a spatial object
 library(terra)
-#> terra 1.7.78
-```
-
-``` r
+#> terra 1.8.76
 r <- rast(ext(ex), nrows = dm[2], ncols = dm[1], crs = crs, vals = vals[[1]])
 contour(r, add = TRUE)
 ```
@@ -193,7 +191,7 @@ dm <- c(512, 512)
 vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, projection = crs)
 (r <- rast(ext(ex), nrows = dm[2], ncols = dm[1], crs = crs, vals = vals[[1]]))
 #> class       : SpatRaster 
-#> dimensions  : 512, 512, 1  (nrow, ncol, nlyr)
+#> size        : 512, 512, 1  (nrow, ncol, nlyr)
 #> resolution  : 19.53125, 19.53125  (x, y)
 #> extent      : -5000, 5000, -5000, 5000  (xmin, xmax, ymin, ymax)
 #> coord. ref. : +proj=laea +lat_0=40.416667 +lon_0=-3.716667 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs 
@@ -201,9 +199,6 @@ vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension 
 #> name        : lyr.1 
 #> min value   :   562 
 #> max value   :   742
-```
-
-``` r
 plot(r, col = hcl.colors(24))
 ```
 

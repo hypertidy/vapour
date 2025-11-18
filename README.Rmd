@@ -51,7 +51,7 @@ For raster data:
 
 The warper works for data sources that contain *overviews* (or pyramid levels-of-detail) as it automatically chooses an appropriate level for the request made, files, urls, database connections, online tiled image servers, and all the various ways of specifying GDAL data sources. 
 
-The workflows available are intended to support development of applications in R for these vector and [raster data](https://en.wikipedia.org/wiki/Raster_data) without being constrained to any particular data model. 
+The workflows available are intended to support development of applications in R for these vector and raster data without being constrained to any particular data model. 
 
 
 ## Installation
