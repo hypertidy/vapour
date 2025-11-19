@@ -1,6 +1,7 @@
 
-## vapour 0.13.0
+## vapour 0.14.0
 
-Updates to OGRSpatialReference for upcoming GDAL 3.12, thanks to CRAN. 
+Updates to make explicit int conversion, causing warnings on M1Mac. 
+
 
 

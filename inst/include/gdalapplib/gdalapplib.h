@@ -203,7 +203,8 @@ inline CharacterVector gdalbuildvrt_applib(std::vector<std::string> dsn,
   CharacterVector out(1); 
   int err;
   GDALBuildVRTOptions* opt = GDALBuildVRTOptionsNew(string_to_charptr(options).data(), nullptr);
-  GDALDataset *vrt = (GDALDataset*)GDALBuildVRT("", dsn.size(), nullptr, string_to_charptr(dsn).data(), opt, &err); 
+  int dsn_size = (int)dsn.size(); 
+  GDALDataset *vrt = (GDALDataset*)GDALBuildVRT("", dsn_size, nullptr, string_to_charptr(dsn).data(), opt, &err); 
   out[0] = vrt->GetMetadata("xml:VRT")[0];
   GDALClose(vrt); 
   return out;

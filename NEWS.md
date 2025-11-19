@@ -1,3 +1,7 @@
+# vapour 0.14.0
+
+Explicit conversion of unsigned long to int for GDALBuildVRT(), thanks to CRAN. 
+
 # vapour 0.13.0
 
 * Fixed a change in upcoming GDAL for OGRSpatialReference, thanks to CRAN. 
