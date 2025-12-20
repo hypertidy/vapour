@@ -1,6 +1,10 @@
+# vapour 0.15.0
+
+* Fix C++ standard (don't specify). 
+
 # vapour 0.14.0
 
-Explicit conversion of unsigned long to int for GDALBuildVRT(), thanks to CRAN. 
+* Explicit conversion of unsigned long to int for GDALBuildVRT(), thanks to CRAN. 
 
 # vapour 0.13.0
 

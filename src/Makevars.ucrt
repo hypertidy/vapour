@@ -14,7 +14,6 @@ else
   PKG_LIBS = $(shell pkg-config --libs gdal)
 endif
 
-CXX_STD = CXX
 
 all: clean winlibs
 
