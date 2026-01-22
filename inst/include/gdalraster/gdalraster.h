@@ -8,7 +8,7 @@
 
 #include <Rinternals.h>
 
-
+#define R_GRAY(v)  ((v) * 0x00010101 | 0xFF000000)
 #define R_RGB(r,g,b)	  ((r)|((g)<<8)|((b)<<16)|0xFF000000)
 #define R_RGBA(r,g,b,a)	((r)|((g)<<8)|((b)<<16)|((a)<<24))
 
@@ -37,7 +37,7 @@ inline SEXP C_native_gray(SEXP b0, SEXP dm) {
   
   for (R_xlen_t i = 0; i < n; i++) {
     Rbyte v = p0[i];
-    pres[i] = (int)R_RGB(v, v, v);
+    pres[i] = (int)R_GRAY(v);
   }
   
   SEXP dim = PROTECT(Rf_allocVector(INTSXP, 2));
@@ -155,7 +155,7 @@ inline CharacterVector gdal_subdataset_1(GDALDataset *poDataset, int i_sds) {
   CharacterVector ret(1);
   
   // owned by the dataset
-  char **SDS2 = poDataset->GetMetadata("SUBDATASETS");
+  CSLConstList SDS2 = poDataset->GetMetadata("SUBDATASETS");
   while (SDS2 && SDS2[sdi] != NULL) {
 
     if (sdi / 2 == (i_sds -1 )) {
@@ -175,7 +175,7 @@ inline CharacterVector gdal_list_subdatasets(GDALDataset *poDataset) {
   int sdi = 0;
   // don't call this function without calling has_subdatasets() first
   // owned by the object
-  char **SDS = GDALGetMetadata(poDataset, "SUBDATASETS");
+  CSLConstList  SDS = GDALGetMetadata(poDataset, "SUBDATASETS");
   while (SDS && SDS[sdi] != NULL) {
     sdi++; // count
   }
@@ -190,7 +190,7 @@ inline CharacterVector gdal_list_subdatasets(GDALDataset *poDataset) {
   if (dscount > 0) {
     // we have subdatasets, so list them all
     // owned by the object
-    char **SDS2 = GDALGetMetadata(poDataset, "SUBDATASETS");
+    CSLConstList SDS2 = GDALGetMetadata(poDataset, "SUBDATASETS");
     for (int ii = 0; ii <  sdi; ii++) {
       // SDS tokens come in pairs
       if (ii % 2 == 0) {
@@ -1288,7 +1288,7 @@ inline LogicalVector gdal_has_geolocation(CharacterVector dsn, IntegerVector sds
   
   bool has_geol = false;
   // owned by the dataset
-  char **papszGeolocationInfo = poDataset->GetMetadata("GEOLOCATION");
+  CSLConstList  papszGeolocationInfo = poDataset->GetMetadata("GEOLOCATION");
   if( papszGeolocationInfo != nullptr ) {
     has_geol = true;
   }
@@ -1309,7 +1309,7 @@ inline List gdal_list_geolocation(CharacterVector dsn, IntegerVector sds) {
   poDataset = (GDALDataset*)gdalH_open_dsn(dsn[0], sds);
   
   // owned by the dataset
-  char  **papszGeolocationInfo = poDataset->GetMetadata("GEOLOCATION");
+  CSLConstList papszGeolocationInfo = poDataset->GetMetadata("GEOLOCATION");
 
   if( papszGeolocationInfo == nullptr ) {
       GDALClose(poDataset);
@@ -1317,18 +1317,18 @@ inline List gdal_list_geolocation(CharacterVector dsn, IntegerVector sds) {
   }
   CharacterVector ret(11);
 
-  ret[0] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "X_DATASET" ) );  
-  ret[1] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "Y_DATASET" ) );
-  ret[2] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "X_BAND" ) );  
-  ret[3] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "Y_BAND" ) );
-  ret[4] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "Z_DATASET" ) );
-  ret[5] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "Z_BAND" ) );  
+  ret[0] = CSLFetchNameValue( papszGeolocationInfo, "X_DATASET");  
+  ret[1] = CSLFetchNameValue( papszGeolocationInfo, "Y_DATASET");
+  ret[2] = CSLFetchNameValue( papszGeolocationInfo, "X_BAND");  
+  ret[3] = CSLFetchNameValue( papszGeolocationInfo, "Y_BAND");
+  ret[4] = CSLFetchNameValue( papszGeolocationInfo, "Z_DATASET");
+  ret[5] = CSLFetchNameValue( papszGeolocationInfo, "Z_BAND");  
   
-  ret[6] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "SRS" ) );  
-  ret[7] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "PIXEL_OFFSET" ) );
-  ret[8] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "LINE_OFFSET" ) );  
-  ret[9] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "LINE_STEP" ) );
-  ret[10] = CPLStrdup( CSLFetchNameValue( papszGeolocationInfo, "GEOREFERENCING_CONVENTION" ) );
+  ret[6] = CSLFetchNameValue( papszGeolocationInfo, "SRS");  
+  ret[7] = CSLFetchNameValue( papszGeolocationInfo, "PIXEL_OFFSET");
+  ret[8] = CSLFetchNameValue( papszGeolocationInfo, "LINE_OFFSET");  
+  ret[9] = CSLFetchNameValue( papszGeolocationInfo, "LINE_STEP");
+  ret[10] = CSLFetchNameValue( papszGeolocationInfo, "GEOREFERENCING_CONVENTION");
 
   out[0] = ret; 
   
