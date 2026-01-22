@@ -28,42 +28,81 @@ using namespace Rcpp;
 //   gdalmin:::open_gdal(c(file, topos))
 //
 
-inline SEXP C_native_rgb(SEXP b0, SEXP b1, SEXP b2, SEXP dm) {
-  SEXP res_ = PROTECT(Rf_allocVector(INTSXP, Rf_length(b0)));
-  for (int i = 0; i < Rf_length(b0); i++) {
-    INTEGER(res_)[i] = (int)R_RGB(RAW(b0)[i], RAW(b1)[i], RAW(b2)[i]);
+inline SEXP C_native_gray(SEXP b0, SEXP dm) {
+  R_xlen_t n = Rf_xlength(b0);
+  SEXP res_ = PROTECT(Rf_allocVector(INTSXP, n));
+  
+  int *pres = INTEGER(res_);
+  Rbyte *p0 = RAW(b0);
+  
+  for (R_xlen_t i = 0; i < n; i++) {
+    Rbyte v = p0[i];
+    pres[i] = (int)R_RGB(v, v, v);
   }
-  SEXP dim;
-  dim = Rf_allocVector(INTSXP, 2);
+  
+  SEXP dim = PROTECT(Rf_allocVector(INTSXP, 2));
   INTEGER(dim)[0] = INTEGER(dm)[1];
   INTEGER(dim)[1] = INTEGER(dm)[0];
   Rf_setAttrib(res_, R_DimSymbol, dim);
-  Rf_setAttrib(res_, R_ClassSymbol, Rf_mkString("nativeRaster"));
-  {
-    SEXP chsym = Rf_install("channels");
-    Rf_setAttrib(res_, chsym, Rf_ScalarInteger(3));
+  
+  SEXP cls = PROTECT(Rf_mkString("nativeRaster"));
+  Rf_setAttrib(res_, R_ClassSymbol, cls);
+  
+  Rf_setAttrib(res_, Rf_install("channels"), PROTECT(Rf_ScalarInteger(3)));
+  
+  UNPROTECT(4);
+  return res_;
+}
+
+inline SEXP C_native_rgb(SEXP b0, SEXP b1, SEXP b2, SEXP dm) {
+  R_xlen_t n = Rf_xlength(b0);
+  SEXP res_ = PROTECT(Rf_allocVector(INTSXP, n));
+  
+  int *pres = INTEGER(res_);
+  Rbyte *p0 = RAW(b0), *p1 = RAW(b1), *p2 = RAW(b2);
+  
+  for (R_xlen_t i = 0; i < n; i++) {
+    pres[i] = (int)R_RGB(p0[i], p1[i], p2[i]);
   }
-  UNPROTECT(1);
+  
+  SEXP dim = PROTECT(Rf_allocVector(INTSXP, 2));
+  INTEGER(dim)[0] = INTEGER(dm)[1];
+  INTEGER(dim)[1] = INTEGER(dm)[0];
+  Rf_setAttrib(res_, R_DimSymbol, dim);
+  
+  SEXP cls = PROTECT(Rf_mkString("nativeRaster"));
+  Rf_setAttrib(res_, R_ClassSymbol, cls);
+  
+  SEXP chsym = Rf_install("channels");  // symbols don't need protection
+  Rf_setAttrib(res_, chsym, PROTECT(Rf_ScalarInteger(3)));
+  
+  UNPROTECT(4);
   return res_;
 }
 
 
 inline SEXP C_native_rgba(SEXP b0, SEXP b1, SEXP b2, SEXP b3, SEXP dm) {
-  SEXP res_ = PROTECT(Rf_allocVector(INTSXP, Rf_length(b0)));
-  for (int i = 0; i < Rf_length(b0); i++) {
-    INTEGER(res_)[i] = (int)R_RGBA(RAW(b0)[i], RAW(b1)[i], RAW(b2)[i], RAW(b3)[i]);
+  R_xlen_t n = Rf_xlength(b0);
+  SEXP res_ = PROTECT(Rf_allocVector(INTSXP, n));
+  
+  int *pres = INTEGER(res_);
+  Rbyte *p0 = RAW(b0), *p1 = RAW(b1), *p2 = RAW(b2), *p3 = RAW(b3);
+  
+  for (R_xlen_t i = 0; i < n; i++) {
+    pres[i] = (int)R_RGBA(p0[i], p1[i], p2[i], p3[i]);
   }
-  SEXP dim;
-  dim = Rf_allocVector(INTSXP, 2);
+  
+  SEXP dim = PROTECT(Rf_allocVector(INTSXP, 2));
   INTEGER(dim)[0] = INTEGER(dm)[1];
   INTEGER(dim)[1] = INTEGER(dm)[0];
   Rf_setAttrib(res_, R_DimSymbol, dim);
-  Rf_setAttrib(res_, R_ClassSymbol, Rf_mkString("nativeRaster"));
-  {
-    SEXP chsym = Rf_install("channels");
-    Rf_setAttrib(res_, chsym, Rf_ScalarInteger(4));
-  }
-  UNPROTECT(1);
+  
+  SEXP cls = PROTECT(Rf_mkString("nativeRaster"));
+  Rf_setAttrib(res_, R_ClassSymbol, cls);
+  
+  Rf_setAttrib(res_, Rf_install("channels"), PROTECT(Rf_ScalarInteger(4)));
+  
+  UNPROTECT(4);
   return res_;
 }
 
@@ -71,9 +110,9 @@ inline SEXP C_native_rgba(SEXP b0, SEXP b1, SEXP b2, SEXP b3, SEXP dm) {
 inline List replace_nativeRaster(List inputlist, R_xlen_t dimx, R_xlen_t dimy) {
   List outlist_nara = List();
   
-  // GREY
+  // GRAY
   if (inputlist.size() == 1) {
-    outlist_nara.push_back(C_native_rgb(inputlist[0], inputlist[0], inputlist[0], IntegerVector::create(dimx, dimy)));
+    outlist_nara.push_back(C_native_gray(inputlist[0], IntegerVector::create(dimx, dimy)));
   }
   // RGB
   if (inputlist.size() == 3) {
