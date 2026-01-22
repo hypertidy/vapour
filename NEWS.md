@@ -1,3 +1,9 @@
+# vapour dev
+
+* Improve nativeRaster implementation. 
+
+* Fix CSLConstList changes in GDAL >=3.13. 
+
 # vapour 0.15.0
 
 * Fix C++ standard (don't specify). 
