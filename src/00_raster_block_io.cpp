@@ -15,8 +15,9 @@ Rcpp::List vapour_read_raster_block_cpp(CharacterVector dsource,
 
 // [[Rcpp::export]]
 Rcpp::LogicalVector vapour_write_raster_block_cpp(CharacterVector dsource, NumericVector data,
-                                                  IntegerVector offset, IntegerVector dimension, IntegerVector band) {
-  return gdalreadwrite::gdal_write_block(dsource, data, offset, dimension, band);
+                                                  IntegerVector offset, IntegerVector dimension, IntegerVector band,
+                                                  CharacterVector open_options) {
+  return gdalreadwrite::gdal_write_block(dsource, data, offset, dimension, band, open_options);
 }
 
 

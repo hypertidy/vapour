@@ -609,8 +609,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // vapour_write_raster_block_cpp
-Rcpp::LogicalVector vapour_write_raster_block_cpp(CharacterVector dsource, NumericVector data, IntegerVector offset, IntegerVector dimension, IntegerVector band);
-RcppExport SEXP _vapour_vapour_write_raster_block_cpp(SEXP dsourceSEXP, SEXP dataSEXP, SEXP offsetSEXP, SEXP dimensionSEXP, SEXP bandSEXP) {
+Rcpp::LogicalVector vapour_write_raster_block_cpp(CharacterVector dsource, NumericVector data, IntegerVector offset, IntegerVector dimension, IntegerVector band, CharacterVector open_options);
+RcppExport SEXP _vapour_vapour_write_raster_block_cpp(SEXP dsourceSEXP, SEXP dataSEXP, SEXP offsetSEXP, SEXP dimensionSEXP, SEXP bandSEXP, SEXP open_optionsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -619,7 +619,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type offset(offsetSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type dimension(dimensionSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type band(bandSEXP);
-    rcpp_result_gen = Rcpp::wrap(vapour_write_raster_block_cpp(dsource, data, offset, dimension, band));
+    Rcpp::traits::input_parameter< CharacterVector >::type open_options(open_optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vapour_write_raster_block_cpp(dsource, data, offset, dimension, band, open_options));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -805,7 +806,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_sds_list_gdal_cpp", (DL_FUNC) &_vapour_sds_list_gdal_cpp, 1},
     {"_vapour_sds_list_list_gdal_cpp", (DL_FUNC) &_vapour_sds_list_list_gdal_cpp, 1},
     {"_vapour_vapour_read_raster_block_cpp", (DL_FUNC) &_vapour_vapour_read_raster_block_cpp, 7},
-    {"_vapour_vapour_write_raster_block_cpp", (DL_FUNC) &_vapour_vapour_write_raster_block_cpp, 5},
+    {"_vapour_vapour_write_raster_block_cpp", (DL_FUNC) &_vapour_vapour_write_raster_block_cpp, 6},
     {"_vapour_vapour_create_copy_cpp", (DL_FUNC) &_vapour_vapour_create_copy_cpp, 3},
     {"_vapour_vapour_create_cpp", (DL_FUNC) &_vapour_vapour_create_cpp, 8},
     {"_vapour_vapour_read_raster_value_cpp", (DL_FUNC) &_vapour_vapour_read_raster_value_cpp, 5},

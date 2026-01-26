@@ -12,6 +12,16 @@ namespace gdalreadwrite{
 
 using namespace Rcpp;
 
+// Helper to convert CharacterVector to char** for GDAL open options
+inline std::vector<char*> charv_to_charptr(CharacterVector cv) {
+  std::vector<char*> out(cv.size() + 1);
+  for (int i = 0; i < cv.size(); i++) {
+    out[i] = (char*) ((const char*) cv[i]);
+  }
+  out[cv.size()] = nullptr;
+  return out;
+}
+
 
 
 inline GDALDataType init_datatype(CharacterVector datatype) {
@@ -211,9 +221,18 @@ inline List gdal_read_block(CharacterVector dsn, IntegerVector offset,
 }
 
 inline LogicalVector gdal_write_block(CharacterVector dsn, NumericVector data,
-                                      IntegerVector offset, IntegerVector dimension, IntegerVector band) {
+                                      IntegerVector offset, IntegerVector dimension, IntegerVector band,
+                                      CharacterVector open_options) {
   GDALDataset  *poDataset;
-  poDataset = (GDALDataset *) GDALOpen(dsn[0], GA_Update );
+  
+  // Use GDALOpenEx with open_options if provided
+  if (open_options.size() > 0 && open_options[0] != "") {
+    std::vector<char*> oo = charv_to_charptr(open_options);
+    poDataset = (GDALDataset *) GDALOpenEx(dsn[0], GDAL_OF_RASTER | GDAL_OF_UPDATE, 
+                                            NULL, oo.data(), NULL);
+  } else {
+    poDataset = (GDALDataset *) GDALOpen(dsn[0], GA_Update);
+  }
   if( poDataset == NULL )
   {
     Rcpp::stop("cannot open\n");
