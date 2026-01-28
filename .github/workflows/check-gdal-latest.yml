@@ -1,11 +1,22 @@
-# .github/workflows/check-gdal-latest.yml
 name: Check GDAL Latest
 
 on:
-  schedule:
-    - cron: '0 3 * * 0'  # Weekly on Sunday
+  push:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
   gdal-latest:
     uses: hypertidy/gdal-r-ci/.github/workflows/check-gdal-latest.yml@main
+    with:
+      # Git ref to checkout (branch, tag, SHA)
+      ref: 'main'
+      
+      # Additional apt packages to install
+      extra-deps: ''
+      
+      # Additional R packages to install
+      r-extra-packages: ''
+      
+      # Additional R CMD check arguments
+      check-args: '--no-manual --as-cran'
