@@ -10,7 +10,8 @@ vapour_write_raster_block(
   offset,
   dimension,
   band = 1L,
-  overwrite = FALSE
+  overwrite = FALSE,
+  open_options = character()
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ vapour_write_raster_block(
 \item{band}{which band to write to (1-based)}
 
 \item{overwrite}{set to FALSE as a safety valve to not overwrite an existing file}
+
+\item{open_options}{character vector of open options for the GDAL driver (e.g. \code{c("IGNORE_COG_LAYOUT_BREAK=YES")})}
 }
 \value{
 a logical value indicating success (or failure) of the write

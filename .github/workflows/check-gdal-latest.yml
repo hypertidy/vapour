@@ -1,0 +1,11 @@
+# .github/workflows/check-gdal-latest.yml
+name: Check GDAL Latest
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'  # Weekly on Sunday
+  workflow_dispatch:
+
+jobs:
+  gdal-latest:
+    uses: hypertidy/gdal-r-ci/.github/workflows/check-gdal-latest.yml@main

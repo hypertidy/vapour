@@ -5,6 +5,7 @@ CMD
 CODE's
 CPP
 CRS
+CSLConstList
 CharacterVector
 CollectorList
 CreateCopy
@@ -24,6 +25,7 @@ GCP
 GCPs
 GDAL
 GDAL's
+GDALBuildVRT
 GDALDataset
 GDALInfo
 GDALOpen
