@@ -162,6 +162,7 @@ vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band
 #' @param offset offset to start
 #' @param dimension dimension to write
 #' @param band which band to write to (1-based)
+#' @param open_options character vector of open options for the GDAL driver (e.g. `c("IGNORE_COG_LAYOUT_BREAK=YES")`)
 #'
 #' @return a logical value indicating success (or failure) of the write
 #' @examples
@@ -171,7 +172,8 @@ vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band
 #' try(vapour_write_raster_block(tf, data = v[[1]], offset = c(0L, 0L), 
 #'                dimension = c(2L, 3L), band = 1L))
 #' if (file.exists(tf)) file.remove(tf)
-vapour_write_raster_block <- function(dsource, data, offset, dimension, band = 1L, overwrite = FALSE) {
+vapour_write_raster_block <- function(dsource, data, offset, dimension, band = 1L, overwrite = FALSE,
+                                      open_options = character()) {
  ## if (!file.exists(dsource)) stop("file dsource must exist")
   if (!overwrite) stop(sprintf("set 'overwrite' to TRUE if you really mean to write to file %s", dsource))
   if (anyNA(band) || length(band) < 1L) stop("missing band value")
@@ -187,9 +189,19 @@ vapour_write_raster_block <- function(dsource, data, offset, dimension, band = 1
       stop("mismatched data and dimension")
     }
   }
+  
+  # Ensure open_options is a character vector
+
+  if (is.null(open_options) || length(open_options) == 0) {
+    open_options <- character(1)
+  } else {
+    open_options <- as.character(open_options)
+  }
+  
   vapour_write_raster_block_cpp(dsource, data,
                                 offset,
                                 dimension,
-                                band = band)
+                                band = band,
+                                open_options = open_options)
 }
 

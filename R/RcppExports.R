@@ -177,8 +177,8 @@ vapour_read_raster_block_cpp <- function(dsource, offset, dimension, band, band_
     .Call('_vapour_vapour_read_raster_block_cpp', PACKAGE = 'vapour', dsource, offset, dimension, band, band_output_type, unscale, nara)
 }
 
-vapour_write_raster_block_cpp <- function(dsource, data, offset, dimension, band) {
-    .Call('_vapour_vapour_write_raster_block_cpp', PACKAGE = 'vapour', dsource, data, offset, dimension, band)
+vapour_write_raster_block_cpp <- function(dsource, data, offset, dimension, band, open_options) {
+    .Call('_vapour_vapour_write_raster_block_cpp', PACKAGE = 'vapour', dsource, data, offset, dimension, band, open_options)
 }
 
 vapour_create_copy_cpp <- function(dsource, dtarget, driver) {
