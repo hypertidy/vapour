@@ -1,8 +1,45 @@
 # vapour dev
 
-* Improve nativeRaster implementation. 
+* Converted entire C++ backend from Rcpp to cpp11. vapour is now header-only
+  with no ABI dependency on Rcpp. This is a major internal refactor with no
+  changes to the R API.
 
-* Fix CSLConstList changes in GDAL >=3.13. 
+* Introduced `with_ogr_layer()` template helper in gdallibrary.h, eliminating
+  duplicated open/layer/cleanup/close boilerplate across gdalgeometry.h (22
+  instances removed) and gdallibrary.h.
+
+* Replaced `CollectorList` (Rcpp-based growing list from fs) with a thin wrapper
+  around cpp11's efficiently-growing `writable::list`.
+
+* Fixed brace-matching bug in `gdal_projection_info()` where SQL result release
+  and dataset close were inside the `hSRS != nullptr` branch, leaking the
+  dataset handle for sources without a CRS.
+
+* Fixed dangling pointer in `gdal_vrt_text()` which returned `const char*` from
+  a local `CharacterVector` — now returns `std::string`.
+
+* Tightened `validate_limit_n()` to accept 0 as equivalent to NULL (no limit),
+  and ensure integer type for all arguments passed to C++ (cpp11 does not
+  perform implicit type coercion unlike Rcpp).
+
+* Added `as.integer()` and `as.numeric()` coercion at the R level for all
+  arguments passed to registered C++ functions, required by cpp11's strict
+  type checking.
+
+* Comprehensive test coverage added for previously untested exports:
+  `vapour_read_fids`, `vapour_read_fields`, `vapour_report_fields`,
+  `vapour_report_attributes`, `vapour_geom_name`, `vapour_geolocation`,
+  `vapour_get_config`, `vapour_proj_version`, `vapour_create_options`,
+  `buildvrt`, `vector_vrt`, `gdal_raster_data`, `gdal_raster_dsn`,
+  `gdal_raster_image`, `gdal_raster_nara`. Restored `vapour_vrt` tests
+  that were previously commented out. Test count: 303.
+
+* Removed stale scratchpad files from inst/ (benchmarks, shiny, warpsandbox,
+  pbf, readwrite, stars, cmd).
+
+* Improve nativeRaster implementation.
+
+* Fix CSLConstList changes in GDAL >=3.13.
 
 # vapour 0.15.0
 
