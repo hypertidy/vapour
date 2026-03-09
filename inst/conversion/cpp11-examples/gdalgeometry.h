@@ -16,7 +16,7 @@ inline raws gdal_geometry_raw(OGRFeature *poFeature) {
     poFeature->GetGeometryRef()->exportToWkb(wkbNDR, RAW(raw), wkbVariantIso);
     return raw;
   } else {
-    writable::raws raw(static_cast<R_xlen_t>(0));
+    writable::raws raw(0);
     return raw;
   }
 }

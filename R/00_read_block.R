@@ -198,9 +198,9 @@ vapour_write_raster_block <- function(dsource, data, offset, dimension, band = 1
     open_options <- as.character(open_options)
   }
   
-  vapour_write_raster_block_cpp(dsource, data,
-                                offset,
-                                dimension,
+  vapour_write_raster_block_cpp(dsource, as.double(data),
+                                as.integer(offset),
+                                as.integer(dimension),
                                 band = band,
                                 open_options = open_options)
 }

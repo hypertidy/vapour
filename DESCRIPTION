@@ -1,6 +1,6 @@
 Package: vapour
 Title: Access to the 'Geospatial Data Abstraction Library' ('GDAL')
-Version: 0.15.0.9001
+Version: 0.15.0.9002
 Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-2471-7511")), 
              person("Simon", "Wotherspoon", role = "ctb", comment = "RasterIO configuration for resampling options"), 
              person("Mark", "Padgham", role = "ctb", comment = "helped get started :)"), 
@@ -24,24 +24,15 @@ Depends: R (>= 4.2.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-LinkingTo: Rcpp
-Imports:
-    jsonlite,
-    nanoarrow,
-    Rcpp,
-    stringr,
-    utils,
-    wk
+LinkingTo: cpp11
+Imports: jsonlite, nanoarrow, stringr, utils, wk
 RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
-Suggests:
-    testthat,
-    knitr,
-    markdown,
-    rmarkdown,
-    spelling
+Suggests: testthat, knitr, markdown, rmarkdown, spelling
 SystemRequirements: libgdal-dev, GDAL (>= 2.2.3), PROJ (>= 4.8.0)
 VignetteBuilder: knitr
-URL: https://github.com/hypertidy/vapour, https://hypertidy.github.io/vapour/
+URL: https://github.com/hypertidy/vapour,
+        https://hypertidy.github.io/vapour/
 BugReports: https://github.com/hypertidy/vapour/issues
 Language: en-US
+NeedsCompilation: yes

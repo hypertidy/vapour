@@ -130,14 +130,17 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, s
   #limit_n <- validate_limit_n(limit_n)
   dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(x = dsource, layername = layer)
+  
   extent <- validate_extent(extent, sql, warn = FALSE)
-
-  extents <- vapour_read_extent(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
-  fids <- vapour_read_names(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
+  limit_n <- validate_limit_n(limit_n)
+  
+  skip_n <- as.integer(skip_n)
+  extents <- vapour_read_extent(dsource = dsource, layer = as.integer(layer), sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
+  fids <- vapour_read_names(dsource = dsource, layer = as.integer(layer), sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
   ## FIXME the other funs deal with these args
   #limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
-  types <- vapour_read_type(dsource = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
+  types <- vapour_read_type(dsource = dsource, layer = as.integer(layer), sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
   na_geoms <- unlist(lapply(extents, anyNA), use.names = FALSE)
   list(FID = fids,
        valid_geometry = !na_geoms,

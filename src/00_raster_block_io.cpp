@@ -1,193 +1,149 @@
-#include <Rcpp.h>
+#include <cpp11.hpp>
 #include "gdalreadwrite/gdalreadwrite.h"
 #include "gdalraster/gdalraster.h"
 
-using namespace Rcpp;
+using namespace cpp11;
+namespace writable = cpp11::writable;
 
-
-// [[Rcpp::export]]
-Rcpp::List vapour_read_raster_block_cpp(CharacterVector dsource,
-                                        IntegerVector offset, IntegerVector dimension, IntegerVector band,
-                                        CharacterVector band_output_type, 
-                                        LogicalVector unscale, LogicalVector nara) {
+[[cpp11::register]]
+list vapour_read_raster_block_cpp(strings dsource,
+                                  integers offset, integers dimension, integers band,
+                                  strings band_output_type,
+                                  logicals unscale, logicals nara) {
   return gdalreadwrite::gdal_read_block(dsource, offset, dimension, band, band_output_type, unscale, nara);
 }
 
-// [[Rcpp::export]]
-Rcpp::LogicalVector vapour_write_raster_block_cpp(CharacterVector dsource, NumericVector data,
-                                                  IntegerVector offset, IntegerVector dimension, IntegerVector band,
-                                                  CharacterVector open_options) {
+[[cpp11::register]]
+logicals vapour_write_raster_block_cpp(strings dsource, doubles data,
+                                       integers offset, integers dimension, integers band,
+                                       strings open_options) {
   return gdalreadwrite::gdal_write_block(dsource, data, offset, dimension, band, open_options);
 }
 
-
-
-// [[Rcpp::export]]
-Rcpp::CharacterVector vapour_create_copy_cpp(CharacterVector dsource, CharacterVector dtarget, CharacterVector driver) {
+[[cpp11::register]]
+strings vapour_create_copy_cpp(strings dsource, strings dtarget, strings driver) {
   return gdalreadwrite::gdal_create_copy(dsource, dtarget, driver);
 }
 
-// [[Rcpp::export]]
-Rcpp::CharacterVector vapour_create_cpp(CharacterVector filename, CharacterVector driver,
-                                        NumericVector extent, IntegerVector dimension,
-                                        CharacterVector projection,
-                                        IntegerVector n_bands, 
-                                        CharacterVector datatype,
-                                        List options_list_pairs) {
-  return gdalreadwrite::gdal_create(filename, driver, extent, dimension, projection, n_bands, datatype, options_list_pairs);   
+[[cpp11::register]]
+strings vapour_create_cpp(strings filename, strings driver,
+                          doubles extent, integers dimension,
+                          strings projection,
+                          integers n_bands,
+                          strings datatype,
+                          list options_list_pairs) {
+  return gdalreadwrite::gdal_create(filename, driver, extent, dimension, projection, n_bands, datatype, options_list_pairs);
 }
 
+[[cpp11::register]]
+doubles vapour_read_raster_value_cpp(strings dsource,
+                                     integers col, integers row, integers band,
+                                     strings band_output_type) {
+  writable::integers sds0 = {0};
+  GDALDatasetH ds = gdalraster::gdalH_open_dsn(std::string(dsource[0]).c_str(), sds0);
 
-// [[Rcpp::export]]
-Rcpp::NumericVector vapour_read_raster_value_cpp(CharacterVector dsource,
-                                                 IntegerVector col, IntegerVector row,  IntegerVector band,
-                                                 CharacterVector band_output_type) {
-  IntegerVector dimension(2); 
-  dimension[0] = 1; 
-  dimension[1] = 1; 
-  IntegerVector offset(2);
-  IntegerVector sds0 = IntegerVector::create(0); 
-  GDALDatasetH ds = gdalraster::gdalH_open_dsn(dsource[0],   sds0);  
-  
-  NumericVector vals(col.size()); 
-  NumericVector L(1); 
-  IntegerVector window(6); 
-  window[2] = 1;
-  window[3] = 1;
-  window[4] = 1;
-  window[5] = 1;
-  LogicalVector tst(1);
-  CharacterVector type(1); 
-  type[0] = "Float64";
-  CharacterVector resample(1); 
+  writable::doubles vals(col.size());
+  writable::strings resample(1);
   resample[0] = "near";
-  NumericVector v(1); 
-  tst[0] = false; 
-  std::vector<int> b = {1};
-  if (band[0] < 1) stop("invalid band number"); 
-  if (band[0] > ((GDALDataset *)ds)->GetRasterCount()) stop("invalid band number"); 
-  GDALRasterBand * poBand = ((GDALDataset*) ds)->GetRasterBand(band[0]); 
+
+  if (band[0] < 1) cpp11::stop("invalid band number");
+  if (band[0] > ((GDALDataset *)ds)->GetRasterCount()) cpp11::stop("invalid band number");
+  GDALRasterBand * poBand = ((GDALDataset*) ds)->GetRasterBand(band[0]);
   GDALRasterIOExtraArg psExtraArg;
-  psExtraArg = gdalraster::init_resample_alg(resample); 
-  CPLErr err; 
-  
+  psExtraArg = gdalraster::init_resample_alg(resample);
+  CPLErr err;
+
   for (int i = 0; i < col.size(); i++) {
-    
+    double v;
     err = poBand->RasterIO(GF_Read, col[i], row[i], 1, 1,
-                           &vals[i], 1, 1, GDT_Float64,
+                           &v, 1, 1, GDT_Float64,
                            0, 0, &psExtraArg);
     if (err != OGRERR_NONE) {
-      Rcpp::stop("failed to read band values"); 
+      cpp11::stop("failed to read band values");
     }
+    vals[i] = v;
   }
-  GDALClose(ds); 
- 
-  return vals; 
+  GDALClose(ds);
+  return vals;
 }
 
+[[cpp11::register]]
+list blocks_cpp1(strings dsource, integers iblock, logicals read) {
+  writable::integers sds0 = {0};
+  GDALDatasetH ds = gdalraster::gdalH_open_dsn(std::string(dsource[0]).c_str(), sds0);
+  GDALRasterBand * poBand = ((GDALDataset*) ds)->GetRasterBand(1);
 
-// [[Rcpp::export]]
-Rcpp::List blocks_cpp1(CharacterVector dsource, IntegerVector iblock, LogicalVector read) {                                                 
+  if (! (poBand->GetRasterDataType() == GDT_Float32 )) cpp11::stop("");
 
-  //https://gdal.org/doxygen/classGDALRasterBand.html#a09e1d83971ddff0b43deffd54ef25eef
-  IntegerVector sds0 = IntegerVector::create(0); 
-  GDALDatasetH ds = gdalraster::gdalH_open_dsn(dsource[0],   sds0);  
-  GDALRasterBand * poBand = ((GDALDataset*) ds)->GetRasterBand(1); 
-  
-  if (! (poBand->GetRasterDataType() == GDT_Float32 )) Rcpp::stop("\n");
-  
   int nXBlockSize, nYBlockSize;
   poBand->GetBlockSize( &nXBlockSize, &nYBlockSize );
-  
-  List out(1);
-  int cnt = 0; 
-  //GByte *pabyData = (GByte *) CPLMalloc(nXBlockSize * nYBlockSize);
-//  std::vector<float> faBlockData( static_cast<size_t>( nXBlockSize * nYBlockSize ));
-  float *faBlockData = (float *) CPLMalloc(nXBlockSize * nYBlockSize); 
+
+  writable::list out(1);
+  int cnt = 0;
+  float *faBlockData = (float *) CPLMalloc(nXBlockSize * nYBlockSize);
   int iXBlock = 0;
-  int iYBlock = 0; 
-  int        nXValid, nYValid;
-  // Compute the portion of the block that is valid
-  // for partial edge blocks.
-  poBand->GetActualBlockSize(iXBlock, iYBlock, &nXValid, &nYValid); 
-  NumericVector float_data(nXValid *  nYValid); 
+  int iYBlock = 0;
+  int nXValid, nYValid;
+  poBand->GetActualBlockSize(iXBlock, iYBlock, &nXValid, &nYValid);
+  writable::doubles float_data(nXValid * nYValid);
   CPLErr err = poBand->ReadBlock( iXBlock, iYBlock, faBlockData );
   if (!(err == OGRERR_NONE)) {
-    GDALClose(ds); 
-    CPLFree(faBlockData); 
-    Rcpp::stop("could not read block\n"); 
-    
+    GDALClose(ds);
+    CPLFree(faBlockData);
+    cpp11::stop("could not read block");
   }
   for( int iY = 0; iY < nYValid; iY++ )
   {
     for( int iX = 0; iX < nXValid; iX++ )
     {
       float_data[cnt] = (double)faBlockData[iX + iY * nXBlockSize];
-      cnt++; 
+      cnt++;
   }
   }
-   float_data.attr("actual_block_size") =       IntegerVector::create(nXValid, nYValid); 
+  writable::integers abs = {nXValid, nYValid};
+  float_data.attr("actual_block_size") = abs;
   out[0] = float_data;
-  GDALClose(ds); 
-  CPLFree(faBlockData); 
-  return out; 
+  GDALClose(ds);
+  CPLFree(faBlockData);
+  return out;
 }
 
+[[cpp11::register]]
+list blocks_cpp(strings dsource, integers iblock, logicals read) {
+  writable::integers sds0 = {0};
+  GDALDatasetH ds = gdalraster::gdalH_open_dsn(std::string(dsource[0]).c_str(), sds0);
+  GDALRasterBand * poBand = ((GDALDataset*) ds)->GetRasterBand(1);
 
-
-
-
-// [[Rcpp::export]]
-Rcpp::List blocks_cpp(CharacterVector dsource, IntegerVector iblock, LogicalVector read) {                                                 
-  
-  
-  //https://gdal.org/doxygen/classGDALRasterBand.html#a09e1d83971ddff0b43deffd54ef25eef
-  IntegerVector sds0 = IntegerVector::create(0); 
-  GDALDatasetH ds = gdalraster::gdalH_open_dsn(dsource[0],   sds0);  
-  GDALRasterBand * poBand = ((GDALDataset*) ds)->GetRasterBand(1); 
-  
   int nXBlockSize, nYBlockSize;
   poBand->GetBlockSize( &nXBlockSize, &nYBlockSize );
-  
-  
- 
+
   int nXBlocks = (poBand->GetXSize() + nXBlockSize - 1) / nXBlockSize;
   int nYBlocks = (poBand->GetYSize() + nYBlockSize - 1) / nYBlockSize;
-  
-  List out(nXBlocks * nYBlocks);
-  int cnt = 0; 
-  
- // GByte *pabyData = (GByte *) CPLMalloc(nXBlockSize * nYBlockSize);
-  
+
+  writable::list out(nXBlocks * nYBlocks);
+  int cnt = 0;
+
   for( int iYBlock = 0; iYBlock < nYBlocks; iYBlock++ )
   {
     for( int iXBlock = 0; iXBlock < nXBlocks; iXBlock++ )
     {
-      int        nXValid, nYValid;
-      // Compute the portion of the block that is valid
-      // for partial edge blocks.
-      poBand->GetActualBlockSize(iXBlock, iYBlock, &nXValid, &nYValid); 
-      LogicalVector dummy_vec(0); 
-      if (read[0]) {
-        RawVector raw_bytes(nXValid *  nYValid); 
-        Rprintf("%i\n", iYBlock); 
-        
-       // poBand->ReadBlock( iXBlock, iYBlock, pabyData );
-        // for (int ibyte = 0; ibyte < raw_bytes.size(); ibyte++) {
-        //   raw_bytes[ibyte] = pabyData[ibyte];
-        // }
-        raw_bytes.attr("actual_block_size") =       IntegerVector::create(nXValid, nYValid); 
+      int nXValid, nYValid;
+      poBand->GetActualBlockSize(iXBlock, iYBlock, &nXValid, &nYValid);
+      if ((bool)read[0]) {
+        writable::raws raw_bytes(nXValid * nYValid);
+        Rprintf("%i\n", iYBlock);
+        writable::integers abs = {nXValid, nYValid};
+        raw_bytes.attr("actual_block_size") = abs;
         out[cnt] = raw_bytes;
-       // CPLFree(pabyData); 
       } else {
-        dummy_vec.attr("actual_block_size") =     IntegerVector::create(nXValid, nYValid); 
+        writable::logicals dummy_vec((R_xlen_t)0);
+        writable::integers abs = {nXValid, nYValid};
+        dummy_vec.attr("actual_block_size") = abs;
         out[cnt] = dummy_vec;
       }
-      cnt++; 
+      cnt++;
     }
-    
   }
-  GDALClose(ds); 
-//CPLFree(pabyData); 
-  return out; 
+  GDALClose(ds);
+  return out;
 }

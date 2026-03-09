@@ -10,18 +10,24 @@ index_layer <- function(x, layername) {
  idx <- match(layername, available_layers)
  if (length(idx) != 1 || !is.numeric(idx)) stop(sprintf("cannot find layer: %s", layername))
  if (is.na(idx) || idx < 1 || idx > length(available_layers)) stop(sprintf("layer index not found for: %s \n\nto determine, compare 'vapour_layer_names(dsource)'", layername))
- idx - 1L  ## layer is 0-based
+ as.integer(idx - 1L)  ## layer is 0-based
 }
-
 validate_limit_n <- function(x) {
-  if (is.null(x)) {
-    x <- 0L
-  } else {
-    if (x < 1) stop("limit_n must be 1 or greater (or NULL)")
-  }
-  stopifnot(is.numeric(x))
+  if (is.null(x)) x <- 0L
+  x <- as.integer(x)
+  if (x < 0L) stop("limit_n must be 0 or greater (or NULL)")
   x
 }
+# 
+# validate_limit_n <- function(x) {
+#   if (is.null(x)) {
+#     x <- 0L
+#   } else {
+#     if (x < 1) stop("limit_n must be 1 or greater (or NULL)")
+#   }
+#   stopifnot(is.numeric(x))
+#   as.integer(x)
+# }
 
 validate_extent <- function(extent, sql, warn = TRUE) {
   if (length(extent) > 1) {
@@ -38,7 +44,7 @@ validate_extent <- function(extent, sql, warn = TRUE) {
   if (is.na(extent[1])) extent = 0.0
   if (warn && length(extent) == 4L && nchar(sql) < 1) warning("'extent' given but 'sql' query is empty, extent clipping will be ignored")
   if (!is.numeric(extent)) stop("extent must be interpretable as xmin, xmax, ymin, ymax")
-  extent
+  as.double(extent)
 }
 #' Read GDAL layer names
 #'
@@ -91,7 +97,7 @@ vapour_layer_names <- function(dsource, ...) {
 vapour_geom_name <- function(dsource, layer = 0L, sql = "") {
   dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
-  vapour_geom_name_cpp(dsource = dsource, layer = layer, sql = sql, ex = 0)
+  vapour_geom_name_cpp(dsource = dsource, layer = as.integer(layer), sql = sql, ex = as.numeric(0))
 }
 
 #' Read feature names
@@ -122,7 +128,7 @@ vapour_read_fids <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip
   skip_n <- skip_n[1L]
   if (skip_n < 0) stop("skip_n must be 0, or higher")
   extent <- validate_extent(extent, sql)
-  fids <- read_fids_gdal_cpp(dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, ex = extent)
+  fids <- read_fids_gdal_cpp(dsource, layer = as.integer(layer), sql = sql, limit_n = limit_n, skip_n = as.integer(skip_n), ex = as.numeric(extent))
   fids
 }
 
@@ -159,7 +165,7 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, ski
 vapour_report_fields <- function(dsource, layer = 0L, sql = "") {
   dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
-  report_fields_gdal_cpp(dsource, layer, sql = sql)
+  report_fields_gdal_cpp(dsource, as.integer(layer), sql = sql)
 }
 
 #' @name vapour_report_fields
@@ -202,8 +208,8 @@ vapour_read_fields <- function(dsource, layer = 0L, sql = "", limit_n = NULL, sk
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
 
-  read_fields_gdal_cpp(dsn = dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n,
-                       ex = extent,
+  read_fields_gdal_cpp(dsn = dsource, layer = as.integer(layer), sql = sql, limit_n = limit_n, skip_n = as.integer(skip_n),
+                       ex = as.numeric(extent),
                        fid_column_name = character(0))
 }
 

@@ -148,10 +148,10 @@ gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ex
   include_meta <- isTRUE(include_meta)
 
   warp_general_cpp(dsn, target_crs, 
-                            target_ext, 
-                            target_dim, 
-                            target_res, 
-                            bands = bands, 
+                            as.numeric(target_ext), 
+                            as.integer(target_dim), 
+                            as.numeric(target_res), 
+                            bands = as.integer(bands), 
                             resample = resample, 
                             silent = FALSE, band_output_type = band_output_type, 
                             options = options, 
@@ -175,10 +175,10 @@ gdal_raster_image <- function(dsn, target_crs = NULL, target_dim = NULL, target_
   }
   include_meta <- isTRUE(include_meta)
   bytes <- warp_general_cpp(dsn, target_crs, 
-                            target_ext, 
-                            target_dim, 
-                            target_res, 
-                            bands = bands, 
+                            as.numeric(target_ext), 
+                            as.integer(target_dim), 
+                            as.numeric(target_res), 
+                            bands = as.integer(bands), 
                             resample = resample, 
                             silent = FALSE, band_output_type = band_output_type, 
                             options = options, dsn_outname = "", include_meta = include_meta, nara = FALSE)
@@ -206,10 +206,10 @@ gdal_raster_nara <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
   }
   include_meta <- isTRUE(include_meta)
   out <- warp_general_cpp(dsn, target_crs, 
-                            target_ext, 
-                            target_dim, 
-                            target_res, 
-                            bands = bands, 
+                            as.numeric(target_ext), 
+                            as.integer(target_dim), 
+                            as.numeric(target_res), 
+                            bands = as.integer(bands), 
                             resample = resample, 
                             silent = FALSE, band_output_type = band_output_type, 
                             options = options, dsn_outname = "", include_meta = include_meta, nara = TRUE)

@@ -29,8 +29,8 @@ vapour_read_geometry_text(
   sql = "",
   textformat = "json",
   limit_n = NULL,
-  skip_n = 0,
-  extent = NA
+  skip_n = 0L,
+  extent = NA_real_
 )
 
 vapour_read_extent(

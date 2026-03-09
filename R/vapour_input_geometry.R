@@ -57,7 +57,7 @@ vapour_layer_info <- function(dsource, layer = 0L, sql = "", extent = NA, count 
   fields <- vapour_report_fields(dsource, layer, sql)
   
   if (count) {
-    cnt <- feature_count_gdal_cpp(dsource, layer, sql, extent)
+    cnt <- feature_count_gdal_cpp(dsource, as.integer(layer), sql, as.numeric(extent))
   } else {
     cnt <- NA_integer_
   }
@@ -68,7 +68,7 @@ vapour_layer_info <- function(dsource, layer = 0L, sql = "", extent = NA, count 
        fields = fields,
        count = cnt,
        extent = ext,
-       projection = projection_info_gdal_cpp(dsource, layer = layer, sql = sql)[c("Wkt", "Proj4", "EPSG")])
+       projection = projection_info_gdal_cpp(dsource, layer = as.integer(layer), sql = sql)[c("Wkt", "Proj4", "EPSG")])
 }
 
 #' Read layer extent
@@ -99,7 +99,7 @@ vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ...) 
   extent <- validate_extent(extent, sql)
   
   
- vapour_layer_extent_cpp(dsource, layer, sql, extent) 
+ vapour_layer_extent_cpp(dsource, as.integer(layer), sql, as.numeric(extent)) 
 }
 
 #' Read GDAL feature geometry
@@ -169,19 +169,23 @@ vapour_read_geometry <- function(dsource, layer = 0L, sql = "", limit_n = NULL, 
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
-  read_geometry_gdal_cpp( dsn = dsource, layer = layer, sql = sql, what = "wkb", textformat = "", limit_n = limit_n, skip_n = skip_n, ex = extent)
+  read_geometry_gdal_cpp( dsn = dsource, layer = as.integer(layer), 
+                          sql = sql, what = "wkb", 
+                          textformat = "", 
+                          limit_n = limit_n, skip_n = as.integer(skip_n), ex = as.numeric(extent))
 }
 
 #' @export
 #' @rdname vapour_read_geometry
-vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat = "json", limit_n = NULL, skip_n = 0, extent = NA) {
+vapour_read_geometry_text <- function(dsource, layer = 0L, sql = "", textformat = "json", limit_n = NULL, skip_n = 0L, extent = NA_real_) {
   dsource <- .check_dsn_single(dsource)
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   textformat = match.arg (tolower (textformat), c ("json", "gml", "kml", "wkt"))
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
-  read_geometry_gdal_cpp(dsn = dsource, layer = layer, sql = sql, what = textformat,
-                           textformat = "", limit_n = limit_n, skip_n = skip_n, ex = extent)
+  read_geometry_gdal_cpp(dsn = dsource, layer = as.integer(layer), sql = sql, what = textformat,
+                           textformat = "", limit_n = limit_n, skip_n = as.integer(skip_n), 
+                         ex = as.numeric(extent))
 }
 
 
@@ -192,10 +196,11 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL, sk
   if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
+
   out <- read_geometry_gdal_cpp(dsn = dsource,
-                                  layer = layer, sql = sql,
+                                  layer = as.integer(layer), sql = sql,
                                   what = "extent", textformat = "",
-                                  limit_n = limit_n, skip_n = skip_n, ex = extent)
+                                  limit_n = limit_n, skip_n = as.integer(skip_n), ex = as.numeric(extent))
   nulls <- unlist(lapply(out, is.null), use.names = FALSE)
   if (any(nulls)) out[nulls] <- replicate(sum(nulls), rep(NA_real_, 4L), simplify = FALSE)
   out
@@ -210,9 +215,9 @@ vapour_read_type <- function(dsource, layer = 0L,  sql = "", limit_n = NULL, ski
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
   out <- read_geometry_gdal_cpp(dsn = dsource,
-                                layer = layer, sql = sql,
+                                layer = as.integer(layer), sql = sql,
                                 what = "type", textformat = "",
-                                limit_n = limit_n, skip_n = skip_n, ex = extent)
+                                limit_n = limit_n, skip_n = as.integer(skip_n), ex = as.numeric(extent))
 
   nulls <- unlist(lapply(out, is.null), use.names = FALSE)
   if (any(nulls)) out[nulls] <- list(NA_integer_)

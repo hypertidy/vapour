@@ -1,25 +1,21 @@
-#include <Rcpp.h>
+#include <cpp11.hpp>
 #include "gdalarrowstream/gdalvectorstream.h"
 
+using namespace cpp11;
 
-using namespace Rcpp;
-
-// see process_cpl_read_ogr_stream
-// [[Rcpp::export]]
-List gdal_dsn_read_vector_stream(RObject stream_xptr,
-                           CharacterVector dsn,
-                          CharacterVector layer,
-                           CharacterVector sql,
+[[cpp11::register]]
+list gdal_dsn_read_vector_stream(cpp11::sexp stream_xptr,
+                           strings dsn,
+                           strings layer,
+                           strings sql,
                            std::vector<std::string> options,
                            bool quiet,
                            std::vector<std::string> drivers,
-                           Rcpp::NumericVector extent,
+                           doubles extent,
                            bool dsn_exists,
-                           Rcpp::CharacterVector fid_column_name,
+                           strings fid_column_name,
                            int width) {
   return gdalvectorstream::read_gdal_stream(stream_xptr, dsn, layer, sql,
                                                options, quiet, drivers, extent, dsn_exists,
                                                fid_column_name, width);
 }
-
-

@@ -1,6 +1,6 @@
 #ifndef GDALAPPLIB_H
 #define GDALAPPLIB_H
-#include <Rcpp.h>
+#include <cpp11.hpp>
 #include "gdal_priv.h"
 #include "gdal_utils.h"  // for GDALTranslateOptions
 #include "vrtdataset.h"
@@ -10,74 +10,65 @@
 #include "common/common_vapour.h"
 
 #include "gdalwarper.h"
-//#include "gdal_utils.h"  // for GDALWarpAppOptions
 
 
 
 
 namespace gdalapplib {
-using namespace Rcpp;
+using namespace cpp11;
+namespace writable = cpp11::writable;
 
 
 // GDALInfo() itself requires GDAL 2.1
-//
-// Note: doesn't sf do this? yes, but not vectorized in cpp (not slow though), not callable from Cpp, doesn't work with subdatasets (that is is gdalinfo_bin.cpp)
-// [[Rcpp::export]]
-inline CharacterVector gdalinfo_applib_cpp(CharacterVector dsn,
-                              CharacterVector options) {
+inline strings gdalinfo_applib_cpp(strings dsn,
+                                   strings options) {
   
   
   
-//put -json in the input options for this call
- //Rcpp::CharacterVector argv = {"-json", "-stats", "-hist"};
- char** papszArg = nullptr;
-for (R_xlen_t i = 0; i < options.size(); ++i) {
-  if (!options[0].empty()) {
-    papszArg = CSLAddString(papszArg, options[i]);
+  //put -json in the input options for this call
+  char** papszArg = nullptr;
+  for (R_xlen_t i = 0; i < options.size(); ++i) {
+    if (std::string(options[0]) != "") {
+      papszArg = CSLAddString(papszArg, std::string(options[i]).c_str());
+    }
   }
-}
   GDALInfoOptions* psOptions = GDALInfoOptionsNew(papszArg, nullptr);
-  CSLDestroy(papszArg); 
+  CSLDestroy(papszArg);
   if (psOptions == nullptr) {
-    Rcpp::stop("creation of GDALInfoOptions failed");
+    cpp11::stop("creation of GDALInfoOptions failed");
   }
-  CharacterVector out(dsn.size()); 
+  writable::strings out(dsn.size());
   for (R_xlen_t i = 0; i < out.size(); i++) {
-  
-    GDALDatasetH hDataset = GDALOpen(dsn[i], GA_ReadOnly); 
+    
+    GDALDatasetH hDataset = GDALOpen(std::string(dsn[i]).c_str(), GA_ReadOnly);
     if (hDataset == nullptr) {
-      out[i] = NA_STRING; 
+      out[i] = NA_STRING;
     } else {
       char *outstr = GDALInfo(hDataset, psOptions);
-      out[i] = outstr;  
-      CPLFree(outstr); 
-      GDALClose(hDataset); 
+      out[i] = outstr;
+      CPLFree(outstr);
+      GDALClose(hDataset);
+    }
   }
-  }
-    GDALInfoOptionsFree(psOptions);
-
+  GDALInfoOptionsFree(psOptions);
+  
   return out;
 }
 
 
 
 
-
-
-
-
-
-inline List gdalwarp_applib(CharacterVector source_filename,
-                                CharacterVector target_crs,
-                                NumericVector target_extent,
-                                IntegerVector target_dim,
-                                CharacterVector target_filename,
-                                IntegerVector bands,
-                                CharacterVector resample,
-                                LogicalVector silent,
-                                CharacterVector band_output_type, 
-                                CharacterVector warp_options, 
-                                CharacterVector transformation_options) {
+inline list gdalwarp_applib(strings source_filename,
+                            strings target_crs,
+                            doubles target_extent,
+                            integers target_dim,
+                            strings target_filename,
+                            integers bands,
+                            strings resample,
+                            logicals silent,
+                            strings band_output_type,
+                            strings warp_options,
+                            strings transformation_options) {
   
   
   GDALDatasetH *poSrcDS;
@@ -85,17 +76,17 @@ inline List gdalwarp_applib(CharacterVector source_filename,
   
   
   for (int i = 0; i < source_filename.size(); i++) {
-     poSrcDS[i] = GDALOpen(source_filename[i], GA_ReadOnly); 
-      
+    poSrcDS[i] = GDALOpen(std::string(source_filename[i]).c_str(), GA_ReadOnly);
+    
     // unwind everything, and stop
     if (poSrcDS[i] == nullptr) {
       if (i > 0) {
         for (int j = 0; j < i; j++) GDALClose(poSrcDS[j]);
       }
-      Rprintf("input source not readable: %s\n", (char *)source_filename[i]); 
+      Rprintf("input source not readable: %s\n", std::string(source_filename[i]).c_str());
       
       CPLFree(poSrcDS);
-      Rcpp::stop(""); 
+      cpp11::stop("");
     }
   }
   
@@ -110,29 +101,29 @@ inline List gdalwarp_applib(CharacterVector source_filename,
   }
   
   // if we don't supply it don't try to set it!
-  if (!target_crs[0].empty()){
+  if (std::string(target_crs[0]) != ""){
     // if supplied check that it's valid
     OGRSpatialReference *oTargetSRS = nullptr;
     oTargetSRS = new OGRSpatialReference;
-    OGRErr target_chk =  oTargetSRS->SetFromUserInput((const char*)target_crs[0]);
+    OGRErr target_chk =  oTargetSRS->SetFromUserInput(std::string(target_crs[0]).c_str());
     if (oTargetSRS != nullptr) {
-      delete oTargetSRS; 
+      delete oTargetSRS;
     }
     if (target_chk != OGRERR_NONE) {
-      Rcpp::stop("cannot initialize target projection");
+      cpp11::stop("cannot initialize target projection");
     }
     const char *st = NULL;
-    st = ((GDALDataset *)poSrcDS[0])->GetProjectionRef(); 
+    st = ((GDALDataset *)poSrcDS[0])->GetProjectionRef();
     
     if(*st == '\0')	{
-      Rcpp::stop( "Transformation to this target CRS not possible from this source dataset, target CRS given: \n\n %s \n\n", 
-                  (char *)  target_crs[0] );
+      cpp11::stop( "Transformation to this target CRS not possible from this source dataset, target CRS given: \n\n %s \n\n",
+                   std::string(target_crs[0]).c_str() );
     }
-
-    papszArg = CSLAddString(papszArg, "-t_srs");
-  papszArg = CSLAddString(papszArg, target_crs[0]);
     
- }
+    papszArg = CSLAddString(papszArg, "-t_srs");
+    papszArg = CSLAddString(papszArg, std::string(target_crs[0]).c_str());
+    
+  }
   
   // we always provide extent and dimension, crs is optional and just means subset/decimate
   double dfMinX = target_extent[0];
@@ -157,56 +148,54 @@ inline List gdalwarp_applib(CharacterVector source_filename,
   
   
   papszArg = CSLAddString(papszArg, "-r");
-  papszArg = CSLAddString(papszArg, resample[0]);
+  papszArg = CSLAddString(papszArg, std::string(resample[0]).c_str());
   
   papszArg = CSLAddString(papszArg, "-multi");
-  //papszArg = CSLAddString(papszArg, "-wo");
-  //  papszArg = CSLAddString(papszArg, "NUM_THREADS=ALL_CPUS");  
   
-
+  
   // bundle on all user-added options
-  for (int wopt = 0; wopt < warp_options.length(); wopt++) {
+  for (int wopt = 0; wopt < warp_options.size(); wopt++) {
     papszArg = CSLAddString(papszArg, "-wo");
-    papszArg = CSLAddString(papszArg, warp_options[wopt]);
+    papszArg = CSLAddString(papszArg, std::string(warp_options[wopt]).c_str());
   }
-  for (int topt = 0; topt < transformation_options.length(); topt++) {
+  for (int topt = 0; topt < transformation_options.size(); topt++) {
     papszArg = CSLAddString(papszArg, "-to");
-    papszArg = CSLAddString(papszArg, transformation_options[topt]);
+    papszArg = CSLAddString(papszArg, std::string(transformation_options[topt]).c_str());
   }
-
-
+  
+  
   
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
- 
-  GDALDatasetH hRet = GDALWarp( target_filename[0], nullptr,
+  
+  GDALDatasetH hRet = GDALWarp( std::string(target_filename[0]).c_str(), nullptr,
                                 (int)source_filename.size(), poSrcDS,
                                 psOptions, nullptr);
   
   
   CPLAssert( hRet != NULL );
   GDALWarpAppOptionsFree(psOptions);
-
+  
   GDALClose((GDALDataset*) hRet);
   for (int si = 0; si < source_filename.size(); si++) {
     GDALClose( (GDALDataset *)poSrcDS[si] );
   }
   CPLFree(poSrcDS);
   
-  List out(0);
+  writable::list out;
   return out;
 }
 
-inline CharacterVector gdalbuildvrt_applib(std::vector<std::string> dsn, 
-                                           std::vector<std::string> options) {
-  CharacterVector out(1); 
+inline strings gdalbuildvrt_applib(std::vector<std::string> dsn,
+                                   std::vector<std::string> options) {
+  writable::strings out(1);
   int err;
   GDALBuildVRTOptions* opt = GDALBuildVRTOptionsNew(string_to_charptr(options).data(), nullptr);
-  int dsn_size = (int)dsn.size(); 
-  GDALDataset *vrt = (GDALDataset*)GDALBuildVRT("", dsn_size, nullptr, string_to_charptr(dsn).data(), opt, &err); 
+  int dsn_size = (int)dsn.size();
+  GDALDataset *vrt = (GDALDataset*)GDALBuildVRT("", dsn_size, nullptr, string_to_charptr(dsn).data(), opt, &err);
   out[0] = vrt->GetMetadata("xml:VRT")[0];
-  GDALClose(vrt); 
+  GDALClose(vrt);
   return out;
 }
 

@@ -81,8 +81,7 @@
 #'  
 #' @name vapour-package
 #' @aliases vapour
-#' @useDynLib vapour
-#' @importFrom Rcpp sourceCpp
+#' @useDynLib vapour, .registration = TRUE
 "_PACKAGE"
 
 #' SST contours

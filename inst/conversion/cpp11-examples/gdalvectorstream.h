@@ -132,7 +132,7 @@ inline list ogr_layer_setup(strings datasource,
       layer_w.push_back(poLayer->GetName());
       if (! quiet) {
         Rprintf("Multiple layers are present in data source %s, ", std::string(datasource[0]).c_str());
-        Rprintf("reading layer `%s'.\n", CHAR(STRING_ELT(layer_w, 0)));
+        Rprintf("reading layer `%s'.\n", std::string(layer_w[0]).c_str());
         Rprintf("Use `st_layers' to list all layer names and their type in a data source.\n");
         Rprintf("Set the `layer' argument in `st_read' to read a particular layer.\n");
       }
@@ -161,7 +161,7 @@ inline list ogr_layer_setup(strings datasource,
           ring.closeRings();
           poly.addRing(&ring);
           if (STRING_ELT(query_w, 0) == NA_STRING) {
-            std::string auto_sql = CPLSPrintf("SELECT * FROM %s", CHAR(STRING_ELT(layer_w, 0)));
+            std::string auto_sql = CPLSPrintf("SELECT * FROM %s", std::string(layer_w[0]).c_str());
             query_w[0] = auto_sql.c_str();
           }
         }
@@ -170,25 +170,25 @@ inline list ogr_layer_setup(strings datasource,
   OGRLayer *poLayer;
   bool query_is_na = (STRING_ELT(query_w, 0) == NA_STRING);
   if (!query_is_na) {
-    poLayer = poDS->ExecuteSQL(CHAR(STRING_ELT(query_w, 0)), &poly, NULL);
+    poLayer = poDS->ExecuteSQL(std::string(query_w[0]).c_str(), &poly, NULL);
     if (poLayer == NULL)
       cpp11::stop("Query execution failed, cannot open layer.\n");
     if (layer_w.size())
       cpp11::warning("argument layer is ignored when query is specified\n");
   } else {
-    poLayer = poDS->GetLayerByName(CHAR(STRING_ELT(layer_w, 0)));
+    poLayer = poDS->GetLayerByName(std::string(layer_w[0]).c_str());
   }
   if (poLayer == NULL) {
-    Rprintf("Cannot open layer %s\n", CHAR(STRING_ELT(layer_w, 0)));
+    Rprintf("Cannot open layer %s\n", std::string(layer_w[0]).c_str());
     cpp11::stop("Opening layer failed.\n");
   }
 
   if (! quiet) {
     if (!query_is_na)
-      Rprintf("Reading query `%s'\nfrom data source ", CHAR(STRING_ELT(query_w, 0)));
+      Rprintf("Reading query `%s'\nfrom data source ", std::string(query_w[0]).c_str());
     else
-      Rprintf("Reading layer `%s' from data source ", CHAR(STRING_ELT(layer_w, 0)));
-    Rprintf("`%s' ", CHAR(STRING_ELT(datasource, 0)));
+      Rprintf("Reading layer `%s' from data source ", std::string(layer_w[0]).c_str());
+    Rprintf("`%s' ", std::string(datasource[0]).c_str());
     Rprintf("using driver `%s'\n", poDS->GetDriverName());
   }
 
