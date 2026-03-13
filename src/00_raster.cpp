@@ -1,6 +1,5 @@
 #include <cpp11.hpp>
 #include "gdallibrary/gdallibrary.h"
-#include "gdalwarpmem/gdalwarpmem.h"
 
 using namespace cpp11;
 
