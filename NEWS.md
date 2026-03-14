@@ -63,6 +63,7 @@
 
 * Updated GitHub Actions check-standard workflow: dropped pinned Rtools42/43
   Windows configs in favour of current defaults, updated actions/checkout to v4.
+
 # vapour 0.15.0
 
 * Fix C++ standard (don't specify). 
