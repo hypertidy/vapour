@@ -77,8 +77,11 @@
 <li><p>Added as_cstr() helper in common_vapour.h for extracting const char* from cpp11::r_string without allocating a temporary std::string. Replaced 66 instances of std::string(x[0]).c_str() across all headers.</p></li>
 <li><p>Added include guard to common_vapour.h.</p></li>
 <li><p>Extracted write_feature_fields() helper in gdalgeometry.h, shared across layer_read_fields_ij, layer_read_fields_ia, and layer_read_fields_fa. The _ia and _fa variants now have full field type support (DateTime, Binary, NA handling) matching _ij, fixing silent data loss for these types when reading by index or FID.</p></li>
-<li><p>Updated GitHub Actions check-standard workflow: dropped pinned Rtools42/43 Windows configs in favour of current defaults, updated actions/checkout to v4. # vapour 0.15.0</p></li>
-<li><p>Fix C++ standard (don’t specify).</p></li>
+<li><p>Updated GitHub Actions check-standard workflow: dropped pinned Rtools42/43 Windows configs in favour of current defaults, updated actions/checkout to v4.</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.15.0" id="vapour-0150">vapour 0.15.0<small>2025-12-21</small><a class="anchor" aria-label="anchor" href="#vapour-0150"></a></h2>
+<ul><li>Fix C++ standard (don’t specify).</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.14.0" id="vapour-0140">vapour 0.14.0<a class="anchor" aria-label="anchor" href="#vapour-0140"></a></h2>
