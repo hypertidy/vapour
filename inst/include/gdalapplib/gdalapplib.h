@@ -29,7 +29,7 @@ inline strings gdalinfo_applib_cpp(strings dsn,
   char** papszArg = nullptr;
   for (R_xlen_t i = 0; i < options.size(); ++i) {
     if (std::string(options[0]) != "") {
-      papszArg = CSLAddString(papszArg, std::string(options[i]).c_str());
+      papszArg = CSLAddString(papszArg, as_cstr(options[i]));
     }
   }
   GDALInfoOptions* psOptions = GDALInfoOptionsNew(papszArg, nullptr);
@@ -40,7 +40,7 @@ inline strings gdalinfo_applib_cpp(strings dsn,
   writable::strings out(dsn.size());
   for (R_xlen_t i = 0; i < out.size(); i++) {
     
-    GDALDatasetH hDataset = GDALOpen(std::string(dsn[i]).c_str(), GA_ReadOnly);
+    GDALDatasetH hDataset = GDALOpen(as_cstr(dsn[i]), GA_ReadOnly);
     if (hDataset == nullptr) {
       out[i] = NA_STRING;
     } else {
@@ -76,14 +76,14 @@ inline list gdalwarp_applib(strings source_filename,
   
   
   for (int i = 0; i < source_filename.size(); i++) {
-    poSrcDS[i] = GDALOpen(std::string(source_filename[i]).c_str(), GA_ReadOnly);
+    poSrcDS[i] = GDALOpen(as_cstr(source_filename[i]), GA_ReadOnly);
     
     // unwind everything, and stop
     if (poSrcDS[i] == nullptr) {
       if (i > 0) {
         for (int j = 0; j < i; j++) GDALClose(poSrcDS[j]);
       }
-      Rprintf("input source not readable: %s\n", std::string(source_filename[i]).c_str());
+      Rprintf("input source not readable: %s\n", as_cstr(source_filename[i]));
       
       CPLFree(poSrcDS);
       cpp11::stop("");
@@ -105,7 +105,7 @@ inline list gdalwarp_applib(strings source_filename,
     // if supplied check that it's valid
     OGRSpatialReference *oTargetSRS = nullptr;
     oTargetSRS = new OGRSpatialReference;
-    OGRErr target_chk =  oTargetSRS->SetFromUserInput(std::string(target_crs[0]).c_str());
+    OGRErr target_chk =  oTargetSRS->SetFromUserInput(as_cstr(target_crs[0]));
     if (oTargetSRS != nullptr) {
       delete oTargetSRS;
     }
@@ -117,11 +117,11 @@ inline list gdalwarp_applib(strings source_filename,
     
     if(*st == '\0')	{
       cpp11::stop( "Transformation to this target CRS not possible from this source dataset, target CRS given: \n\n %s \n\n",
-                   std::string(target_crs[0]).c_str() );
+                   as_cstr(target_crs[0]) );
     }
     
     papszArg = CSLAddString(papszArg, "-t_srs");
-    papszArg = CSLAddString(papszArg, std::string(target_crs[0]).c_str());
+    papszArg = CSLAddString(papszArg, as_cstr(target_crs[0]));
     
   }
   
@@ -148,7 +148,7 @@ inline list gdalwarp_applib(strings source_filename,
   
   
   papszArg = CSLAddString(papszArg, "-r");
-  papszArg = CSLAddString(papszArg, std::string(resample[0]).c_str());
+  papszArg = CSLAddString(papszArg, as_cstr(resample[0]));
   
   papszArg = CSLAddString(papszArg, "-multi");
   
@@ -156,11 +156,11 @@ inline list gdalwarp_applib(strings source_filename,
   // bundle on all user-added options
   for (int wopt = 0; wopt < warp_options.size(); wopt++) {
     papszArg = CSLAddString(papszArg, "-wo");
-    papszArg = CSLAddString(papszArg, std::string(warp_options[wopt]).c_str());
+    papszArg = CSLAddString(papszArg, as_cstr(warp_options[wopt]));
   }
   for (int topt = 0; topt < transformation_options.size(); topt++) {
     papszArg = CSLAddString(papszArg, "-to");
-    papszArg = CSLAddString(papszArg, std::string(transformation_options[topt]).c_str());
+    papszArg = CSLAddString(papszArg, as_cstr(transformation_options[topt]));
   }
   
   
@@ -169,7 +169,7 @@ inline list gdalwarp_applib(strings source_filename,
   CSLDestroy(papszArg);
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
   
-  GDALDatasetH hRet = GDALWarp( std::string(target_filename[0]).c_str(), nullptr,
+  GDALDatasetH hRet = GDALWarp( as_cstr(target_filename[0]), nullptr,
                                 (int)source_filename.size(), poSrcDS,
                                 psOptions, nullptr);
   

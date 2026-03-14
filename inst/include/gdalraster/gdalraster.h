@@ -1,6 +1,7 @@
 #ifndef GDALRASTER_H
 #define GDALRASTER_H
 #include <cpp11.hpp>
+#include "common/common_vapour.h"
 #include "gdal_priv.h"
 #include "gdal_utils.h"  // for GDALTranslateOptions
 #include "vrtdataset.h"
@@ -171,7 +172,7 @@ inline GDALDatasetH gdalH_open_dsn(const char * dsn, integers sds) {
     strings sdsnames = gdal_subdataset_1((GDALDataset*)DS, sds[0]);
     if (sdsnames.size() > 0 && std::string(sdsnames[0]) != "") {
       GDALClose((GDALDataset*) DS);
-      DS = GDALOpen(std::string(sdsnames[0]).c_str(), GA_ReadOnly);
+      DS = GDALOpen(as_cstr(sdsnames[0]), GA_ReadOnly);
     }
   }
   return DS;
@@ -201,11 +202,11 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
   }
   if (std::string(projection[0]) != "") {
     OGRSpatialReference *srs = new OGRSpatialReference;
-    if (srs->SetFromUserInput(std::string(projection[0]).c_str()) != OGRERR_NONE) {
-      Rprintf("cannot set projection (CRS) from input 'projection' argument, ignoring: '%s'\n", std::string(projection[0]).c_str());
+    if (srs->SetFromUserInput(as_cstr(projection[0])) != OGRERR_NONE) {
+      Rprintf("cannot set projection (CRS) from input 'projection' argument, ignoring: '%s'\n", as_cstr(projection[0]));
     } else {
       translate_argv.AddString("-a_srs");
-      translate_argv.AddString(std::string(projection[0]).c_str());
+      translate_argv.AddString(as_cstr(projection[0]));
     }
     delete srs;
   }
@@ -218,9 +219,9 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
     geolsrs->SetFromUserInput("EPSG:4326");
     geolsrs->exportToWkt(&pszGeoSrsWKT);
     oDS->SetMetadataItem( "SRS", pszGeoSrsWKT, "GEOLOCATION" );
-    oDS->SetMetadataItem( "X_DATASET", std::string(geolocation[0]).c_str(), "GEOLOCATION" );
+    oDS->SetMetadataItem( "X_DATASET", as_cstr(geolocation[0]), "GEOLOCATION" );
     oDS->SetMetadataItem( "X_BAND", "1" , "GEOLOCATION" );
-    oDS->SetMetadataItem( "Y_DATASET", std::string(geolocation[1]).c_str(), "GEOLOCATION" );
+    oDS->SetMetadataItem( "Y_DATASET", as_cstr(geolocation[1]), "GEOLOCATION" );
     oDS->SetMetadataItem( "Y_BAND", "1" , "GEOLOCATION" );
     oDS->SetMetadataItem( "PIXEL_OFFSET", "0", "GEOLOCATION" );
     oDS->SetMetadataItem( "LINE_OFFSET", "0", "GEOLOCATION" );
@@ -245,7 +246,7 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
   }
 
   for (int iopt = 0; iopt < options.size(); iopt++) {
-    translate_argv.AddString(std::string(options[iopt]).c_str());
+    translate_argv.AddString(as_cstr(options[iopt]));
   }
   GDALTranslateOptions* psTransOptions = GDALTranslateOptionsNew(translate_argv.List(), nullptr);
 
@@ -257,7 +258,7 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
 inline GDALDatasetH* gdalH_open_multiple(strings dsn, integers sds) {
   GDALDatasetH* poHDS;
   poHDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * static_cast<size_t>(dsn.size())));
-  for (int i = 0; i < dsn.size(); i++) poHDS[i] = gdalH_open_dsn(std::string(dsn[i]).c_str(), sds);
+  for (int i = 0; i < dsn.size(); i++) poHDS[i] = gdalH_open_dsn(as_cstr(dsn[i]), sds);
   return poHDS;
 }
 inline GDALDatasetH* gdalH_open_avrt_multiple(strings dsn, doubles extent,
@@ -267,7 +268,7 @@ inline GDALDatasetH* gdalH_open_avrt_multiple(strings dsn, doubles extent,
   writable::strings empty_geol(1);
   empty_geol[0] = "";
   writable::integers neg1 = {-1};
-  for (int i = 0; i < dsn.size(); i++) poHDS[i] = gdalH_open_avrt(std::string(dsn[i]).c_str(),  extent, projection, sds, bands, empty_geol, neg1, options);
+  for (int i = 0; i < dsn.size(); i++) poHDS[i] = gdalH_open_avrt(as_cstr(dsn[i]),  extent, projection, sds, bands, empty_geol, neg1, options);
   return poHDS;
 }
 
@@ -300,9 +301,9 @@ inline strings gdal_dsn_vrt(strings dsn, doubles extent, strings projection,
   GDALDatasetH DS;
   for (int i = 0; i < out.size(); i++) {
     if (extent.size() == 4 || (std::string(projection[0]) != "") || bands[0] > 0 || (std::string(geolocation[0]) != "" ) || sds[0] > 1 || overview[0] > -1 || options.size() > 0) {
-      DS = gdalH_open_avrt(std::string(dsn[i]).c_str(), extent, projection, sds, bands, geolocation, overview, options);
+      DS = gdalH_open_avrt(as_cstr(dsn[i]), extent, projection, sds, bands, geolocation, overview, options);
     } else {
-      DS = gdalH_open_dsn(std::string(dsn[i]).c_str(), sds);
+      DS = gdalH_open_dsn(as_cstr(dsn[i]), sds);
     }
 
     if (DS == nullptr) {
@@ -342,7 +343,7 @@ inline strings gdal_sds_list(const char* pszFilename)
 
 inline doubles gdal_extent_only(strings dsn) {
   GDALDatasetH hDataset;
-  hDataset = GDALOpen(std::string(dsn[0]).c_str(), GA_ReadOnly);
+  hDataset = GDALOpen(as_cstr(dsn[0]), GA_ReadOnly);
   if( hDataset == nullptr )
   {
     cpp11::stop("cannot open dataset");
@@ -363,7 +364,7 @@ inline doubles gdal_extent_only(strings dsn) {
 inline list gdal_raster_info(strings dsn, logicals min_max)
   {
     GDALDatasetH hDataset;
-    hDataset = GDALOpen(std::string(dsn[0]).c_str(), GA_ReadOnly);
+    hDataset = GDALOpen(as_cstr(dsn[0]), GA_ReadOnly);
     if( hDataset == nullptr )
     {
       cpp11::stop("cannot open dataset");
@@ -493,7 +494,7 @@ inline list gdal_raster_info(strings dsn, logicals min_max)
 
 inline list gdal_raster_gcp(strings dsn) {
   GDALDatasetH hDataset;
-  hDataset = GDALOpen( std::string(dsn[0]).c_str(), GA_ReadOnly);
+  hDataset = GDALOpen( as_cstr(dsn[0]), GA_ReadOnly);
   if( hDataset == nullptr )
   {
     cpp11::stop("cannot open dataset");
@@ -993,7 +994,7 @@ inline list gdal_raster_dataset_io(strings dsn,
                                    strings band_output_type)
 {
   GDALDataset  *poDataset;
-  poDataset = (GDALDataset *) GDALOpen(std::string(dsn[0]).c_str(), GA_ReadOnly );
+  poDataset = (GDALDataset *) GDALOpen(as_cstr(dsn[0]), GA_ReadOnly );
   if( poDataset == NULL )
   {
     cpp11::stop("cannot open dataset");
@@ -1025,7 +1026,7 @@ inline list gdal_raster_io(strings dsn,
                            logicals nara)
 {
   GDALDataset  *poDataset;
-  poDataset = (GDALDataset *) GDALOpen(std::string(dsn[0]).c_str(), GA_ReadOnly );
+  poDataset = (GDALDataset *) GDALOpen(as_cstr(dsn[0]), GA_ReadOnly );
   if( poDataset == NULL )
   {
     cpp11::stop("cannot open dataset");
@@ -1048,7 +1049,7 @@ inline list gdal_raster_io(strings dsn,
 
 inline logicals gdal_has_geolocation(strings dsn, integers sds) {
   GDALDataset* poDataset;
-  poDataset = (GDALDataset*)gdalH_open_dsn(std::string(dsn[0]).c_str(), sds);
+  poDataset = (GDALDataset*)gdalH_open_dsn(as_cstr(dsn[0]), sds);
   bool has_geol = false;
   CSLConstList  papszGeolocationInfo = poDataset->GetMetadata("GEOLOCATION");
   if( papszGeolocationInfo != nullptr ) {
@@ -1067,7 +1068,7 @@ inline list gdal_list_geolocation(strings dsn, integers sds) {
     return out;
   }
   GDALDataset* poDataset;
-  poDataset = (GDALDataset*)gdalH_open_dsn(std::string(dsn[0]).c_str(), sds);
+  poDataset = (GDALDataset*)gdalH_open_dsn(as_cstr(dsn[0]), sds);
 
   CSLConstList papszGeolocationInfo = poDataset->GetMetadata("GEOLOCATION");
 

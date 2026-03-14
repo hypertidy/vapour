@@ -101,13 +101,13 @@ inline list ogr_layer_setup(strings datasource,
   std::vector <char *> drivers_v = string_to_charptr(drivers);
   GDALDataset *poDS;
 
-  poDS = (GDALDataset *) GDALOpenEx( std::string(datasource[0]).c_str(), GDAL_OF_VECTOR | GDAL_OF_READONLY,
+  poDS = (GDALDataset *) GDALOpenEx( as_cstr(datasource[0]), GDAL_OF_VECTOR | GDAL_OF_READONLY,
           drivers.size() ? drivers_v.data() : NULL,
           open_options.size() ? open_options.data() : NULL,
           NULL );
 
   if( poDS == NULL ) {
-    cpp11::stop("Cannot open %s; ", std::string(datasource[0]).c_str());
+    cpp11::stop("Cannot open %s; ", as_cstr(datasource[0]));
   }
 
   SEXP dataset_xptr = PROTECT(R_MakeExternalPtr(poDS, R_NilValue, R_NilValue));
@@ -131,7 +131,7 @@ inline list ogr_layer_setup(strings datasource,
       OGRLayer *poLayer = poDS->GetLayer(0);
       layer_w.push_back(poLayer->GetName());
       if (! quiet) {
-        Rprintf("Multiple layers are present in data source %s, ", std::string(datasource[0]).c_str());
+        Rprintf("Multiple layers are present in data source %s, ", as_cstr(datasource[0]));
         Rprintf("reading layer `%s'.\n", CHAR(STRING_ELT(layer_w, 0)));
         Rprintf("Use `st_layers' to list all layer names and their type in a data source.\n");
         Rprintf("Set the `layer' argument in `st_read' to read a particular layer.\n");
@@ -188,7 +188,7 @@ inline list ogr_layer_setup(strings datasource,
       Rprintf("Reading query `%s'\nfrom data source ", CHAR(STRING_ELT(query_w, 0)));
     else
       Rprintf("Reading layer `%s' from data source ", CHAR(STRING_ELT(layer_w, 0)));
-    Rprintf("`%s' ", CHAR(STRING_ELT(datasource, 0)));
+    Rprintf("`%s' ", as_cstr(datasource[0]));
     Rprintf("using driver `%s'\n", poDS->GetDriverName());
   }
 

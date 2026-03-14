@@ -2,6 +2,7 @@
 #define GDALWARPGENERAL_H
 
 #include <cpp11.hpp>
+#include "common/common_vapour.h"
 #include "gdal_priv.h"
 #include "gdalwarper.h"
 #include "gdal_utils.h"
@@ -35,11 +36,11 @@ list gdal_suggest_warp(strings dsn, strings target_crs) {
   writable::list out(dsn.size());
   writable::integers sds0 = {0};
   for (int i = 0; i < dsn.size(); i++) {
-    GDALDataset* poSrcDS = (GDALDataset*) gdalraster::gdalH_open_dsn(std::string(dsn[0]).c_str(), sds0);
+    GDALDataset* poSrcDS = (GDALDataset*) gdalraster::gdalH_open_dsn(as_cstr(dsn[0]), sds0);
     void *pfnTransformerArg = nullptr;
     pfnTransformerArg =
      GDALCreateGenImgProjTransformer( poSrcDS, nullptr, nullptr,
-                                     std::string(target_crs[0]).c_str(),
+                                     as_cstr(target_crs[0]),
                                                FALSE, 0.0, 1 );
   out[i] = gdal_suggest_warp(poSrcDS, pfnTransformerArg);
   if (!(poSrcDS == nullptr)) {
@@ -66,12 +67,12 @@ inline list gdal_warp_general(strings dsn,
   std::vector<GDALDatasetH> src_ds(dsn.size());
 
   for (int i = 0; i < dsn.size(); i++) {
-    GDALDatasetH hDS = GDALOpen(std::string(dsn[i]).c_str(), GA_ReadOnly);
+    GDALDatasetH hDS = GDALOpen(as_cstr(dsn[i]), GA_ReadOnly);
     if (hDS == nullptr) {
       if (i > 0) {
         for (int j = 0; j < i; j++) GDALClose(src_ds[j]);
       }
-      Rprintf("input source not readable: %s\n", std::string(dsn[i]).c_str());
+      Rprintf("input source not readable: %s\n", as_cstr(dsn[i]));
       cpp11::stop("");
     } else {
       src_ds[i] = hDS;
@@ -126,11 +127,11 @@ inline list gdal_warp_general(strings dsn,
   }
   if (resample.size() > 0) {
     papszArg = CSLAddString(papszArg, "-r");
-    papszArg = CSLAddString(papszArg, std::string(resample[0]).c_str());
+    papszArg = CSLAddString(papszArg, as_cstr(resample[0]));
   }
   for (int gwopt = 0; gwopt < options.size(); gwopt++) {
     if (std::string(options[gwopt]) != "") {
-     papszArg = CSLAddString(papszArg, std::string(options[gwopt]).c_str());
+     papszArg = CSLAddString(papszArg, as_cstr(options[gwopt]));
     }
   }
 

@@ -41,14 +41,14 @@ list raster_io_gdal_cpp(strings dsn,
 
 [[cpp11::register]]
 strings sds_list_gdal_cpp(strings dsn) {
-  return gdalraster::gdal_sds_list(std::string(dsn[0]).c_str());
+  return gdalraster::gdal_sds_list(as_cstr(dsn[0]));
 }
 
 [[cpp11::register]]
 list sds_list_list_gdal_cpp(strings dsn) {
   writable::list outlist(dsn.size());
   for (int i = 0; i < dsn.size(); i++) {
-    outlist[i] = gdalraster::gdal_sds_list(std::string(dsn[i]).c_str());
+    outlist[i] = gdalraster::gdal_sds_list(as_cstr(dsn[i]));
   }
   return outlist;
 }

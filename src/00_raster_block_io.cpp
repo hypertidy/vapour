@@ -40,7 +40,7 @@ doubles vapour_read_raster_value_cpp(strings dsource,
                                      integers col, integers row, integers band,
                                      strings band_output_type) {
   writable::integers sds0 = {0};
-  GDALDatasetH ds = gdalraster::gdalH_open_dsn(std::string(dsource[0]).c_str(), sds0);
+  GDALDatasetH ds = gdalraster::gdalH_open_dsn(as_cstr(dsource[0]), sds0);
 
   writable::doubles vals(col.size());
   writable::strings resample(1);
@@ -70,7 +70,7 @@ doubles vapour_read_raster_value_cpp(strings dsource,
 [[cpp11::register]]
 list blocks_cpp1(strings dsource, integers iblock, logicals read) {
   writable::integers sds0 = {0};
-  GDALDatasetH ds = gdalraster::gdalH_open_dsn(std::string(dsource[0]).c_str(), sds0);
+  GDALDatasetH ds = gdalraster::gdalH_open_dsn(as_cstr(dsource[0]), sds0);
   GDALRasterBand * poBand = ((GDALDataset*) ds)->GetRasterBand(1);
 
   if (! (poBand->GetRasterDataType() == GDT_Float32 )) cpp11::stop("");
@@ -111,7 +111,7 @@ list blocks_cpp1(strings dsource, integers iblock, logicals read) {
 [[cpp11::register]]
 list blocks_cpp(strings dsource, integers iblock, logicals read) {
   writable::integers sds0 = {0};
-  GDALDatasetH ds = gdalraster::gdalH_open_dsn(std::string(dsource[0]).c_str(), sds0);
+  GDALDatasetH ds = gdalraster::gdalH_open_dsn(as_cstr(dsource[0]), sds0);
   GDALRasterBand * poBand = ((GDALDataset*) ds)->GetRasterBand(1);
 
   int nXBlockSize, nYBlockSize;

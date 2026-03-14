@@ -2,6 +2,7 @@
 #define GDALREADWRITE_H
 
 #include <cpp11.hpp>
+#include "common/common_vapour.h"
 
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
@@ -65,7 +66,7 @@ inline strings gdal_create(strings filename,
   OGRSpatialReference oSRS;
   oSRS.SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
   
-  if (oSRS.SetFromUserInput(std::string(projection[0]).c_str()) != OGRERR_NONE)
+  if (oSRS.SetFromUserInput(as_cstr(projection[0])) != OGRERR_NONE)
   {
     cpp11::warning(
       "Failed to process 'projection' definition");
@@ -86,7 +87,7 @@ inline strings gdal_create(strings filename,
     cpp11::stop("failed to export CRS to WKT");
   }
   GDALDriverH hDriver;
-  hDriver = GDALGetDriverByName(std::string(driver[0]).c_str());
+  hDriver = GDALGetDriverByName(as_cstr(driver[0]));
   if( hDriver == nullptr ) {
     cpp11::stop("failed to get nominated 'driver'");
   }
@@ -100,8 +101,8 @@ inline strings gdal_create(strings filename,
       strings options2(options_list_pairs[i]);
       if (options2.size() == 2) {
         papszOptions = CSLSetNameValue(papszOptions,
-                                       std::string(options2[0]).c_str(),
-                                       std::string(options2[1]).c_str());
+                                       as_cstr(options2[0]),
+                                       as_cstr(options2[1]));
       }
     }
   }
@@ -109,7 +110,7 @@ inline strings gdal_create(strings filename,
   
   
   GDALDatasetH hDS = nullptr;
-  hDS = GDALCreate(hDriver, std::string(filename[0]).c_str(),
+  hDS = GDALCreate(hDriver, as_cstr(filename[0]),
                    dimension[0], dimension[1], n_bands[0], gdt_type,
                    papszOptions);
   
@@ -144,22 +145,22 @@ inline strings gdal_create(strings filename,
 inline strings gdal_create_copy(strings dsource, strings dtarget, strings driver) {
   
   GDALDriver *poDriver;
-  poDriver = GetGDALDriverManager()->GetDriverByName(std::string(driver[0]).c_str());
+  poDriver = GetGDALDriverManager()->GetDriverByName(as_cstr(driver[0]));
   
-  GDALDataset *poSrcDS = (GDALDataset *) GDALOpen( std::string(dsource[0]).c_str(), GA_ReadOnly );
-  if (poSrcDS == NULL ) cpp11::stop("unable to open raster source for reading: %s", std::string(dsource[0]).c_str());
+  GDALDataset *poSrcDS = (GDALDataset *) GDALOpen( as_cstr(dsource[0]), GA_ReadOnly );
+  if (poSrcDS == NULL ) cpp11::stop("unable to open raster source for reading: %s", as_cstr(dsource[0]));
   
   //
   GDALDataset *poDstDS;
   char **papszOptions = nullptr;
   papszOptions = CSLSetNameValue( papszOptions, "SPARSE_OK", "YES" );
-  poDstDS = poDriver->CreateCopy( std::string(dtarget[0]).c_str(), poSrcDS, FALSE,
+  poDstDS = poDriver->CreateCopy( as_cstr(dtarget[0]), poSrcDS, FALSE,
                                   papszOptions, NULL, NULL );
   
   /* Once we're done, close properly the dataset */
   if( poDstDS == NULL ) {
     GDALClose( (GDALDatasetH) poSrcDS );
-    Rprintf("unable to open raster source for CreateCopy: %s", std::string(dtarget[0]).c_str());
+    Rprintf("unable to open raster source for CreateCopy: %s", as_cstr(dtarget[0]));
     CSLDestroy(papszOptions);
     writable::strings empty(1);
     empty[0] = "";
@@ -196,10 +197,10 @@ inline logicals gdal_write_block(strings dsn, doubles data,
   // Use GDALOpenEx with open_options if provided
   if (open_options.size() > 0 && std::string(open_options[0]) != "") {
     std::vector<const char*> oo = charv_to_charptr(open_options);
-    poDataset = (GDALDataset *) GDALOpenEx(std::string(dsn[0]).c_str(), GDAL_OF_RASTER | GDAL_OF_UPDATE,
+    poDataset = (GDALDataset *) GDALOpenEx(as_cstr(dsn[0]), GDAL_OF_RASTER | GDAL_OF_UPDATE,
                  NULL, oo.data(), NULL);
   } else {
-    poDataset = (GDALDataset *) GDALOpen(std::string(dsn[0]).c_str(), GA_Update);
+    poDataset = (GDALDataset *) GDALOpen(as_cstr(dsn[0]), GA_Update);
   }
   if( poDataset == NULL )
   {

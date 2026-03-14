@@ -1,6 +1,7 @@
 #ifndef GDAL_DRIVERS_H
 #define GDAL_DRIVERS_H
 #include <cpp11.hpp>
+#include "common/common_vapour.h"
 #include "gdal_priv.h"
 #include "ogr_srs_api.h"
 #include "gdallibrary/gdal_layer_utils.h"
@@ -15,7 +16,7 @@ inline void ogr_cleanup_all() { OGRCleanupAll(); }
 inline void osr_cleanup() { OSRCleanup(); }
 
 inline integers gdal_set_config_option(strings option, strings value) {
-  CPLSetConfigOption(std::string(option[0]).c_str(), std::string(value[0]).c_str());
+  CPLSetConfigOption(as_cstr(option[0]), as_cstr(value[0]));
   writable::integers out(1);
   out[0] = 1;
   return out;
@@ -23,7 +24,7 @@ inline integers gdal_set_config_option(strings option, strings value) {
 
 inline strings gdal_get_config_option(strings option) {
   writable::strings out(1);
-  const char *str = CPLGetConfigOption(std::string(option[0]).c_str(), nullptr);
+  const char *str = CPLGetConfigOption(as_cstr(option[0]), nullptr);
   if (str) out[0] = str;
   return out;
 }
@@ -72,7 +73,7 @@ inline list gdal_list_drivers() {
 }
 
 inline strings gdal_driver(strings dsn) {
-  return with_ogr_dataset(std::string(dsn[0]).c_str(), GDAL_OF_READONLY,
+  return with_ogr_dataset(as_cstr(dsn[0]), GDAL_OF_READONLY,
     [](GDALDataset *poDS) -> strings {
       writable::strings dname(1);
       dname[0] = poDS->GetDriverName();
@@ -81,7 +82,7 @@ inline strings gdal_driver(strings dsn) {
 }
 
 inline strings gdal_layer_names(strings dsn) {
-  return with_ogr_dataset(std::string(dsn[0]).c_str(), GDAL_OF_VECTOR,
+  return with_ogr_dataset(as_cstr(dsn[0]), GDAL_OF_VECTOR,
     [](GDALDataset *poDS) -> strings {
       int nlayer = poDS->GetLayerCount();
       writable::strings lnames(nlayer);
@@ -93,7 +94,7 @@ inline strings gdal_layer_names(strings dsn) {
 }
 
 inline strings gdal_vsi_list(strings urlpath) {
-  char** VSI_paths = VSIReadDirRecursive(std::string(urlpath[0]).c_str());
+  char** VSI_paths = VSIReadDirRecursive(as_cstr(urlpath[0]));
   int ipath = 0;
   while (VSI_paths && VSI_paths[ipath] != NULL) ipath++;
   writable::strings names(ipath);

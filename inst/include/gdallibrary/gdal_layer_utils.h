@@ -1,6 +1,7 @@
 #ifndef GDAL_LAYER_UTILS_H
 #define GDAL_LAYER_UTILS_H
 #include <cpp11.hpp>
+#include "common/common_vapour.h"
 #include "ogrsf_frmts.h"
 #include "gdal_priv.h"
 
@@ -77,7 +78,7 @@ inline OGRLayer *gdal_layer(GDALDataset *poDS, integers layer, strings sql, doub
 
   auto vapour_getenv_sql_dialect = cpp11::package("vapour")["vapour_getenv_sql_dialect"];
   cpp11::strings R_dialect(vapour_getenv_sql_dialect());
-  const char *sql_dialect = CHAR(STRING_ELT(R_dialect, 0));
+  const char *sql_dialect = as_cstr(R_dialect[0]);
 
   std::string sql_str = std::string(sql[0]);
   if (sql_str != "") {
@@ -108,7 +109,7 @@ template <typename Fn>
 inline auto with_ogr_layer(strings dsn, integers layer,
                            strings sql, doubles ex,
                            Fn fn) -> decltype(fn(std::declval<OGRLayer*>())) {
-  GDALDataset *poDS = open_ogr_dataset(std::string(dsn[0]).c_str());
+  GDALDataset *poDS = open_ogr_dataset(as_cstr(dsn[0]));
   OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
   auto out = fn(poLayer);
   if (std::string(sql[0]) != "") poDS->ReleaseResultSet(poLayer);
@@ -121,7 +122,7 @@ inline auto with_ogr_layer(strings dsn, integers layer,
                            strings sql, doubles ex,
                            unsigned int flags,
                            Fn fn) -> decltype(fn(std::declval<OGRLayer*>())) {
-  GDALDataset *poDS = open_ogr_dataset(std::string(dsn[0]).c_str(), flags);
+  GDALDataset *poDS = open_ogr_dataset(as_cstr(dsn[0]), flags);
   OGRLayer *poLayer = gdal_layer(poDS, layer, sql, ex);
   auto out = fn(poLayer);
   if (std::string(sql[0]) != "") poDS->ReleaseResultSet(poLayer);

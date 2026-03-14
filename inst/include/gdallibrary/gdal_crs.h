@@ -1,6 +1,7 @@
 #ifndef GDAL_CRS_H
 #define GDAL_CRS_H
 #include <cpp11.hpp>
+#include "common/common_vapour.h"
 #include "gdal_priv.h"
 #include "ogr_srs_api.h"
 #include "gdallibrary/gdal_layer_utils.h"
@@ -12,7 +13,7 @@ namespace writable = cpp11::writable;
 inline strings gdal_proj_to_wkt(strings proj_str) {
   OGRSpatialReference oSRS;
   char *pszWKT = nullptr;
-  oSRS.SetFromUserInput(std::string(proj_str[0]).c_str());
+  oSRS.SetFromUserInput(as_cstr(proj_str[0]));
 #if GDAL_VERSION_MAJOR >= 3
   const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
   OGRErr err = oSRS.exportToWkt(&pszWKT, options);
@@ -40,7 +41,7 @@ inline logicals gdal_crs_is_lonlat(SEXP proj_str) {
 
 inline list gdal_projection_info(strings dsn, integers layer, strings sql) {
   GDALDataset *poDS = nullptr;
-  poDS = (GDALDataset*) GDALOpenEx(std::string(dsn[0]).c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL);
+  poDS = (GDALDataset*) GDALOpenEx(as_cstr(dsn[0]), GDAL_OF_VECTOR, NULL, NULL, NULL);
   if (poDS == nullptr) cpp11::stop("Open failed.\n");
 
   writable::doubles zero(1);
