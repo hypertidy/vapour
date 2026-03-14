@@ -68,11 +68,11 @@ inline integers gdal_geometry_type(OGRFeature*poFeature) {
 inline doubles gdal_geometry_extent(OGRFeature *poFeature) {
   double minx = NA_REAL, maxx = NA_REAL, miny = NA_REAL, maxy = NA_REAL;
   if (poFeature->GetGeometryRef()) {
-   OGREnvelope env;
-   OGR_G_GetEnvelope(poFeature->GetGeometryRef(), &env);
-   if (!poFeature->GetGeometryRef()->IsEmpty()) {
-     minx = env.MinX; maxx = env.MaxX; miny = env.MinY; maxy = env.MaxY;
-   }
+    OGREnvelope env;
+    OGR_G_GetEnvelope(poFeature->GetGeometryRef(), &env);
+    if (!poFeature->GetGeometryRef()->IsEmpty()) {
+      minx = env.MinX; maxx = env.MaxX; miny = env.MinY; maxy = env.MaxY;
+    }
   }
   writable::doubles extent = {minx, maxx, miny, maxy};
   return extent;
@@ -199,161 +199,130 @@ inline list layer_read_geom_fa(OGRLayer *poLayer, strings format, doubles fa) {
 
 /// layer READ FIELDS ----------------------------------------------------------------------------
 
+// Write one feature's field values into the pre-allocated output list at position cnt.
+// ISOdatetime_fn and ISOdate_fn are resolved once and passed through to avoid repeated
+// R function lookup inside tight loops.
+inline void write_feature_fields(OGRFeature *poFeature, OGRFeatureDefn *poFDefn,
+                                 writable::list& out, R_xlen_t cnt,
+                                 cpp11::function& ISOdatetime_fn,
+                                 cpp11::function& ISOdate_fn) {
+  int bytecount;
+  for (int iField = 0; iField < poFDefn->GetFieldCount(); iField++) {
+    OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn(iField);
+    int not_NA = poFeature->IsFieldSetAndNotNull(iField);
+    
+    switch (poFieldDefn->GetType()) {
+    case OFTWideString:
+    case OFTWideStringList:
+      break;
+    case OFTString: {
+      writable::strings cv(out[iField]);
+      if (not_NA) { cv[cnt] = poFeature->GetFieldAsString(iField); }
+      else { cv[cnt] = NA_STRING; }
+    } break;
+    case OFTInteger: {
+      writable::integers iv(out[iField]);
+      if (!not_NA) { iv[cnt] = NA_INTEGER; break; }
+      iv[cnt] = poFeature->GetFieldAsInteger(iField);
+    } break;
+    case OFTTime:
+    case OFTDateTime:
+    case OFTDate: {
+      writable::doubles nv(out[iField]);
+      if (!not_NA) { nv[cnt] = NA_REAL; break; }
+      int Year, Month, Day, Hour, Minute, TZFlag;
+      float Second;
+      const char *tzone = "";
+      poFeature->GetFieldAsDateTime(iField, &Year, &Month, &Day, &Hour, &Minute,
+                                    &Second, &TZFlag);
+      if (TZFlag == 100) tzone = "UTC";
+      if (poFieldDefn->GetType() == OFTDateTime || poFieldDefn->GetType() == OFTTime) {
+        if (cnt == 0 && poFieldDefn->GetType() == OFTTime) {
+          cpp11::warning("field of type 'OFTTime' converted to POSIXct: %s",
+                         poFDefn->GetFieldDefn(iField)->GetNameRef());
+        }
+        cpp11::sexp ret = ISOdatetime_fn(Year, Month, Day, Hour, Minute, (double)Second, tzone);
+        nv[cnt] = cpp11::doubles(ret)[0];
+      } else {
+        cpp11::sexp ret = ISOdate_fn(Year, Month, Day);
+        nv[cnt] = cpp11::doubles(ret)[0];
+      }
+    } break;
+    case OFTInteger64: {
+      writable::doubles iiv(out[iField]);
+      if (!not_NA) { iiv[cnt] = NA_REAL; break; }
+      iiv[cnt] = poFeature->GetFieldAsDouble(iField);
+    } break;
+    case OFTReal: {
+      writable::doubles nv(out[iField]);
+      if (!not_NA) { nv[cnt] = NA_REAL; break; }
+      nv[cnt] = poFeature->GetFieldAsDouble(iField);
+    } break;
+    case OFTStringList:
+    case OFTRealList:
+    case OFTIntegerList:
+    case OFTInteger64List:
+      break;
+    case OFTBinary: {
+      writable::list bv(out[iField]);
+      const GByte *bin = poFeature->GetFieldAsBinary(iField, &bytecount);
+      writable::raws rb(bytecount);
+      for (int ib = 0; ib < bytecount; ib++) rb[ib] = bin[ib];
+      bv[cnt] = rb;
+    } break;
+    }
+  }
+}
+
 inline list layer_read_fields_ij(OGRLayer *poLayer, strings fid_column_name,
                                  doubles ij) {
   R_xlen_t st = (R_xlen_t)ij[0];
   R_xlen_t en = (R_xlen_t)ij[1];
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-  bool int64_as_string = false;
   R_xlen_t nfeatures = en - st + 1;
   if (en < st) nfeatures = 0;
   writable::list out(gdallibrary::allocate_fields_list(poFDefn, nfeatures,
-                                               int64_as_string, fid_column_name));
+                                                       false, fid_column_name));
+  cpp11::function ISOdatetime_fn(cpp11::package("base")["ISOdatetime"]);
+  cpp11::function ISOdate_fn(cpp11::package("base")["ISOdate"]);
+  
   OGRFeature *poFeature;
   R_xlen_t cnt = 0;
   R_xlen_t ii = 0;
-  int iField;
-  int bytecount;
-  int not_NA;
-
-  auto ISOdatetime = cpp11::package("base")["ISOdatetime"];
-  auto ISOdate = cpp11::package("base")["ISOdate"];
-
-  while(ii <= en &&  (poFeature = poLayer->GetNextFeature()) != NULL ) {
+  while (ii <= en && (poFeature = poLayer->GetNextFeature()) != NULL) {
     if (ii >= st) {
-      for(iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
-      {
-        OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
-        not_NA = poFeature->IsFieldSetAndNotNull(iField);
-
-        switch( poFieldDefn->GetType() ) {
-        case OFTWideString:
-        case OFTWideStringList: {
-        }
-          break;
-        case OFTString: {
-          writable::strings cv(out[iField]);
-          if (not_NA) {
-            cv[cnt] = poFeature->GetFieldAsString( iField );
-          } else {
-            cv[cnt] = NA_STRING;
-          }
-        } break;
-        case OFTInteger: {
-          writable::integers iv(out[iField]);
-          if (! not_NA) {
-            iv[cnt] = NA_INTEGER;
-            break;
-          }
-          iv[cnt] = poFeature->GetFieldAsInteger( iField );
-        }  break;
-        case OFTTime:
-        case OFTDateTime:
-        case OFTDate: {
-          writable::doubles nv(out[iField]);
-          if (! not_NA) {
-            nv[cnt] = NA_REAL;
-            break;
-          }
-          int Year, Month, Day, Hour, Minute, TZFlag;
-          float Second;
-          const char *tzone = "";
-          poFeature->GetFieldAsDateTime(iField, &Year, &Month, &Day, &Hour, &Minute,
-                                        &Second, &TZFlag);
-          if (TZFlag == 100)
-            tzone = "UTC";
-          if (poFieldDefn->GetType() == OFTDateTime || poFieldDefn->GetType() == OFTTime) {
-            if (cnt == 0 && poFieldDefn->GetType() == OFTTime) {
-              cpp11::warning("field of type 'OFTTime' converted to POSIXct: %s", poFDefn->GetFieldDefn(iField)->GetNameRef());
-            }
-            cpp11::sexp ret = ISOdatetime(Year, Month, Day, Hour, Minute, (double)Second, tzone);
-            nv[cnt] = cpp11::doubles(ret)[0];
-          } else {
-            cpp11::sexp ret = ISOdate(Year, Month, Day);
-            nv[cnt] = cpp11::doubles(ret)[0];
-          }
-          break;
-        }
-          break;
-        case OFTInteger64: {
-          writable::doubles iiv(out[iField]);
-          if (! not_NA) {
-            iiv[cnt] = NA_REAL;
-            break;
-          }
-          iiv[cnt] = poFeature->GetFieldAsDouble( iField );
-        }
-          break;
-        case OFTReal: {
-          writable::doubles nv(out[iField]);
-          if (! not_NA) {
-            nv[cnt] = NA_REAL;
-            break;
-          }
-          nv[cnt] = poFeature->GetFieldAsDouble( iField );
-        }
-          break;
-          case OFTStringList:
-          case OFTRealList:
-          case OFTIntegerList:
-          case OFTInteger64List:
-            break;
-        case OFTBinary: {
-          writable::list bv(out[iField]);
-          const GByte *bin = poFeature->GetFieldAsBinary(iField, &bytecount);
-          writable::raws rb(bytecount);
-          for (int ib = 0; ib < bytecount; ib++) {
-            rb[ib] = bin[ib];
-          }
-          bv[cnt] = rb;
-        } break;
-      }  // end switch
-      }
+      write_feature_fields(poFeature, poFDefn, out, cnt, ISOdatetime_fn, ISOdate_fn);
       cnt++;
-    } // end if
+    }
     ii++;
     OGRFeature::DestroyFeature(poFeature);
-  } // end get next feature
+  }
   if (cnt < nfeatures) {
     cpp11::warning("not as many features as requested");
   }
   return out;
 }
 
-
 inline list layer_read_fields_all(OGRLayer *poLayer, strings fid_column_name) {
   R_xlen_t nFeature = poLayer->GetFeatureCount();
   writable::doubles ij = {0.0, (double)(nFeature - 1)};
   return layer_read_fields_ij(poLayer, fid_column_name, ij);
 }
+
 inline list layer_read_fields_ia(OGRLayer *poLayer, strings fid_column_name,
                                  doubles ia) {
-  R_xlen_t   nFeature = ia.size();
+  R_xlen_t nFeature = ia.size();
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-  bool int64_as_string = false;
-  writable::list out(gdallibrary::allocate_fields_list(poFDefn, nFeature, int64_as_string, fid_column_name));
+  writable::list out(gdallibrary::allocate_fields_list(poFDefn, nFeature, false, fid_column_name));
+  cpp11::function ISOdatetime_fn(cpp11::package("base")["ISOdatetime"]);
+  cpp11::function ISOdate_fn(cpp11::package("base")["ISOdate"]);
+  
   OGRFeature *poFeature;
   R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
-  int iField;
-  while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+  while ((poFeature = poLayer->GetNextFeature()) != NULL) {
     if (ii == static_cast<R_xlen_t>(ia[cnt])) {
-      for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
-      {
-        OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
-        if( poFieldDefn->GetType() == OFTInteger ) {
-          writable::integers nv(out[iField]);
-          nv[cnt] = poFeature->GetFieldAsInteger( iField );
-        }
-        if( poFieldDefn->GetType() == OFTReal || poFieldDefn->GetType() == OFTInteger64) {
-          writable::doubles nv(out[iField]);
-          nv[cnt] = poFeature->GetFieldAsDouble( iField );
-        }
-        if( poFieldDefn->GetType() == OFTString || poFieldDefn->GetType() == OFTDate || poFieldDefn->GetType() == OFTTime || poFieldDefn->GetType() == OFTDateTime) {
-          writable::strings nv(out[iField]);
-          nv[cnt] = poFeature->GetFieldAsString( iField );
-        }
-      }
+      write_feature_fields(poFeature, poFDefn, out, cnt, ISOdatetime_fn, ISOdate_fn);
       cnt++;
     }
     OGRFeature::DestroyFeature(poFeature);
@@ -364,35 +333,21 @@ inline list layer_read_fields_ia(OGRLayer *poLayer, strings fid_column_name,
 
 inline list layer_read_fields_fa(OGRLayer *poLayer, strings fid_column_name,
                                  doubles fa) {
-  R_xlen_t   nFeature = fa.size();
+  R_xlen_t nFeature = fa.size();
   OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-  bool int64_as_string = false;
-  writable::list out(gdallibrary::allocate_fields_list(poFDefn, nFeature, int64_as_string, fid_column_name));
+  writable::list out(gdallibrary::allocate_fields_list(poFDefn, nFeature, false, fid_column_name));
+  cpp11::function ISOdatetime_fn(cpp11::package("base")["ISOdatetime"]);
+  cpp11::function ISOdate_fn(cpp11::package("base")["ISOdate"]);
+  
   OGRFeature *poFeature;
   R_xlen_t cnt = 0;
-  int iField;
   for (R_xlen_t ii = 0; ii < fa.size(); ii++) {
     GIntBig feature_id = (GIntBig)fa[ii];
     poFeature = poLayer->GetFeature(feature_id);
     if (NULL == poFeature) {
       cpp11::warning("FID not found %i", (int)fa[ii]);
     } else {
-      for( iField = 0; iField < poFDefn->GetFieldCount(); iField++ )
-      {
-        OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( iField );
-        if( poFieldDefn->GetType() == OFTInteger ) {
-          writable::integers nv(out[iField]);
-          nv[cnt] = poFeature->GetFieldAsInteger( iField );
-        }
-        if( poFieldDefn->GetType() == OFTReal || poFieldDefn->GetType() == OFTInteger64) {
-          writable::doubles nv(out[iField]);
-          nv[cnt] = poFeature->GetFieldAsDouble( iField );
-        }
-        if( poFieldDefn->GetType() == OFTString || poFieldDefn->GetType() == OFTDate || poFieldDefn->GetType() == OFTTime || poFieldDefn->GetType() == OFTDateTime) {
-          writable::strings nv(out[iField]);
-          nv[cnt] = poFeature->GetFieldAsString( iField );
-        }
-      }
+      write_feature_fields(poFeature, poFDefn, out, cnt, ISOdatetime_fn, ISOdate_fn);
       OGRFeature::DestroyFeature(poFeature);
     }
     cnt++;
@@ -404,47 +359,47 @@ inline list layer_read_fields_fa(OGRLayer *poLayer, strings fid_column_name,
 // DSN read - all use with_ogr_layer
 inline doubles dsn_read_fids_all(strings dsn, integers layer, strings sql, doubles ex) {
   return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
-    [](OGRLayer *poLayer) { return layer_read_fids_all(poLayer); });
+                                     [](OGRLayer *poLayer) { return layer_read_fids_all(poLayer); });
 }
 inline doubles dsn_read_fids_ij(strings dsn, integers layer, strings sql, doubles ex, doubles ij) {
   return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
-    [&ij](OGRLayer *poLayer) { return layer_read_fids_ij(poLayer, ij); });
+                                     [&ij](OGRLayer *poLayer) { return layer_read_fids_ij(poLayer, ij); });
 }
 inline doubles dsn_read_fids_ia(strings dsn, integers layer, strings sql, doubles ex, doubles ia) {
   return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
-    [&ia](OGRLayer *poLayer) { return layer_read_fids_ia(poLayer, ia); });
+                                     [&ia](OGRLayer *poLayer) { return layer_read_fids_ia(poLayer, ia); });
 }
 inline list dsn_read_geom_all(strings dsn, integers layer, strings sql, doubles ex, strings format) {
   return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
-    [&format](OGRLayer *poLayer) { return layer_read_geom_all(poLayer, format); });
+                                     [&format](OGRLayer *poLayer) { return layer_read_geom_all(poLayer, format); });
 }
 inline list dsn_read_geom_ij(strings dsn, integers layer, strings sql, doubles ex, strings format, doubles ij) {
   return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
-    [&format, &ij](OGRLayer *poLayer) { return layer_read_geom_ij(poLayer, format, ij); });
+                                     [&format, &ij](OGRLayer *poLayer) { return layer_read_geom_ij(poLayer, format, ij); });
 }
 inline list dsn_read_geom_ia(strings dsn, integers layer, strings sql, doubles ex, strings format, doubles ia) {
   return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
-    [&format, &ia](OGRLayer *poLayer) { return layer_read_geom_ia(poLayer, format, ia); });
+                                     [&format, &ia](OGRLayer *poLayer) { return layer_read_geom_ia(poLayer, format, ia); });
 }
 inline list dsn_read_geom_fa(strings dsn, integers layer, strings sql, doubles ex, strings format, doubles fa) {
   return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
-    [&format, &fa](OGRLayer *poLayer) { return layer_read_geom_fa(poLayer, format, fa); });
+                                     [&format, &fa](OGRLayer *poLayer) { return layer_read_geom_fa(poLayer, format, fa); });
 }
 inline list dsn_read_fields_all(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name) {
   return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
-    [&fid_column_name](OGRLayer *poLayer) { return layer_read_fields_all(poLayer, fid_column_name); });
+                                     [&fid_column_name](OGRLayer *poLayer) { return layer_read_fields_all(poLayer, fid_column_name); });
 }
 inline list dsn_read_fields_ij(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name, doubles ij) {
   return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
-    [&fid_column_name, &ij](OGRLayer *poLayer) { return layer_read_fields_ij(poLayer, fid_column_name, ij); });
+                                     [&fid_column_name, &ij](OGRLayer *poLayer) { return layer_read_fields_ij(poLayer, fid_column_name, ij); });
 }
 inline list dsn_read_fields_ia(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name, doubles ia) {
   return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
-    [&fid_column_name, &ia](OGRLayer *poLayer) { return layer_read_fields_ia(poLayer, fid_column_name, ia); });
+                                     [&fid_column_name, &ia](OGRLayer *poLayer) { return layer_read_fields_ia(poLayer, fid_column_name, ia); });
 }
 inline list dsn_read_fields_fa(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name, doubles fa) {
   return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
-    [&fid_column_name, &fa](OGRLayer *poLayer) { return layer_read_fields_fa(poLayer, fid_column_name, fa); });
+                                     [&fid_column_name, &fa](OGRLayer *poLayer) { return layer_read_fields_fa(poLayer, fid_column_name, fa); });
 }
 
 }
