@@ -1,4 +1,4 @@
-# vapour dev
+# vapour 0.16.0
 
 * Converted entire C++ backend from Rcpp to cpp11. vapour is now header-only
   with no ABI dependency on Rcpp. This is a major internal refactor with no
@@ -32,7 +32,7 @@
   `vapour_get_config`, `vapour_proj_version`, `vapour_create_options`,
   `buildvrt`, `vector_vrt`, `gdal_raster_data`, `gdal_raster_dsn`,
   `gdal_raster_image`, `gdal_raster_nara`. Restored `vapour_vrt` tests
-  that were previously commented out. Test count: 303.
+  that were previously commented out.
 
 * Removed stale scratchpad files from inst/ (benchmarks, shiny, warpsandbox,
   pbf, readwrite, stars, cmd).
@@ -41,6 +41,28 @@
 
 * Fix CSLConstList changes in GDAL >=3.13.
 
+* Split gdallibrary.h (784 lines) into four focused headers: gdal_layer_utils.h
+  (layer open/close helpers, with_ogr_layer templates), gdal_crs.h (CRS/projection
+  functions), gdal_drivers.h (driver listing, version, config, VSI), and
+  gdal_field_alloc.h (field allocation, feature count, field reporting).
+  gdallibrary.h is now a thin umbrella include. Removed 281 lines of dead code
+  (gdal_read_fields, gdal_read_geometry) that were superseded by gdalgeometry.h
+  equivalents.
+
+* Added as_cstr() helper in common_vapour.h for extracting const char* from
+  cpp11::r_string without allocating a temporary std::string. Replaced 66
+  instances of std::string(x[0]).c_str() across all headers.
+
+* Added include guard to common_vapour.h.
+
+* Extracted write_feature_fields() helper in gdalgeometry.h, shared across
+  layer_read_fields_ij, layer_read_fields_ia, and layer_read_fields_fa. The _ia
+  and _fa variants now have full field type support (DateTime, Binary, NA handling)
+  matching _ij, fixing silent data loss for these types when reading by index
+  or FID.
+
+* Updated GitHub Actions check-standard workflow: dropped pinned Rtools42/43
+  Windows configs in favour of current defaults, updated actions/checkout to v4.
 # vapour 0.15.0
 
 * Fix C++ standard (don't specify). 
