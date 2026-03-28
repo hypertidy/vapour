@@ -7,7 +7,7 @@ on:
 
 jobs:
   gdal-latest:
-    uses: hypertidy/gdal-r-ci/.github/workflows/check-gdal-latest.yml@main
+    uses: hypertidy/gdal-r-ci/.github/workflows/check-gdal-release.yml@main
     with:
       # Git ref to checkout (branch, tag, SHA)
       ref: 'main'
