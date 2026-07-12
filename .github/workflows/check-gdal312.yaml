@@ -41,6 +41,11 @@ jobs:
           echo "${{ matrix.config.prefix }}/bin" >> "$GITHUB_PATH"
           echo "PKG_CONFIG_PATH=${{ matrix.config.prefix }}/lib/pkgconfig" >> "$GITHUB_ENV"
 
+      - name: HOTFIX until next cook - gdal-config must use --static
+        run: |
+          sudo sed -i '' 's/pkg-config --libs gdal/pkg-config --static --libs gdal/' \
+            ${{ matrix.config.prefix }}/bin/gdal-config
+            
       - name: Verify stack before touching R
         run: |
           which gdal-config pkg-config
@@ -52,6 +57,28 @@ jobs:
             /vsicurl/https://raw.githubusercontent.com/OSGeo/gdal/master/autotest/gcore/data/byte.tif \
             | grep -q "Band 1" || (echo "vsicurl FAILED" && exit 1)
 
+      - name: C canary - compile and run against gdal-config
+        run: |
+          # closure sanity: the frameworks must be present or nothing R does will link
+          pkg-config --static --libs gdal | grep -q SystemConfiguration \
+            || (echo "libcurl.pc missing frameworks in Libs.private" && exit 1)
+          cat > /tmp/canary.c <<'EOF'
+          #include <gdal.h>
+          int main(void) {
+            GDALAllRegister();
+            GDALDatasetH ds = GDALOpen(
+              "/vsicurl/https://raw.githubusercontent.com/OSGeo/gdal/master/autotest/gcore/data/byte.tif",
+              GA_ReadOnly);
+            if (!ds) return 1;
+            printf("%dx%d, driver %s\n", GDALGetRasterXSize(ds), GDALGetRasterYSize(ds),
+                   GDALGetDriverShortName(GDALGetDatasetDriver(ds)));
+            GDALClose(ds);
+            return 0;
+          }
+          EOF
+          clang /tmp/canary.c $(gdal-config --cflags) $(gdal-config --libs) -lc++ -o /tmp/canary
+          /tmp/canary
+          
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: release
