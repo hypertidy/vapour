@@ -1,0 +1,96 @@
+# Check vapour against the static GDAL 3.12.4 + curl stack built from
+# mdsumner/recipes (fork of R-macos/recipes), i.e. the stack CRAN macOS
+# binaries would ship if the recipes update lands upstream.
+#
+# Place in vapour/.github/workflows/check-gdal312.yml
+
+name: R-CMD-check gdal-3.12 (recipes fork)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+jobs:
+  check:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (${{ matrix.config.prefix }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          # arm64: faithful match for CRAN R 4.6 arm64 (darwin23 target)
+          - { os: macos-14, prefix: /opt/R/arm64, pattern: "*arm64*" }
+          # Intel: proves x86_64 compile/link (darwin24, not Big Sur)
+          - { os: macos-15-intel, prefix: /usr/local, pattern: "*x86_64*" }
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+      # gdal-config in this stack is a pkg-config proxy; both PATH and
+      # PKG_CONFIG_PATH below are required for it to answer at all.
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install static GDAL stack from recipes fork release
+        run: |
+          gh release download darwin-gdal3124 -R mdsumner/recipes \
+            -p '${{ matrix.config.pattern }}' -D /tmp/libs
+          for f in /tmp/libs/*.tar.xz; do sudo tar xJf "$f" -C /; done
+          echo "${{ matrix.config.prefix }}/bin" >> "$GITHUB_PATH"
+          echo "PKG_CONFIG_PATH=${{ matrix.config.prefix }}/lib/pkgconfig" >> "$GITHUB_ENV"
+
+      - name: Verify stack before touching R
+        run: |
+          which gdal-config pkg-config
+          gdal-config --version | grep -q '^3\.12' || (echo "wrong GDAL" && exit 1)
+          pkg-config --exists gdal || (echo "gdal.pc not found" && exit 1)
+          # the question the 2025 revert asked: is curl support present?
+          ${{ matrix.config.prefix }}/bin/gdalinfo --formats | grep -i http || true
+          ${{ matrix.config.prefix }}/bin/gdalinfo \
+            /vsicurl/https://raw.githubusercontent.com/OSGeo/gdal/master/autotest/gcore/data/byte.tif \
+            | grep -q "Band 1" || (echo "vsicurl FAILED" && exit 1)
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: release
+          use-public-rspm: false
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - name: Install vapour from source against the stack
+        run: |
+          R CMD INSTALL --preclean .
+
+      - name: Smoke test from R (local + remote)
+        run: |
+          Rscript -e '
+            library(vapour)
+            cat("GDAL:", vapour_gdal_version(), "\n")
+            stopifnot(grepl("^3\\.12", vapour_gdal_version()))
+            u <- "/vsicurl/https://raw.githubusercontent.com/OSGeo/gdal/master/autotest/gcore/data/byte.tif"
+            info <- vapour_raster_info(u)
+            stopifnot(identical(info$dimension, c(20L, 20L)))
+            d <- gdal_raster_data(u)
+            stopifnot(length(d[[1]]) == 400L)
+            cat("vsicurl read OK\n")
+          '
+
+      - name: R CMD check
+        run: |
+          Rscript -e 'rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"),
+                                           error_on = "warning",
+                                           check_dir = "check")'
+        env:
+          _R_CHECK_FORCE_SUGGESTS_: false
+
+      - name: Upload check results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: check-results-${{ matrix.config.os }}
+          path: check

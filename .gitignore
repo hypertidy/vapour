@@ -18,3 +18,4 @@ proj_conf_test.cpp
 configure*
 CRAN-RELEASE
 *.gpkg
+.positai
