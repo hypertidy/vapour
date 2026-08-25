@@ -16,7 +16,7 @@ jobs:
       extra-sys-deps: ''
       
       # Additional R packages to install
-      r-extra-packages: ''
+      extra-r-packages: ''
       
       # Additional R CMD check arguments
       check-args: '--no-manual --as-cran'
