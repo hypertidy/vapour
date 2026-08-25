@@ -1,34 +1,16 @@
-#' Tile servers as VRT string
-#'
-#' first argument is a tile server template such as 'https://tile.openstreetmap.org/${z}/${x}/${y}.png'
-#' GDAL expects the '${z}' and so forth pattern. See GDAL doc for 'WMS' driver, the TMS minidriver 
-#' specification. This is just a helper function to put the right Mercator extent on. 
-#' 
-#' You might want to modify the band count, projection, xmin,xmax,ymin,ymax for non global or
-#' non Mercator tile servers. 
-#' @param x tile server see Details
-#' @param user_agent 
-#' @param bands_count 
-#' @param block_size 
-#' @param projection 
-#' @param y_origin 
-#' @param tile_count 
-#' @param tile_level 
-#' @param xmin 
-#' @param xmax 
-#' @param ymin 
-#' @param ymax 
-#' @param silent 
-#'
-#' @return GDAL xml text string for a tiled xyz service
-#' @noRd
-#'
-#' @examples
-#' osm_src <- vapour:::.vapour_tilexyz()
-#' bm_src <- vapour:::.vapour_tilexyz("http://s3.amazonaws.com/com.modestmaps.bluemarble/${z}-r${y}-c${x}.jpg", 
-#'                  tile_level = 9L)
-#' ## these are tile server sources useable by raster,stars,terra,python rasterio, etc
-#' writeLines(bm_src, tfile <- tempfile(fileext = ".vrt"))
+# Tile servers as VRT string
+#
+# first argument is a tile server template such as 'https://tile.openstreetmap.org/${z}/${x}/${y}.png'
+# GDAL expects the '${z}' and so forth pattern. See GDAL doc for 'WMS' driver, the TMS minidriver 
+# specification. This is just a helper function to put the right Mercator extent on. 
+# 
+# You might want to modify the band count, projection, xmin,xmax,ymin,ymax for non global or
+# non Mercator tile servers. 
+# osm_src <- vapour:::.vapour_tilexyz()
+# bm_src <- vapour:::.vapour_tilexyz("http://s3.amazonaws.com/com.modestmaps.bluemarble/${z}-r${y}-c${x}.jpg", 
+#                  tile_level = 9L)
+# ## these are tile server sources useable by raster,stars,terra,python rasterio, etc
+# writeLines(bm_src, tfile <- tempfile(fileext = ".vrt"))
 vapour_tilexyz <- function(x, 
                            user_agent = getOption("HTTPUserAgent"), 
                            bands_count = 3L,

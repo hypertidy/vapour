@@ -101,6 +101,11 @@ Useful links:
 \author{
 \strong{Maintainer}: Michael Sumner \email{mdsumner@gmail.com} (\href{https://orcid.org/0000-0002-2471-7511}{ORCID})
 
+Authors:
+\itemize{
+  \item Michael Sumner \email{mdsumner@gmail.com} (\href{https://orcid.org/0000-0002-2471-7511}{ORCID})
+}
+
 Other contributors:
 \itemize{
   \item Simon Wotherspoon (RasterIO configuration for resampling options) [contributor]
