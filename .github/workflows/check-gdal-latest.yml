@@ -13,7 +13,7 @@ jobs:
       ref: 'main'
       
       # Additional apt packages to install
-      extra-deps: ''
+      extra-sys-deps: ''
       
       # Additional R packages to install
       r-extra-packages: ''
