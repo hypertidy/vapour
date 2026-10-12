@@ -250,6 +250,41 @@ extern "C" SEXP _vapour_read_fids_gdal_cpp(SEXP dsn, SEXP layer, SEXP sql, SEXP 
     return cpp11::as_sexp(read_fids_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<integers>>(limit_n), cpp11::as_cpp<cpp11::decay_t<integers>>(skip_n), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex)));
   END_CPP11
 }
+// 00_proj_data.cpp
+logicals set_proj_search_paths_cpp(strings paths);
+extern "C" SEXP _vapour_set_proj_search_paths_cpp(SEXP paths) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(set_proj_search_paths_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(paths)));
+  END_CPP11
+}
+// 00_proj_data.cpp
+strings get_proj_search_paths_cpp();
+extern "C" SEXP _vapour_get_proj_search_paths_cpp() {
+  BEGIN_CPP11
+    return cpp11::as_sexp(get_proj_search_paths_cpp());
+  END_CPP11
+}
+// 00_proj_data.cpp
+logicals probe_proj_db_cpp();
+extern "C" SEXP _vapour_probe_proj_db_cpp() {
+  BEGIN_CPP11
+    return cpp11::as_sexp(probe_proj_db_cpp());
+  END_CPP11
+}
+// 00_proj_data.cpp
+strings proj_db_metadata_cpp(strings path);
+extern "C" SEXP _vapour_proj_db_metadata_cpp(SEXP path) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(proj_db_metadata_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(path)));
+  END_CPP11
+}
+// 00_proj_data.cpp
+logicals unset_gdal_config_cpp(strings option);
+extern "C" SEXP _vapour_unset_gdal_config_cpp(SEXP option) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(unset_gdal_config_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(option)));
+  END_CPP11
+}
 // 00_raster.cpp
 list raster_gcp_gdal_cpp(strings dsn);
 extern "C" SEXP _vapour_raster_gcp_gdal_cpp(SEXP dsn) {
@@ -383,41 +418,6 @@ extern "C" SEXP _vapour_raster_warp_file_cpp(SEXP source_filename, SEXP target_c
     return cpp11::as_sexp(raster_warp_file_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(source_filename), cpp11::as_cpp<cpp11::decay_t<strings>>(target_crs), cpp11::as_cpp<cpp11::decay_t<doubles>>(target_extent), cpp11::as_cpp<cpp11::decay_t<integers>>(target_dim), cpp11::as_cpp<cpp11::decay_t<strings>>(target_filename), cpp11::as_cpp<cpp11::decay_t<integers>>(bands), cpp11::as_cpp<cpp11::decay_t<strings>>(resample), cpp11::as_cpp<cpp11::decay_t<logicals>>(silent), cpp11::as_cpp<cpp11::decay_t<strings>>(band_output_type), cpp11::as_cpp<cpp11::decay_t<strings>>(warp_options), cpp11::as_cpp<cpp11::decay_t<strings>>(transformation_options)));
   END_CPP11
 }
-// 00_proj_data.cpp
-logicals set_proj_search_paths_cpp(strings paths);
-extern "C" SEXP _vapour_set_proj_search_paths_cpp(SEXP paths) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(set_proj_search_paths_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(paths)));
-  END_CPP11
-}
-// 00_proj_data.cpp
-strings get_proj_search_paths_cpp();
-extern "C" SEXP _vapour_get_proj_search_paths_cpp() {
-  BEGIN_CPP11
-    return cpp11::as_sexp(get_proj_search_paths_cpp());
-  END_CPP11
-}
-// 00_proj_data.cpp
-logicals probe_proj_db_cpp();
-extern "C" SEXP _vapour_probe_proj_db_cpp() {
-  BEGIN_CPP11
-    return cpp11::as_sexp(probe_proj_db_cpp());
-  END_CPP11
-}
-// 00_proj_data.cpp
-strings proj_db_metadata_cpp(strings path);
-extern "C" SEXP _vapour_proj_db_metadata_cpp(SEXP path) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(proj_db_metadata_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(path)));
-  END_CPP11
-}
-// 00_proj_data.cpp
-logicals unset_gdal_config_cpp(strings option);
-extern "C" SEXP _vapour_unset_gdal_config_cpp(SEXP option) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(unset_gdal_config_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(option)));
-  END_CPP11
-}
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
@@ -442,7 +442,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_gdal_dsn_read_geom_ij",            (DL_FUNC) &_vapour_gdal_dsn_read_geom_ij,             6},
     {"_vapour_gdal_dsn_read_vector_stream",      (DL_FUNC) &_vapour_gdal_dsn_read_vector_stream,      11},
     {"_vapour_get_gdal_config_cpp",              (DL_FUNC) &_vapour_get_gdal_config_cpp,               1},
+    {"_vapour_get_proj_search_paths_cpp",        (DL_FUNC) &_vapour_get_proj_search_paths_cpp,         0},
     {"_vapour_layer_names_gdal_cpp",             (DL_FUNC) &_vapour_layer_names_gdal_cpp,              1},
+    {"_vapour_probe_proj_db_cpp",                (DL_FUNC) &_vapour_probe_proj_db_cpp,                 0},
+    {"_vapour_proj_db_metadata_cpp",             (DL_FUNC) &_vapour_proj_db_metadata_cpp,              1},
     {"_vapour_proj_to_wkt_gdal_cpp",             (DL_FUNC) &_vapour_proj_to_wkt_gdal_cpp,              1},
     {"_vapour_projection_info_gdal_cpp",         (DL_FUNC) &_vapour_projection_info_gdal_cpp,          3},
     {"_vapour_raster_buildvrt_cpp",              (DL_FUNC) &_vapour_raster_buildvrt_cpp,               2},
@@ -463,6 +466,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_sds_list_gdal_cpp",                (DL_FUNC) &_vapour_sds_list_gdal_cpp,                 1},
     {"_vapour_sds_list_list_gdal_cpp",           (DL_FUNC) &_vapour_sds_list_list_gdal_cpp,            1},
     {"_vapour_set_gdal_config_cpp",              (DL_FUNC) &_vapour_set_gdal_config_cpp,               2},
+    {"_vapour_set_proj_search_paths_cpp",        (DL_FUNC) &_vapour_set_proj_search_paths_cpp,         1},
+    {"_vapour_unset_gdal_config_cpp",            (DL_FUNC) &_vapour_unset_gdal_config_cpp,             1},
     {"_vapour_vapour_create_copy_cpp",           (DL_FUNC) &_vapour_vapour_create_copy_cpp,            3},
     {"_vapour_vapour_create_cpp",                (DL_FUNC) &_vapour_vapour_create_cpp,                 8},
     {"_vapour_vapour_geom_name_cpp",             (DL_FUNC) &_vapour_vapour_geom_name_cpp,              4},
@@ -475,11 +480,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_vsi_list_gdal_cpp",                (DL_FUNC) &_vapour_vsi_list_gdal_cpp,                 1},
     {"_vapour_warp_general_cpp",                 (DL_FUNC) &_vapour_warp_general_cpp,                 13},
     {"_vapour_warp_suggest_cpp",                 (DL_FUNC) &_vapour_warp_suggest_cpp,                  2},
-    {"_vapour_set_proj_search_paths_cpp", (DL_FUNC) &_vapour_set_proj_search_paths_cpp, 1},
-    {"_vapour_get_proj_search_paths_cpp", (DL_FUNC) &_vapour_get_proj_search_paths_cpp, 0},
-    {"_vapour_probe_proj_db_cpp", (DL_FUNC) &_vapour_probe_proj_db_cpp, 0},
-    {"_vapour_proj_db_metadata_cpp", (DL_FUNC) &_vapour_proj_db_metadata_cpp, 1},
-    {"_vapour_unset_gdal_config_cpp", (DL_FUNC) &_vapour_unset_gdal_config_cpp, 1},
     {NULL, NULL, 0}
 };
 }

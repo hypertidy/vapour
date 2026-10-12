@@ -83,10 +83,11 @@ vapour_use_bundled_proj_data <- function(prj) {
     "ignoring the bundled copy and using the PROJ defaults instead. ",
     "If this was installed with --with-data-copy, reinstall without it."),
     built_by, layout, vapour_proj_version())
+  ## .onLoad can't packageStartupMessage(), .onAttach picks this up. A
+  ## message rather than a warning: the fallback works, and a load-time
+  ## warning would turn a misconfigured install into an R CMD check WARNING.
+  ## vapour_proj_data()$message carries it for requireNamespace() users.
   assign(".vapour.proj_data_message", msg, envir = .vapour_cache)
-  ## .onLoad can't packageStartupMessage(), .onAttach picks this up; also
-  ## warn so a check log or a requireNamespace() user sees it
-  warning(msg, call. = FALSE)
   invisible(FALSE)
 }
 
@@ -106,7 +107,8 @@ vapour_unload_gdal <- function() {
 #' whether the copy of PROJ data bundled with vapour (if any) is active,
 #' and the metadata of the proj.db that resolves first on that path.
 #'
-#' @return a list with elements 'search_paths', 'bundled_active', 'proj_version', 'proj_db'
+#' @return a list with elements 'search_paths', 'bundled_active', 'proj_version', 'proj_db',
+#' and 'message' (the startup message explaining why a bundled copy was ignored, or NULL)
 #' @export
 #' @examples
 #' vapour_proj_data()
@@ -123,5 +125,6 @@ vapour_proj_data <- function() {
   list(search_paths = paths,
        bundled_active = isTRUE(get0(".vapour.proj_data_active", envir = .vapour_cache, ifnotfound = FALSE)),
        proj_version = vapour_proj_version(),
-       proj_db = db)
+       proj_db = db,
+       message = get0(".vapour.proj_data_message", envir = .vapour_cache, ifnotfound = NULL))
 }
