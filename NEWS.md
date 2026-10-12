@@ -1,5 +1,28 @@
 # vapour dev
 
+* The bundled copy of PROJ data (inst/proj, present on Windows and macOS CRAN
+  binaries and on Linux only with `--configure-args='--with-data-copy=yes'`)
+  is now validated at load. PROJ checks proj.db's database layout version
+  lazily, so a copy taken from one PROJ version silently breaks when the
+  linked libproj is a different version. vapour now points GDAL at the
+  bundled copy, forces a database lookup, and if that fails reverts to the
+  PROJ defaults with a startup message naming the PROJ that built the
+  bundled proj.db and its layout version. Prompted by CRAN's note on the
+  ICESat2VegR failure with PROJ 9.9.0.
+
+* The PROJ search path is now set with `OSRSetPROJSearchPaths()` rather than
+  the `PROJ_LIB` environment variable, so it is scoped to GDAL's PROJ
+  contexts and no longer leaks into other packages' libproj. `GDAL_DATA` is
+  likewise set as a GDAL config option rather than an environment variable.
+
+* The gates for activating the bundled data were stale: `proj/alaska` (unload)
+  and `gdal/epsg.wkt` were removed from PROJ 7 and GDAL 3 respectively, so
+  `GDAL_DATA` was never being set and `PROJ_LIB` was never restored. Now
+  gated on `proj/proj.db` and `gdal/gdalvrt.xsd`.
+
+* New `vapour_proj_data()` reports the PROJ search paths in use, whether the
+  bundled copy is active, and the metadata of the proj.db that resolves.
+
 # vapour 0.16.0
 
 * Converted entire C++ backend from Rcpp to cpp11. vapour is now header-only

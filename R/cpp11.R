@@ -215,3 +215,23 @@ raster_buildvrt_cpp <- function(dsn, options) {
 raster_warp_file_cpp <- function(source_filename, target_crs, target_extent, target_dim, target_filename, bands, resample, silent, band_output_type, warp_options, transformation_options) {
   .Call(`_vapour_raster_warp_file_cpp`, source_filename, target_crs, target_extent, target_dim, target_filename, bands, resample, silent, band_output_type, warp_options, transformation_options)
 }
+
+set_proj_search_paths_cpp <- function(paths) {
+  .Call(`_vapour_set_proj_search_paths_cpp`, paths)
+}
+
+get_proj_search_paths_cpp <- function() {
+  .Call(`_vapour_get_proj_search_paths_cpp`)
+}
+
+probe_proj_db_cpp <- function() {
+  .Call(`_vapour_probe_proj_db_cpp`)
+}
+
+proj_db_metadata_cpp <- function(path) {
+  .Call(`_vapour_proj_db_metadata_cpp`, path)
+}
+
+unset_gdal_config_cpp <- function(option) {
+  .Call(`_vapour_unset_gdal_config_cpp`, option)
+}
