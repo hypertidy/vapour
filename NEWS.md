@@ -1,4 +1,4 @@
-# vapour dev
+# vapour 0.20.0
 
 * configure now passes `LDFLAGS` when linking its GDAL and PROJ test
   programs, so builds against a library prefix off the default runtime

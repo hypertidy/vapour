@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R_build_status](https://github.com/hypertidy/vapour/workflows/R-CMD-check/badge.svg)](https://github.com/hypertidy/vapour/actions)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
 [![CRAN status](https://www.r-pkg.org/badges/version/vapour)](https://CRAN.R-project.org/package=vapour)
 <!-- badges: end -->
 
@@ -206,10 +206,6 @@ Examples of packages that use vapour are in development, especially [whatarelief
 Limitations, work-in-progress and other discussion: 
 
 https://github.com/hypertidy/vapour/issues/4
-
-We've kept a record of a minimal GDAL wrapper package here: 
-
-https://github.com/diminutive/gdalmin
 
 
 # Code of conduct

@@ -19,3 +19,4 @@ configure*
 CRAN-RELEASE
 *.gpkg
 .positai
+revdep/
