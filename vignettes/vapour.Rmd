@@ -19,9 +19,9 @@ knitr::opts_chunk$set(
 ```
 
 
-The vapour package provides access to some GDAL functionality with minimal overhead. This includes read
-geometry and data ('attributes')
-There's a function `vapour_read_fields` that returns the fields (attributes) as  list of vectors. 
+The vapour package provides access to some GDAL functionality with minimal overhead. This includes reading
+geometry and data ('attributes').
+There's a function `vapour_read_fields` that returns the fields (attributes) as a list of vectors. 
 
 
 ```{r}
@@ -205,7 +205,7 @@ There are many useful higher level operations that can be used with this. The si
 
 # SQL Dialect
 
-In earlier versions (pre 0.9.1) we couldn't control the SQL dialect in use, so we variously had available 'OGRSQL' or 'SQLITE', or whatever native dialect the format defaults to. We couldn't use 'OGRSQL' with a Geopackage, and neither could we use 'SQLITE' with a shapefile, MapInfo TAB, or ESRI file Geodatabase (these last three aren't "real" databases so don't have their own native SQL, and GDAL fills the gap with OGRSQL. Geopackage defaults to SQLITE, because that's what it is built upon. 
+In earlier versions (pre 0.9.1) we couldn't control the SQL dialect in use, so we variously had available 'OGRSQL' or 'SQLITE', or whatever native dialect the format defaults to. We couldn't use 'OGRSQL' with a Geopackage, and neither could we use 'SQLITE' with a shapefile, MapInfo TAB, or ESRI file Geodatabase (these last three aren't "real" databases, so they don't have their own native SQL and GDAL fills the gap with OGRSQL). Geopackage defaults to SQLITE, because that's what it is built upon. 
 
 So for example. 
 

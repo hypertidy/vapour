@@ -62,7 +62,7 @@ vapour_read_type(
 
 \item{ia}{an arbitrary index, integer vector with values between 0 and one less the number of features, duplicates allowed and arbitrary order is ok}
 
-\item{ij}{an range index, integer vector of length two with values between 0 and one less the number of features, this range of geometries is returned}
+\item{ij}{a range index, integer vector of length two with values between 0 and one less the number of features, this range of geometries is returned}
 
 \item{limit_n}{an arbitrary limit to the number of features scanned}
 
@@ -87,7 +87,7 @@ For each function an optional SQL string will be evaluated against the data sour
 \code{vapour_read_geometry_ia} will read features by \emph{arbitrary index}, so any integer between 0 and one less than the number of
 features. These may be duplicated. If 'ia' is greater than the highest index NULL is returned, but if less than 0 the function will error.
 
-\code{vapour_read_geometry_ij} will read features by \emph{index range}, so two numbers to read ever feature between those limits inclusively.
+\code{vapour_read_geometry_ij} will read features by \emph{index range}, so two numbers to read every feature between those limits inclusively.
 'i' and 'j' must be increasing.
 
 \code{vapour_read_type} will read the (wkb) type of the geometry as an integer. These are

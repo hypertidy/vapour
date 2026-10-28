@@ -16,8 +16,8 @@ WKT2 projection string
 Convert a projstring to Well Known Text.
 }
 \details{
-The function is vectorized because why not, but probably only ever will be
-used on single element vectors of character strings.
+The function is vectorized, though in practice it is almost always used on a
+single character string.
 
 Note that no sanitizing is done on inputs, we literally just 'OGRSpatialReference.SetFromUserInput(crs)' and
 give the output as WKT. If it's an error in GDAL it's an error in R.

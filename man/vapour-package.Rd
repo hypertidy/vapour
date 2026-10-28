@@ -18,7 +18,7 @@ abstract data model to the calling application for all supported formats
 \url{https://gdal.org/}.
 
 Lightweight means we access parts of the GDAL API as near as possible to
-their native usage. GDAL is not a lightweight library, but provide a very
+their native usage. GDAL is not a lightweight library, but provides a very
 nice abstraction over format details for a very large number of different
 formats.
 
