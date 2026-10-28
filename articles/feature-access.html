@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>feature-access • vapour</title>
+<title>Feature access with vapour • vapour</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="feature-access">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Feature access with vapour">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -52,7 +52,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/feature-access.html">feature-access</a>
+      <a href="../articles/feature-access.html">Feature access with vapour</a>
     </li>
   </ul>
 </li>
@@ -80,7 +80,7 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>feature-access</h1>
+      <h1 data-toc-skip>Feature access with vapour</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/hypertidy/vapour/blob/main/vignettes/feature-access.Rmd" class="external-link"><code>vignettes/feature-access.Rmd</code></a></small>
@@ -90,71 +90,105 @@
 
     
     
-<p>The gdalheaders API uses the following (pseudo-code) schemes for
-feature access.</p>
-<p>The different feature loops, see <a href="https://github.com/dis-organization/dirigible/issues/5" class="external-link uri">https://github.com/dis-organization/dirigible/issues/5</a></p>
-<div class="section level3">
-<h3 id="all">ALL<a class="anchor" aria-label="anchor" href="#all"></a>
-</h3>
-<p>Get all the feature thingys.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode c++"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>  <span class="dt">double</span>   nFeature <span class="op">=</span> gdalheaders<span class="op">::</span>force_layer_feature_count<span class="op">(</span>poLayer<span class="op">);</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  List<span class="op">/</span>Vector out <span class="op">(</span>nFeature<span class="op">);</span></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="dt">double</span> ii <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="cf">while</span><span class="op">(</span> <span class="op">(</span>poFeature <span class="op">=</span> poLayer<span class="op">-&gt;</span>GetNextFeature<span class="op">())</span> <span class="op">!=</span> NULL <span class="op">)</span> <span class="op">{</span></span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>   out<span class="op">[</span>ii<span class="op">]</span> <span class="op">=</span> poFeature<span class="op">-&gt;&lt;</span>something<span class="op">&gt;;</span> </span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>   OGRFeature<span class="op">::</span>DestroyFeature<span class="op">(</span>poFeature<span class="op">);</span></span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>   ii<span class="op">++;</span></span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="ij">IJ<a class="anchor" aria-label="anchor" href="#ij"></a>
-</h3>
-<p>Get a subset of feature thingys i:j - their positional index.</p>
-<p>For <code>c(0, 0)</code> get the first feature, for
-<code>c(0, n - 1)</code> get all of them. For <code>c(0, -1)</code> that
-is a special case, there are no features.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode c++"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  ListVector out<span class="op">(</span>ij<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">-</span> ij<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="dt">double</span> cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="dt">double</span> ii <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="cf">while</span><span class="op">(</span> <span class="op">(</span>poFeature <span class="op">=</span> poLayer<span class="op">-&gt;</span>GetNextFeature<span class="op">())</span> <span class="op">!=</span> NULL <span class="op">)</span> <span class="op">{</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>ii <span class="op">==</span> ij<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">||</span> <span class="op">(</span>ii <span class="op">&gt;</span> ij<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">&amp;&amp;</span> ii <span class="op">&lt;=</span> ij<span class="op">[</span><span class="dv">1</span><span class="op">]))</span> <span class="op">{</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>      out<span class="op">[</span>cnt<span class="op">]</span> <span class="op">=</span> poFeature<span class="op">-&gt;&lt;</span>something<span class="op">&gt;;</span> </span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>      cnt<span class="op">++;</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    ii<span class="op">++;</span></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    OGRFeature<span class="op">::</span>DestroyFeature<span class="op">(</span>poFeature<span class="op">);</span></span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="ia">IA<a class="anchor" aria-label="anchor" href="#ia"></a>
-</h3>
-<p>Get a subset of feature things, <em>arbitrary i</em> (in order) -
-their positional index</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode c++"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>  ListVector out<span class="op">(</span>ia<span class="op">.</span>length<span class="op">());</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="dt">double</span> ii <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="dt">double</span> cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="cf">while</span><span class="op">(</span> <span class="op">(</span>poFeature <span class="op">=</span> poLayer<span class="op">-&gt;</span>GetNextFeature<span class="op">())</span> <span class="op">!=</span> NULL <span class="op">)</span> <span class="op">{</span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>ii <span class="op">==</span> ia<span class="op">[</span>cnt<span class="op">])</span> <span class="op">{</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>      out<span class="op">[</span>cnt<span class="op">]</span> <span class="op">=</span> poFeature<span class="op">-&gt;&lt;</span>something<span class="op">&gt;;</span> </span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>      cnt<span class="op">++;</span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    ii<span class="op">++;</span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    OGRFeature<span class="op">::</span>DestroyFeature<span class="op">(</span>poFeature<span class="op">);</span></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div>
+<p>vapour reads vector <em>features</em> at a low level: geometry comes
+back as raw binary (WKB) or as text, and attributes are read separately,
+leaving you to combine them however you like. Part of that control is
+choosing <em>which</em> features to read, rather than always pulling an
+entire layer into memory.</p>
+<p>This vignette shows the four feature-access patterns vapour supports,
+using two example data sources that ship with the package.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hypertidy/vapour" class="external-link">vapour</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## a MapInfo TAB file of polygons (localities)</span></span>
+<span><span class="va">mvfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/tab/list_locality_postcode_meander_valley.tab"</span>,</span>
+<span>                      package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## a shapefile of points</span></span>
+<span><span class="va">pfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/point.shp"</span>, package <span class="op">=</span> <span class="st">"vapour"</span><span class="op">)</span></span></code></pre></div>
+<p>Every feature has a positional <em>index</em> (0-based, in layer
+order) and a feature <em>identifier</em> (FID) assigned by the driver.
+These are not always the same number. The count of features in the layer
+is:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="../reference/vapour_read_fids.html">vapour_read_names</a></span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">n</span></span>
+<span><span class="co">#&gt; [1] 58</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="all-features">All features<a class="anchor" aria-label="anchor" href="#all-features"></a>
+</h2>
+<p>Read every feature. The geometry readers return one element per
+feature, which you pair with the FIDs or attributes as needed.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vapour_read_geometry.html">vapour_read_geometry</a></span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span>   <span class="co"># a list of raw WKB, one per feature</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 58</span></span>
+<span><span class="va">g</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span>                         <span class="co"># first bytes of the first geometry</span></span>
+<span><span class="co">#&gt; [1] 01 03 00 00 00 01 00 00</span></span>
+<span></span>
+<span><span class="co">## the matching feature identifiers</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/vapour_read_fids.html">vapour_read_names</a></span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1 2 3 4 5 6</span></span></code></pre></div>
+<p>Extents and geometry types can be read the same way without decoding
+the full geometry:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/vapour_read_geometry.html">vapour_read_extent</a></span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 2</span></span>
+<span><span class="co">#&gt;  $ : num [1:4] 448353 457706 5386606 5397352</span></span>
+<span><span class="co">#&gt;  $ : num [1:4] 453544 459318 5403972 5412505</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="../reference/vapour_read_geometry.html">vapour_read_type</a></span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  3  6 </span></span>
+<span><span class="co">#&gt; 49  9</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="fa">FA<a class="anchor" aria-label="anchor" href="#fa"></a>
+<h2 id="an-index-range-i-to-j">An index range, i to j<a class="anchor" aria-label="anchor" href="#an-index-range-i-to-j"></a>
 </h2>
-<p>Get a subset of feature thingys <em>arbitrary FID</em> (order
-irrelevant) - their FID <em>unique names</em></p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode c++"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>  List out<span class="op">(</span>fa<span class="op">.</span>length<span class="op">());</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">double</span> ii <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> ii <span class="op">&lt;</span> fa<span class="op">.</span>length<span class="op">();</span> ii<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    GIntBig feature_id <span class="op">=</span> <span class="op">(</span>GIntBig<span class="op">)</span>fa<span class="op">[</span>ii<span class="op">];</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>      poFeature <span class="op">=</span> poLayer<span class="op">-&gt;</span>GetFeature<span class="op">(</span>feature_id<span class="op">);</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    </span></code></pre></div>
+<p><code><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_ij()</a></code> reads a contiguous block of
+features <em>by position</em>, from <code>i</code> to <code>j</code>
+inclusive (both increasing). Use <code>c(0, n - 1)</code> for all of
+them.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ij</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_ij</a></span><span class="op">(</span><span class="va">mvfile</span>, ij <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>   <span class="co"># the first three features</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">ij</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 3</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="arbitrary-indices">Arbitrary indices<a class="anchor" aria-label="anchor" href="#arbitrary-indices"></a>
+</h2>
+<p><code><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_ia()</a></code> reads features at
+<em>arbitrary</em> positions. Order is respected and duplicates are
+allowed, so you can reorder or repeat features.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ia</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_ia</a></span><span class="op">(</span><span class="va">mvfile</span>, ia <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">ia</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 3</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="by-feature-identifier-fid">By feature identifier (FID)<a class="anchor" aria-label="anchor" href="#by-feature-identifier-fid"></a>
+</h2>
+<p>Positional index and FID are not always aligned, so to select by FID
+use a SQL query against the data source. SQL also lets you subset
+geometry and attributes together with the same filter.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sql</span> <span class="op">&lt;-</span> <span class="st">"SELECT * FROM list_locality_postcode_meander_valley WHERE FID IN (2, 5, 9)"</span></span>
+<span><span class="va">wkt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_text</a></span><span class="op">(</span><span class="va">mvfile</span>, sql <span class="op">=</span> <span class="va">sql</span>, textformat <span class="op">=</span> <span class="st">"wkt"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">wkt</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 3</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="va">wkt</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fl">1</span>, <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "MULTIPOLYGON (((458251.36 5410533.49,458192.26 541"</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="geometry-as-text">Geometry as text<a class="anchor" aria-label="anchor" href="#geometry-as-text"></a>
+</h2>
+<p>Any reader can return text instead of WKB – GeoJSON (the default),
+WKT, GML or KML – which is convenient for inspection.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="fu"><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_text</a></span><span class="op">(</span><span class="va">pfile</span>, textformat <span class="op">=</span> <span class="st">"wkt"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fl">1</span>, <span class="fl">40</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "POINT (0.623376188334078 0.3800980376545"</span></span></code></pre></div>
+<p>See <code><a href="../reference/vapour_read_geometry.html">?vapour_read_geometry</a></code> for the full set of readers
+and the arguments they share (<code>layer</code>, <code>sql</code>,
+<code>extent</code>, <code>limit_n</code>, <code>skip_n</code>).</p>
 </div>
   </div>
 

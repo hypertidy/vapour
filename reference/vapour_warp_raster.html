@@ -37,7 +37,7 @@ properties of the transformed output."><meta property="og:image" content="/logo.
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/feature-access.html">feature-access</a>
+      <a href="../articles/feature-access.html">Feature access with vapour</a>
     </li>
   </ul></li>
 <li>
@@ -219,17 +219,18 @@ disabled (maybe we'll write a new wrapper for that).</p>
 
 
 
-<p>The various options are convenience arguments  for 'warp options -wo',
-transformation options -to', 'open options -oo', and 'options' for any other
-arguments in gdalwarp. There are no 'creation options -co' or 'dataset output
-options -doo', because these are not supported by the MEM driver.</p>
-<p>All 'warp_options' are paired with a '-wo' declaration and similarly for '-to', and '-oo',
-this is purely a convenience, since 'options' itself can be used for these as well but we recommend using
-the individual arguments.
-An example for warp options is  <code>warp_options = c("SAMPLE_GRID=YES", "SAMPLE_STEPS=30")</code> and one for
-general arguments might be
-'options = c("-ovr", "AUTO", "-nomd", "-cutline", "/path/to/cut.gpkg", "-crop_to_cutline")'.  If they would
-be separated by spaces on the command line then include as separate elements in the options character vector.</p>
+<p>The various options are convenience arguments for warp options (<code>-wo</code>),
+transformation options (<code>-to</code>), and open options (<code>-oo</code>), as well as <code>options</code>
+for any other arguments to gdalwarp. There are no creation options (<code>-co</code>) or
+dataset output options (<code>-doo</code>), because these are not supported by the MEM driver.</p>
+<p>All <code>warp_options</code> are paired with a <code>-wo</code> declaration, and similarly for <code>-to</code>
+and <code>-oo</code>; this is purely a convenience, since <code>options</code> itself can be used for
+these as well, but we recommend using the individual arguments.
+An example for warp options is <code>warp_options = c("SAMPLE_GRID=YES", "SAMPLE_STEPS=30")</code>
+and one for general arguments might be
+<code>options = c("-ovr", "AUTO", "-nomd", "-cutline", "/path/to/cut.gpkg", "-crop_to_cutline")</code>.
+If they would be separated by spaces on the command line then include as separate
+elements in the options character vector.</p>
 <p>See <a href="https://gdal.org/en/stable/api/gdalwarp_cpp.html" class="external-link">GDALWarpOptions</a> for '-wo'.</p>
 <p>See <a href="https://gdal.org/en/stable/api/gdal_alg.html" class="external-link">GDAL transformation options</a> for '-to'.</p>
 <p>See <a href="https://gdal.org/en/stable/programs/gdalwarp.html" class="external-link">GDALWARP command line app</a> for further details.</p>
