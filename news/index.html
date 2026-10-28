@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vapour</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.16.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.20.0</span>
       </span>
     </div>
 
@@ -60,6 +60,15 @@
       <small>Source: <a href="https://github.com/hypertidy/vapour/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.20.0" id="vapour-0200">vapour 0.20.0<a class="anchor" aria-label="anchor" href="#vapour-0200"></a></h2>
+<ul><li><p>configure now passes <code>LDFLAGS</code> when linking its GDAL and PROJ test programs, so builds against a library prefix off the default runtime search path (such as conda-forge, which supplies the rpath in <code>LDFLAGS</code>) no longer fail with “PROJ not available?”. Reported by Matthew Feickert while packaging vapour for conda-forge.</p></li>
+<li><p>Removed a global <code>using namespace std;</code> from the gdalwarpgeneral header, which made <code>list</code> ambiguous between <code>cpp11::list</code> and <code>std::list</code> under the MSVC STL (Matthew Feickert).</p></li>
+<li><p>The bundled copy of PROJ data (inst/proj, present on Windows and macOS CRAN binaries and on Linux only with <code>--configure-args='--with-data-copy=yes'</code>) is now validated at load. PROJ checks proj.db’s database layout version lazily, so a copy taken from one PROJ version silently breaks when the linked libproj is a different version. vapour now points GDAL at the bundled copy, forces a database lookup, and if that fails reverts to the PROJ defaults with a startup message naming the PROJ that built the bundled proj.db and its layout version. Prompted by CRAN’s note on the ICESat2VegR failure with PROJ 9.9.0.</p></li>
+<li><p>The PROJ search path is now set with <code>OSRSetPROJSearchPaths()</code> rather than the <code>PROJ_LIB</code> environment variable, so it is scoped to GDAL’s PROJ contexts and no longer leaks into other packages’ libproj. <code>GDAL_DATA</code> is likewise set as a GDAL config option rather than an environment variable.</p></li>
+<li><p>The gates for activating the bundled data were stale: <code>proj/alaska</code> (unload) and <code>gdal/epsg.wkt</code> were removed from PROJ 7 and GDAL 3 respectively, so <code>GDAL_DATA</code> was never being set and <code>PROJ_LIB</code> was never restored. Now gated on <code>proj/proj.db</code> and <code>gdal/gdalvrt.xsd</code>.</p></li>
+<li><p>New <code><a href="../reference/vapour_proj_data.html">vapour_proj_data()</a></code> reports the PROJ search paths in use, whether the bundled copy is active, and the metadata of the proj.db that resolves.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.16.0" id="vapour-0160">vapour 0.16.0<small>2026-03-14</small><a class="anchor" aria-label="anchor" href="#vapour-0160"></a></h2>
 <ul><li><p>Converted entire C++ backend from Rcpp to cpp11. vapour is now header-only with no ABI dependency on Rcpp. This is a major internal refactor with no changes to the R API.</p></li>
