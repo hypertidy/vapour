@@ -121,18 +121,19 @@ disabled (maybe we'll write a new wrapper for that).
 \section{Options}{
 
 
-The various options are convenience arguments  for 'warp options -wo',
-transformation options -to', 'open options -oo', and 'options' for any other
-arguments in gdalwarp. There are no 'creation options -co' or 'dataset output
-options -doo', because these are not supported by the MEM driver.
+The various options are convenience arguments for warp options (\code{-wo}),
+transformation options (\code{-to}), and open options (\code{-oo}), as well as \code{options}
+for any other arguments to gdalwarp. There are no creation options (\code{-co}) or
+dataset output options (\code{-doo}), because these are not supported by the MEM driver.
 
-All 'warp_options' are paired with a '-wo' declaration and similarly for '-to', and '-oo',
-this is purely a convenience, since 'options' itself can be used for these as well but we recommend using
-the individual arguments.
-An example for warp options is  \code{warp_options = c("SAMPLE_GRID=YES", "SAMPLE_STEPS=30")} and one for
-general arguments might be
-'options = c("-ovr", "AUTO", "-nomd", "-cutline", "/path/to/cut.gpkg", "-crop_to_cutline")'.  If they would
-be separated by spaces on the command line then include as separate elements in the options character vector.
+All \code{warp_options} are paired with a \code{-wo} declaration, and similarly for \code{-to}
+and \code{-oo}; this is purely a convenience, since \code{options} itself can be used for
+these as well, but we recommend using the individual arguments.
+An example for warp options is \code{warp_options = c("SAMPLE_GRID=YES", "SAMPLE_STEPS=30")}
+and one for general arguments might be
+\code{options = c("-ovr", "AUTO", "-nomd", "-cutline", "/path/to/cut.gpkg", "-crop_to_cutline")}.
+If they would be separated by spaces on the command line then include as separate
+elements in the options character vector.
 
 See \href{https://gdal.org/en/stable/api/gdalwarp_cpp.html}{GDALWarpOptions} for '-wo'.
 

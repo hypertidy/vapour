@@ -253,18 +253,19 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' 
 #' @section Options: 
 #' 
-#' The various options are convenience arguments  for 'warp options -wo',
-#' transformation options -to', 'open options -oo', and 'options' for any other
-#' arguments in gdalwarp. There are no 'creation options -co' or 'dataset output
-#' options -doo', because these are not supported by the MEM driver.
+#' The various options are convenience arguments for warp options (`-wo`),
+#' transformation options (`-to`), and open options (`-oo`), as well as `options`
+#' for any other arguments to gdalwarp. There are no creation options (`-co`) or
+#' dataset output options (`-doo`), because these are not supported by the MEM driver.
 #'
-#' All 'warp_options' are paired with a '-wo' declaration and similarly for '-to', and '-oo', 
-#' this is purely a convenience, since 'options' itself can be used for these as well but we recommend using
-#' the individual arguments. 
-#' An example for warp options is  `warp_options = c("SAMPLE_GRID=YES", "SAMPLE_STEPS=30")` and one for
-#' general arguments might be 
-#' 'options = c("-ovr", "AUTO", "-nomd", "-cutline", "/path/to/cut.gpkg", "-crop_to_cutline")'.  If they would 
-#' be separated by spaces on the command line then include as separate elements in the options character vector. 
+#' All `warp_options` are paired with a `-wo` declaration, and similarly for `-to`
+#' and `-oo`; this is purely a convenience, since `options` itself can be used for
+#' these as well, but we recommend using the individual arguments.
+#' An example for warp options is `warp_options = c("SAMPLE_GRID=YES", "SAMPLE_STEPS=30")`
+#' and one for general arguments might be
+#' `options = c("-ovr", "AUTO", "-nomd", "-cutline", "/path/to/cut.gpkg", "-crop_to_cutline")`.
+#' If they would be separated by spaces on the command line then include as separate
+#' elements in the options character vector. 
 #'
 #' 
 #' See [GDALWarpOptions](https://gdal.org/en/stable/api/gdalwarp_cpp.html) for '-wo'. 

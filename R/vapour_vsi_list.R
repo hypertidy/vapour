@@ -17,23 +17,6 @@
 #' @examples
 #' pointzipfile <- system.file("extdata/vsi/point_shp.zip", package = "vapour")
 #' vapour_vsi_list(sprintf("/vsizip/%s", pointzipfile))
-#' \donttest{
-#' \dontrun{
-#' ## example from https://github.com/hypertidy/vapour/issues/55
-#' #file <- "http/radmap_v3_2015_filtered_dose/radmap_v3_2015_filtered_dose.ers.zip"
-#' #url <- "http://dapds00.nci.org.au/thredds/fileServer/rr2/national_geophysical_compilations"
-#' #u <- sprintf("/vsizip//vsicurl/%s", file.path(url, file))
-#' #vapour_vsi_list(u)
-#' #[1] "radmap_v3_2015_filtered_dose"     "radmap_v3_2015_filtered_dose.ers"
-#' #[3] "radmap_v3_2015_filtered_dose.isi" "radmap_v3_2015_filtered_dose.txt"
-#' #gdalinfo /vsitar//home/ubuntu/LT05_L1GS_027026_20060116_20160911_01_T2.tar.gz
-#' #vapour_vsi_list("/vsitar//home/ubuntu/LT05_L1GS_027026_20060116_20160911_01_T2.tar.gz")
-#' #"LT05_L1TP_027026_20061218_20160911_01_T1_ANG.txt"
-#' #"LT05_L1TP_027026_20061218_20160911_01_T1_B1.TIF"
-#' #"LT05_L1TP_027026_20061218_20160911_01_T1_B2.TIF"
-#' #"LT05_L1TP_027026_20061218_20160911_01_T1_B3.TIF"
-#' #...
-#' }}
 #' @export
 vapour_vsi_list <- function(dsource, ...) {
   vsi_list_gdal_cpp(dsource)
