@@ -1,5 +1,15 @@
 # vapour dev
 
+* configure now passes `LDFLAGS` when linking its GDAL and PROJ test
+  programs, so builds against a library prefix off the default runtime
+  search path (such as conda-forge, which supplies the rpath in `LDFLAGS`)
+  no longer fail with "PROJ not available?". Reported by Matthew Feickert
+  while packaging vapour for conda-forge.
+
+* Removed a global `using namespace std;` from the gdalwarpgeneral header,
+  which made `list` ambiguous between `cpp11::list` and `std::list` under
+  the MSVC STL (Matthew Feickert).
+
 * The bundled copy of PROJ data (inst/proj, present on Windows and macOS CRAN
   binaries and on Linux only with `--configure-args='--with-data-copy=yes'`)
   is now validated at load. PROJ checks proj.db's database layout version

@@ -8,7 +8,6 @@
 #include "gdal_utils.h"
 #include "gdalraster/gdalraster.h"
 #include "ogr_spatialref.h"
-using namespace std;
 
 namespace gdalwarpgeneral{
 

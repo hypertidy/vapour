@@ -168,7 +168,7 @@ vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension 
 image(m <- matrix(vals[[1]], nrow = dm[2], ncol = dm[1])[,dm[2]:1 ])
 ```
 
-<img src="man/figures/README-topo-example-1.png" width="100%" />
+<img src="man/figures/README-topo-example-1.png" alt="" width="100%" />
 
 ``` r
 ## using the image list format
@@ -177,12 +177,11 @@ image(x)
 
 ## or as a spatial object
 library(terra)
-#> terra 1.8.76
 r <- rast(ext(ex), nrows = dm[2], ncols = dm[1], crs = crs, vals = vals[[1]])
 contour(r, add = TRUE)
 ```
 
-<img src="man/figures/README-topo-example-2.png" width="100%" />
+<img src="man/figures/README-topo-example-2.png" alt="" width="100%" />
 
 If we want more detail, go ahead:
 
@@ -190,19 +189,19 @@ If we want more detail, go ahead:
 dm <- c(512, 512)
 vals <- vapour::vapour_warp_raster(elevation.tiles.prod, extent = ex, dimension = dm, projection = crs)
 (r <- rast(ext(ex), nrows = dm[2], ncols = dm[1], crs = crs, vals = vals[[1]]))
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 512, 512, 1  (nrow, ncol, nlyr)
 #> resolution  : 19.53125, 19.53125  (x, y)
 #> extent      : -5000, 5000, -5000, 5000  (xmin, xmax, ymin, ymax)
-#> coord. ref. : +proj=laea +lat_0=40.416667 +lon_0=-3.716667 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs 
+#> coord. ref. : +proj=laea +lat_0=40.416667 +lon_0=-3.716667 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs
 #> source(s)   : memory
-#> name        : lyr.1 
-#> min value   :   562 
+#> name        : lyr.1
+#> min value   :   562
 #> max value   :   742
 plot(r, col = hcl.colors(24))
 ```
 
-<img src="man/figures/README-lod-1.png" width="100%" />
+<img src="man/figures/README-lod-1.png" alt="" width="100%" />
 
 GDAL is obstinately *format agnostic*, the A stands for *Abstraction*
 and we like that in R too, just gives us the data. Here we created a
