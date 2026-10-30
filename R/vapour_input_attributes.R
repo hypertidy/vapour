@@ -61,7 +61,7 @@ validate_extent <- function(extent, sql, warn = TRUE) {
 #' See [vapour_sds_names] for more on the multiple topic.
 #'
 #' @inheritParams vapour_read_geometry
-#' @param ... arguments ignore for deprecated compatibility (no 'sql' argument any longer)
+#' @param ... arguments ignored for deprecated compatibility (no 'sql' argument any longer)
 #' @return character vector of layer names
 #'
 #' @examples
@@ -109,9 +109,9 @@ vapour_geom_name <- function(dsource, layer = 0L, sql = "") {
 #' arbitrary. Please use with caution, this function can return the current
 #' FIDs, but there's no guarantee of what it represents for subsequent access.
 #'
-#' An earlier version use 'OGRSQL' to obtain these names, which was slow for some
+#' An earlier version used 'OGRSQL' to obtain these names, which was slow for some
 #' drivers and also clashed with independent use of the `sql` argument.
-
+#'
 #' [vapour_read_names()] is an older name, aliased to [vapour_read_fids()]. 
 #' @inheritParams vapour_read_geometry
 #' @export

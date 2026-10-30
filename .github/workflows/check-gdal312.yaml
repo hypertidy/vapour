@@ -2,14 +2,25 @@
 # mdsumner/recipes (fork of R-macos/recipes), i.e. the stack CRAN macOS
 # binaries would ship if the recipes update lands upstream.
 #
-# Place in vapour/.github/workflows/check-gdal312.yml
+# NOTE: manual only. The release this downloads (darwin-gdal3124) does not
+# currently exist in mdsumner/recipes (that repo is now unrelated), so push
+# triggers just produced a red X in 24s. Re-enable `push` once the recipes
+# fork/release is restored, or point the inputs at wherever it lives.
 
 name: R-CMD-check gdal-3.12 (recipes fork)
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main, master]
+    inputs:
+      recipes_repo:
+        description: 'owner/repo holding the static GDAL stack release'
+        default: 'mdsumner/recipes'
+      recipes_tag:
+        description: 'release tag'
+        default: 'darwin-gdal3124'
+
+permissions:
+  contents: read
 
 jobs:
   check:
@@ -27,15 +38,19 @@ jobs:
 
     env:
       GH_TOKEN: ${{ github.token }}
+      RECIPES_REPO: ${{ inputs.recipes_repo }}
+      RECIPES_TAG: ${{ inputs.recipes_tag }}
       # gdal-config in this stack is a pkg-config proxy; both PATH and
       # PKG_CONFIG_PATH below are required for it to answer at all.
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install static GDAL stack from recipes fork release
         run: |
-          gh release download darwin-gdal3124 -R mdsumner/recipes \
+          gh release view "$RECIPES_TAG" -R "$RECIPES_REPO" >/dev/null \
+            || { echo "::error::release $RECIPES_TAG not found in $RECIPES_REPO"; exit 1; }
+          gh release download "$RECIPES_TAG" -R "$RECIPES_REPO" \
             -p '${{ matrix.config.pattern }}' -D /tmp/libs
           for f in /tmp/libs/*.tar.xz; do sudo tar xJf "$f" -C /; done
           echo "${{ matrix.config.prefix }}/bin" >> "$GITHUB_PATH"
@@ -45,7 +60,7 @@ jobs:
         run: |
           sudo sed -i '' 's/pkg-config --libs gdal/pkg-config --static --libs gdal/' \
             ${{ matrix.config.prefix }}/bin/gdal-config
-            
+
       - name: Verify stack before touching R
         run: |
           which gdal-config pkg-config
@@ -78,7 +93,7 @@ jobs:
           EOF
           clang /tmp/canary.c $(gdal-config --cflags) $(gdal-config --libs) -lc++ -o /tmp/canary
           /tmp/canary
-          
+
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: release
@@ -117,7 +132,7 @@ jobs:
 
       - name: Upload check results on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: check-results-${{ matrix.config.os }}
           path: check

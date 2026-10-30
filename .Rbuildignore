@@ -15,7 +15,7 @@
 ^inst/benchmarks/test-mem.R$
 ^tests/grindy$
 ^vapour\.Rproj$
-^config\\..*$
+^config\.(log|status)$
 ^autom4te\.cache$
 ^CRAN-RELEASE$
 ^revdep$
@@ -34,3 +34,6 @@
 ^out.tif$
 ^\.positai$
 ^\.claude$
+^\.posit/assistant$
+^_pkgdown\.yml$
+^errors\.txt$

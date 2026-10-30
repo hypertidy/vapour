@@ -117,13 +117,13 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' Usually the skew components are zero, and so only four coefficients are
 #' relevant and correspond to the offset and scale used to position the raster -
 #' in combination with the number of rows and columns of data they provide the
-#' spatial extent and the pixel size in each direction.  Very rarely a an actual
-#' affine raster will be use with this _rotation_ specified within the transform
+#' spatial extent and the pixel size in each direction.  Very rarely an actual
+#' affine raster will be used with this _rotation_ specified within the transform
 #' coefficients.
 #'
 #' Calculation of 'minmax' can take a significant amount of time, so it's not done by default. Use
-#' 'minmax = TRUE' to do it. (It does perform well, but may be prohibitive for very large or remote sources.)
-#' @seealso vapour_sds_info
+#' `min_max = TRUE` to do it. (It does perform well, but may be prohibitive for very large or remote sources.)
+#' @seealso vapour_sds_names
 #'
 #' @section Overviews:
 #'
@@ -136,7 +136,7 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' @param min_max logical, control computing min and max values in source ('FALSE' by default)
 #' @param ... currently unused
 #'
-#' @return list with vectors 'geotransform', 'dimXY', 'minmax', 'tilesXY', 'projection', 'bands', 'proj4', 'nodata_value',
+#' @return list with vectors 'geotransform', 'dimXY', 'minmax', 'block', 'projection', 'bands', 'projstring', 'nodata_value',
 #'  'overviews', 'filelist' see sections in Details for more on each element
 #' @export
 #' @examples
@@ -244,7 +244,7 @@ vapour_raster_gcp <- function(x, ...) {
 #' variable, so we always treat a source as a subdataset, even if there's only
 #' one.
 #'
-#' Returns a character vector of 'subdatasets`. In the case of a normal data
+#' Returns a character vector of `subdatasets`. In the case of a normal data
 #' source, with no subdatasets the value is simply  the `datasource`.
 #'
 #' If the raw SDS names contain spaces these are replaced by '%20' escape strings. A specific example is  

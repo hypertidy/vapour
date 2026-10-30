@@ -1,0 +1,81 @@
+url: https://hypertidy.github.io/vapour/
+
+template:
+  bootstrap: 5
+  bootswatch: litera
+  bslib:
+    primary: "#1C6B4C"
+    link-color: "#1C6B4C"
+    base_font: {google: "Inter"}
+    heading_font: {google: "Inter"}
+    code_font: {google: "JetBrains Mono"}
+  math-rendering: mathjax
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+
+reference:
+- title: Package overview
+  contents:
+  - vapour-package
+
+- title: Raster information
+  desc: Structural metadata, subdatasets, control points and geolocation.
+  contents:
+  - vapour_raster_info
+  - vapour_sds_names
+  - vapour_raster_gcp
+  - vapour_geolocation
+
+- title: Raster data
+  desc: Read, warp and create raster data.
+  contents:
+  - vapour_read_raster
+  - vapour_read_raster_raw
+  - vapour_read_raster_block
+  - vapour_write_raster_block
+  - vapour_warp_raster
+  - vapour_warp_raster_raw
+  - vapour_create
+  - gdal_raster_data
+
+- title: Vector layers
+  desc: Inspect layers, geometry columns and summaries.
+  contents:
+  - vapour_layer_names
+  - vapour_layer_info
+  - vapour_layer_extent
+  - vapour_geom_name
+  - vapour_geom_summary
+
+- title: Vector geometry and fields
+  desc: Read geometry, feature identifiers and attribute fields.
+  contents:
+  - vapour_read_geometry
+  - vapour_read_fids
+  - vapour_read_fields
+  - vapour_report_fields
+
+- title: CRS, GDAL and configuration
+  desc: Projection strings, versions, drivers and GDAL config.
+  contents:
+  - vapour_srs_wkt
+  - vapour_crs_is_lonlat
+  - vapour_proj_data
+  - vapour_set_config
+  - GDAL-library
+
+- title: Virtual sources
+  desc: VRT construction and virtual file system listings.
+  contents:
+  - vapour_vrt
+  - vector_vrt
+  - buildvrt
+  - vapour_vsi_list
+
+- title: Example data
+  contents:
+  - sst_c
+  - tas_wkt

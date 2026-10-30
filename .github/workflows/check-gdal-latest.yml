@@ -1,22 +1,28 @@
+# Checks against the latest stable and the development (master) GDAL in
+# hypertidy/gdal-r-ci containers. Weekly schedule catches upstream GDAL/PROJ
+# drift even when vapour itself hasn't changed.
 name: Check GDAL Latest
 
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '17 21 * * 0'
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   gdal-latest:
     uses: hypertidy/gdal-r-ci/.github/workflows/check-gdal-release.yml@main
     with:
-      # Git ref to checkout (branch, tag, SHA)
-      ref: 'main'
-      
-      # Additional apt packages to install
-      extra-sys-deps: ''
-      
-      # Additional R packages to install
-      extra-r-packages: ''
-      
-      # Additional R CMD check arguments
+      # check the commit that triggered the run, not whatever main is
+      ref: ${{ github.sha }}
       check-args: '--no-manual --as-cran'
