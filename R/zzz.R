@@ -37,13 +37,10 @@ vapour_load_gdal <- function() {
   ## driver (to read proj.db metadata) and OSR
   out <- register_gdal_cpp()
 
-  ## GDAL data, only if the files are in the package. Set as a GDAL config
-  ## option rather than an environment variable so it is scoped to this
-  ## GDAL and does not leak into other packages' libraries.
-  gdl <- system.file("gdal", package = "vapour")
-  if (nzchar(gdl) && file.exists(file.path(gdl, "gdalvrt.xsd"))) {
-    set_gdal_config_cpp("GDAL_DATA", gdl)
-  }
+  ## GDAL data is deliberately left alone: the bundled copy is not
+  ## activated. Pointing GDAL_DATA at it broke OSM driver lookup of
+  ## osmconf.ini on Windows (win-builder and GitHub CI, 0.20.0 development),
+  ## whereas GDAL's own default resolves correctly.
 
   ## PROJ data, only if the files are in the package, and only if the
   ## bundled proj.db is actually usable by the libproj we are linked to
@@ -94,10 +91,6 @@ vapour_use_bundled_proj_data <- function(prj) {
 vapour_unload_gdal <- function() {
   if (isTRUE(get0(".vapour.proj_data_active", envir = .vapour_cache, ifnotfound = FALSE))) {
     set_proj_search_paths_cpp(character())
-  }
-  gdl <- system.file("gdal", package = "vapour")
-  if (nzchar(gdl) && file.exists(file.path(gdl, "gdalvrt.xsd"))) {
-    unset_gdal_config_cpp("GDAL_DATA")
   }
 }
 

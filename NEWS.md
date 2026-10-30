@@ -22,13 +22,15 @@
 
 * The PROJ search path is now set with `OSRSetPROJSearchPaths()` rather than
   the `PROJ_LIB` environment variable, so it is scoped to GDAL's PROJ
-  contexts and no longer leaks into other packages' libproj. `GDAL_DATA` is
-  likewise set as a GDAL config option rather than an environment variable.
+  contexts and no longer leaks into other packages' libproj. vapour no longer
+  sets `GDAL_DATA` at all (it previously never took effect, and activating it
+  broke the OSM driver's lookup of osmconf.ini on Windows); the bundled
+  `gdal` data copy is not used at load.
 
 * The gates for activating the bundled data were stale: `proj/alaska` (unload)
   and `gdal/epsg.wkt` were removed from PROJ 7 and GDAL 3 respectively, so
-  `GDAL_DATA` was never being set and `PROJ_LIB` was never restored. Now
-  gated on `proj/proj.db` and `gdal/gdalvrt.xsd`.
+  `GDAL_DATA` was never being set and `PROJ_LIB` was never restored. The
+  PROJ gate is now `proj/proj.db`.
 
 * New `vapour_proj_data()` reports the PROJ search paths in use, whether the
   bundled copy is active, and the metadata of the proj.db that resolves.
