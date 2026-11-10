@@ -5,10 +5,11 @@
 
 <!-- badges: start -->
 
-[![R_build_status](https://github.com/hypertidy/vapour/workflows/R-CMD-check/badge.svg)](https://github.com/hypertidy/vapour/actions)
-[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
+[![R_build_status](https://github.com/hypertidy/vapour/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/hypertidy/vapour/actions/workflows/check-standard.yaml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/vapour)](https://CRAN.R-project.org/package=vapour)
+[![conda-forge
+version](https://img.shields.io/conda/vn/conda-forge/r-vapour.svg)](https://anaconda.org/conda-forge/r-vapour)
 <!-- badges: end -->
 
 ## Overview
@@ -60,6 +61,8 @@ constrained to any particular data model.
 
 ## Installation
 
+### From CRAN
+
 Install from CRAN, this should work on MacOS and Windows because CRAN
 provide binaries.
 
@@ -67,7 +70,31 @@ provide binaries.
 install.packages("vapour")
 ```
 
-The development version can be installed from Github.
+### From conda-forge
+
+[![conda-forge
+platforms](https://img.shields.io/conda/pn/conda-forge/r-vapour.svg)](https://anaconda.org/conda-forge/r-vapour)
+
+Vapour is available on
+[conda-forge](https://github.com/conda-forge/r-vapour-feedstock) as
+`r-vapour` and can be installed with [Pixi](https://pixi.prefix.dev/):
+
+``` bash
+pixi add r-vapour
+```
+
+or with [`conda`](https://docs.conda.io/):
+
+``` bash
+conda install --channel conda-forge r-vapour
+```
+
+The conda-forge package installs all its dependencies from conda-forge,
+so no system libraries are required.
+
+### Development version
+
+The development version can be installed from GitHub.
 
 ``` r
 options(repos = c(
@@ -76,7 +103,7 @@ options(repos = c(
 install.packages("vapour")
 ```
 
-To install the development version the more github-traditional way:
+To install the development version the more GitHub-traditional way:
 
 ``` r
 remotes::install_github("hypertidy/vapour")
