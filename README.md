@@ -95,7 +95,7 @@ so no system libraries are required.
 
 ### Development version
 
-The development version can be installed from Github.
+The development version can be installed from GitHub.
 
 ``` r
 options(repos = c(
@@ -104,7 +104,7 @@ options(repos = c(
 install.packages("vapour")
 ```
 
-To install the development version the more github-traditional way:
+To install the development version the more GitHub-traditional way:
 
 ``` r
 remotes::install_github("hypertidy/vapour")

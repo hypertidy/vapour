@@ -86,7 +86,7 @@ The conda-forge package installs all its dependencies from conda-forge, so no sy
 
 ### Development version
 
-The development version can be installed from Github.
+The development version can be installed from GitHub.
 
 ```{r install-universe, eval=FALSE}
 options(repos = c(
@@ -95,7 +95,7 @@ options(repos = c(
 install.packages("vapour")
 ```
 
-To install the development version the more github-traditional way: 
+To install the development version the more GitHub-traditional way:
 
 ```{r install-dev, eval=FALSE}
 remotes::install_github("hypertidy/vapour")
