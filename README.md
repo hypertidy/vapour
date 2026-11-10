@@ -5,8 +5,7 @@
 
 <!-- badges: start -->
 
-[![R_build_status](https://github.com/hypertidy/vapour/workflows/R-CMD-check/badge.svg)](https://github.com/hypertidy/vapour/actions)
-[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/vapour)](https://cran.r-project.org/package=vapour)
+[![R_build_status](https://github.com/hypertidy/vapour/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/hypertidy/vapour/actions/workflows/check-standard.yaml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/vapour)](https://CRAN.R-project.org/package=vapour)
 [![conda-forge
