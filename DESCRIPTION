@@ -10,7 +10,6 @@ Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c(
              person("Timothy", "Keitt", role = c("ctb"), comment = "wrote GetPointsInternal copied here from rgdal2 package"), 
              person("Jeroen", "Ooms", role = c("ctb"), comment = "tweaked build process, provided Windows build tools"), 
              person("Dale", "Maschette", role = c("ctb"), comment = "created the hex logo"), 
-             person("Joseph", "Stachelek", role = "ctb"), 
              person("Even", "Rouault", role = "ctb", comment = "primary author of the COG format and its use of the GDALwarp app-library, example code used by the warper function here"), 
              person("Robert", "Hijmans", role = "ctb", comment = "code in terra package used as example/inspiration"), 
              person("Dewey", "Dunnington", role = "ctb", comment = "wrote the columnar-access mode streaming Arrow support"), 
