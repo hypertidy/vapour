@@ -142,7 +142,8 @@ vapour_create_copy <- function(dsource, filename, overwrite = FALSE, driver = "G
 #' v <- vapour_read_raster_block(f, c(0L, 0L), dimension = c(2L, 3L), band = 1L)
 vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band_output_type = "", unscale = TRUE, nara = FALSE) {
   dsource <- .check_dsn_single(dsource)
-  if (anyNA(band) || length(band) < 1L) stop("missing band value")
+  if (is.null(band)) stop("'band' must be a single band number for a block read")
+  band <- .check_bands(band, arg = "band")
   if (file.exists(dsource)) {
     dsource <- normalizePath(dsource)
   }

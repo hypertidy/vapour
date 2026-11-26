@@ -7,15 +7,20 @@
 #' Two functions 'gdal_raster_data' and 'gdal_raster_dsn' act like the gdalwarp command line
 #' tool, a convenience third function 'gdal_raster_image()' works especially for image data. 
 #' 
+#' For `gdal_raster_image()` and `gdal_raster_nara()` the default `bands = NULL` means the 
+#' first bands up to four, which is what an image can use. `gdal_raster_dsn()` writes every band, 
+#' use [vapour_vrt()] on the source to choose bands for it. 
+#' 
 #' @param dsn data sources, files, urls, db strings, vrt, etc
 #' @param target_crs projection of the target grid
 #' @param target_dim dimension of the target grid
 #' @param target_ext extent of the target grid
 #' @param target_res resolution of the target grid
 #' @param resample resampling algorithm used
-#' @param bands band or bands to include, default is first band only (use NULL or a value less that one to obtain all bands)
+#' @param bands band or bands to include (1-based), may be repeated or in any order, or `NULL` for all bands. The default is the first band only, see Details for the image functions
 #' @param band_output_type specify the band type, see [vapour_read_raster]
 #' @param include_meta metadata is attached, turn off by setting this to `FALSE`
+#' @param unscale default is `TRUE` so values are converted by the band's scale and offset to floating point, set to `FALSE` to get the stored values. An integer `band_output_type` also gives the stored values, see [vapour_read_raster]
 #' @param options general options passed to gdal warper
 #' @param out_dsn file name for output "_dsn"
 #' @export
@@ -50,7 +55,7 @@
 #'  
 #' X4 <- gdal_raster_dsn(dsn, out_dsn = tempfile(fileext = ".tif"))
 gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
-                         resample = "near", bands = 1L, band_output_type = NULL, options = character(), include_meta = TRUE) {
+                         resample = "near", bands = 1L, band_output_type = NULL, options = character(), include_meta = TRUE, unscale = TRUE) {
   
    if (is.null(target_crs)) target_crs <- "" 
    if (is.null(target_ext)) {
@@ -83,7 +88,12 @@ gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
      if (any(target_res <= 0)) stop("all 'target_res' values must be > 0")
    }
    if (is.null(band_output_type)) band_output_type <- "Float64"
-   if (is.null(bands)) bands <- -1
+   if (is.numeric(bands) && length(bands) > 0L && !anyNA(bands) && all(bands < 1)) {
+     warning("a 'bands' value less than 1 to mean all bands is deprecated, use 'bands = NULL'")
+     bands <- NULL
+   }
+   bands <- .check_bands(bands)
+   if (is.null(bands)) bands <- -1L
    include_meta <- isTRUE(include_meta)
    warp_general_cpp(dsn, target_crs, 
                              as.numeric(target_ext), 
@@ -94,7 +104,7 @@ gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
                              silent = FALSE, band_output_type = band_output_type, 
                              options = options, 
                              dsn_outname = "", 
-                    include_meta = include_meta, nara = FALSE)
+                    include_meta = include_meta, nara = FALSE, unscale = isTRUE(unscale))
 }
 
 #' @name gdal_raster_data
@@ -155,7 +165,7 @@ gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ex
                             resample = resample, 
                             silent = FALSE, band_output_type = band_output_type, 
                             options = options, 
-                            dsn_outname = out_dsn[1L], include_meta = include_meta, nara = FALSE)
+                            dsn_outname = out_dsn[1L], include_meta = include_meta, nara = FALSE, unscale = TRUE)
 }
 
 #' @name gdal_raster_data
@@ -169,6 +179,7 @@ gdal_raster_image <- function(dsn, target_crs = NULL, target_dim = NULL, target_
   if (is.null(target_dim)) target_dim <- integer() #info$dimension
   if (is.null(target_res)) target_res <- numeric() ## TODO
   if (is.null(band_output_type)) band_output_type <- "Byte"
+  bands <- .check_bands(bands)
   if (is.null(bands)) {
     nbands <- vapour_raster_info(dsn[1])$bands
     bands <- seq(min(c(nbands, 4L)))
@@ -181,7 +192,7 @@ gdal_raster_image <- function(dsn, target_crs = NULL, target_dim = NULL, target_
                             bands = as.integer(bands), 
                             resample = resample, 
                             silent = FALSE, band_output_type = band_output_type, 
-                            options = options, dsn_outname = "", include_meta = include_meta, nara = FALSE)
+                            options = options, dsn_outname = "", include_meta = include_meta, nara = FALSE, unscale = TRUE)
   atts <- attributes(bytes)
   out <- list(as.vector(grDevices::as.raster(array(unlist(bytes, use.names = FALSE), c(length(bytes[[1]]), 1, max(c(3, length(bytes))))))))
   attributes(out) <- atts
@@ -200,6 +211,7 @@ gdal_raster_nara <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
   if (is.null(target_dim)) target_dim <- integer() #info$dimension
   if (is.null(target_res)) target_res <- numeric() ## TODO
   band_output_type <- "Byte"
+  bands <- .check_bands(bands)
   if (is.null(bands)) {
     nbands <- vapour_raster_info(dsn[1])$bands
     bands <- seq(min(c(nbands, 4L)))
@@ -212,7 +224,7 @@ gdal_raster_nara <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
                             bands = as.integer(bands), 
                             resample = resample, 
                             silent = FALSE, band_output_type = band_output_type, 
-                            options = options, dsn_outname = "", include_meta = include_meta, nara = TRUE)
+                            options = options, dsn_outname = "", include_meta = include_meta, nara = TRUE, unscale = TRUE)
   out
 }
 

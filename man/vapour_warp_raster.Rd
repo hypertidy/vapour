@@ -23,13 +23,14 @@ vapour_warp_raster(
   options = "",
   nomd = FALSE,
   overview = -1L,
-  nara = FALSE
+  nara = FALSE,
+  unscale = TRUE
 )
 }
 \arguments{
 \item{x}{vector of data source names (file name or URL or database connection string)}
 
-\item{bands}{index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used, the default)}
+\item{bands}{index of band/s to read (1-based), may be repeated or in any order, or \code{NULL} for all bands (the default)}
 
 \item{extent}{extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'}
 
@@ -64,6 +65,8 @@ vapour_warp_raster(
 \item{overview}{pick an integer overview from the source (0L is highest resolution, default -1L does nothing)}
 
 \item{nara}{if 'TRUE' return in nativeRaster format}
+
+\item{unscale}{default is \code{TRUE} so values are converted by the band's scale and offset to floating point, set to \code{FALSE} to get the stored values. An integer \code{band_output_type} also gives the stored values}
 }
 \value{
 list of vectors (only 1 for 'band') of numeric values, in raster order

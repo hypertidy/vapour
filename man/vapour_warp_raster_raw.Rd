@@ -101,7 +101,7 @@ vapour_warp_raster_hex(
 \arguments{
 \item{x}{vector of data source names (file name or URL or database connection string)}
 
-\item{bands}{index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used, the default)}
+\item{bands}{index of band/s to read (1-based), may be repeated or in any order, or \code{NULL} for all bands (the default)}
 
 \item{extent}{extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'}
 

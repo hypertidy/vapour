@@ -26,6 +26,7 @@ reference:
   contents:
   - vapour_raster_info
   - vapour_sds_names
+  - vapour_sds
   - vapour_raster_gcp
   - vapour_geolocation
 

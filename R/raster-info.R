@@ -288,6 +288,61 @@ vapour_sds_names <- function(x) {
  sources
 }
 
+#' Subdatasets of raster sources
+#'
+#' A data frame of the subdatasets of one or more raster sources, one row for each
+#' subdataset. This is the vectorised form of [vapour_sds_names()], and it also
+#' gives GDAL's description of each subdataset.
+#'
+#' A source with no subdatasets gives one row, in which `subdataset` is the source
+#' itself and `description` is `NA`. So every source has at least one row, and
+#' every value of `subdataset` is a data source that can be opened.
+#'
+#' @param x one or more data source strings, filename, database connection string, or other URL
+#'
+#' @return data frame with columns
+#' \describe{
+#' \item{dsn}{the source, as given in `x`}
+#' \item{sds}{the number of the subdataset within its source, counted from 1 (as used by the `sds` argument of other functions)}
+#' \item{subdataset}{the data source string of the subdataset}
+#' \item{description}{GDAL's description of the subdataset, usually its dimensions, name and type}
+#' }
+#' @seealso [vapour_sds_names()] [vapour_raster_info()]
+#' @export
+#'
+#' @examples
+#' tif <- system.file("extdata", "sst.tif", package = "vapour")
+#' vapour_sds(tif)
+#'
+#' f <- system.file("extdata/gdal", "sds.nc", package = "vapour")
+#' ## protect from error with netcdf problems
+#' result <- try(vapour_sds(c(f, tif)), silent = TRUE)
+#' if (!inherits(result, "try-error")) {
+#'   print(result)
+#' }
+vapour_sds <- function(x) {
+  x <- .check_dsn_multiple(x)
+  if (anyNA(x)) stop("missing values in 'x'")
+  one <- function(dsn) {
+    info <- gdalinfo_internal(dsn, json = TRUE)
+    if (is.na(info)) stop(sprintf("GDAL was unable to open '%s'", dsn))
+    md <- jsonlite::fromJSON(info)$metadata$SUBDATASETS
+    if (is.null(md)) {
+      return(data.frame(dsn = dsn, sds = 1L, subdataset = dsn, description = NA_character_, 
+                        stringsAsFactors = FALSE))
+    }
+    name <- md[grep("_NAME$", names(md))]
+    idx <- sub("^SUBDATASET_([0-9]+)_NAME$", "\\1", names(name))
+    desc <- md[paste0("SUBDATASET_", idx, "_DESC")]
+    desc <- vapply(desc, function(d) if (is.null(d)) NA_character_ else as.character(d)[1L], "")
+    data.frame(dsn = dsn, sds = as.integer(idx), subdataset = unlist(name, use.names = FALSE), 
+               description = unname(desc), stringsAsFactors = FALSE)
+  }
+  out <- do.call(rbind, lapply(x, one))
+  rownames(out) <- NULL
+  out
+}
+
 #' Retrieve geolocation information for a dataset
 #' 
 #' Value is a named vector in a list. 

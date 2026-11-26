@@ -17,7 +17,8 @@ list warp_general_cpp(strings dsn,
                       strings options,
                       strings dsn_outname,
                       logicals include_meta,
-                      logicals nara) {
+                      logicals nara,
+                      logicals unscale) {
   return gdalwarpgeneral::gdal_warp_general(dsn,
                                           target_crs,
                                           target_extent,
@@ -30,7 +31,8 @@ list warp_general_cpp(strings dsn,
                                           options,
                                           dsn_outname,
                                           include_meta,
-                                          nara);
+                                          nara,
+                                          unscale);
 }
 
 [[cpp11::register]]

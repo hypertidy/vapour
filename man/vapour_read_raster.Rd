@@ -21,7 +21,7 @@ vapour_read_raster(
 \arguments{
 \item{x}{data source}
 
-\item{band}{index of band/s to read (1-based), may be repeated or in any order}
+\item{band}{index of band/s to read (1-based), may be repeated or in any order, or \code{NULL} for all bands}
 
 \item{window}{src_offset, src_dim, out_dim}
 
@@ -35,9 +35,9 @@ vapour_read_raster(
 
 \item{set_na}{specify whether NA values should be set for the NODATA}
 
-\item{band_output_type}{numeric type of band to apply (else the native type if ''), is mapped to one of 'Byte', 'Int32', or 'Float64'}
+\item{band_output_type}{numeric type of band to apply (else the native type if ''), is mapped to one of 'Byte', 'Int32', or 'Float64'. An integer type gives the stored values, with no scale or offset applied}
 
-\item{unscale}{default is \code{TRUE} so native values will be converted by offset and scale to floating point}
+\item{unscale}{default is \code{TRUE} so native values will be converted by offset and scale to floating point, set to \code{FALSE} to get the stored values}
 
 \item{nara}{logical whether to return a (scaled) nativeRaster}
 }
