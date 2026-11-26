@@ -84,15 +84,18 @@ inline list replace_nativeRaster(list inputlist, R_xlen_t dimx, R_xlen_t dimy) {
   writable::integers dm = {(int)dimx, (int)dimy};
   // GRAY
   if (inputlist.size() == 1) {
-    outlist_nara.push_back(C_native_gray(inputlist[0], dm));
+    cpp11::sexp nr = C_native_gray(inputlist[0], dm);
+    outlist_nara.push_back(nr);
   }
   // RGB
   if (inputlist.size() == 3) {
-    outlist_nara.push_back(C_native_rgb(inputlist[0], inputlist[1], inputlist[2], dm));
+    cpp11::sexp nr = C_native_rgb(inputlist[0], inputlist[1], inputlist[2], dm);
+    outlist_nara.push_back(nr);
   }
   // RGBA (we ignore bands above 4)
   if (inputlist.size() >= 4) {
-    outlist_nara.push_back(C_native_rgba(inputlist[0], inputlist[1], inputlist[2], inputlist[3], dm));
+    cpp11::sexp nr = C_native_rgba(inputlist[0], inputlist[1], inputlist[2], inputlist[3], dm);
+    outlist_nara.push_back(nr);
   }
   return outlist_nara;
 }
@@ -212,6 +215,7 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
   }
 
   GDALDataset* oDS = (GDALDataset*)gdalH_open_dsn(dsn, sds);
+  if (oDS == nullptr) return(nullptr);
 
   if (geolocation.size() == 2) {
     OGRSpatialReference  *geolsrs = new OGRSpatialReference;
@@ -231,7 +235,6 @@ inline GDALDatasetH gdalH_open_avrt(const char* dsn,
     delete geolsrs;
   }
 
-  if (oDS == nullptr) return(nullptr);
   int nBands = oDS->GetRasterCount();
 
   if (bands[0] > 0) {

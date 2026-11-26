@@ -1,5 +1,26 @@
 # vapour 0.20.0
 
+* Arguments that GDAL cannot parse are now an R error rather than a crash.
+  An unknown `resample` or a malformed `options` value in `gdal_raster_data()`,
+  `gdal_raster_dsn()`, `gdal_raster_image()`, `gdal_raster_nara()` or
+  `vapour_warp_raster()` took down the R session, because the warp options
+  were used without checking that GDAL had created them (#231).
+
+* `buildvrt()` on a source that cannot be opened, and `vapour_vrt()` with
+  `geolocation` on a source that cannot be opened, no longer crash. The first
+  is now an error and the second returns `NA` like the other `vapour_vrt()`
+  failures.
+
+* `vapour_read_raster()` reads more than one band again. A `band` vector
+  longer than one was an error under R 4.3.0 and later (#203).
+
+* Fixed the PROTECT imbalance reported by rchk in the nativeRaster
+  conversion (#239).
+
+* The Int8, Int64 and UInt64 band types are now gated on the GDAL version
+  number rather than on separate major and minor tests, which would have
+  dropped them under GDAL 4.0.
+
 * configure now passes `LDFLAGS` when linking its GDAL and PROJ test
   programs, so builds against a library prefix off the default runtime
   search path (such as conda-forge, which supplies the rpath in `LDFLAGS`)
@@ -22,15 +43,19 @@
 
 * The PROJ search path is now set with `OSRSetPROJSearchPaths()` rather than
   the `PROJ_LIB` environment variable, so it is scoped to GDAL's PROJ
-  contexts and no longer leaks into other packages' libproj. vapour no longer
-  sets `GDAL_DATA` at all (it previously never took effect, and activating it
-  broke the OSM driver's lookup of osmconf.ini on Windows); the bundled
-  `gdal` data copy is not used at load.
+  contexts and no longer leaks into other packages' libproj.
 
-* The gates for activating the bundled data were stale: `proj/alaska` (unload)
-  and `gdal/epsg.wkt` were removed from PROJ 7 and GDAL 3 respectively, so
-  `GDAL_DATA` was never being set and `PROJ_LIB` was never restored. The
-  PROJ gate is now `proj/proj.db`.
+* The bundled copy of GDAL data (inst/gdal, present under the same conditions
+  as the PROJ copy) is now activated with the `GDAL_DATA` configuration
+  option rather than the environment variable, for the same reason. It is set
+  before the drivers are registered, because GDAL builds its data file search
+  path once during registration and ignores `GDAL_DATA` after that. On
+  Windows the bundled copy is the only one GDAL can find, and drivers that
+  need a data file (OSM and its osmconf.ini) fail without it.
+
+* The gate for restoring `PROJ_LIB` on unload was stale: `proj/alaska` was
+  removed in PROJ 7, so the variable was never restored. The PROJ gate is now
+  `proj/proj.db`.
 
 * New `vapour_proj_data()` reports the PROJ search paths in use, whether the
   bundled copy is active, and the metadata of the proj.db that resolves.

@@ -136,6 +136,15 @@ inline list gdal_warp_general(strings dsn,
 
   GDALWarpAppOptions* psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
+  // GDAL returns NULL when it cannot parse the arguments (unknown resampling
+  // method, unknown switch, missing value)
+  if (psOptions == nullptr) {
+    std::string msg = CPLGetLastErrorMsg();
+    for (int si = 0; si < dsn.size(); si++) {
+      GDALClose( src_ds[si] );
+    }
+    cpp11::stop("invalid warp options: %s", msg.c_str());
+  }
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
 
     GDALDatasetH hRet = GDALWarp(outname.c_str(), nullptr,

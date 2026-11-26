@@ -41,7 +41,7 @@
 #' supported types 'Byte' ('== raw'), 'Int32' ('== integer'), or 'Float64' ('== double'). 
 #'  
 #' @param x data source
-#' @param band index of which band to read (1-based)
+#' @param band index of band/s to read (1-based), may be repeated or in any order
 #' @param window src_offset, src_dim, out_dim
 #' @param resample resampling method used (see details)
 #' @param ... reserved
@@ -80,10 +80,12 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
   if (native && !missing(window)) warning("'window' is specified, so 'native = TRUE' is ignored")
   if (native && missing(window)) window <- c(0, 0, ri$dimXY, ri$dimXY)
   
-  if (!is.numeric(band) || band < 1 || length(band) < 1  || anyNA(band)) {
-    stop("'band' must be an integer of length 1, and be greater than 0")
+  if (!is.numeric(band) || length(band) < 1 || anyNA(band) || any(band < 1)) {
+    stop("'band' must be numeric with no missing values, and each value 1 or greater")
   }
-  if (any(band > ri$bands)) stop(sprintf("specified 'band = %i', but maximum band number is %i", band, ri$bands))
+  if (any(band > ri$bands)) {
+    stop(sprintf("specified 'band = %i', but maximum band number is %i", as.integer(max(band)), ri$bands))
+  }
   ## turn these warning cases into errors here, + tests
   ## rationale is that dev can still call the internal R wrapper function to
   ## get these errors, but not the R user

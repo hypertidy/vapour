@@ -39,10 +39,10 @@ inline GDALDataType init_datatype(strings datatype) {
   if (dt == "CInt32")  return GDT_CInt32;
   if (dt == "CFloat32") return GDT_CFloat32;
   if (dt == "CFloat64") return GDT_CFloat64;
-#if (GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 7)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
   if (dt == "Int8")    return GDT_Int8;
 #endif
-#if (GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 5)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
   if (dt == "UInt64")  return GDT_UInt64;
   if (dt == "Int64")   return GDT_Int64;
 #endif

@@ -21,7 +21,7 @@ vapour_read_raster(
 \arguments{
 \item{x}{data source}
 
-\item{band}{index of which band to read (1-based)}
+\item{band}{index of band/s to read (1-based), may be repeated or in any order}
 
 \item{window}{src_offset, src_dim, out_dim}
 

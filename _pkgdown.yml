@@ -65,7 +65,7 @@ reference:
   - vapour_crs_is_lonlat
   - vapour_proj_data
   - vapour_set_config
-  - GDAL-library
+  - vapour_gdal_version
 
 - title: Virtual sources
   desc: VRT construction and virtual file system listings.

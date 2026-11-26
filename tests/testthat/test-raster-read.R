@@ -38,3 +38,14 @@ test_that("raster band type works", {
   
   
 })
+
+test_that("more than one band can be read", {
+  v <- vapour_read_raster(f, band = c(1, 1, 1), window = c(0, 0, 2, 3))
+  expect_length(v, 3L)
+  expect_named(v, rep("Band1", 3L))
+  expect_equal(v[[1L]], v[[3L]])
+  expect_error(vapour_read_raster(f, band = c(1, 2), window = c(0, 0, 2, 3)), "maximum band number is 1")
+  expect_error(vapour_read_raster(f, band = c(1, 0), window = c(0, 0, 2, 3)), "1 or greater")
+  expect_error(vapour_read_raster(f, band = NA_real_, window = c(0, 0, 2, 3)), "no missing values")
+  expect_error(vapour_read_raster(f, band = "1", window = c(0, 0, 2, 3)), "must be numeric")
+})

@@ -22,7 +22,8 @@ variable, so we always treat a source as a subdataset, even if there's only
 one.
 }
 \details{
-Returns a character vector of 'subdatasets\verb{. In the case of a normal data source, with no subdatasets the value is simply  the }datasource`.
+Returns a character vector of \code{subdatasets}. In the case of a normal data
+source, with no subdatasets the value is simply  the \code{datasource}.
 
 If the raw SDS names contain spaces these are replaced by '\%20' escape strings. A specific example is
 "WCS:https://elevation.nationalmap.gov:443" with request

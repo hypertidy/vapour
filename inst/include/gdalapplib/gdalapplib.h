@@ -167,6 +167,14 @@ inline list gdalwarp_applib(strings source_filename,
   
   auto psOptions = GDALWarpAppOptionsNew(papszArg, nullptr);
   CSLDestroy(papszArg);
+  if (psOptions == nullptr) {
+    std::string msg = CPLGetLastErrorMsg();
+    for (int si = 0; si < source_filename.size(); si++) {
+      GDALClose( (GDALDataset *)poSrcDS[si] );
+    }
+    CPLFree(poSrcDS);
+    cpp11::stop("invalid warp options: %s", msg.c_str());
+  }
   GDALWarpAppOptionsSetProgress(psOptions, NULL, NULL );
   
   GDALDatasetH hRet = GDALWarp( as_cstr(target_filename[0]), nullptr,
@@ -192,8 +200,15 @@ inline strings gdalbuildvrt_applib(std::vector<std::string> dsn,
   writable::strings out(1);
   int err;
   GDALBuildVRTOptions* opt = GDALBuildVRTOptionsNew(string_to_charptr(options).data(), nullptr);
+  if (opt == nullptr) {
+    cpp11::stop("invalid buildvrt options: %s", CPLGetLastErrorMsg());
+  }
   int dsn_size = (int)dsn.size();
   GDALDataset *vrt = (GDALDataset*)GDALBuildVRT("", dsn_size, nullptr, string_to_charptr(dsn).data(), opt, &err);
+  GDALBuildVRTOptionsFree(opt);
+  if (vrt == nullptr) {
+    cpp11::stop("unable to build VRT from input sources: %s", CPLGetLastErrorMsg());
+  }
   out[0] = vrt->GetMetadata("xml:VRT")[0];
   GDALClose(vrt);
   return out;
