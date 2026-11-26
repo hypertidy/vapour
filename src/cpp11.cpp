@@ -48,13 +48,6 @@ extern "C" SEXP _vapour_cleanup_gdal_cpp() {
   END_CPP11
 }
 // 00_gdal.cpp
-strings driver_gdal_cpp(strings dsn, strings open_options);
-extern "C" SEXP _vapour_driver_gdal_cpp(SEXP dsn, SEXP open_options) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(driver_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
-  END_CPP11
-}
-// 00_gdal.cpp
 strings driver_id_gdal_cpp(strings dsn, strings open_options);
 extern "C" SEXP _vapour_driver_id_gdal_cpp(SEXP dsn, SEXP open_options) {
   BEGIN_CPP11
@@ -334,20 +327,6 @@ extern "C" SEXP _vapour_raster_io_gdal_cpp(SEXP dsn, SEXP window, SEXP band, SEX
     return cpp11::as_sexp(raster_io_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(window), cpp11::as_cpp<cpp11::decay_t<integers>>(band), cpp11::as_cpp<cpp11::decay_t<strings>>(resample), cpp11::as_cpp<cpp11::decay_t<strings>>(band_output_type), cpp11::as_cpp<cpp11::decay_t<logicals>>(unscale), cpp11::as_cpp<cpp11::decay_t<logicals>>(nara), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
-// 00_raster.cpp
-strings sds_list_gdal_cpp(strings dsn);
-extern "C" SEXP _vapour_sds_list_gdal_cpp(SEXP dsn) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(sds_list_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn)));
-  END_CPP11
-}
-// 00_raster.cpp
-list sds_list_list_gdal_cpp(strings dsn);
-extern "C" SEXP _vapour_sds_list_list_gdal_cpp(SEXP dsn) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(sds_list_list_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn)));
-  END_CPP11
-}
 // 00_raster_block_io.cpp
 list vapour_read_raster_block_cpp(strings dsource, integers offset, integers dimension, integers band, strings band_output_type, logicals unscale, logicals nara, strings open_options);
 extern "C" SEXP _vapour_vapour_read_raster_block_cpp(SEXP dsource, SEXP offset, SEXP dimension, SEXP band, SEXP band_output_type, SEXP unscale, SEXP nara, SEXP open_options) {
@@ -383,20 +362,6 @@ extern "C" SEXP _vapour_vapour_read_raster_value_cpp(SEXP dsource, SEXP col, SEX
     return cpp11::as_sexp(vapour_read_raster_value_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsource), cpp11::as_cpp<cpp11::decay_t<integers>>(col), cpp11::as_cpp<cpp11::decay_t<integers>>(row), cpp11::as_cpp<cpp11::decay_t<integers>>(band), cpp11::as_cpp<cpp11::decay_t<strings>>(band_output_type)));
   END_CPP11
 }
-// 00_raster_block_io.cpp
-list blocks_cpp1(strings dsource, integers iblock, logicals read);
-extern "C" SEXP _vapour_blocks_cpp1(SEXP dsource, SEXP iblock, SEXP read) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(blocks_cpp1(cpp11::as_cpp<cpp11::decay_t<strings>>(dsource), cpp11::as_cpp<cpp11::decay_t<integers>>(iblock), cpp11::as_cpp<cpp11::decay_t<logicals>>(read)));
-  END_CPP11
-}
-// 00_raster_block_io.cpp
-list blocks_cpp(strings dsource, integers iblock, logicals read);
-extern "C" SEXP _vapour_blocks_cpp(SEXP dsource, SEXP iblock, SEXP read) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(blocks_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsource), cpp11::as_cpp<cpp11::decay_t<integers>>(iblock), cpp11::as_cpp<cpp11::decay_t<logicals>>(read)));
-  END_CPP11
-}
 // 00_utils.cpp
 strings raster_gdalinfo_app_cpp(strings dsn, strings options, integers sds, strings open_options);
 extern "C" SEXP _vapour_raster_gdalinfo_app_cpp(SEXP dsn, SEXP options, SEXP sds, SEXP open_options) {
@@ -428,11 +393,8 @@ extern "C" SEXP _vapour_raster_warp_file_cpp(SEXP source_filename, SEXP target_c
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_vapour_blocks_cpp",                       (DL_FUNC) &_vapour_blocks_cpp,                        3},
-    {"_vapour_blocks_cpp1",                      (DL_FUNC) &_vapour_blocks_cpp1,                       3},
     {"_vapour_cleanup_gdal_cpp",                 (DL_FUNC) &_vapour_cleanup_gdal_cpp,                  0},
     {"_vapour_crs_is_lonlat_cpp",                (DL_FUNC) &_vapour_crs_is_lonlat_cpp,                 1},
-    {"_vapour_driver_gdal_cpp",                  (DL_FUNC) &_vapour_driver_gdal_cpp,                   2},
     {"_vapour_driver_id_gdal_cpp",               (DL_FUNC) &_vapour_driver_id_gdal_cpp,                2},
     {"_vapour_drivers_list_gdal_cpp",            (DL_FUNC) &_vapour_drivers_list_gdal_cpp,             0},
     {"_vapour_feature_count_gdal_cpp",           (DL_FUNC) &_vapour_feature_count_gdal_cpp,            5},
@@ -470,8 +432,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_read_geometry_gdal_cpp",           (DL_FUNC) &_vapour_read_geometry_gdal_cpp,            9},
     {"_vapour_register_gdal_cpp",                (DL_FUNC) &_vapour_register_gdal_cpp,                 0},
     {"_vapour_report_fields_gdal_cpp",           (DL_FUNC) &_vapour_report_fields_gdal_cpp,            4},
-    {"_vapour_sds_list_gdal_cpp",                (DL_FUNC) &_vapour_sds_list_gdal_cpp,                 1},
-    {"_vapour_sds_list_list_gdal_cpp",           (DL_FUNC) &_vapour_sds_list_list_gdal_cpp,            1},
     {"_vapour_set_gdal_config_cpp",              (DL_FUNC) &_vapour_set_gdal_config_cpp,               2},
     {"_vapour_set_proj_search_paths_cpp",        (DL_FUNC) &_vapour_set_proj_search_paths_cpp,         1},
     {"_vapour_unset_gdal_config_cpp",            (DL_FUNC) &_vapour_unset_gdal_config_cpp,             1},

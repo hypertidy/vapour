@@ -125,14 +125,23 @@ vapour_geom_name <- function(dsource, layer = 0L, sql = "", open_options = NULL)
 #' drivers and also clashed with independent use of the `sql` argument.
 #'
 #' [vapour_read_names()] is an older name, aliased to [vapour_read_fids()]. 
+#'
+#' `vapour_read_fids_ia` gives the feature ids at chosen positions (`ia`,
+#' counted from 0, in any order and with repeats) and `vapour_read_fids_ij`
+#' those in an inclusive range of positions (`ij`). A position that is not in
+#' the layer gives `NA`, with a warning. These turn positions into the values
+#' that the `fa` argument of [vapour_read_geometry_fa()] and
+#' [vapour_read_fields_fa()] takes.
 #' @inheritParams vapour_read_geometry
 #' @export
-#' @return character vector of geometry id 'names'
+#' @return numeric vector of feature ids
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' range(fids <- vapour_read_names(mvfile))
 #' length(fids)
+#' vapour_read_fids_ia(mvfile, ia = c(0, 5, 2))
+#' vapour_read_fids_ij(mvfile, ij = c(0, 2))
 vapour_read_fids <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA, open_options = NULL) {
   dsource <- .check_dsn_single(dsource)
   open_options <- .check_open_options(open_options)
@@ -197,10 +206,19 @@ vapour_report_attributes <- function(dsource, layer = 0L, sql = "", open_options
 #' for numeric, integer (32-bit) and string types. Date, Time, DateTime are
 #' returned as character, and Integer64 is returned as numeric.
 #'
+#' Three more functions read the fields of chosen features, as
+#' [vapour_read_geometry_ia()] and its companions do for geometry:
+#' `vapour_read_fields_ia` by position (`ia`, counted from 0, in any order and
+#' with repeats), `vapour_read_fields_ij` by an inclusive range of positions
+#' (`ij`), and `vapour_read_fields_fa` by feature id (`fa`, the values that
+#' [vapour_read_fids()] returns). A position or feature id that is not in the
+#' layer gives `NA` in every field, with a warning.
+#'
 #' @inheritParams vapour_read_geometry
 #' 
 #' @return list of vectors one for each field in the source, each will be the same length which will
-#' depend on the values of 'skip_n', 'limit_n', 'sql', and the available records in the source. The
+#' depend on the values of 'skip_n', 'limit_n', 'sql', and the available records in the source, or on
+#' the number of features asked for with 'ia', 'ij' or 'fa'. The
 #' types will be raw, numeric, integer, character, logical depending on the available mapping to the types
 #' in the source for the data there to R's native vectors. 
 #' 
@@ -215,6 +233,12 @@ vapour_report_attributes <- function(dsource, layer = 0L, sql = "", open_options
 #' dsource <- system.file(file.path("extdata/tab", pfile), package="vapour")
 #' SQL <- "SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7300"
 #' vapour_read_fields(dsource, sql = SQL)
+#'
+#' ## chosen features: by position, by range of positions, and by feature id
+#' vapour_read_fields_ia(mvfile, ia = c(0, 5, 2))$NAME
+#' vapour_read_fields_ij(mvfile, ij = c(0, 2))$NAME
+#' fids <- vapour_read_fids(mvfile)
+#' vapour_read_fields_fa(mvfile, fa = fids[c(1, 6, 3)])$NAME
 #' @export
 vapour_read_fields <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA, open_options = NULL) {
   dsource <- .check_dsn_single(dsource)

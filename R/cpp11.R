@@ -24,10 +24,6 @@ cleanup_gdal_cpp <- function() {
   .Call(`_vapour_cleanup_gdal_cpp`)
 }
 
-driver_gdal_cpp <- function(dsn, open_options) {
-  .Call(`_vapour_driver_gdal_cpp`, dsn, open_options)
-}
-
 driver_id_gdal_cpp <- function(dsn, open_options) {
   .Call(`_vapour_driver_id_gdal_cpp`, dsn, open_options)
 }
@@ -188,14 +184,6 @@ raster_io_gdal_cpp <- function(dsn, window, band, resample, band_output_type, un
   .Call(`_vapour_raster_io_gdal_cpp`, dsn, window, band, resample, band_output_type, unscale, nara, open_options)
 }
 
-sds_list_gdal_cpp <- function(dsn) {
-  .Call(`_vapour_sds_list_gdal_cpp`, dsn)
-}
-
-sds_list_list_gdal_cpp <- function(dsn) {
-  .Call(`_vapour_sds_list_list_gdal_cpp`, dsn)
-}
-
 vapour_read_raster_block_cpp <- function(dsource, offset, dimension, band, band_output_type, unscale, nara, open_options) {
   .Call(`_vapour_vapour_read_raster_block_cpp`, dsource, offset, dimension, band, band_output_type, unscale, nara, open_options)
 }
@@ -214,14 +202,6 @@ vapour_create_cpp <- function(filename, driver, extent, dimension, projection, n
 
 vapour_read_raster_value_cpp <- function(dsource, col, row, band, band_output_type) {
   .Call(`_vapour_vapour_read_raster_value_cpp`, dsource, col, row, band, band_output_type)
-}
-
-blocks_cpp1 <- function(dsource, iblock, read) {
-  .Call(`_vapour_blocks_cpp1`, dsource, iblock, read)
-}
-
-blocks_cpp <- function(dsource, iblock, read) {
-  .Call(`_vapour_blocks_cpp`, dsource, iblock, read)
 }
 
 raster_gdalinfo_app_cpp <- function(dsn, options, sds, open_options) {

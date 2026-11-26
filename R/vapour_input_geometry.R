@@ -126,6 +126,13 @@ vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ..., 
 #' `vapour_read_geometry_ij` will read features by *index range*, so two numbers to read every feature between those limits inclusively.
 #' 'i' and 'j' must be increasing.
 #'
+#' `vapour_read_geometry_fa` will read features by *feature id*, the FID values that [vapour_read_fids()] returns, in any order and
+#' with repeats. A FID that is not in the layer gives NULL, with a warning. This is direct access where the driver supports it,
+#' so it does not scan the layer.
+#'
+#' The same three ways to choose features are available for fields, see [vapour_read_fields_ia()], and for feature ids,
+#' see [vapour_read_fids_ia()].
+#'
 #' `vapour_read_type` will read the (wkb) type of the geometry as an integer. These are
 #' `0` unknown, `1` Point, `2` LineString, `3` Polygon, `4` MultiPoint, `5` MultiLineString,
 #' `6` MultiPolygon, `7` GeometryCollection, and the other more exotic types listed in "api/vector_c_api.html" from the
@@ -145,8 +152,9 @@ vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ..., 
 #' @param extent apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin, xmax, ymin, ymax)' but sp bbox, sf bbox, and raster extent also accepted)
 #' @param ia an arbitrary index, integer vector with values between 0 and one less the number of features, duplicates allowed and arbitrary order is ok
 #' @param ij a range index, integer vector of length two with values between 0 and one less the number of features, this range of geometries is returned
+#' @param fa feature id (FID) values, as returned by [vapour_read_fids()], in any order and with repeats
 #' @param open_options open options for the driver, a character vector of `"NAME=VALUE"` strings (as `-oo` in the GDAL command line tools), `NULL` for none. The options a driver accepts are listed on its page at <https://gdal.org/en/stable/drivers/vector/index.html>
-#' @return for [vapour_read_geometry()], [vapour_read_geometry_ia()] and [vapour_read_geometry_ij()] a raw vector of
+#' @return for [vapour_read_geometry()], [vapour_read_geometry_ia()], [vapour_read_geometry_ij()] and [vapour_read_geometry_fa()] a raw vector of
 #'  geometry, for [vapour_read_extent()] a list of numeric vectors each with 'xmin,xmax,ymin,ymax' respectively for each geometry, 
 #'  for [vapour_feature_extent()] a numeric matrix with columns 'xmin', 'xmax', 'ymin', 'ymax' and one row for each geometry, 
 #'  for [vapour_read_type()] a character vector. See Details for more information. 
@@ -177,6 +185,13 @@ vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ..., 
 #' txtpointjson <- vapour_read_geometry_text(pfile)
 #' ## points in raw text (WKT)
 #' txtpointwkt <- vapour_read_geometry_text(pfile, textformat = "wkt")
+#'
+#' ## chosen features: by position, by range of positions, and by feature id
+#' g_ia <- vapour_read_geometry_ia(mvfile, ia = c(0, 5, 2))
+#' g_ij <- vapour_read_geometry_ij(mvfile, ij = c(0, 2))
+#' fids <- vapour_read_fids(mvfile)
+#' g_fa <- vapour_read_geometry_fa(mvfile, fa = fids[c(1, 6, 3)])
+#' identical(g_ia, g_fa)
 #' @export
 #' @name vapour_read_geometry
 vapour_read_geometry <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA, open_options = NULL) {

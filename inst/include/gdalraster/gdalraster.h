@@ -120,38 +120,6 @@ inline strings gdal_subdataset_1(GDALDataset *poDataset, int i_sds) {
   return ret;
 }
 
-inline strings gdal_list_subdatasets(GDALDataset *poDataset) {
-  int sdi = 0;
-  CSLConstList  SDS = GDALGetMetadata(poDataset, "SUBDATASETS");
-  while (SDS && SDS[sdi] != NULL) {
-    sdi++;
-  }
-  if (sdi < 1) {
-    writable::strings empty(1);
-    empty[0] = "";
-    return empty;
-  }
-  if (!(sdi % 2 == 0)) {
-    writable::strings empty(1);
-    empty[0] = "";
-    return empty;
-  }
-
-  writable::strings ret(sdi/2);
-  int dscount = static_cast<int>(ret.size());
-  int cnt = 0;
-  if (dscount > 0) {
-    CSLConstList SDS2 = GDALGetMetadata(poDataset, "SUBDATASETS");
-    for (int ii = 0; ii <  sdi; ii++) {
-      if (ii % 2 == 0) {
-        ret[cnt] = SDS2[ii];
-       cnt++;
-      }
-    }
-  }
-  return ret;
-}
-
 // Open a raster source, or its subdataset number 'sds' (from 1) when it has
 // subdatasets and one is asked for. The handle is empty when the open fails.
 inline gdalcommon::DatasetPtr open_raster(const char *dsn, integers sds, strings open_options,
@@ -313,24 +281,6 @@ inline strings gdal_dsn_vrt(strings dsn, doubles extent, strings projection,
   }
 
   return out;
-}
-
-
-inline strings gdal_sds_list(const char* pszFilename)
-{
-  writable::integers sds0 = {0};
-  writable::strings no_options((R_xlen_t)0);
-  gdalcommon::DatasetPtr poDataset = open_raster_or_stop(pszFilename, sds0, no_options);
-
-  strings ret;
-  if (gdalraster::gdal_has_subdataset(poDataset.get())) {
-    ret = gdalraster::gdal_list_subdatasets(poDataset.get());
-  } else {
-    writable::strings a(1);
-    a[0] = pszFilename;
-    ret = a;
-  }
-  return ret;
 }
 
 
