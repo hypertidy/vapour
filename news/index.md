@@ -2,6 +2,8 @@
 
 ## vapour 0.20.0
 
+CRAN release: 2026-11-26
+
 - New
   [`vapour_feature_extent()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
   returns the extent of each feature as a matrix with columns `xmin`,

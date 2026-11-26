@@ -39,11 +39,11 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/hypertidy/vapour/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/hypertidy/vapour/blob/v0.20.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.20.0" id="vapour-0200">vapour 0.20.0<a class="anchor" aria-label="anchor" href="#vapour-0200"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.20.0" id="vapour-0200">vapour 0.20.0<a class="anchor" aria-label="anchor" href="#vapour-0200"></a></h2><p class="text-muted">CRAN release: 2026-11-26</p>
 <ul><li><p>New <code><a href="../reference/vapour_read_geometry.html">vapour_feature_extent()</a></code> returns the extent of each feature as a matrix with columns <code>xmin</code>, <code>xmax</code>, <code>ymin</code>, <code>ymax</code>, one row for each feature and a row of <code>NA</code> for a missing geometry. <code><a href="../reference/vapour_read_geometry.html">vapour_read_extent()</a></code> is unchanged and still returns a list of four-number vectors (<a href="https://github.com/hypertidy/vapour/issues/142" class="external-link">#142</a>).</p></li>
 <li><p>Integer reads no longer turn every value at or below the nodata value into <code>NA</code>, only the nodata value itself. This affected <code><a href="../reference/vapour_read_raster.html">vapour_read_raster()</a></code> and <code><a href="../reference/vapour_warp_raster.html">vapour_warp_raster()</a></code> on integer sources: with a nodata value of 0, all negative values were lost (<a href="https://github.com/hypertidy/vapour/issues/219" class="external-link">#219</a>).</p></li>
 <li><p><code><a href="../reference/gdal_raster_data.html">gdal_raster_data()</a></code> and <code><a href="../reference/vapour_warp_raster.html">vapour_warp_raster()</a></code> gain <code>unscale = TRUE</code>, as <code><a href="../reference/vapour_read_raster.html">vapour_read_raster()</a></code> and <code><a href="../reference/vapour_read_raster_block.html">vapour_read_raster_block()</a></code> already have. Set it to <code>FALSE</code> to get the stored values rather than values converted by the band’s scale and offset (<a href="https://github.com/hypertidy/vapour/issues/226" class="external-link">#226</a>).</p></li>

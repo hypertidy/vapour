@@ -44,7 +44,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/hypertidy/vapour/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/hypertidy/vapour/blob/v0.20.0/DESCRIPTION)
 
 Sumner M (2026). *vapour: Access to the 'Geospatial Data Abstraction
 Library' ('GDAL')*. R package version 0.20.0,
