@@ -1,5 +1,36 @@
 # vapour 0.20.0
 
+* Integer reads no longer turn every value at or below the nodata value into
+  `NA`, only the nodata value itself. This affected `vapour_read_raster()` and
+  `vapour_warp_raster()` on integer sources: with a nodata value of 0, all
+  negative values were lost (#219).
+
+* `gdal_raster_data()` and `vapour_warp_raster()` gain `unscale = TRUE`, as
+  `vapour_read_raster()` and `vapour_read_raster_block()` already have. Set it
+  to `FALSE` to get the stored values rather than values converted by the
+  band's scale and offset (#226).
+
+* An integer `band_output_type` now gives the stored values in that type. It
+  was ignored for a band with a scale, which came back as scaled doubles, so
+  `vapour_read_raster_int()` and `vapour_warp_raster_int()` did not return
+  integers for such a source (#226).
+
+* A band offset is now applied when the band has no scale. It was ignored.
+
+* Band arguments follow one rule (#150): `NULL` means all bands, otherwise
+  band numbers counted from 1, which may be repeated and in any order. A
+  value less than 1, a missing value or a fraction is an error.
+    - `vapour_read_raster()` accepts `band = NULL`, and reads several bands
+      with one call to GDAL rather than opening the source for each.
+    - `vapour_warp_raster()` with the default `bands = NULL` returns all
+      bands, as documented. It returned only the first.
+    - `gdal_raster_data()` with a `bands` value less than 1 still returns all
+      bands, with a warning to use `bands = NULL`.
+
+* New `vapour_sds()` returns a data frame of the subdatasets of one or more
+  sources, with GDAL's description of each. It is the vectorised form of
+  `vapour_sds_names()` (#133).
+
 * `vapour_layer_info()` now reports the EPSG code in `projection$EPSG` when
   the projection carries one or GDAL can identify one for it, and `NA`
   otherwise. It was always 0 (#234).

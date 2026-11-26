@@ -67,7 +67,7 @@ vapour_read_raster_hex(
 \arguments{
 \item{x}{data source}
 
-\item{band}{index of band/s to read (1-based), may be repeated or in any order}
+\item{band}{index of band/s to read (1-based), may be repeated or in any order, or \code{NULL} for all bands}
 
 \item{window}{src_offset, src_dim, out_dim}
 

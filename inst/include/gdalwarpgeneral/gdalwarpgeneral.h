@@ -61,7 +61,8 @@ inline list gdal_warp_general(strings dsn,
                               strings options,
                               strings dsn_outname,
                               logicals include_meta,
-                              logicals nara) {
+                              logicals nara,
+                              logicals unscale) {
 
   std::vector<GDALDatasetH> src_ds(dsn.size());
 
@@ -182,8 +183,6 @@ inline list gdal_warp_general(strings dsn,
         cpp11::stop("band number is not available: %i", (int)bands[i]);
       }
     }
-    writable::logicals unscale(1);
-    unscale[0] = TRUE;
     writable::integers window(6);
     for (int i  = 0; i < window.size(); i++) window[i] = 0;
 

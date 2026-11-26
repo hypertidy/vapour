@@ -13,10 +13,10 @@ extern "C" SEXP _vapour_gdal_dsn_read_vector_stream(SEXP stream_xptr, SEXP dsn, 
   END_CPP11
 }
 // 000-warpgeneral.cpp
-list warp_general_cpp(strings dsn, strings target_crs, doubles target_extent, integers target_dim, doubles target_res, integers bands, strings resample, logicals silent, strings band_output_type, strings options, strings dsn_outname, logicals include_meta, logicals nara);
-extern "C" SEXP _vapour_warp_general_cpp(SEXP dsn, SEXP target_crs, SEXP target_extent, SEXP target_dim, SEXP target_res, SEXP bands, SEXP resample, SEXP silent, SEXP band_output_type, SEXP options, SEXP dsn_outname, SEXP include_meta, SEXP nara) {
+list warp_general_cpp(strings dsn, strings target_crs, doubles target_extent, integers target_dim, doubles target_res, integers bands, strings resample, logicals silent, strings band_output_type, strings options, strings dsn_outname, logicals include_meta, logicals nara, logicals unscale);
+extern "C" SEXP _vapour_warp_general_cpp(SEXP dsn, SEXP target_crs, SEXP target_extent, SEXP target_dim, SEXP target_res, SEXP bands, SEXP resample, SEXP silent, SEXP band_output_type, SEXP options, SEXP dsn_outname, SEXP include_meta, SEXP nara, SEXP unscale) {
   BEGIN_CPP11
-    return cpp11::as_sexp(warp_general_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<strings>>(target_crs), cpp11::as_cpp<cpp11::decay_t<doubles>>(target_extent), cpp11::as_cpp<cpp11::decay_t<integers>>(target_dim), cpp11::as_cpp<cpp11::decay_t<doubles>>(target_res), cpp11::as_cpp<cpp11::decay_t<integers>>(bands), cpp11::as_cpp<cpp11::decay_t<strings>>(resample), cpp11::as_cpp<cpp11::decay_t<logicals>>(silent), cpp11::as_cpp<cpp11::decay_t<strings>>(band_output_type), cpp11::as_cpp<cpp11::decay_t<strings>>(options), cpp11::as_cpp<cpp11::decay_t<strings>>(dsn_outname), cpp11::as_cpp<cpp11::decay_t<logicals>>(include_meta), cpp11::as_cpp<cpp11::decay_t<logicals>>(nara)));
+    return cpp11::as_sexp(warp_general_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<strings>>(target_crs), cpp11::as_cpp<cpp11::decay_t<doubles>>(target_extent), cpp11::as_cpp<cpp11::decay_t<integers>>(target_dim), cpp11::as_cpp<cpp11::decay_t<doubles>>(target_res), cpp11::as_cpp<cpp11::decay_t<integers>>(bands), cpp11::as_cpp<cpp11::decay_t<strings>>(resample), cpp11::as_cpp<cpp11::decay_t<logicals>>(silent), cpp11::as_cpp<cpp11::decay_t<strings>>(band_output_type), cpp11::as_cpp<cpp11::decay_t<strings>>(options), cpp11::as_cpp<cpp11::decay_t<strings>>(dsn_outname), cpp11::as_cpp<cpp11::decay_t<logicals>>(include_meta), cpp11::as_cpp<cpp11::decay_t<logicals>>(nara), cpp11::as_cpp<cpp11::decay_t<logicals>>(unscale)));
   END_CPP11
 }
 // 000-warpgeneral.cpp
@@ -486,7 +486,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_version_gdal_cpp",                 (DL_FUNC) &_vapour_version_gdal_cpp,                  0},
     {"_vapour_version_proj_cpp",                 (DL_FUNC) &_vapour_version_proj_cpp,                  0},
     {"_vapour_vsi_list_gdal_cpp",                (DL_FUNC) &_vapour_vsi_list_gdal_cpp,                 1},
-    {"_vapour_warp_general_cpp",                 (DL_FUNC) &_vapour_warp_general_cpp,                 13},
+    {"_vapour_warp_general_cpp",                 (DL_FUNC) &_vapour_warp_general_cpp,                 14},
     {"_vapour_warp_suggest_cpp",                 (DL_FUNC) &_vapour_warp_suggest_cpp,                  2},
     {NULL, NULL, 0}
 };

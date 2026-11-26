@@ -1,3 +1,24 @@
+## One rule for band arguments: NULL means all bands, otherwise band numbers
+## counted from 1, with no missing values, which may repeat and be in any order.
+## 'nbands' is the number of bands in the source when it is known, NULL is
+## then expanded and the upper limit is checked here rather than by GDAL.
+.check_bands <- function(bands, nbands = NULL, arg = "bands") {
+  if (is.null(bands)) {
+    if (is.null(nbands)) return(NULL)
+    return(seq_len(nbands))
+  }
+  if (!is.numeric(bands)) {
+    stop(sprintf("'%s' must be numeric band numbers counted from 1, or NULL for all bands", arg))
+  }
+  if (length(bands) < 1L || anyNA(bands) || any(bands < 1) || any(bands != trunc(bands))) {
+    stop(sprintf("'%s' must be whole numbers with no missing values, and each value 1 or greater (or NULL for all bands)", arg))
+  }
+  if (!is.null(nbands) && any(bands > nbands)) {
+    stop(sprintf("specified '%s = %i', but maximum band number is %i", arg, as.integer(max(bands)), as.integer(nbands)))
+  }
+  as.integer(bands)
+}
+
 .r_to_gdal_datatype <- function(x) {
   if (nchar(x) == 0 || is.na(x)) return("")
   xout <- toupper(x[1L])
@@ -41,15 +62,15 @@
 #' supported types 'Byte' ('== raw'), 'Int32' ('== integer'), or 'Float64' ('== double'). 
 #'  
 #' @param x data source
-#' @param band index of band/s to read (1-based), may be repeated or in any order
+#' @param band index of band/s to read (1-based), may be repeated or in any order, or `NULL` for all bands
 #' @param window src_offset, src_dim, out_dim
 #' @param resample resampling method used (see details)
 #' @param ... reserved
 #' @param native apply the full native window for read, `FALSE` by default
 #' @param sds index of subdataset to read (usually 1)
 #' @param set_na specify whether NA values should be set for the NODATA
-#' @param band_output_type numeric type of band to apply (else the native type if ''), is mapped to one of 'Byte', 'Int32', or 'Float64'
-#' @param unscale default is `TRUE` so native values will be converted by offset and scale to floating point
+#' @param band_output_type numeric type of band to apply (else the native type if ''), is mapped to one of 'Byte', 'Int32', or 'Float64'. An integer type gives the stored values, with no scale or offset applied
+#' @param unscale default is `TRUE` so native values will be converted by offset and scale to floating point, set to `FALSE` to get the stored values
 #' @param nara logical whether to return a (scaled) nativeRaster
 #' @export
 #' @return list of numeric vectors (only one for 'band')
@@ -80,12 +101,7 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
   if (native && !missing(window)) warning("'window' is specified, so 'native = TRUE' is ignored")
   if (native && missing(window)) window <- c(0, 0, ri$dimXY, ri$dimXY)
   
-  if (!is.numeric(band) || length(band) < 1 || anyNA(band) || any(band < 1)) {
-    stop("'band' must be numeric with no missing values, and each value 1 or greater")
-  }
-  if (any(band > ri$bands)) {
-    stop(sprintf("specified 'band = %i', but maximum band number is %i", as.integer(max(band)), ri$bands))
-  }
+  band <- .check_bands(band, ri$bands, arg = "band")
   ## turn these warning cases into errors here, + tests
   ## rationale is that dev can still call the internal R wrapper function to
   ## get these errors, but not the R user
@@ -107,9 +123,17 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
   if (any(window[5:6] < 1)) stop("requested output dimension cannot be less than 1")
   ## pull a swifty here with [[  to return numeric or integer
   ##vals <- raster_io_gdal_cpp(dsn = datasourcename, window  = window, band = band, resample = resample[1L], band_output_type = band_output_type)
-  vals <- lapply(band, function(iband) {
-    raster_io_gdal_cpp(dsn = datasourcename, window  = as.integer(window), band = as.integer(iband), resample = resample[1L], band_output_type = band_output_type, unscale = unscale, nara = nara)[[1L]]
-  })
+  if (isTRUE(nara)) {
+    ## one nativeRaster per band
+    vals <- lapply(band, function(iband) {
+      raster_io_gdal_cpp(dsn = datasourcename, window  = as.integer(window), band = iband, resample = resample[1L], 
+                         band_output_type = band_output_type, unscale = isTRUE(unscale), nara = nara)[[1L]]
+    })
+  } else {
+    ## every band in one call, the source is opened once
+    vals <- raster_io_gdal_cpp(dsn = datasourcename, window  = as.integer(window), band = band, resample = resample[1L], 
+                               band_output_type = band_output_type, unscale = isTRUE(unscale), nara = FALSE)
+  }
   if (set_na && !is.raw(vals[[1L]][1L])) {
     for (i in seq_along(vals)) {
       vals[[i]][vals[[i]] == ri$nodata_value] <- NA   ## hardcode to 1 for now
@@ -309,7 +333,7 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' [SetFromUserInput](https://gdal.org/en/stable/doxygen/classOGRSpatialReference.html)
 #' 
 #' @param x vector of data source names (file name or URL or database connection string)
-#' @param bands index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used, the default)
+#' @param bands index of band/s to read (1-based), may be repeated or in any order, or `NULL` for all bands (the default)
 #' @param extent extent of the target warped raster 'c(xmin, xmax, ymin, ymax)'
 #' @param source_extent extent of the source raster, used to override/augment incorrect source metadata
 #' @param dimension dimensions in pixels of the warped raster (x, y)
@@ -327,6 +351,7 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' @param nomd if `TRUE` the Metadata tag is removed from the resulting VRT (it can be quite substantial)
 #' @param overview pick an integer overview from the source (0L is highest resolution, default -1L does nothing)
 #' @param  nara if 'TRUE' return in nativeRaster format
+#' @param unscale default is `TRUE` so values are converted by the band's scale and offset to floating point, set to `FALSE` to get the stored values. An integer `band_output_type` also gives the stored values
 #' @export
 #' @seealso vapour_read_raster vapour_read_raster_raw vapour_read_raster_int vapour_read_raster_dbl vapour_read_raster_chr vapour_read_raster_hex
 #' @return list of vectors (only 1 for 'band') of numeric values, in raster order
@@ -357,11 +382,9 @@ vapour_warp_raster <- function(x, bands = NULL,
                                transformation_options = "", 
                                open_options = "",
                                options = "", 
-                               nomd = FALSE, overview = -1L, nara = FALSE) {
+                               nomd = FALSE, overview = -1L, nara = FALSE, unscale = TRUE) {
   x <- .check_dsn_multiple(x)
-  if (!is.null(bands) && (anyNA(bands) || length(bands) < 1 || !is.numeric(bands))) {
-    stop("'bands' must be a valid set of band integers (1-based)")
-  }
+  bands <- .check_bands(bands)
   if (is.null(projection) || is.na(projection[1]) || length(projection) != 1L || !is.character(projection)) {
     stop("'projection' must be a valid character string for a GDAL/PROJ coordinate reference system (map projection)")
   }
@@ -537,10 +560,9 @@ vapour_warp_raster <- function(x, bands = NULL,
                              options = options, include_meta = !nomd)
   } else {
   ## FIXME deal with nara and source projection source extent
-    if (is.null(bands)) bands <- 1L
   vals <- gdal_raster_data(x, target_crs = projection, target_ext = extent, target_dim = dimension, 
                            bands = bands, resample = resample, band_output_type = band_output_type, 
-                           options = options, include_meta = !nomd)
+                           options = options, include_meta = !nomd, unscale = unscale)
   }
   # ##// if we Dataset->RasterIO we don't have separated bands'
   # nbands <- length(vals[[1L]]) / prod(as.integer(dimension))
@@ -591,6 +613,7 @@ vapour_warp_raster_raw <- function(x, bands = NULL,
                                    open_options = "",
                                    options = "") {
   if (length(bands) > 1 ) message("_raw output implies one band, ignoring all but the first")
+  if (is.null(bands)) bands <- 1L
   
   vapour_warp_raster(x, 
                      bands = bands, 
@@ -656,6 +679,7 @@ vapour_warp_raster_int <- function(x, bands = NULL,
                                    open_options = "",
                                    options = "")  {
   if (length(bands) > 1 ) message("_int output implies one band, ignoring all but the first")
+  if (is.null(bands)) bands <- 1L
   
   vapour_warp_raster(x, 
                      bands = bands, 
@@ -690,6 +714,7 @@ vapour_warp_raster_dbl <- function(x, bands = NULL,
                                    open_options = "",
                                    options = "") {
   if (length(bands) > 1 ) message("_dbl output implies one band, ignoring all but the first")
+  if (is.null(bands)) bands <- 1L
   
   vapour_warp_raster(x, 
                      bands = bands, 

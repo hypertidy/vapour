@@ -17,7 +17,8 @@ gdal_raster_data(
   bands = 1L,
   band_output_type = NULL,
   options = character(),
-  include_meta = TRUE
+  include_meta = TRUE,
+  unscale = TRUE
 )
 
 gdal_raster_dsn(
@@ -73,13 +74,15 @@ gdal_raster_nara(
 
 \item{resample}{resampling algorithm used}
 
-\item{bands}{band or bands to include, default is first band only (use NULL or a value less that one to obtain all bands)}
+\item{bands}{band or bands to include (1-based), may be repeated or in any order, or \code{NULL} for all bands. The default is the first band only, see Details for the image functions}
 
 \item{band_output_type}{specify the band type, see \link{vapour_read_raster}}
 
 \item{options}{general options passed to gdal warper}
 
 \item{include_meta}{metadata is attached, turn off by setting this to \code{FALSE}}
+
+\item{unscale}{default is \code{TRUE} so values are converted by the band's scale and offset to floating point, set to \code{FALSE} to get the stored values. An integer \code{band_output_type} also gives the stored values, see \link{vapour_read_raster}}
 
 \item{out_dsn}{file name for output "_dsn"}
 }
@@ -92,6 +95,10 @@ The warper is used to convert source/s to an output file or to data in memory.
 \details{
 Two functions 'gdal_raster_data' and 'gdal_raster_dsn' act like the gdalwarp command line
 tool, a convenience third function 'gdal_raster_image()' works especially for image data.
+
+For \code{gdal_raster_image()} and \code{gdal_raster_nara()} the default \code{bands = NULL} means the
+first bands up to four, which is what an image can use. \code{gdal_raster_dsn()} writes every band,
+use \code{\link[=vapour_vrt]{vapour_vrt()}} on the source to choose bands for it.
 }
 \examples{
 dsn <- system.file("extdata/sst.tif", package = "vapour")
