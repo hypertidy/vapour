@@ -64,6 +64,7 @@
 #' @param nomd if `TRUE` the Metadata tag is removed from the resulting VRT (it can be quite substantial)
 #' @param options pass in options to the VRT creation, like 'c("-expand", "rgb", "-ot", "Byte"('
 #' @param overview  pick an integer overview from the source (0L is highest resolution, default -1L does nothing)
+#' @param open_options open options for the driver, a character vector of `"NAME=VALUE"` strings (as `-oo` in the GDAL command line tools), `NULL` for none. They are recorded in the VRT, so they apply again when the VRT is opened
 #'
 #' @export
 #'
@@ -74,8 +75,9 @@
 #' vapour_vrt(tif, bands = c(1, 1))
 #' 
 vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = NULL, geolocation = NULL, ..., 
-                       relative_to_vrt = FALSE, nomd = FALSE, overview = -1L, options = character()) {
+                       relative_to_vrt = FALSE, nomd = FALSE, overview = -1L, options = character(), open_options = NULL) {
   x <- .check_dsn_multiple_naok(x)
+  open_options <- .check_open_options(open_options)
   
   if (!relative_to_vrt) { 
     ## GDAL does its hardest to use relative paths, so either implemente Even's proposal or force alway absolute (but allow turn that off)
@@ -85,7 +87,7 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
     if (any(fe)) x[fe] <- normalizePath(x[fe])
   }
   if (is.character(sds)) {
-    sdsnames <- vapour_sds_names(x)
+    sdsnames <- vapour_sds_names(x, open_options = open_options)
     #browser()
     sds <- which(unlist(lapply(sdsnames, function(.x) grepl(sprintf("%s$", sds[1L]), .x))))[1]
   }
@@ -153,7 +155,7 @@ vapour_vrt <- function(x, extent = NULL, projection = NULL,  sds = 1L, bands = N
   # 
   
 
-  out <- raster_vrt_cpp(x, as.numeric(extent), projection[1L], as.integer(sds), as.integer(bands), geolocation, nomd, as.integer(overview), options)
+  out <- raster_vrt_cpp(x, as.numeric(extent), projection[1L], as.integer(sds), as.integer(bands), geolocation, isTRUE(nomd), as.integer(overview), options, open_options)
   ## scrub any transform, because of #210
   if (nzchar(geolocation[1L])) {
     out <- stringr::str_replace(out, "<GeoTransform.*GeoTransform>", "")

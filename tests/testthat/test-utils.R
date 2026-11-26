@@ -14,7 +14,7 @@ test_that("utilities work", {
   expect_match(vapour_gdal_version(), "^GDAL .*, released .*/.*/")
   expect_error(vapour_driver(0))
   expect_error(vapour_driver(""))
-  expect_error(vapour_driver("1"), "Open failed")
+  expect_error(vapour_driver("1"), "cannot open '1'")
   expect_match(vapour_driver(mvfile), "MapInfo File")
 
 })

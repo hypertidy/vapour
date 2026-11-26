@@ -23,6 +23,7 @@
 #' @param unscale default is `TRUE` so values are converted by the band's scale and offset to floating point, set to `FALSE` to get the stored values. An integer `band_output_type` also gives the stored values, see [vapour_read_raster]
 #' @param options general options passed to gdal warper
 #' @param out_dsn file name for output "_dsn"
+#' @param open_options open options for the driver, a character vector of `"NAME=VALUE"` strings (as `-oo` in the GDAL command line tools), `NULL` for none. These apply when each source is opened, `"-oo"` pairs found in `options` are treated the same way
 #' @export
 #' @returns pixel values in a list vector per band, or a list of file paths
 #'
@@ -55,8 +56,12 @@
 #'  
 #' X4 <- gdal_raster_dsn(dsn, out_dsn = tempfile(fileext = ".tif"))
 gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
-                         resample = "near", bands = 1L, band_output_type = NULL, options = character(), include_meta = TRUE, unscale = TRUE) {
+                         resample = "near", bands = 1L, band_output_type = NULL, options = character(), include_meta = TRUE, unscale = TRUE,
+                         open_options = NULL) {
   
+   oo <- .split_open_options(options, open_options)
+   options <- oo$options
+
    if (is.null(target_crs)) target_crs <- "" 
    if (is.null(target_ext)) {
      target_ext <-  numeric()
@@ -104,14 +109,19 @@ gdal_raster_data <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
                              silent = FALSE, band_output_type = band_output_type, 
                              options = options, 
                              dsn_outname = "", 
-                    include_meta = include_meta, nara = FALSE, unscale = isTRUE(unscale))
+                    include_meta = include_meta, nara = FALSE, unscale = isTRUE(unscale),
+                    open_options = oo$open_options)
 }
 
 #' @name gdal_raster_data
 #' @export
 gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
-                             resample = "near", bands = NULL, band_output_type = NULL, options = character(), out_dsn = tempfile(fileext = ".tif"),  include_meta = TRUE) {
+                             resample = "near", bands = NULL, band_output_type = NULL, options = character(), out_dsn = tempfile(fileext = ".tif"),  include_meta = TRUE,
+                             open_options = NULL) {
   
+  oo <- .split_open_options(options, open_options)
+  options <- oo$options
+
   if (is.null(target_crs)) target_crs <- "" 
   if (is.null(target_ext)) {
     target_ext <-  numeric()
@@ -165,14 +175,18 @@ gdal_raster_dsn <- function(dsn, target_crs = NULL, target_dim = NULL, target_ex
                             resample = resample, 
                             silent = FALSE, band_output_type = band_output_type, 
                             options = options, 
-                            dsn_outname = out_dsn[1L], include_meta = include_meta, nara = FALSE, unscale = TRUE)
+                            dsn_outname = out_dsn[1L], include_meta = include_meta, nara = FALSE, unscale = TRUE,
+                            open_options = oo$open_options)
 }
 
 #' @name gdal_raster_data
 #' @export
 gdal_raster_image <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
-                               resample = "near", bands = NULL, band_output_type = NULL, options = character(), include_meta = TRUE) {
+                               resample = "near", bands = NULL, band_output_type = NULL, options = character(), include_meta = TRUE,
+                               open_options = NULL) {
   
+  oo <- .split_open_options(options, open_options)
+  options <- oo$options
   if (length(target_res) > 0 ) target_res <- as.numeric(rep(target_res, length.out = 2L))
   if (is.null(target_crs)) target_crs <- "" 
   if (is.null(target_ext)) target_ext <-  numeric()
@@ -181,7 +195,7 @@ gdal_raster_image <- function(dsn, target_crs = NULL, target_dim = NULL, target_
   if (is.null(band_output_type)) band_output_type <- "Byte"
   bands <- .check_bands(bands)
   if (is.null(bands)) {
-    nbands <- vapour_raster_info(dsn[1])$bands
+    nbands <- vapour_raster_info(dsn[1], open_options = oo$open_options)$bands
     bands <- seq(min(c(nbands, 4L)))
   }
   include_meta <- isTRUE(include_meta)
@@ -192,7 +206,8 @@ gdal_raster_image <- function(dsn, target_crs = NULL, target_dim = NULL, target_
                             bands = as.integer(bands), 
                             resample = resample, 
                             silent = FALSE, band_output_type = band_output_type, 
-                            options = options, dsn_outname = "", include_meta = include_meta, nara = FALSE, unscale = TRUE)
+                            options = options, dsn_outname = "", include_meta = include_meta, nara = FALSE, unscale = TRUE,
+                            open_options = oo$open_options)
   atts <- attributes(bytes)
   out <- list(as.vector(grDevices::as.raster(array(unlist(bytes, use.names = FALSE), c(length(bytes[[1]]), 1, max(c(3, length(bytes))))))))
   attributes(out) <- atts
@@ -203,8 +218,11 @@ gdal_raster_image <- function(dsn, target_crs = NULL, target_dim = NULL, target_
 #' @name gdal_raster_data
 #' @export
 gdal_raster_nara <- function(dsn, target_crs = NULL, target_dim = NULL, target_ext = NULL, target_res = NULL, 
-                              resample = "near", bands = NULL, band_output_type = NULL, options = character(), include_meta = TRUE) {
+                              resample = "near", bands = NULL, band_output_type = NULL, options = character(), include_meta = TRUE,
+                               open_options = NULL) {
   
+  oo <- .split_open_options(options, open_options)
+  options <- oo$options
   if (length(target_res) > 0 ) target_res <- as.numeric(rep(target_res, length.out = 2L))
   if (is.null(target_crs)) target_crs <- "" 
   if (is.null(target_ext)) target_ext <-  numeric()
@@ -213,7 +231,7 @@ gdal_raster_nara <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
   band_output_type <- "Byte"
   bands <- .check_bands(bands)
   if (is.null(bands)) {
-    nbands <- vapour_raster_info(dsn[1])$bands
+    nbands <- vapour_raster_info(dsn[1], open_options = oo$open_options)$bands
     bands <- seq(min(c(nbands, 4L)))
   }
   include_meta <- isTRUE(include_meta)
@@ -224,7 +242,8 @@ gdal_raster_nara <- function(dsn, target_crs = NULL, target_dim = NULL, target_e
                             bands = as.integer(bands), 
                             resample = resample, 
                             silent = FALSE, band_output_type = band_output_type, 
-                            options = options, dsn_outname = "", include_meta = include_meta, nara = TRUE, unscale = TRUE)
+                            options = options, dsn_outname = "", include_meta = include_meta, nara = TRUE, unscale = TRUE,
+                            open_options = oo$open_options)
   out
 }
 

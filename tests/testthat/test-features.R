@@ -54,7 +54,7 @@ pprj2 <- "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84
 
   expect_warning(vapour_read_attributes(f, layer = factor("sst_c")), "layer is a factor, converting to character")
 
-  expect_error(vapour_layer_names("nothing at all"), "Open failed")
+  expect_error(vapour_layer_names("nothing at all"), "cannot open 'nothing at all'")
 
   expect_error(vapour_read_attributes(f, layer = "not a layer"), "layer index not found for:")
 

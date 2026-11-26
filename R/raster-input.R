@@ -2,6 +2,19 @@
 ## counted from 1, with no missing values, which may repeat and be in any order.
 ## 'nbands' is the number of bands in the source when it is known, NULL is
 ## then expanded and the upper limit is checked here rather than by GDAL.
+## vapour_vrt() for the sources of a warp: a source that cannot be opened is an
+## error that names it, where vapour_vrt() itself gives NA
+.warp_source_vrt <- function(x, ...) {
+  got <- .with_gdal_said(vapour_vrt(x, ...))
+  bad <- is.na(got$value)
+  if (any(bad)) {
+    stop(sprintf("input source not readable: %s%s", paste(sQuote(x[bad], FALSE), collapse = ", "),
+                 .gdal_reason(got$said)), call. = FALSE)
+  }
+  for (msg in got$said) warning(msg, call. = FALSE)
+  got$value
+}
+
 .check_bands <- function(bands, nbands = NULL, arg = "bands") {
   if (is.null(bands)) {
     if (is.null(nbands)) return(NULL)
@@ -72,6 +85,7 @@
 #' @param band_output_type numeric type of band to apply (else the native type if ''), is mapped to one of 'Byte', 'Int32', or 'Float64'. An integer type gives the stored values, with no scale or offset applied
 #' @param unscale default is `TRUE` so native values will be converted by offset and scale to floating point, set to `FALSE` to get the stored values
 #' @param nara logical whether to return a (scaled) nativeRaster
+#' @param open_options open options for the driver, a character vector of `"NAME=VALUE"` strings (as `-oo` in the GDAL command line tools), `NULL` for none
 #' @export
 #' @return list of numeric vectors (only one for 'band')
 #' @examples
@@ -85,19 +99,21 @@
 #' ## the method can be used to up-sample as well
 #' str(matrix(vapour_read_raster(f, window = c(0, 0, 10, 10, 15, 25)), 15))
 #'
-vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL, native = FALSE, set_na = TRUE, band_output_type = "", unscale = TRUE, nara = FALSE) {
+vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour", ..., sds = NULL, native = FALSE, set_na = TRUE, band_output_type = "", unscale = TRUE, nara = FALSE, open_options = NULL) {
   x <- .check_dsn_single(x)
+  open_options <- .check_open_options(open_options)
   if (!length(native) == 1L || is.na(native[1]) || !is.logical(native)) {
     stop("'native' must be a single 'TRUE' or 'FALSE'")
   }
   band_output_type <- .r_to_gdal_datatype(band_output_type)
-  datasourcename <- sds_boilerplate_checks(x, sds = sds)
+  datasourcename <- sds_boilerplate_checks(x, sds = sds, open_options = open_options)
   resample <- tolower(resample)  ## ensure check internally is lower case
   if (!resample %in% c("nearestneighbour", "average", "bilinear", "cubic", "cubicspline",
                        "gauss", "lanczos", "mode")) {
     warning(sprintf("resample mode '%s' is unknown", resample))
   }
-  ri <- vapour_raster_info(x, sds = sds)
+  ## the source that will be read, which is the subdataset when there is one
+  ri <- vapour_raster_info(datasourcename, open_options = open_options)
   if (native && !missing(window)) warning("'window' is specified, so 'native = TRUE' is ignored")
   if (native && missing(window)) window <- c(0, 0, ri$dimXY, ri$dimXY)
   
@@ -127,12 +143,14 @@ vapour_read_raster <- function(x, band = 1, window, resample = "nearestneighbour
     ## one nativeRaster per band
     vals <- lapply(band, function(iband) {
       raster_io_gdal_cpp(dsn = datasourcename, window  = as.integer(window), band = iband, resample = resample[1L], 
-                         band_output_type = band_output_type, unscale = isTRUE(unscale), nara = nara)[[1L]]
+                         band_output_type = band_output_type, unscale = isTRUE(unscale), nara = nara,
+                         open_options = open_options)[[1L]]
     })
   } else {
     ## every band in one call, the source is opened once
     vals <- raster_io_gdal_cpp(dsn = datasourcename, window  = as.integer(window), band = band, resample = resample[1L], 
-                               band_output_type = band_output_type, unscale = isTRUE(unscale), nara = FALSE)
+                               band_output_type = band_output_type, unscale = isTRUE(unscale), nara = FALSE,
+                               open_options = open_options)
   }
   if (set_na && !is.raw(vals[[1L]][1L])) {
     for (i in seq_along(vals)) {
@@ -346,7 +364,7 @@ vapour_read_raster_hex <- function(x, band = 1,
 #' @param ... unused
 #' @param warp_options character vector of options, as in gdalwarp -wo - see Details
 #' @param transformation_options character vector of options, as in gdalwarp -to see Details
-#' @param open_options character vector of options, as in gdalwarp -oo - see Details
+#' @param open_options open options for the driver, a character vector of `"NAME=VALUE"` strings (as `-oo` in the GDAL command line tools), `NULL` for none, applied when each source is opened
 #' @param options character vectors of options as per the gdalwarp command line 
 #' @param nomd if `TRUE` the Metadata tag is removed from the resulting VRT (it can be quite substantial)
 #' @param overview pick an integer overview from the source (0L is highest resolution, default -1L does nothing)
@@ -474,14 +492,14 @@ vapour_warp_raster <- function(x, bands = NULL,
       stop("'source_extent' must be numeric, of length 4 c(xmin, xmax, ymin, ymax)")
     }
     if (!all(is.finite(source_extent))) stop("'source_extent' values must be finite and non missing")
-    x <- vapour_vrt(x, source_extent = source_extent)
+    x <- .warp_source_vrt(x, extent = source_extent)
   }
   if(!is.null(source_projection)) {
     if (!is.character(source_projection)) stop("source_projection must be character")
     if(!silent) {
       if(!nchar(source_projection) > 10) message("short 'source_projection', possibly invalid?")
     }
-    x <- vapour_vrt(x, projection = source_projection)
+    x <- .warp_source_vrt(x, projection = source_projection)
   }
   
   if (!silent) {
@@ -508,8 +526,7 @@ vapour_warp_raster <- function(x, bands = NULL,
   #if (length(warp_options) < 1) warp_options <- ""
   transformation_options <- transformation_options[!is.na(transformation_options)]
   #if (length(transformation_options) < 1) transformation_options <- ""
-  open_options <- open_options[!is.na(open_options)]
- # if (length(open_options) < 1) open_options <- ""
+  open_options <- .check_open_options(open_options)
  # dataset_output_options <- dataset_output_options[!is.na(dataset_output_options)]
   
   
@@ -521,9 +538,12 @@ vapour_warp_raster <- function(x, bands = NULL,
     ##message("manually setting -wo, -to, -oo options detected, prefer use of 'warp_options', 'transformation_options', 'open_options'")
   } 
   
-  if (nchar(warp_options)[1L] > 0) options <- c(options, rbind("-wo", warp_options))
-  if (nchar(transformation_options)[1L] > 0)  options <- c(rbind("-to", transformation_options))
-  if (nchar(open_options)[1L] > 0) options <- c(options, rbind("-oo", open_options))
+  warp_options <- warp_options[nzchar(warp_options)]
+  transformation_options <- transformation_options[nzchar(transformation_options)]
+  if (length(warp_options) > 0L) options <- c(options, rbind("-wo", warp_options))
+  if (length(transformation_options) > 0L) options <- c(options, rbind("-to", transformation_options))
+  ## the open options go to the open of each source, and not into 'options'
+
   #if (nchar(dataset_output_options)[1L] > 0)  options <- c(rbind("-doo", dataset_output_options))
 
   options <- options[!is.na(options)]
@@ -557,12 +577,12 @@ vapour_warp_raster <- function(x, bands = NULL,
   if (nara) {
     vals <- gdal_raster_nara(x, target_crs = projection, target_ext = extent, target_dim = dimension, 
                              bands = bands, resample = resample, band_output_type = band_output_type, 
-                             options = options, include_meta = !nomd)
+                             options = options, include_meta = !nomd, open_options = open_options)
   } else {
   ## FIXME deal with nara and source projection source extent
   vals <- gdal_raster_data(x, target_crs = projection, target_ext = extent, target_dim = dimension, 
                            bands = bands, resample = resample, band_output_type = band_output_type, 
-                           options = options, include_meta = !nomd, unscale = unscale)
+                           options = options, include_meta = !nomd, unscale = unscale, open_options = open_options)
   }
   # ##// if we Dataset->RasterIO we don't have separated bands'
   # nbands <- length(vals[[1L]]) / prod(as.integer(dimension))

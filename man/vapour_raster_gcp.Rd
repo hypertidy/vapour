@@ -4,12 +4,14 @@
 \alias{vapour_raster_gcp}
 \title{Raster ground control points}
 \usage{
-vapour_raster_gcp(x, ...)
+vapour_raster_gcp(x, ..., open_options = NULL)
 }
 \arguments{
 \item{x}{data source string (i.e. file name or URL or database connection string)}
 
 \item{...}{ignored currently}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (as \code{-oo} in the GDAL command line tools), \code{NULL} for none}
 }
 \value{
 list with

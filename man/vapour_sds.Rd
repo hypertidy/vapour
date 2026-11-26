@@ -4,10 +4,12 @@
 \alias{vapour_sds}
 \title{Subdatasets of raster sources}
 \usage{
-vapour_sds(x)
+vapour_sds(x, open_options = NULL)
 }
 \arguments{
 \item{x}{one or more data source strings, filename, database connection string, or other URL}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (as \code{-oo} in the GDAL command line tools), \code{NULL} for none. They apply to every source in \code{x}}
 }
 \value{
 data frame with columns

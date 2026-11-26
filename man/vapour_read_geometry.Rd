@@ -11,9 +11,23 @@
 \alias{vapour_read_type}
 \title{Read GDAL feature geometry}
 \usage{
-vapour_read_geometry_ia(dsource, layer = 0L, sql = "", extent = NA, ia = NULL)
+vapour_read_geometry_ia(
+  dsource,
+  layer = 0L,
+  sql = "",
+  extent = NA,
+  ia = NULL,
+  open_options = NULL
+)
 
-vapour_read_geometry_ij(dsource, layer = 0L, sql = "", extent = NA, ij = NULL)
+vapour_read_geometry_ij(
+  dsource,
+  layer = 0L,
+  sql = "",
+  extent = NA,
+  ij = NULL,
+  open_options = NULL
+)
 
 vapour_read_geometry(
   dsource,
@@ -21,7 +35,8 @@ vapour_read_geometry(
   sql = "",
   limit_n = NULL,
   skip_n = 0,
-  extent = NA
+  extent = NA,
+  open_options = NULL
 )
 
 vapour_read_geometry_text(
@@ -31,7 +46,8 @@ vapour_read_geometry_text(
   textformat = "json",
   limit_n = NULL,
   skip_n = 0L,
-  extent = NA_real_
+  extent = NA_real_,
+  open_options = NULL
 )
 
 vapour_read_extent(
@@ -40,7 +56,8 @@ vapour_read_extent(
   sql = "",
   limit_n = NULL,
   skip_n = 0,
-  extent = NA
+  extent = NA,
+  open_options = NULL
 )
 
 vapour_feature_extent(
@@ -49,7 +66,8 @@ vapour_feature_extent(
   sql = "",
   limit_n = NULL,
   skip_n = 0,
-  extent = NA
+  extent = NA,
+  open_options = NULL
 )
 
 vapour_read_type(
@@ -58,7 +76,8 @@ vapour_read_type(
   sql = "",
   limit_n = NULL,
   skip_n = 0,
-  extent = NA
+  extent = NA,
+  open_options = NULL
 )
 }
 \arguments{
@@ -71,6 +90,8 @@ vapour_read_type(
 \item{extent}{apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin, xmax, ymin, ymax)' but sp bbox, sf bbox, and raster extent also accepted)}
 
 \item{ia}{an arbitrary index, integer vector with values between 0 and one less the number of features, duplicates allowed and arbitrary order is ok}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (as \code{-oo} in the GDAL command line tools), \code{NULL} for none. The options a driver accepts are listed on its page at \url{https://gdal.org/en/stable/drivers/vector/index.html}}
 
 \item{ij}{a range index, integer vector of length two with values between 0 and one less the number of features, this range of geometries is returned}
 

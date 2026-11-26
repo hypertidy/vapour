@@ -62,6 +62,21 @@
 #' implemented. Functions return raw lists or vectors rather than data frames or
 #' classed types.
 #'
+#' @section GDAL messages:
+#'
+#' Errors and warnings from GDAL are signalled as R conditions. When a call
+#' fails, GDAL's reason is part of the error message. When a call returns, each
+#' message GDAL raised along the way is an R warning that starts with
+#' `GDAL warning` or `GDAL error`, so `suppressWarnings()`, `tryCatch()` and
+#' `options(warn = 2)` work on them as on any other warning.
+#'
+#' @section Open options:
+#'
+#' Functions that read a source take `open_options`, a character vector of
+#' `"NAME=VALUE"` strings for the driver, as `-oo` in the GDAL command line
+#' tools. `NULL`, `character()` and `""` all mean none. The options each driver
+#' accepts are listed on its page at <https://gdal.org/en/stable/drivers/>.
+#'
 #' @section options:
 #'
 #'   The following options can be set to control global behaviour.

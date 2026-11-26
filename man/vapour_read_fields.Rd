@@ -11,7 +11,8 @@ vapour_read_fields(
   sql = "",
   limit_n = NULL,
   skip_n = 0,
-  extent = NA
+  extent = NA,
+  open_options = NULL
 )
 
 vapour_read_attributes(
@@ -20,7 +21,8 @@ vapour_read_attributes(
   sql = "",
   limit_n = NULL,
   skip_n = 0,
-  extent = NA
+  extent = NA,
+  open_options = NULL
 )
 }
 \arguments{
@@ -35,6 +37,8 @@ vapour_read_attributes(
 \item{skip_n}{an arbitrary number of features to skip}
 
 \item{extent}{apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin, xmax, ymin, ymax)' but sp bbox, sf bbox, and raster extent also accepted)}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (as \code{-oo} in the GDAL command line tools), \code{NULL} for none. The options a driver accepts are listed on its page at \url{https://gdal.org/en/stable/drivers/vector/index.html}}
 }
 \value{
 list of vectors one for each field in the source, each will be the same length which will

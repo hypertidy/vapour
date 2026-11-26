@@ -8,6 +8,30 @@ namespace gdallibrary {
 using namespace cpp11;
 namespace writable = cpp11::writable;
 
+// Vectors start out missing. A layer can yield fewer features than it counted
+// (a driver may count by bounding box and then filter by geometry), and the
+// slots that are never written must not hold whatever was in memory.
+inline SEXP na_logicals(R_xlen_t n) {
+  writable::logicals x(n);
+  for (R_xlen_t i = 0; i < n; i++) x[i] = NA_LOGICAL;
+  return x;
+}
+inline SEXP na_integers(R_xlen_t n) {
+  writable::integers x(n);
+  for (R_xlen_t i = 0; i < n; i++) x[i] = NA_INTEGER;
+  return x;
+}
+inline writable::doubles na_doubles(R_xlen_t n) {
+  writable::doubles x(n);
+  for (R_xlen_t i = 0; i < n; i++) x[i] = NA_REAL;
+  return x;
+}
+inline SEXP na_strings(R_xlen_t n) {
+  writable::strings x(n);
+  for (R_xlen_t i = 0; i < n; i++) x[i] = NA_STRING;
+  return x;
+}
+
 // allocate_fields_list: from sf allocate_out_list by Edzer Pebesma
 inline list allocate_fields_list(OGRFeatureDefn *poFDefn, R_xlen_t n_features, bool int64_as_string,
                                  strings fid_column) {
@@ -25,27 +49,27 @@ inline list allocate_fields_list(OGRFeatureDefn *poFDefn, R_xlen_t n_features, b
       break;
     case OFTInteger:
       if (poFieldDefn->GetSubType() == OFSTBoolean)
-        out[i] = writable::logicals(n_features);
+        out[i] = na_logicals(n_features);
       else
-        out[i] = writable::integers(n_features);
+        out[i] = na_integers(n_features);
       break;
     case OFTDate: {
-      writable::doubles ret(n_features);
+      writable::doubles ret = na_doubles(n_features);
       ret.attr("class") = "Date";
       out[i] = ret;
     } break;
     case OFTTime:
     case OFTDateTime: {
-      writable::doubles ret(n_features);
+      writable::doubles ret = na_doubles(n_features);
       writable::strings cls = {"POSIXct", "POSIXt"};
       ret.attr("class") = cls;
       out[i] = ret;
     } break;
     case OFTInteger64:
-      out[i] = int64_as_string ? (SEXP)writable::strings(n_features) : (SEXP)writable::doubles(n_features);
+      out[i] = int64_as_string ? na_strings(n_features) : (SEXP)na_doubles(n_features);
       break;
     case OFTReal:
-      out[i] = writable::doubles(n_features);
+      out[i] = na_doubles(n_features);
       break;
     case OFTStringList:
     case OFTRealList:
@@ -55,7 +79,7 @@ inline list allocate_fields_list(OGRFeatureDefn *poFDefn, R_xlen_t n_features, b
       out[i] = writable::list(n_features);
       break;
     case OFTString:
-      out[i] = writable::strings(n_features);
+      out[i] = na_strings(n_features);
       break;
     }
     names[i] = poFieldDefn->GetNameRef();
@@ -64,8 +88,9 @@ inline list allocate_fields_list(OGRFeatureDefn *poFDefn, R_xlen_t n_features, b
   return out;
 }
 
-inline doubles gdal_feature_count(strings dsn, integers layer, strings sql, doubles ex) {
-  return with_ogr_layer(dsn, layer, sql, ex,
+inline doubles gdal_feature_count(strings dsn, integers layer, strings sql, doubles ex,
+                                  strings open_options) {
+  return with_ogr_layer(dsn, layer, sql, ex, open_options,
     GDAL_OF_READONLY | GDAL_OF_VECTOR,
     [](OGRLayer *poLayer) -> doubles {
       R_xlen_t nFeature = poLayer->GetFeatureCount();
@@ -76,19 +101,19 @@ inline doubles gdal_feature_count(strings dsn, integers layer, strings sql, doub
     });
 }
 
-inline strings gdal_report_fields(strings dsource, integers layer, strings sql) {
+inline strings gdal_report_fields(strings dsource, integers layer, strings sql,
+                                  strings open_options) {
   writable::doubles zero(1);
   zero[0] = 0.0;
-  return with_ogr_layer(dsource, layer, sql, zero,
+  return with_ogr_layer(dsource, layer, sql, zero, open_options,
     [](OGRLayer *poLayer) -> strings {
-      OGRFeature *poFeature;
       poLayer->ResetReading();
       OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-      poFeature = poLayer->GetNextFeature();
+      gdalcommon::FeaturePtr poFeature(poLayer->GetNextFeature());
       int fieldcount = poFDefn->GetFieldCount();
       writable::strings out(fieldcount);
       writable::strings fieldnames(fieldcount);
-      if (poFeature != NULL) {
+      if (poFeature) {
         for (int iField = 0; iField < fieldcount; iField++) {
           OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn(iField);
           fieldnames[iField] = poFieldDefn->GetNameRef();
@@ -105,7 +130,6 @@ inline strings gdal_report_fields(strings dsource, integers layer, strings sql) 
           if (poFieldDefn->GetType() == OFTStringList)    out[iField] = "OFTStringList";
           if (poFieldDefn->GetType() == OFTTime)          out[iField] = "OFTTime";
         }
-        OGRFeature::DestroyFeature(poFeature);
       }
       out.names() = fieldnames;
       return out;

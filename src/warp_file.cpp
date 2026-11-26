@@ -2,6 +2,7 @@
 #include "gdalapplib/gdalapplib.h"
 
 using namespace cpp11;
+using gdalcommon::gdal_call;
 
 [[cpp11::register]]
 list raster_warp_file_cpp(strings source_filename,
@@ -15,15 +16,17 @@ list raster_warp_file_cpp(strings source_filename,
                           strings band_output_type,
                           strings warp_options,
                           strings transformation_options) {
-  return gdalapplib::gdalwarp_applib(source_filename,
-                                     target_crs,
-                                     target_extent,
-                                     target_dim,
-                                     target_filename,
-                                     bands,
-                                     resample,
-                                     silent,
-                                     band_output_type,
-                                     warp_options,
-                                     transformation_options);
+  return gdal_call([&]() {
+    return gdalapplib::gdalwarp_applib(source_filename,
+                                       target_crs,
+                                       target_extent,
+                                       target_dim,
+                                       target_filename,
+                                       bands,
+                                       resample,
+                                       silent,
+                                       band_output_type,
+                                       warp_options,
+                                       transformation_options);
+  });
 }

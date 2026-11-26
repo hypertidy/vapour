@@ -15,7 +15,8 @@ vapour_vrt(
   relative_to_vrt = FALSE,
   nomd = FALSE,
   overview = -1L,
-  options = character()
+  options = character(),
+  open_options = NULL
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ vapour_vrt(
 \item{overview}{pick an integer overview from the source (0L is highest resolution, default -1L does nothing)}
 
 \item{options}{pass in options to the VRT creation, like 'c("-expand", "rgb", "-ot", "Byte"('}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (as \code{-oo} in the GDAL command line tools), \code{NULL} for none. They are recorded in the VRT, so they apply again when the VRT is opened}
 }
 \value{
 VRT character string (for use by GDAL-capable tools, i.e. reading raster)

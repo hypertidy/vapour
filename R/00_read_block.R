@@ -133,6 +133,7 @@ vapour_create_copy <- function(dsource, filename, overwrite = FALSE, driver = "G
 #' @param band which band to read (1-based)
 #' @param unscale default is `TRUE` so native values will be converted by offset and scale to floating point
 #' @param nara if 'TRUE' return in nativeRaster format
+#' @param open_options open options for the driver, a character vector of `"NAME=VALUE"` strings (e.g. `"IGNORE_COG_LAYOUT_BREAK=YES"` to write to a COG), `NULL` for none
 #'
 #' @return a list with a vector of data from the band read
 #' @export
@@ -140,7 +141,8 @@ vapour_create_copy <- function(dsource, filename, overwrite = FALSE, driver = "G
 #' @examples
 #' f <- system.file("extdata", "sst.tif", package = "vapour")
 #' v <- vapour_read_raster_block(f, c(0L, 0L), dimension = c(2L, 3L), band = 1L)
-vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band_output_type = "", unscale = TRUE, nara = FALSE) {
+vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band_output_type = "", unscale = TRUE, nara = FALSE,
+                                     open_options = NULL) {
   dsource <- .check_dsn_single(dsource)
   if (is.null(band)) stop("'band' must be a single band number for a block read")
   band <- .check_bands(band, arg = "band")
@@ -150,7 +152,8 @@ vapour_read_raster_block <- function(dsource, offset, dimension, band = 1L, band
   vapour_read_raster_block_cpp(dsource, as.integer(rep(offset, length.out = 2L)),
                                as.integer(rep(dimension, length.out = 2L)), band = as.integer(band[1L]),
                                band_output_type = band_output_type, 
-                               unscale = unscale, nara = nara)
+                               unscale = unscale, nara = nara,
+                               open_options = .check_open_options(open_options))
 }
 #' Write data to a block *in an existing file*.
 #'
@@ -191,13 +194,7 @@ vapour_write_raster_block <- function(dsource, data, offset, dimension, band = 1
     }
   }
   
-  # Ensure open_options is a character vector
-
-  if (is.null(open_options) || length(open_options) == 0) {
-    open_options <- character(1)
-  } else {
-    open_options <- as.character(open_options)
-  }
+  open_options <- .check_open_options(open_options)
   
   vapour_write_raster_block_cpp(dsource, as.double(data),
                                 as.integer(offset),

@@ -68,6 +68,25 @@ provided for the functions, so that developers can choose how things are
 implemented. Functions return raw lists or vectors rather than data frames or
 classed types.
 }
+\section{GDAL messages}{
+
+
+Errors and warnings from GDAL are signalled as R conditions. When a call
+fails, GDAL's reason is part of the error message. When a call returns, each
+message GDAL raised along the way is an R warning that starts with
+\verb{GDAL warning} or \verb{GDAL error}, so \code{suppressWarnings()}, \code{tryCatch()} and
+\code{options(warn = 2)} work on them as on any other warning.
+}
+
+\section{Open options}{
+
+
+Functions that read a source take \code{open_options}, a character vector of
+\code{"NAME=VALUE"} strings for the driver, as \code{-oo} in the GDAL command line
+tools. \code{NULL}, \code{character()} and \code{""} all mean none. The options each driver
+accepts are listed on its page at \url{https://gdal.org/en/stable/drivers/}.
+}
+
 \section{options}{
 
 

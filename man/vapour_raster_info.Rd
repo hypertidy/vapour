@@ -4,7 +4,7 @@
 \alias{vapour_raster_info}
 \title{Raster information}
 \usage{
-vapour_raster_info(x, ..., sds = NULL, min_max = FALSE)
+vapour_raster_info(x, ..., sds = NULL, min_max = FALSE, open_options = NULL)
 }
 \arguments{
 \item{x}{data source string (i.e. file name or URL or database connection string)}
@@ -14,6 +14,8 @@ vapour_raster_info(x, ..., sds = NULL, min_max = FALSE)
 \item{sds}{a subdataset number, if necessary}
 
 \item{min_max}{logical, control computing min and max values in source ('FALSE' by default)}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (as \code{-oo} in the GDAL command line tools), \code{NULL} for none. The options a driver accepts are listed on its page at \url{https://gdal.org/en/stable/drivers/raster/index.html}}
 }
 \value{
 list with vectors 'geotransform', 'dimXY', 'minmax', 'block', 'projection', 'bands', 'projstring', 'nodata_value',

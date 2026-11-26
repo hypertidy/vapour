@@ -4,8 +4,8 @@ gdal_dsn_read_vector_stream <- function(stream_xptr, dsn, layer, sql, options, q
   .Call(`_vapour_gdal_dsn_read_vector_stream`, stream_xptr, dsn, layer, sql, options, quiet, drivers, extent, dsn_exists, fid_column_name, width)
 }
 
-warp_general_cpp <- function(dsn, target_crs, target_extent, target_dim, target_res, bands, resample, silent, band_output_type, options, dsn_outname, include_meta, nara, unscale) {
-  .Call(`_vapour_warp_general_cpp`, dsn, target_crs, target_extent, target_dim, target_res, bands, resample, silent, band_output_type, options, dsn_outname, include_meta, nara, unscale)
+warp_general_cpp <- function(dsn, target_crs, target_extent, target_dim, target_res, bands, resample, silent, band_output_type, options, dsn_outname, include_meta, nara, unscale, open_options) {
+  .Call(`_vapour_warp_general_cpp`, dsn, target_crs, target_extent, target_dim, target_res, bands, resample, silent, band_output_type, options, dsn_outname, include_meta, nara, unscale, open_options)
 }
 
 warp_suggest_cpp <- function(dsn, target_crs) {
@@ -24,20 +24,20 @@ cleanup_gdal_cpp <- function() {
   .Call(`_vapour_cleanup_gdal_cpp`)
 }
 
-driver_gdal_cpp <- function(dsn) {
-  .Call(`_vapour_driver_gdal_cpp`, dsn)
+driver_gdal_cpp <- function(dsn, open_options) {
+  .Call(`_vapour_driver_gdal_cpp`, dsn, open_options)
 }
 
-driver_id_gdal_cpp <- function(dsn) {
-  .Call(`_vapour_driver_id_gdal_cpp`, dsn)
+driver_id_gdal_cpp <- function(dsn, open_options) {
+  .Call(`_vapour_driver_id_gdal_cpp`, dsn, open_options)
 }
 
-vector_filelist_gdal_cpp <- function(dsn) {
-  .Call(`_vapour_vector_filelist_gdal_cpp`, dsn)
+vector_filelist_gdal_cpp <- function(dsn, open_options) {
+  .Call(`_vapour_vector_filelist_gdal_cpp`, dsn, open_options)
 }
 
-layer_names_gdal_cpp <- function(dsn) {
-  .Call(`_vapour_layer_names_gdal_cpp`, dsn)
+layer_names_gdal_cpp <- function(dsn, open_options) {
+  .Call(`_vapour_layer_names_gdal_cpp`, dsn, open_options)
 }
 
 drivers_list_gdal_cpp <- function() {
@@ -68,80 +68,80 @@ vsi_list_gdal_cpp <- function(dsn) {
   .Call(`_vapour_vsi_list_gdal_cpp`, dsn)
 }
 
-feature_count_gdal_cpp <- function(dsn, layer, sql, ex) {
-  .Call(`_vapour_feature_count_gdal_cpp`, dsn, layer, sql, ex)
+feature_count_gdal_cpp <- function(dsn, layer, sql, ex, open_options) {
+  .Call(`_vapour_feature_count_gdal_cpp`, dsn, layer, sql, ex, open_options)
 }
 
-projection_info_gdal_cpp <- function(dsn, layer, sql) {
-  .Call(`_vapour_projection_info_gdal_cpp`, dsn, layer, sql)
+projection_info_gdal_cpp <- function(dsn, layer, sql, open_options) {
+  .Call(`_vapour_projection_info_gdal_cpp`, dsn, layer, sql, open_options)
 }
 
-report_fields_gdal_cpp <- function(dsn, layer, sql) {
-  .Call(`_vapour_report_fields_gdal_cpp`, dsn, layer, sql)
+report_fields_gdal_cpp <- function(dsn, layer, sql, open_options) {
+  .Call(`_vapour_report_fields_gdal_cpp`, dsn, layer, sql, open_options)
 }
 
-vapour_geom_name_cpp <- function(dsource, layer, sql, ex) {
-  .Call(`_vapour_vapour_geom_name_cpp`, dsource, layer, sql, ex)
+vapour_geom_name_cpp <- function(dsource, layer, sql, ex, open_options) {
+  .Call(`_vapour_vapour_geom_name_cpp`, dsource, layer, sql, ex, open_options)
 }
 
-vapour_layer_extent_cpp <- function(dsource, layer, sql, ex) {
-  .Call(`_vapour_vapour_layer_extent_cpp`, dsource, layer, sql, ex)
+vapour_layer_extent_cpp <- function(dsource, layer, sql, ex, open_options) {
+  .Call(`_vapour_vapour_layer_extent_cpp`, dsource, layer, sql, ex, open_options)
 }
 
-gdal_dsn_read_geom_all <- function(dsn, layer, sql, ex, format) {
-  .Call(`_vapour_gdal_dsn_read_geom_all`, dsn, layer, sql, ex, format)
+gdal_dsn_read_geom_all <- function(dsn, layer, sql, ex, format, open_options) {
+  .Call(`_vapour_gdal_dsn_read_geom_all`, dsn, layer, sql, ex, format, open_options)
 }
 
-gdal_dsn_read_geom_ij <- function(dsn, layer, sql, ex, format, ij) {
-  .Call(`_vapour_gdal_dsn_read_geom_ij`, dsn, layer, sql, ex, format, ij)
+gdal_dsn_read_geom_ij <- function(dsn, layer, sql, ex, format, ij, open_options) {
+  .Call(`_vapour_gdal_dsn_read_geom_ij`, dsn, layer, sql, ex, format, ij, open_options)
 }
 
-gdal_dsn_read_geom_ia <- function(dsn, layer, sql, ex, format, ia) {
-  .Call(`_vapour_gdal_dsn_read_geom_ia`, dsn, layer, sql, ex, format, ia)
+gdal_dsn_read_geom_ia <- function(dsn, layer, sql, ex, format, ia, open_options) {
+  .Call(`_vapour_gdal_dsn_read_geom_ia`, dsn, layer, sql, ex, format, ia, open_options)
 }
 
-gdal_dsn_read_geom_fa <- function(dsn, layer, sql, ex, format, fa) {
-  .Call(`_vapour_gdal_dsn_read_geom_fa`, dsn, layer, sql, ex, format, fa)
+gdal_dsn_read_geom_fa <- function(dsn, layer, sql, ex, format, fa, open_options) {
+  .Call(`_vapour_gdal_dsn_read_geom_fa`, dsn, layer, sql, ex, format, fa, open_options)
 }
 
-gdal_dsn_read_fields_all <- function(dsn, layer, sql, ex, fid_column_name) {
-  .Call(`_vapour_gdal_dsn_read_fields_all`, dsn, layer, sql, ex, fid_column_name)
+gdal_dsn_read_fields_all <- function(dsn, layer, sql, ex, fid_column_name, open_options) {
+  .Call(`_vapour_gdal_dsn_read_fields_all`, dsn, layer, sql, ex, fid_column_name, open_options)
 }
 
-gdal_dsn_read_fields_ij <- function(dsn, layer, sql, ex, fid_column_name, ij) {
-  .Call(`_vapour_gdal_dsn_read_fields_ij`, dsn, layer, sql, ex, fid_column_name, ij)
+gdal_dsn_read_fields_ij <- function(dsn, layer, sql, ex, fid_column_name, ij, open_options) {
+  .Call(`_vapour_gdal_dsn_read_fields_ij`, dsn, layer, sql, ex, fid_column_name, ij, open_options)
 }
 
-gdal_dsn_read_fields_ia <- function(dsn, layer, sql, ex, fid_column_name, ia) {
-  .Call(`_vapour_gdal_dsn_read_fields_ia`, dsn, layer, sql, ex, fid_column_name, ia)
+gdal_dsn_read_fields_ia <- function(dsn, layer, sql, ex, fid_column_name, ia, open_options) {
+  .Call(`_vapour_gdal_dsn_read_fields_ia`, dsn, layer, sql, ex, fid_column_name, ia, open_options)
 }
 
-gdal_dsn_read_fields_fa <- function(dsn, layer, sql, ex, fid_column_name, fa) {
-  .Call(`_vapour_gdal_dsn_read_fields_fa`, dsn, layer, sql, ex, fid_column_name, fa)
+gdal_dsn_read_fields_fa <- function(dsn, layer, sql, ex, fid_column_name, fa, open_options) {
+  .Call(`_vapour_gdal_dsn_read_fields_fa`, dsn, layer, sql, ex, fid_column_name, fa, open_options)
 }
 
-gdal_dsn_read_fids_all <- function(dsn, layer, sql, ex) {
-  .Call(`_vapour_gdal_dsn_read_fids_all`, dsn, layer, sql, ex)
+gdal_dsn_read_fids_all <- function(dsn, layer, sql, ex, open_options) {
+  .Call(`_vapour_gdal_dsn_read_fids_all`, dsn, layer, sql, ex, open_options)
 }
 
-gdal_dsn_read_fids_ij <- function(dsn, layer, sql, ex, ij) {
-  .Call(`_vapour_gdal_dsn_read_fids_ij`, dsn, layer, sql, ex, ij)
+gdal_dsn_read_fids_ij <- function(dsn, layer, sql, ex, ij, open_options) {
+  .Call(`_vapour_gdal_dsn_read_fids_ij`, dsn, layer, sql, ex, ij, open_options)
 }
 
-gdal_dsn_read_fids_ia <- function(dsn, layer, sql, ex, ia) {
-  .Call(`_vapour_gdal_dsn_read_fids_ia`, dsn, layer, sql, ex, ia)
+gdal_dsn_read_fids_ia <- function(dsn, layer, sql, ex, ia, open_options) {
+  .Call(`_vapour_gdal_dsn_read_fids_ia`, dsn, layer, sql, ex, ia, open_options)
 }
 
-read_fields_gdal_cpp <- function(dsn, layer, sql, limit_n, skip_n, ex, fid_column_name) {
-  .Call(`_vapour_read_fields_gdal_cpp`, dsn, layer, sql, limit_n, skip_n, ex, fid_column_name)
+read_fields_gdal_cpp <- function(dsn, layer, sql, limit_n, skip_n, ex, fid_column_name, open_options) {
+  .Call(`_vapour_read_fields_gdal_cpp`, dsn, layer, sql, limit_n, skip_n, ex, fid_column_name, open_options)
 }
 
-read_geometry_gdal_cpp <- function(dsn, layer, sql, what, textformat, limit_n, skip_n, ex) {
-  .Call(`_vapour_read_geometry_gdal_cpp`, dsn, layer, sql, what, textformat, limit_n, skip_n, ex)
+read_geometry_gdal_cpp <- function(dsn, layer, sql, what, textformat, limit_n, skip_n, ex, open_options) {
+  .Call(`_vapour_read_geometry_gdal_cpp`, dsn, layer, sql, what, textformat, limit_n, skip_n, ex, open_options)
 }
 
-read_fids_gdal_cpp <- function(dsn, layer, sql, limit_n, skip_n, ex) {
-  .Call(`_vapour_read_fids_gdal_cpp`, dsn, layer, sql, limit_n, skip_n, ex)
+read_fids_gdal_cpp <- function(dsn, layer, sql, limit_n, skip_n, ex, open_options) {
+  .Call(`_vapour_read_fids_gdal_cpp`, dsn, layer, sql, limit_n, skip_n, ex, open_options)
 }
 
 set_proj_search_paths_cpp <- function(paths) {
@@ -164,16 +164,16 @@ unset_gdal_config_cpp <- function(option) {
   .Call(`_vapour_unset_gdal_config_cpp`, option)
 }
 
-raster_gcp_gdal_cpp <- function(dsn) {
-  .Call(`_vapour_raster_gcp_gdal_cpp`, dsn)
+raster_gcp_gdal_cpp <- function(dsn, open_options) {
+  .Call(`_vapour_raster_gcp_gdal_cpp`, dsn, open_options)
 }
 
-raster_has_geolocation_gdal_cpp <- function(dsn, sds) {
-  .Call(`_vapour_raster_has_geolocation_gdal_cpp`, dsn, sds)
+raster_has_geolocation_gdal_cpp <- function(dsn, sds, open_options) {
+  .Call(`_vapour_raster_has_geolocation_gdal_cpp`, dsn, sds, open_options)
 }
 
-raster_list_geolocation_gdal_cpp <- function(dsn, sds) {
-  .Call(`_vapour_raster_list_geolocation_gdal_cpp`, dsn, sds)
+raster_list_geolocation_gdal_cpp <- function(dsn, sds, open_options) {
+  .Call(`_vapour_raster_list_geolocation_gdal_cpp`, dsn, sds, open_options)
 }
 
 raster_info_gdal_cpp <- function(dsn, min_max) {
@@ -184,8 +184,8 @@ raster_extent_cpp <- function(dsn) {
   .Call(`_vapour_raster_extent_cpp`, dsn)
 }
 
-raster_io_gdal_cpp <- function(dsn, window, band, resample, band_output_type, unscale, nara) {
-  .Call(`_vapour_raster_io_gdal_cpp`, dsn, window, band, resample, band_output_type, unscale, nara)
+raster_io_gdal_cpp <- function(dsn, window, band, resample, band_output_type, unscale, nara, open_options) {
+  .Call(`_vapour_raster_io_gdal_cpp`, dsn, window, band, resample, band_output_type, unscale, nara, open_options)
 }
 
 sds_list_gdal_cpp <- function(dsn) {
@@ -196,8 +196,8 @@ sds_list_list_gdal_cpp <- function(dsn) {
   .Call(`_vapour_sds_list_list_gdal_cpp`, dsn)
 }
 
-vapour_read_raster_block_cpp <- function(dsource, offset, dimension, band, band_output_type, unscale, nara) {
-  .Call(`_vapour_vapour_read_raster_block_cpp`, dsource, offset, dimension, band, band_output_type, unscale, nara)
+vapour_read_raster_block_cpp <- function(dsource, offset, dimension, band, band_output_type, unscale, nara, open_options) {
+  .Call(`_vapour_vapour_read_raster_block_cpp`, dsource, offset, dimension, band, band_output_type, unscale, nara, open_options)
 }
 
 vapour_write_raster_block_cpp <- function(dsource, data, offset, dimension, band, open_options) {
@@ -224,12 +224,12 @@ blocks_cpp <- function(dsource, iblock, read) {
   .Call(`_vapour_blocks_cpp`, dsource, iblock, read)
 }
 
-raster_gdalinfo_app_cpp <- function(dsn, options) {
-  .Call(`_vapour_raster_gdalinfo_app_cpp`, dsn, options)
+raster_gdalinfo_app_cpp <- function(dsn, options, sds, open_options) {
+  .Call(`_vapour_raster_gdalinfo_app_cpp`, dsn, options, sds, open_options)
 }
 
-raster_vrt_cpp <- function(dsn, extent, projection, sds, bands, geolocation, nomd, overview, options) {
-  .Call(`_vapour_raster_vrt_cpp`, dsn, extent, projection, sds, bands, geolocation, nomd, overview, options)
+raster_vrt_cpp <- function(dsn, extent, projection, sds, bands, geolocation, nomd, overview, options, open_options) {
+  .Call(`_vapour_raster_vrt_cpp`, dsn, extent, projection, sds, bands, geolocation, nomd, overview, options, open_options)
 }
 
 raster_buildvrt_cpp <- function(dsn, options) {
