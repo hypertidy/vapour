@@ -72,7 +72,8 @@ vapour_read_raster_hex(
 
 - band:
 
-  index of band/s to read (1-based), may be repeated or in any order
+  index of band/s to read (1-based), may be repeated or in any order, or
+  `NULL` for all bands
 
 - window:
 

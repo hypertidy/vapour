@@ -16,7 +16,8 @@ gdal_raster_data(
   bands = 1L,
   band_output_type = NULL,
   options = character(),
-  include_meta = TRUE
+  include_meta = TRUE,
+  unscale = TRUE
 )
 
 gdal_raster_dsn(
@@ -88,8 +89,9 @@ gdal_raster_nara(
 
 - bands:
 
-  band or bands to include, default is first band only (use NULL or a
-  value less that one to obtain all bands)
+  band or bands to include (1-based), may be repeated or in any order,
+  or `NULL` for all bands. The default is the first band only, see
+  Details for the image functions
 
 - band_output_type:
 
@@ -104,6 +106,13 @@ gdal_raster_nara(
 
   metadata is attached, turn off by setting this to `FALSE`
 
+- unscale:
+
+  default is `TRUE` so values are converted by the band's scale and
+  offset to floating point, set to `FALSE` to get the stored values. An
+  integer `band_output_type` also gives the stored values, see
+  [vapour_read_raster](https://hypertidy.github.io/vapour/reference/vapour_read_raster.md)
+
 - out_dsn:
 
   file name for output "\_dsn"
@@ -117,6 +126,12 @@ pixel values in a list vector per band, or a list of file paths
 Two functions 'gdal_raster_data' and 'gdal_raster_dsn' act like the
 gdalwarp command line tool, a convenience third function
 'gdal_raster_image()' works especially for image data.
+
+For `gdal_raster_image()` and `gdal_raster_nara()` the default
+`bands = NULL` means the first bands up to four, which is what an image
+can use. `gdal_raster_dsn()` writes every band, use
+[`vapour_vrt()`](https://hypertidy.github.io/vapour/reference/vapour_vrt.md)
+on the source to choose bands for it.
 
 ## Examples
 

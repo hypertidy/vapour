@@ -76,7 +76,7 @@ name and the second is a 6-element <code>window</code> of offset, source dimensi
 
 
 <dt id="arg-band">band<a class="anchor" aria-label="anchor" href="#arg-band"></a></dt>
-<dd><p>index of band/s to read (1-based), may be repeated or in any order</p></dd>
+<dd><p>index of band/s to read (1-based), may be repeated or in any order, or <code>NULL</code> for all bands</p></dd>
 
 
 <dt id="arg-window">window<a class="anchor" aria-label="anchor" href="#arg-window"></a></dt>
@@ -104,11 +104,11 @@ name and the second is a 6-element <code>window</code> of offset, source dimensi
 
 
 <dt id="arg-band-output-type">band_output_type<a class="anchor" aria-label="anchor" href="#arg-band-output-type"></a></dt>
-<dd><p>numeric type of band to apply (else the native type if ”), is mapped to one of 'Byte', 'Int32', or 'Float64'</p></dd>
+<dd><p>numeric type of band to apply (else the native type if ”), is mapped to one of 'Byte', 'Int32', or 'Float64'. An integer type gives the stored values, with no scale or offset applied</p></dd>
 
 
 <dt id="arg-unscale">unscale<a class="anchor" aria-label="anchor" href="#arg-unscale"></a></dt>
-<dd><p>default is <code>TRUE</code> so native values will be converted by offset and scale to floating point</p></dd>
+<dd><p>default is <code>TRUE</code> so native values will be converted by offset and scale to floating point, set to <code>FALSE</code> to get the stored values</p></dd>
 
 
 <dt id="arg-nara">nara<a class="anchor" aria-label="anchor" href="#arg-nara"></a></dt>

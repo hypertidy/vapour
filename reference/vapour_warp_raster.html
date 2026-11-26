@@ -74,7 +74,8 @@ properties of the transformed output.</p>
 <span>  options <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  nomd <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  overview <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>,</span>
-<span>  nara <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  nara <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  unscale <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -87,7 +88,7 @@ properties of the transformed output.</p>
 
 
 <dt id="arg-bands">bands<a class="anchor" aria-label="anchor" href="#arg-bands"></a></dt>
-<dd><p>index of band/s to read (1-based), may be new order or replicated, or NULL (all bands used, the default)</p></dd>
+<dd><p>index of band/s to read (1-based), may be repeated or in any order, or <code>NULL</code> for all bands (the default)</p></dd>
 
 
 <dt id="arg-extent">extent<a class="anchor" aria-label="anchor" href="#arg-extent"></a></dt>
@@ -156,6 +157,10 @@ properties of the transformed output.</p>
 
 <dt id="arg-nara">nara<a class="anchor" aria-label="anchor" href="#arg-nara"></a></dt>
 <dd><p>if 'TRUE' return in nativeRaster format</p></dd>
+
+
+<dt id="arg-unscale">unscale<a class="anchor" aria-label="anchor" href="#arg-unscale"></a></dt>
+<dd><p>default is <code>TRUE</code> so values are converted by the band's scale and offset to floating point, set to <code>FALSE</code> to get the stored values. An integer <code>band_output_type</code> also gives the stored values</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -30,7 +30,8 @@ vapour_read_raster(
 
 - band:
 
-  index of band/s to read (1-based), may be repeated or in any order
+  index of band/s to read (1-based), may be repeated or in any order, or
+  `NULL` for all bands
 
 - window:
 
@@ -59,12 +60,13 @@ vapour_read_raster(
 - band_output_type:
 
   numeric type of band to apply (else the native type if ”), is mapped
-  to one of 'Byte', 'Int32', or 'Float64'
+  to one of 'Byte', 'Int32', or 'Float64'. An integer type gives the
+  stored values, with no scale or offset applied
 
 - unscale:
 
   default is `TRUE` so native values will be converted by offset and
-  scale to floating point
+  scale to floating point, set to `FALSE` to get the stored values
 
 - nara:
 

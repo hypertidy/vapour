@@ -59,7 +59,8 @@
 <span>  bands <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  band_output_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  include_meta <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  include_meta <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  unscale <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">gdal_raster_dsn</span><span class="op">(</span></span>
@@ -132,7 +133,7 @@
 
 
 <dt id="arg-bands">bands<a class="anchor" aria-label="anchor" href="#arg-bands"></a></dt>
-<dd><p>band or bands to include, default is first band only (use NULL or a value less that one to obtain all bands)</p></dd>
+<dd><p>band or bands to include (1-based), may be repeated or in any order, or <code>NULL</code> for all bands. The default is the first band only, see Details for the image functions</p></dd>
 
 
 <dt id="arg-band-output-type">band_output_type<a class="anchor" aria-label="anchor" href="#arg-band-output-type"></a></dt>
@@ -147,6 +148,10 @@
 <dd><p>metadata is attached, turn off by setting this to <code>FALSE</code></p></dd>
 
 
+<dt id="arg-unscale">unscale<a class="anchor" aria-label="anchor" href="#arg-unscale"></a></dt>
+<dd><p>default is <code>TRUE</code> so values are converted by the band's scale and offset to floating point, set to <code>FALSE</code> to get the stored values. An integer <code>band_output_type</code> also gives the stored values, see <a href="vapour_read_raster.html">vapour_read_raster</a></p></dd>
+
+
 <dt id="arg-out-dsn">out_dsn<a class="anchor" aria-label="anchor" href="#arg-out-dsn"></a></dt>
 <dd><p>file name for output "_dsn"</p></dd>
 
@@ -159,6 +164,9 @@
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Two functions 'gdal_raster_data' and 'gdal_raster_dsn' act like the gdalwarp command line
 tool, a convenience third function 'gdal_raster_image()' works especially for image data.</p>
+<p>For <code>gdal_raster_image()</code> and <code>gdal_raster_nara()</code> the default <code>bands = NULL</code> means the
+first bands up to four, which is what an image can use. <code>gdal_raster_dsn()</code> writes every band,
+use <code><a href="vapour_vrt.html">vapour_vrt()</a></code> on the source to choose bands for it.</p>
     </div>
 
     <div class="section level2">

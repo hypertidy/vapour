@@ -26,7 +26,8 @@ vapour_warp_raster(
   options = "",
   nomd = FALSE,
   overview = -1L,
-  nara = FALSE
+  nara = FALSE,
+  unscale = TRUE
 )
 ```
 
@@ -39,8 +40,8 @@ vapour_warp_raster(
 
 - bands:
 
-  index of band/s to read (1-based), may be new order or replicated, or
-  NULL (all bands used, the default)
+  index of band/s to read (1-based), may be repeated or in any order, or
+  `NULL` for all bands (the default)
 
 - extent:
 
@@ -117,6 +118,12 @@ vapour_warp_raster(
 - nara:
 
   if 'TRUE' return in nativeRaster format
+
+- unscale:
+
+  default is `TRUE` so values are converted by the band's scale and
+  offset to floating point, set to `FALSE` to get the stored values. An
+  integer `band_output_type` also gives the stored values
 
 ## Value
 

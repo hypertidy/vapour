@@ -2,6 +2,60 @@
 
 ## vapour 0.20.0
 
+- Integer reads no longer turn every value at or below the nodata value
+  into `NA`, only the nodata value itself. This affected
+  [`vapour_read_raster()`](https://hypertidy.github.io/vapour/reference/vapour_read_raster.md)
+  and
+  [`vapour_warp_raster()`](https://hypertidy.github.io/vapour/reference/vapour_warp_raster.md)
+  on integer sources: with a nodata value of 0, all negative values were
+  lost ([\#219](https://github.com/hypertidy/vapour/issues/219)).
+
+- [`gdal_raster_data()`](https://hypertidy.github.io/vapour/reference/gdal_raster_data.md)
+  and
+  [`vapour_warp_raster()`](https://hypertidy.github.io/vapour/reference/vapour_warp_raster.md)
+  gain `unscale = TRUE`, as
+  [`vapour_read_raster()`](https://hypertidy.github.io/vapour/reference/vapour_read_raster.md)
+  and
+  [`vapour_read_raster_block()`](https://hypertidy.github.io/vapour/reference/vapour_read_raster_block.md)
+  already have. Set it to `FALSE` to get the stored values rather than
+  values converted by the band’s scale and offset
+  ([\#226](https://github.com/hypertidy/vapour/issues/226)).
+
+- An integer `band_output_type` now gives the stored values in that
+  type. It was ignored for a band with a scale, which came back as
+  scaled doubles, so
+  [`vapour_read_raster_int()`](https://hypertidy.github.io/vapour/reference/vapour_read_raster_raw.md)
+  and
+  [`vapour_warp_raster_int()`](https://hypertidy.github.io/vapour/reference/vapour_warp_raster_raw.md)
+  did not return integers for such a source
+  ([\#226](https://github.com/hypertidy/vapour/issues/226)).
+
+- A band offset is now applied when the band has no scale. It was
+  ignored.
+
+- Band arguments follow one rule
+  ([\#150](https://github.com/hypertidy/vapour/issues/150)): `NULL`
+  means all bands, otherwise band numbers counted from 1, which may be
+  repeated and in any order. A value less than 1, a missing value or a
+  fraction is an error.
+
+  - [`vapour_read_raster()`](https://hypertidy.github.io/vapour/reference/vapour_read_raster.md)
+    accepts `band = NULL`, and reads several bands with one call to GDAL
+    rather than opening the source for each.
+  - [`vapour_warp_raster()`](https://hypertidy.github.io/vapour/reference/vapour_warp_raster.md)
+    with the default `bands = NULL` returns all bands, as documented. It
+    returned only the first.
+  - [`gdal_raster_data()`](https://hypertidy.github.io/vapour/reference/gdal_raster_data.md)
+    with a `bands` value less than 1 still returns all bands, with a
+    warning to use `bands = NULL`.
+
+- New
+  [`vapour_sds()`](https://hypertidy.github.io/vapour/reference/vapour_sds.md)
+  returns a data frame of the subdatasets of one or more sources, with
+  GDAL’s description of each. It is the vectorised form of
+  [`vapour_sds_names()`](https://hypertidy.github.io/vapour/reference/vapour_sds_names.md)
+  ([\#133](https://github.com/hypertidy/vapour/issues/133)).
+
 - [`vapour_layer_info()`](https://hypertidy.github.io/vapour/reference/vapour_layer_info.md)
   now reports the EPSG code in `projection$EPSG` when the projection
   carries one or GDAL can identify one for it, and `NA` otherwise. It

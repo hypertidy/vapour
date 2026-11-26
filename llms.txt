@@ -281,6 +281,8 @@ Structural metadata, subdatasets, control points and geolocation.
   : Raster information
 - [`vapour_sds_names()`](https://hypertidy.github.io/vapour/reference/vapour_sds_names.md)
   : GDAL raster subdatasets (variables)
+- [`vapour_sds()`](https://hypertidy.github.io/vapour/reference/vapour_sds.md)
+  : Subdatasets of raster sources
 - [`vapour_raster_gcp()`](https://hypertidy.github.io/vapour/reference/vapour_raster_gcp.md)
   : Raster ground control points
 - [`vapour_geolocation()`](https://hypertidy.github.io/vapour/reference/vapour_geolocation.md)

@@ -107,8 +107,8 @@ vapour_warp_raster_hex(
 
 - bands:
 
-  index of band/s to read (1-based), may be new order or replicated, or
-  NULL (all bands used, the default)
+  index of band/s to read (1-based), may be repeated or in any order, or
+  `NULL` for all bands (the default)
 
 - extent:
 
