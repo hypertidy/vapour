@@ -5,10 +5,11 @@ test_that("utilities work", {
 
   drivers <- as.data.frame(vapour_all_drivers(), stringsAsFactors = FALSE)
 
-  drivers %>% expect_s3_class("data.frame") %>% expect_named(c("driver", "name", "vector", "raster", "create", "copy", "virtual"))
+  drivers %>% expect_s3_class("data.frame") %>% expect_named(c("driver", "name", "vector", "raster", "create", "copy", "virtual", "sql_dialects"))
   types <- unlist(lapply(drivers, typeof), recursive = FALSE, use.names = TRUE)
   expect_equal(types, c(driver = "character", name = "character", vector = "logical",
-                        raster = "logical", create = "logical", copy = "logical", virtual = "logical"
+                        raster = "logical", create = "logical", copy = "logical", virtual = "logical",
+                        sql_dialects = "character"
   ))
   expect_match(vapour_gdal_version(), "^GDAL .*, released .*/.*/")
   expect_error(vapour_driver(0))

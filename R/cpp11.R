@@ -32,6 +32,10 @@ driver_id_gdal_cpp <- function(dsn) {
   .Call(`_vapour_driver_id_gdal_cpp`, dsn)
 }
 
+vector_filelist_gdal_cpp <- function(dsn) {
+  .Call(`_vapour_vector_filelist_gdal_cpp`, dsn)
+}
+
 layer_names_gdal_cpp <- function(dsn) {
   .Call(`_vapour_layer_names_gdal_cpp`, dsn)
 }

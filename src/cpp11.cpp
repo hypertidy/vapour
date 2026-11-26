@@ -62,6 +62,13 @@ extern "C" SEXP _vapour_driver_id_gdal_cpp(SEXP dsn) {
   END_CPP11
 }
 // 00_gdal.cpp
+strings vector_filelist_gdal_cpp(strings dsn);
+extern "C" SEXP _vapour_vector_filelist_gdal_cpp(SEXP dsn) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(vector_filelist_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn)));
+  END_CPP11
+}
+// 00_gdal.cpp
 strings layer_names_gdal_cpp(strings dsn);
 extern "C" SEXP _vapour_layer_names_gdal_cpp(SEXP dsn) {
   BEGIN_CPP11
@@ -475,6 +482,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_vapour_read_raster_block_cpp",     (DL_FUNC) &_vapour_vapour_read_raster_block_cpp,      7},
     {"_vapour_vapour_read_raster_value_cpp",     (DL_FUNC) &_vapour_vapour_read_raster_value_cpp,      5},
     {"_vapour_vapour_write_raster_block_cpp",    (DL_FUNC) &_vapour_vapour_write_raster_block_cpp,     6},
+    {"_vapour_vector_filelist_gdal_cpp",         (DL_FUNC) &_vapour_vector_filelist_gdal_cpp,          1},
     {"_vapour_version_gdal_cpp",                 (DL_FUNC) &_vapour_version_gdal_cpp,                  0},
     {"_vapour_version_proj_cpp",                 (DL_FUNC) &_vapour_version_proj_cpp,                  0},
     {"_vapour_vsi_list_gdal_cpp",                (DL_FUNC) &_vapour_vsi_list_gdal_cpp,                 1},

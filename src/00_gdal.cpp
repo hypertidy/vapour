@@ -23,6 +23,11 @@ strings driver_id_gdal_cpp(strings dsn) {
 }
 
 [[cpp11::register]]
+strings vector_filelist_gdal_cpp(strings dsn) {
+  return gdallibrary::gdal_vector_filelist(dsn);
+}
+
+[[cpp11::register]]
 strings layer_names_gdal_cpp(strings dsn) {
   return gdallibrary::gdal_layer_names(dsn);
 }

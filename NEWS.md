@@ -1,5 +1,29 @@
 # vapour 0.20.0
 
+* `vapour_layer_info()` now reports the EPSG code in `projection$EPSG` when
+  the projection carries one or GDAL can identify one for it, and `NA`
+  otherwise. It was always 0 (#234).
+
+* `vapour_layer_info()` gains `filelist`, the files that make up the data
+  source (#120).
+
+* `vapour_all_drivers()` gains `sql_dialects`, the SQL dialects each vector
+  driver supports (#175).
+
+* `vapour_raster_info()` gains `image_structure`, the dataset's
+  IMAGE_STRUCTURE metadata such as compression and interleaving (#113).
+
+* `vapour_raster_info()` on a source with no geotransform now reports GDAL's
+  default `c(0, 1, 0, 0, 0, 1)`. It reported a transform with the y axis
+  flipped, which the source does not have (#225).
+
+* An invalid `extent` filter now warns once rather than once for each time
+  the layer is opened internally (#178).
+
+* `vapour_layer_info()` no longer warns "unable export SRS to XML", or lets
+  GDAL print MapInfo projection errors, for a projection those formats cannot
+  express. Neither format is part of what it returns.
+
 * Arguments that GDAL cannot parse are now an R error rather than a crash.
   An unknown `resample` or a malformed `options` value in `gdal_raster_data()`,
   `gdal_raster_dsn()`, `gdal_raster_image()`, `gdal_raster_nara()` or

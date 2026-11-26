@@ -100,7 +100,7 @@ test_that("limit_n works",
             vapour_read_geometry_text(f, limit_n = 3L) %>% expect_length(3L)
 
             expect_named(vapour_layer_info(f), c("dsn", "driver", "layer", "layer_names", "fields", "count", 
-                                                 "extent", "projection"))
+                                                 "extent", "projection", "filelist"))
             expect_silent(vapour_read_extent(f, limit_n = 3L)) %>% unlist(use.names = FALSE) %>% expect_length(12L)
 
             expect_error(vapour_read_attributes(f, limit_n = 5, skip_n = 7), "skip_n skips all available features")

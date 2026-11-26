@@ -37,6 +37,7 @@ as described for "GDALVersionInfo". \href{https://gdal.org/}{GDAL documentation}
 \item \code{create} driver can create (note vapour provides no write capacity)
 \item \code{copy}   driver can copy (note vapour provides no write capacity)
 \item \code{virtual} driver has virtual capabilities ('vsi')
+\item \code{sql_dialects} the SQL dialects a vector driver supports, space separated with the default first (\code{NA} for other drivers, and before GDAL 3.6)
 }
 
 \code{vapour_driver()} returns the short name of the driver, e.g. 'GPKG' or 'GTiff', to get the

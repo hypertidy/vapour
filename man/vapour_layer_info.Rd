@@ -45,13 +45,14 @@ The layer information elements are
 \item{fields}{a named vector of field types (see \link{vapour_report_fields})}
 \item{count}{the number of features in this data source (can be turned off to avoid the extra work \code{count})}
 \item{extent}{the extent of all features xmin, xmax, ymin, ymax (can be turned off to avoid the extra work \code{extent})}
-\item{projection}{a list of character strings, see next}
+\item{projection}{a list of formats of the projection metadata, see next}
+\item{filelist}{the files that make up the data source (may be none)}
 }
 
-\verb{$projection} is a list of various formats of the projection metadata.
+\verb{$projection} is a list with elements \code{Wkt}, \code{Proj4} and \code{EPSG}.
 Use \verb{$projection$Wkt} as most authoritative, but we don't enter into the discussion or limit what
-might be done with this (that's up to you). Currently we see
-\code{c("Proj4", "MICoordSys", "PrettyWkt", "Wkt", "EPSG", "XML")} as names of this \verb{$projection} element.
+might be done with this (that's up to you). \code{EPSG} is the integer EPSG code when the
+projection carries one or GDAL can identify one for it, otherwise \code{NA}.
 
 To get the geometry type/s of a layer see \code{\link[=vapour_read_type]{vapour_read_type()}}.
 }
