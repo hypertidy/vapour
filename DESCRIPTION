@@ -34,4 +34,4 @@ URL: https://github.com/hypertidy/vapour,
 BugReports: https://github.com/hypertidy/vapour/issues
 Language: en-US
 NeedsCompilation: yes
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1

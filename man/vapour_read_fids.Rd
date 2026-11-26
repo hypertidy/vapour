@@ -48,8 +48,9 @@ This may be virtual (created by GDAL for the SQL interface) and may be 0- or
 arbitrary. Please use with caution, this function can return the current
 FIDs, but there's no guarantee of what it represents for subsequent access.
 
-An earlier version use 'OGRSQL' to obtain these names, which was slow for some
+An earlier version used 'OGRSQL' to obtain these names, which was slow for some
 drivers and also clashed with independent use of the \code{sql} argument.
+
 \code{\link[=vapour_read_names]{vapour_read_names()}} is an older name, aliased to \code{\link[=vapour_read_fids]{vapour_read_fids()}}.
 }
 \examples{
