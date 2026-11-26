@@ -52,6 +52,7 @@ inline list gdal_list_drivers() {
   writable::logicals iscopy(n);
   writable::logicals iscreate(n);
   writable::logicals isvirt(n);
+  writable::strings dialects(n);
   for (int idriver = 0; idriver < n; idriver++) {
     GDALDriver *dr = GetGDALDriverManager()->GetDriver(idriver);
     sname[idriver] = GDALGetDriverShortName(dr);
@@ -61,13 +62,21 @@ inline list gdal_list_drivers() {
     iscopy[idriver] = (Rboolean)(dr->GetMetadataItem(GDAL_DCAP_CREATECOPY) != NULL);
     iscreate[idriver] = (Rboolean)(dr->GetMetadataItem(GDAL_DCAP_CREATE) != NULL);
     isvirt[idriver] = (Rboolean)(dr->GetMetadataItem(GDAL_DCAP_VIRTUALIO) != NULL);
+    // space separated, GDAL >= 3.6 (the item is absent before that, and for raster drivers)
+    const char *dialect = dr->GetMetadataItem("DMD_SUPPORTED_SQL_DIALECTS");
+    if (dialect == NULL) {
+      dialects[idriver] = NA_STRING;
+    } else {
+      dialects[idriver] = dialect;
+    }
   }
   using namespace cpp11::literals;
   writable::list out = {
     "driver"_nm = sname, "name"_nm = lname,
     "vector"_nm = isvector, "raster"_nm = israster,
     "create"_nm = iscreate, "copy"_nm = iscopy,
-    "virtual"_nm = isvirt
+    "virtual"_nm = isvirt,
+    "sql_dialects"_nm = dialects
   };
   return out;
 }
@@ -78,6 +87,20 @@ inline strings gdal_driver(strings dsn) {
       writable::strings dname(1);
       dname[0] = poDS->GetDriverName();
       return dname;
+    });
+}
+
+inline strings gdal_vector_filelist(strings dsn) {
+  return with_ogr_dataset(as_cstr(dsn[0]), GDAL_OF_VECTOR,
+    [](GDALDataset *poDS) -> strings {
+      char **filelist = poDS->GetFileList();
+      int nfile = CSLCount(filelist);
+      writable::strings files(nfile);
+      for (int ifile = 0; ifile < nfile; ifile++) {
+        files[ifile] = filelist[ifile];
+      }
+      CSLDestroy(filelist);
+      return files;
     });
 }
 

@@ -56,7 +56,11 @@ sds_boilerplate_checks <- function(x, sds = NULL) {
 #' \item{datatype}{the band type name, in GDAL form 'Byte', 'Int16', 'Float32', etc.}
 #' \item{subdatasets}{any subdataset DSNs is present, otherwise `NULL` }
 #' \item{corners}{corner coordinates of the data, for non-zero skew geotransforms a 2-column matrix with rows upperLeft, lowerLeft, lowerRight, upperRight, and center}
+#' \item{image_structure}{named character vector of the dataset's 'IMAGE_STRUCTURE' metadata, for example 'COMPRESSION', 'INTERLEAVE' or 'LAYOUT', or `NULL` if there is none}
 #' }
+#'
+#' A source with no geotransform reports GDAL's default, `c(0, 1, 0, 0, 0, 1)`, which
+#' is pixel and line coordinates with y increasing down. Its extent is then `c(0, ncol, 0, nrow)`.
 #'
 #' Note that the geotransform is a kind of obscure combination of the extent and dimension, I don't find it
 #' useful and modern GDAL is moving away from needing it so much. Extent is more sensible and used in many places in
@@ -164,8 +168,9 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
 
 
   if (is.null(json$geoTransform) && !is.null(extent)) {
-    geoTransform <- c(extent[1], diff(extent[c(1,2)])/json$size[1], 0, 
-                      extent[4], 0, diff(extent[c(4:3)])/json$size[2])
+    ## the source has no geotransform, so GDAL reports corners in pixel and
+    ## line coordinates: that is the default transform, with y increasing down
+    geoTransform <- c(0, 1, 0, 0, 0, 1)
   } else {
     geoTransform <- json$geoTransform
   }
@@ -185,7 +190,8 @@ vapour_raster_info <- function(x, ..., sds = NULL, min_max = FALSE) {
        datatype = json$bands$type[1L], 
        extent = extent, 
        subdatasets = sds, 
-       corners = corners)
+       corners = corners, 
+       image_structure = unlist(json$metadata$IMAGE_STRUCTURE))
 }
 
 

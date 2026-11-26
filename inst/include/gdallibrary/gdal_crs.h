@@ -63,10 +63,16 @@ inline list gdal_projection_info(strings dsn, integers layer, strings sql) {
     info_out[0] = p4;
     CPLFree(proj4);
 
+    // MICoordSys and XML cannot express every CRS. Those two elements are left
+    // NULL when the export fails, without GDAL's message or a warning.
     char *MI = nullptr;
-    if (OSRExportToMICoordSys(hSRS, &MI) != OGRERR_NONE) cpp11::stop("error export SRS to MICoordSys");
-    writable::strings mi(1); mi[0] = MI;
-    info_out[1] = mi;
+    CPLPushErrorHandler(CPLQuietErrorHandler);
+    OGRErr mi_err = OSRExportToMICoordSys(hSRS, &MI);
+    CPLPopErrorHandler();
+    if (mi_err == OGRERR_NONE && MI != nullptr) {
+      writable::strings mi(1); mi[0] = MI;
+      info_out[1] = mi;
+    }
     CPLFree(MI);
 
     char *pwkt = nullptr;
@@ -81,17 +87,30 @@ inline list gdal_projection_info(strings dsn, integers layer, strings sql) {
     info_out[3] = uw;
     CPLFree(uwkt);
 
-    writable::integers epsg(1); epsg[0] = 0;
+    // the EPSG code when the CRS carries one, or when GDAL can identify one
+    // for it, otherwise NA
+    writable::integers epsg(1); epsg[0] = NA_INTEGER;
+    OGRSpatialReferenceH hSRSid = OSRClone(hSRS);
+    if (hSRSid != nullptr) {
+      OSRAutoIdentifyEPSG(hSRSid);
+      const char *auth_name = OSRGetAuthorityName(hSRSid, nullptr);
+      const char *auth_code = OSRGetAuthorityCode(hSRSid, nullptr);
+      if (auth_name != nullptr && auth_code != nullptr && EQUAL(auth_name, "EPSG")) {
+        epsg[0] = atoi(auth_code);
+      }
+      OSRDestroySpatialReference(hSRSid);
+    }
     info_out[4] = epsg;
 
     char *xml = nullptr;
-    if (OSRExportToXML(hSRS, &xml, "") != OGRERR_NONE) {
-      cpp11::warning("unable export SRS to XML");
-    } else {
+    CPLPushErrorHandler(CPLQuietErrorHandler);
+    OGRErr xml_err = OSRExportToXML(hSRS, &xml, "");
+    CPLPopErrorHandler();
+    if (xml_err == OGRERR_NONE && xml != nullptr) {
       writable::strings xm(1); xm[0] = xml;
       info_out[5] = xm;
-      CPLFree(xml);
     }
+    CPLFree(xml);
   }
 
   if (std::string(sql[0]) != "") poDS->ReleaseResultSet(poLayer);

@@ -42,7 +42,11 @@ The structural metadata are
 \item{datatype}{the band type name, in GDAL form 'Byte', 'Int16', 'Float32', etc.}
 \item{subdatasets}{any subdataset DSNs is present, otherwise \code{NULL} }
 \item{corners}{corner coordinates of the data, for non-zero skew geotransforms a 2-column matrix with rows upperLeft, lowerLeft, lowerRight, upperRight, and center}
+\item{image_structure}{named character vector of the dataset's 'IMAGE_STRUCTURE' metadata, for example 'COMPRESSION', 'INTERLEAVE' or 'LAYOUT', or \code{NULL} if there is none}
 }
+
+A source with no geotransform reports GDAL's default, \code{c(0, 1, 0, 0, 0, 1)}, which
+is pixel and line coordinates with y increasing down. Its extent is then \code{c(0, ncol, 0, nrow)}.
 
 Note that the geotransform is a kind of obscure combination of the extent and dimension, I don't find it
 useful and modern GDAL is moving away from needing it so much. Extent is more sensible and used in many places in

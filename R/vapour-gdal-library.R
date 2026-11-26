@@ -166,6 +166,7 @@ vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, s
 #' * `create` driver can create (note vapour provides no write capacity)
 #' * `copy`   driver can copy (note vapour provides no write capacity)
 #' * `virtual` driver has virtual capabilities ('vsi')
+#' * `sql_dialects` the SQL dialects a vector driver supports, space separated with the default first (`NA` for other drivers, and before GDAL 3.6)
 #'
 #' `vapour_driver()` returns the short name of the driver, e.g. 'GPKG' or 'GTiff', to get the
 #' long name and other properties use `vapour_all_drivers()` and match on 'driver'.

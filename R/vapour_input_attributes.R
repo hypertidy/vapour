@@ -44,7 +44,17 @@ validate_extent <- function(extent, sql, warn = TRUE) {
   if (is.na(extent[1])) extent = 0.0
   if (warn && length(extent) == 4L && nchar(sql) < 1) warning("'extent' given but 'sql' query is empty, extent clipping will be ignored")
   if (!is.numeric(extent)) stop("extent must be interpretable as xmin, xmax, ymin, ymax")
-  as.double(extent)
+  extent <- as.double(extent)
+  ## warn once here, an invalid filter otherwise warns at each internal open of the layer
+  if (length(extent) == 4L && !anyNA(extent)) {
+    bad <- c(extent[2L] <= extent[1L], extent[4L] <= extent[3L])
+    if (any(bad)) {
+      warning(sprintf("extent filter invalid (%s), ignoring",
+                      paste(c("xmax <= xmin", "ymax <= ymin")[bad], collapse = ", ")))
+      extent <- 0.0
+    }
+  }
+  extent
 }
 #' Read GDAL layer names
 #'
