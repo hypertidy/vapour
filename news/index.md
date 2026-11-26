@@ -2,6 +2,15 @@
 
 ## vapour 0.20.0
 
+- New
+  [`vapour_feature_extent()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
+  returns the extent of each feature as a matrix with columns `xmin`,
+  `xmax`, `ymin`, `ymax`, one row for each feature and a row of `NA` for
+  a missing geometry.
+  [`vapour_read_extent()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
+  is unchanged and still returns a list of four-number vectors
+  ([\#142](https://github.com/hypertidy/vapour/issues/142)).
+
 - Integer reads no longer turn every value at or below the nodata value
   into `NA`, only the nodata value itself. This affected
   [`vapour_read_raster()`](https://hypertidy.github.io/vapour/reference/vapour_read_raster.md)

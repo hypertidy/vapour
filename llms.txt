@@ -354,6 +354,7 @@ Read geometry, feature identifiers and attribute fields.
   [`vapour_read_geometry()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
   [`vapour_read_geometry_text()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
   [`vapour_read_extent()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
+  [`vapour_feature_extent()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
   [`vapour_read_type()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
   : Read GDAL feature geometry
 - [`vapour_read_fids()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md)

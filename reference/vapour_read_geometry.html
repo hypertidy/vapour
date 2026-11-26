@@ -81,6 +81,15 @@
 <span>  extent <span class="op">=</span> <span class="cn">NA</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">vapour_feature_extent</span><span class="op">(</span></span>
+<span>  <span class="va">dsource</span>,</span>
+<span>  layer <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>  sql <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  limit_n <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  skip_n <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  extent <span class="op">=</span> <span class="cn">NA</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">vapour_read_type</span><span class="op">(</span></span>
 <span>  <span class="va">dsource</span>,</span>
 <span>  layer <span class="op">=</span> <span class="fl">0L</span>,</span>
@@ -135,12 +144,15 @@
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>for <code>vapour_read_geometry()</code>, <code>vapour_read_geometry_ia()</code> and <code>vapour_read_geometry_ij()</code> a raw vector of
 geometry, for <code>vapour_read_extent()</code> a list of numeric vectors each with 'xmin,xmax,ymin,ymax' respectively for each geometry,
+for <code>vapour_feature_extent()</code> a numeric matrix with columns 'xmin', 'xmax', 'ymin', 'ymax' and one row for each geometry,
 for <code>vapour_read_type()</code> a character vector. See Details for more information.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>vapour_read_geometry</code> will read features as binary WKB, <code>vapour_read_geometry_text</code> as various text formats (geo-json, wkt, kml, gml),</p>
 <p><code>vapour_read_extent</code> a numeric extent which is the native bounding box, the four numbers (in this order) <code>xmin, xmax, ymin, ymax</code>.
+<code>vapour_feature_extent</code> gives the same extents as a matrix, one row for each feature, with those four as named columns. A
+missing geometry is a row of <code>NA</code>.
 For each function an optional SQL string will be evaluated against the data source before reading.</p>
 <p><code>vapour_read_geometry_ia</code> will read features by <em>arbitrary index</em>, so any integer between 0 and one less than the number of
 features. These may be duplicated. If 'ia' is greater than the highest index NULL is returned, but if less than 0 the function will error.</p>
@@ -175,6 +187,17 @@ is stopped if <code>limit_n</code> is reached.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## polygon extents in a list xmin, xmax, ymin, ymax</span></span></span>
 <span class="r-in"><span><span class="va">exgeom</span> <span class="op">&lt;-</span> <span class="fu">vapour_read_extent</span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## the same extents as a matrix, one row for each polygon</span></span></span>
+<span class="r-in"><span><span class="va">exmat</span> <span class="op">&lt;-</span> <span class="fu">vapour_feature_extent</span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">exmat</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          xmin     xmax    ymin    ymax</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 448353.3 457705.8 5386606 5397352</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 453543.6 459318.0 5403972 5412505</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 454839.8 461042.0 5411562 5417892</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 461504.9 476213.0 5410911 5424854</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 471572.5 483157.2 5417110 5424645</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 491638.3 494048.2 5417262 5419331</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## points in raw text (GeoJSON)</span></span></span>
 <span class="r-in"><span><span class="va">txtpointjson</span> <span class="op">&lt;-</span> <span class="fu">vapour_read_geometry_text</span><span class="op">(</span><span class="va">pfile</span><span class="op">)</span></span></span>

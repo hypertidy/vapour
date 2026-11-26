@@ -37,6 +37,15 @@ vapour_read_extent(
   extent = NA
 )
 
+vapour_feature_extent(
+  dsource,
+  layer = 0L,
+  sql = "",
+  limit_n = NULL,
+  skip_n = 0,
+  extent = NA
+)
+
 vapour_read_type(
   dsource,
   layer = 0L,
@@ -98,8 +107,9 @@ for `vapour_read_geometry()`, `vapour_read_geometry_ia()` and
 `vapour_read_geometry_ij()` a raw vector of geometry, for
 `vapour_read_extent()` a list of numeric vectors each with
 'xmin,xmax,ymin,ymax' respectively for each geometry, for
-`vapour_read_type()` a character vector. See Details for more
-information.
+`vapour_feature_extent()` a numeric matrix with columns 'xmin', 'xmax',
+'ymin', 'ymax' and one row for each geometry, for `vapour_read_type()` a
+character vector. See Details for more information.
 
 ## Details
 
@@ -108,9 +118,11 @@ information.
 gml),
 
 `vapour_read_extent` a numeric extent which is the native bounding box,
-the four numbers (in this order) `xmin, xmax, ymin, ymax`. For each
-function an optional SQL string will be evaluated against the data
-source before reading.
+the four numbers (in this order) `xmin, xmax, ymin, ymax`.
+`vapour_feature_extent` gives the same extents as a matrix, one row for
+each feature, with those four as named columns. A missing geometry is a
+row of `NA`. For each function an optional SQL string will be evaluated
+against the data source before reading.
 
 `vapour_read_geometry_ia` will read features by *arbitrary index*, so
 any integer between 0 and one less than the number of features. These
@@ -156,6 +168,17 @@ txtjson <- vapour_read_geometry_text(mvfile, sql = SQL)
 
 ## polygon extents in a list xmin, xmax, ymin, ymax
 exgeom <- vapour_read_extent(mvfile)
+
+## the same extents as a matrix, one row for each polygon
+exmat <- vapour_feature_extent(mvfile)
+head(exmat)
+#>          xmin     xmax    ymin    ymax
+#> [1,] 448353.3 457705.8 5386606 5397352
+#> [2,] 453543.6 459318.0 5403972 5412505
+#> [3,] 454839.8 461042.0 5411562 5417892
+#> [4,] 461504.9 476213.0 5410911 5424854
+#> [5,] 471572.5 483157.2 5417110 5424645
+#> [6,] 491638.3 494048.2 5417262 5419331
 
 ## points in raw text (GeoJSON)
 txtpointjson <- vapour_read_geometry_text(pfile)
