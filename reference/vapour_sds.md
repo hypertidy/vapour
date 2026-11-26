@@ -8,7 +8,7 @@ and it also gives GDAL's description of each subdataset.
 ## Usage
 
 ``` r
-vapour_sds(x)
+vapour_sds(x, open_options = NULL)
 ```
 
 ## Arguments
@@ -17,6 +17,12 @@ vapour_sds(x)
 
   one or more data source strings, filename, database connection string,
   or other URL
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (as `-oo` in the GDAL command line tools), `NULL` for none.
+  They apply to every source in `x`
 
 ## Value
 

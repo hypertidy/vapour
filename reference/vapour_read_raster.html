@@ -63,7 +63,8 @@ name and the second is a 6-element <code>window</code> of offset, source dimensi
 <span>  set_na <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  band_output_type <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  unscale <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  nara <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  nara <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  open_options <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -113,6 +114,10 @@ name and the second is a 6-element <code>window</code> of offset, source dimensi
 
 <dt id="arg-nara">nara<a class="anchor" aria-label="anchor" href="#arg-nara"></a></dt>
 <dd><p>logical whether to return a (scaled) nativeRaster</p></dd>
+
+
+<dt id="arg-open-options">open_options<a class="anchor" aria-label="anchor" href="#arg-open-options"></a></dt>
+<dd><p>open options for the driver, a character vector of <code>"NAME=VALUE"</code> strings (as <code>-oo</code> in the GDAL command line tools), <code>NULL</code> for none</p></dd>
 
 </dl></div>
     <div class="section level2">

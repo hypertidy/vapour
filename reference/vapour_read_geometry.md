@@ -5,9 +5,23 @@ Read GDAL geometry as binary blob, text, or numeric extent.
 ## Usage
 
 ``` r
-vapour_read_geometry_ia(dsource, layer = 0L, sql = "", extent = NA, ia = NULL)
+vapour_read_geometry_ia(
+  dsource,
+  layer = 0L,
+  sql = "",
+  extent = NA,
+  ia = NULL,
+  open_options = NULL
+)
 
-vapour_read_geometry_ij(dsource, layer = 0L, sql = "", extent = NA, ij = NULL)
+vapour_read_geometry_ij(
+  dsource,
+  layer = 0L,
+  sql = "",
+  extent = NA,
+  ij = NULL,
+  open_options = NULL
+)
 
 vapour_read_geometry(
   dsource,
@@ -15,7 +29,8 @@ vapour_read_geometry(
   sql = "",
   limit_n = NULL,
   skip_n = 0,
-  extent = NA
+  extent = NA,
+  open_options = NULL
 )
 
 vapour_read_geometry_text(
@@ -25,7 +40,8 @@ vapour_read_geometry_text(
   textformat = "json",
   limit_n = NULL,
   skip_n = 0L,
-  extent = NA_real_
+  extent = NA_real_,
+  open_options = NULL
 )
 
 vapour_read_extent(
@@ -34,7 +50,8 @@ vapour_read_extent(
   sql = "",
   limit_n = NULL,
   skip_n = 0,
-  extent = NA
+  extent = NA,
+  open_options = NULL
 )
 
 vapour_feature_extent(
@@ -43,7 +60,8 @@ vapour_feature_extent(
   sql = "",
   limit_n = NULL,
   skip_n = 0,
-  extent = NA
+  extent = NA,
+  open_options = NULL
 )
 
 vapour_read_type(
@@ -52,7 +70,8 @@ vapour_read_type(
   sql = "",
   limit_n = NULL,
   skip_n = 0,
-  extent = NA
+  extent = NA,
+  open_options = NULL
 )
 ```
 
@@ -82,6 +101,13 @@ vapour_read_type(
 
   an arbitrary index, integer vector with values between 0 and one less
   the number of features, duplicates allowed and arbitrary order is ok
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (as `-oo` in the GDAL command line tools), `NULL` for none.
+  The options a driver accepts are listed on its page at
+  <https://gdal.org/en/stable/drivers/vector/index.html>
 
 - ij:
 

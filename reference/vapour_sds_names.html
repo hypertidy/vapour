@@ -67,7 +67,7 @@ one.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vapour_sds_names</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vapour_sds_names</span><span class="op">(</span><span class="va">x</span>, open_options <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -76,6 +76,10 @@ one.</p>
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>a data source string, filename, database connection string,  or other URL</p></dd>
+
+
+<dt id="arg-open-options">open_options<a class="anchor" aria-label="anchor" href="#arg-open-options"></a></dt>
+<dd><p>open options for the driver, a character vector of <code>"NAME=VALUE"</code> strings (as <code>-oo</code> in the GDAL command line tools), <code>NULL</code> for none</p></dd>
 
 </dl></div>
     <div class="section level2">

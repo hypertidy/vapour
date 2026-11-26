@@ -5,7 +5,7 @@ Value is a named vector in a list.
 ## Usage
 
 ``` r
-vapour_geolocation(x, sds = NULL)
+vapour_geolocation(x, sds = NULL, open_options = NULL)
 ```
 
 ## Arguments
@@ -18,6 +18,13 @@ vapour_geolocation(x, sds = NULL)
 - sds:
 
   a subdataset number, if necessary
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (as `-oo` in the GDAL command line tools), `NULL` for none.
+  The options a driver accepts are listed on its page at
+  <https://gdal.org/en/stable/drivers/raster/index.html>
 
 ## Value
 

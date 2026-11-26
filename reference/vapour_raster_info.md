@@ -8,7 +8,7 @@ for more.
 ## Usage
 
 ``` r
-vapour_raster_info(x, ..., sds = NULL, min_max = FALSE)
+vapour_raster_info(x, ..., sds = NULL, min_max = FALSE, open_options = NULL)
 ```
 
 ## Arguments
@@ -30,6 +30,13 @@ vapour_raster_info(x, ..., sds = NULL, min_max = FALSE)
 
   logical, control computing min and max values in source ('FALSE' by
   default)
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (as `-oo` in the GDAL command line tools), `NULL` for none.
+  The options a driver accepts are listed on its page at
+  <https://gdal.org/en/stable/drivers/raster/index.html>
 
 ## Value
 

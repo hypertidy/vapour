@@ -6,7 +6,7 @@ empty string.
 ## Usage
 
 ``` r
-vapour_geom_name(dsource, layer = 0L, sql = "")
+vapour_geom_name(dsource, layer = 0L, sql = "", open_options = NULL)
 ```
 
 ## Arguments
@@ -24,6 +24,13 @@ vapour_geom_name(dsource, layer = 0L, sql = "")
 
   if not empty this is executed against the data source (layer will be
   ignored)
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (as `-oo` in the GDAL command line tools), `NULL` for none.
+  The options a driver accepts are listed on its page at
+  <https://gdal.org/en/stable/drivers/vector/index.html>
 
 ## Value
 

@@ -5,7 +5,7 @@ Obtain the names of available layers from a GDAL vector source.
 ## Usage
 
 ``` r
-vapour_layer_names(dsource, ...)
+vapour_layer_names(dsource, ..., open_options = NULL)
 ```
 
 ## Arguments
@@ -18,6 +18,13 @@ vapour_layer_names(dsource, ...)
 
   arguments ignored for deprecated compatibility (no 'sql' argument any
   longer)
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (as `-oo` in the GDAL command line tools), `NULL` for none.
+  The options a driver accepts are listed on its page at
+  <https://gdal.org/en/stable/drivers/vector/index.html>
 
 ## Value
 

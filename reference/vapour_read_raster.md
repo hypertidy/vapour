@@ -18,7 +18,8 @@ vapour_read_raster(
   set_na = TRUE,
   band_output_type = "",
   unscale = TRUE,
-  nara = FALSE
+  nara = FALSE,
+  open_options = NULL
 )
 ```
 
@@ -71,6 +72,11 @@ vapour_read_raster(
 - nara:
 
   logical whether to return a (scaled) nativeRaster
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (as `-oo` in the GDAL command line tools), `NULL` for none
 
 ## Value
 

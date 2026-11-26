@@ -11,7 +11,7 @@ vapour_proj_version()
 
 vapour_all_drivers()
 
-vapour_driver(dsource)
+vapour_driver(dsource, open_options = NULL)
 ```
 
 ## Arguments
@@ -20,6 +20,11 @@ vapour_driver(dsource)
 
   data source string (i.e. file name or URL or database connection
   string)
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings, `NULL` for none
 
 ## Value
 

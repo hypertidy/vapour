@@ -80,6 +80,27 @@ implemented. Functions return raw lists or vectors rather than data frames or
 classed types.</p>
     </div>
     <div class="section level2">
+    <h2 id="gdal-messages">GDAL messages<a class="anchor" aria-label="anchor" href="#gdal-messages"></a></h2>
+
+
+
+<p>Errors and warnings from GDAL are signalled as R conditions. When a call
+fails, GDAL's reason is part of the error message. When a call returns, each
+message GDAL raised along the way is an R warning that starts with
+<code>GDAL warning</code> or <code>GDAL error</code>, so <code><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings()</a></code>, <code><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch()</a></code> and
+<code>options(warn = 2)</code> work on them as on any other warning.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="open-options">Open options<a class="anchor" aria-label="anchor" href="#open-options"></a></h2>
+
+
+
+<p>Functions that read a source take <code>open_options</code>, a character vector of
+<code>"NAME=VALUE"</code> strings for the driver, as <code>-oo</code> in the GDAL command line
+tools. <code>NULL</code>, <code><a href="https://rdrr.io/r/base/character.html" class="external-link">character()</a></code> and <code>""</code> all mean none. The options each driver
+accepts are listed on its page at <a href="https://gdal.org/en/stable/drivers/" class="external-link">https://gdal.org/en/stable/drivers/</a>.</p>
+    </div>
+    <div class="section level2">
     <h2 id="options">options<a class="anchor" aria-label="anchor" href="#options"></a></h2>
 
 

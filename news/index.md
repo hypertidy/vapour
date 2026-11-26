@@ -2,6 +2,158 @@
 
 ## vapour (development version)
 
+This is a robustness release: no function is removed and no return value
+changes shape. What changes is how problems are reported, and a number
+of inputs that crashed R are now errors.
+
+### GDAL messages are R conditions
+
+- Errors and warnings from GDAL are no longer written to stderr, where R
+  could not catch them and some front ends did not show them. They are
+  collected during each call and then signalled in R:
+
+  - when the call fails, GDAL’s reason is part of the error message, for
+    example
+    `cannot open 'nofile.gpkg': nofile.gpkg: No such file or directory`;
+  - when the call returns, each GDAL warning is an R warning that starts
+    `GDAL warning <n>:`, and each GDAL failure that did not stop the
+    call is an R warning that starts `GDAL error <n>:`.
+
+  So [`suppressWarnings()`](https://rdrr.io/r/base/warning.html),
+  [`tryCatch()`](https://rdrr.io/r/base/conditions.html) and
+  `options(warn = 2)` now apply to GDAL’s messages. Code that was quiet
+  at the console because the text went to stderr may now show warnings:
+  they are the same messages. Output from `CPL_DEBUG` is still printed
+  as it happens.
+
+- Messages raised on GDAL’s worker threads (a warp with `-multi`, or
+  `GDAL_NUM_THREADS`) are collected as well, with GDAL 3.7 or later.
+
+- The wording of some errors has changed with this. A vector source that
+  cannot be opened is `cannot open '<dsn>': <reason>` (it was
+  `Open failed.`), and a raster source is
+  `cannot open dataset '<dsn>': <reason>` or
+  `GDAL was unable to open '<dsn>': <reason>`. A warp source that cannot
+  be read is an error that names it, where it was a line of printed text
+  followed by an empty error.
+
+### Open options
+
+- Every function that reads a source gains `open_options`, a character
+  vector of `"NAME=VALUE"` strings passed to the driver when the source
+  is opened, as `-oo` in the GDAL command line tools
+  ([\#224](https://github.com/hypertidy/vapour/issues/224)). This covers
+  the raster readers
+  ([`vapour_raster_info()`](https://hypertidy.github.io/vapour/reference/vapour_raster_info.md),
+  [`vapour_raster_gcp()`](https://hypertidy.github.io/vapour/reference/vapour_raster_gcp.md),
+  [`vapour_sds()`](https://hypertidy.github.io/vapour/reference/vapour_sds.md),
+  [`vapour_sds_names()`](https://hypertidy.github.io/vapour/reference/vapour_sds_names.md),
+  [`vapour_geolocation()`](https://hypertidy.github.io/vapour/reference/vapour_geolocation.md),
+  [`vapour_read_raster()`](https://hypertidy.github.io/vapour/reference/vapour_read_raster.md)
+  and its typed forms,
+  [`vapour_read_raster_block()`](https://hypertidy.github.io/vapour/reference/vapour_read_raster_block.md),
+  [`vapour_vrt()`](https://hypertidy.github.io/vapour/reference/vapour_vrt.md),
+  the `gdal_raster_*()` functions) and the vector readers
+  ([`vapour_layer_names()`](https://hypertidy.github.io/vapour/reference/vapour_layer_names.md),
+  [`vapour_layer_info()`](https://hypertidy.github.io/vapour/reference/vapour_layer_info.md),
+  [`vapour_layer_extent()`](https://hypertidy.github.io/vapour/reference/vapour_layer_extent.md),
+  [`vapour_driver()`](https://hypertidy.github.io/vapour/reference/GDAL-library.md),
+  [`vapour_geom_name()`](https://hypertidy.github.io/vapour/reference/vapour_geom_name.md),
+  [`vapour_geom_summary()`](https://hypertidy.github.io/vapour/reference/vapour_geom_summary.md),
+  [`vapour_report_fields()`](https://hypertidy.github.io/vapour/reference/vapour_report_fields.md),
+  [`vapour_read_fields()`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md),
+  [`vapour_read_fids()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md),
+  [`vapour_read_geometry()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
+  and its variants,
+  [`vapour_read_extent()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md),
+  [`vapour_feature_extent()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md),
+  [`vapour_read_type()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)).
+  [`vapour_vrt()`](https://hypertidy.github.io/vapour/reference/vapour_vrt.md)
+  records the options in the VRT, so they apply again when the VRT is
+  opened.
+
+- The `open_options` argument of
+  [`vapour_warp_raster()`](https://hypertidy.github.io/vapour/reference/vapour_warp_raster.md)
+  now has an effect, as do `"-oo"` pairs given in `options` to
+  [`vapour_warp_raster()`](https://hypertidy.github.io/vapour/reference/vapour_warp_raster.md)
+  and the `gdal_raster_*()` functions. They were accepted and ignored,
+  because vapour opens the sources itself.
+
+### Crashes fixed
+
+- [`vapour_geolocation()`](https://hypertidy.github.io/vapour/reference/vapour_geolocation.md)
+  crashed R for a source that could not be opened, and for a source with
+  geolocation metadata in which any item was not set. An item that is
+  not set is now `NA`.
+
+- [`vapour_vrt()`](https://hypertidy.github.io/vapour/reference/vapour_vrt.md)
+  kept the source open, once for every call that changed anything about
+  the source (`extent`, `projection`, `bands`, `geolocation`,
+  `overview`, `options`, or a subdataset). A long loop ran out of file
+  handles.
+
+- [`vapour_read_fields()`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md)
+  and
+  [`vapour_read_attributes()`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md)
+  failed with `Invalid input type, expected 'integer' actual 'logical'`
+  for any layer with a boolean field. Boolean fields are read as logical
+  vectors.
+
+- A read that failed inside GDAL returned a vector of zeros after
+  printing `we have a problem at RasterIO`. It is now an error with
+  GDAL’s reason. A block read outside the raster is the common case.
+
+- The size of a raster read is computed without integer overflow. A
+  request for more than 2^31 cells could write outside its buffer.
+
+- Internal entry points with no check on the open, the driver, the band
+  or the size of the data no longer crash: writing a block with more
+  values than cells, a create-copy with an unknown driver, a feature
+  read by a FID that is not there, and index reads past the end of the
+  index.
+
+- Datasets, features, SQL result sets and option structures are now held
+  in owning handles in the C++ code, so an error, a warning under
+  `options(warn = 2)` or a failed allocation part way through a call no
+  longer leaves them open. All sources are opened in one place.
+
+### Other fixes
+
+- [`vapour_raster_info()`](https://hypertidy.github.io/vapour/reference/vapour_raster_info.md)
+  now answers for the subdataset when `sds` is given. `sds` was ignored
+  and the container was described.
+  [`vapour_read_raster()`](https://hypertidy.github.io/vapour/reference/vapour_read_raster.md)
+  checks its `window` against the subdataset it reads for the same
+  reason.
+
+- `vapour_raster_info(min_max = TRUE)` computes the minimum and maximum.
+  It reported them only when the source already recorded them.
+
+- [`vapour_warp_raster()`](https://hypertidy.github.io/vapour/reference/vapour_warp_raster.md):
+  `transformation_options` no longer discards `warp_options` and
+  `options`, and `source_extent` is now applied. It was dropped, so the
+  source kept its own extent.
+
+- `vapour_vrt(nomd = TRUE)` removes all of the dataset and band metadata
+  from the VRT. Some was left, `AREA_OR_POINT` for a GeoTIFF.
+
+- [`vapour_read_fields()`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md)
+  gives `NA` for a feature that was counted and then not read, with the
+  existing warning `not as many features as requested`. Those values
+  were whatever was in memory. This happens when a driver counts by
+  bounding box and then filters by geometry, as GeoPackage does for
+  `sql` with `extent`.
+
+- [`vapour_layer_extent()`](https://hypertidy.github.io/vapour/reference/vapour_layer_extent.md)
+  and
+  [`vapour_layer_info()`](https://hypertidy.github.io/vapour/reference/vapour_layer_info.md)
+  give an extent of `NA` for a layer that has none (no geometry column,
+  or no features), without printing `problem in get extent`.
+
+- [`buildvrt()`](https://hypertidy.github.io/vapour/reference/buildvrt.md)
+  no longer reads its source names and options through pointers to
+  strings that had been freed.
+
 ## vapour 0.20.0
 
 CRAN release: 2026-11-26

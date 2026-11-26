@@ -17,7 +17,8 @@ gdal_raster_data(
   band_output_type = NULL,
   options = character(),
   include_meta = TRUE,
-  unscale = TRUE
+  unscale = TRUE,
+  open_options = NULL
 )
 
 gdal_raster_dsn(
@@ -31,7 +32,8 @@ gdal_raster_dsn(
   band_output_type = NULL,
   options = character(),
   out_dsn = tempfile(fileext = ".tif"),
-  include_meta = TRUE
+  include_meta = TRUE,
+  open_options = NULL
 )
 
 gdal_raster_image(
@@ -44,7 +46,8 @@ gdal_raster_image(
   bands = NULL,
   band_output_type = NULL,
   options = character(),
-  include_meta = TRUE
+  include_meta = TRUE,
+  open_options = NULL
 )
 
 gdal_raster_nara(
@@ -57,7 +60,8 @@ gdal_raster_nara(
   bands = NULL,
   band_output_type = NULL,
   options = character(),
-  include_meta = TRUE
+  include_meta = TRUE,
+  open_options = NULL
 )
 ```
 
@@ -112,6 +116,13 @@ gdal_raster_nara(
   offset to floating point, set to `FALSE` to get the stored values. An
   integer `band_output_type` also gives the stored values, see
   [vapour_read_raster](https://hypertidy.github.io/vapour/reference/vapour_read_raster.md)
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (as `-oo` in the GDAL command line tools), `NULL` for none.
+  These apply when each source is opened, `"-oo"` pairs found in
+  `options` are treated the same way
 
 - out_dsn:
 

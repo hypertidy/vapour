@@ -19,7 +19,8 @@ vapour_vrt(
   relative_to_vrt = FALSE,
   nomd = FALSE,
   overview = -1L,
-  options = character()
+  options = character(),
+  open_options = NULL
 )
 ```
 
@@ -75,6 +76,13 @@ vapour_vrt(
 
   pass in options to the VRT creation, like 'c("-expand", "rgb", "-ot",
   "Byte"('
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (as `-oo` in the GDAL command line tools), `NULL` for none.
+  They are recorded in the VRT, so they apply again when the VRT is
+  opened
 
 ## Value
 

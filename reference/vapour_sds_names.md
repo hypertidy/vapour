@@ -11,7 +11,7 @@ treat a source as a subdataset, even if there's only one.
 ## Usage
 
 ``` r
-vapour_sds_names(x)
+vapour_sds_names(x, open_options = NULL)
 ```
 
 ## Arguments
@@ -20,6 +20,11 @@ vapour_sds_names(x)
 
   a data source string, filename, database connection string, or other
   URL
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (as `-oo` in the GDAL command line tools), `NULL` for none
 
 ## Value
 

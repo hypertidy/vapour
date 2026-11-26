@@ -160,7 +160,9 @@ vapour_warp_raster_hex(
 
 - open_options:
 
-  character vector of options, as in gdalwarp -oo - see Details
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (as `-oo` in the GDAL command line tools), `NULL` for none,
+  applied when each source is opened
 
 - options:
 

@@ -69,7 +69,8 @@ it is missing.</p>
 <span>  relative_to_vrt <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  nomd <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  overview <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>,</span>
-<span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  open_options <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -119,6 +120,10 @@ it is missing.</p>
 
 <dt id="arg-options">options<a class="anchor" aria-label="anchor" href="#arg-options"></a></dt>
 <dd><p>pass in options to the VRT creation, like 'c("-expand", "rgb", "-ot", "Byte"('</p></dd>
+
+
+<dt id="arg-open-options">open_options<a class="anchor" aria-label="anchor" href="#arg-open-options"></a></dt>
+<dd><p>open options for the driver, a character vector of <code>"NAME=VALUE"</code> strings (as <code>-oo</code> in the GDAL command line tools), <code>NULL</code> for none. They are recorded in the VRT, so they apply again when the VRT is opened</p></dd>
 
 </dl></div>
     <div class="section level2">

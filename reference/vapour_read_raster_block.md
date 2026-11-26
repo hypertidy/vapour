@@ -12,7 +12,8 @@ vapour_read_raster_block(
   band = 1L,
   band_output_type = "",
   unscale = TRUE,
-  nara = FALSE
+  nara = FALSE,
+  open_options = NULL
 )
 ```
 
@@ -47,6 +48,12 @@ vapour_read_raster_block(
 - nara:
 
   if 'TRUE' return in nativeRaster format
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (e.g. `"IGNORE_COG_LAYOUT_BREAK=YES"` to write to a COG),
+  `NULL` for none
 
 ## Value
 

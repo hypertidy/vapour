@@ -6,7 +6,14 @@ query and input extent filter.
 ## Usage
 
 ``` r
-vapour_layer_extent(dsource, layer = 0L, sql = "", extent = 0, ...)
+vapour_layer_extent(
+  dsource,
+  layer = 0L,
+  sql = "",
+  extent = 0,
+  ...,
+  open_options = NULL
+)
 ```
 
 ## Arguments
@@ -32,6 +39,13 @@ vapour_layer_extent(dsource, layer = 0L, sql = "", extent = 0, ...)
 - ...:
 
   unused
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (as `-oo` in the GDAL command line tools), `NULL` for none.
+  The options a driver accepts are listed on its page at
+  <https://gdal.org/en/stable/drivers/vector/index.html>
 
 ## Value
 

@@ -12,7 +12,8 @@ vapour_geom_summary(
   sql = "",
   limit_n = NULL,
   skip_n = 0,
-  extent = NA
+  extent = NA,
+  open_options = NULL
 )
 ```
 
@@ -45,6 +46,13 @@ vapour_geom_summary(
   apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin,
   xmax, ymin, ymax)' but sp bbox, sf bbox, and raster extent also
   accepted)
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (as `-oo` in the GDAL command line tools), `NULL` for none.
+  The options a driver accepts are listed on its page at
+  <https://gdal.org/en/stable/drivers/vector/index.html>
 
 ## Value
 

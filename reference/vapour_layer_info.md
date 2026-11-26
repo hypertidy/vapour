@@ -11,7 +11,8 @@ vapour_layer_info(
   sql = "",
   extent = NA,
   count = TRUE,
-  ...
+  ...,
+  open_options = NULL
 )
 ```
 
@@ -46,6 +47,13 @@ vapour_layer_info(
 - ...:
 
   unused, reserved for future use
+
+- open_options:
+
+  open options for the driver, a character vector of `"NAME=VALUE"`
+  strings (as `-oo` in the GDAL command line tools), `NULL` for none.
+  The options a driver accepts are listed on its page at
+  <https://gdal.org/en/stable/drivers/vector/index.html>
 
 ## Value
 

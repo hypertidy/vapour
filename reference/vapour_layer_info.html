@@ -55,7 +55,8 @@
 <span>  sql <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  extent <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  count <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  open_options <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -85,6 +86,10 @@
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>unused, reserved for future use</p></dd>
+
+
+<dt id="arg-open-options">open_options<a class="anchor" aria-label="anchor" href="#arg-open-options"></a></dt>
+<dd><p>open options for the driver, a character vector of <code>"NAME=VALUE"</code> strings (as <code>-oo</code> in the GDAL command line tools), <code>NULL</code> for none. The options a driver accepts are listed on its page at <a href="https://gdal.org/en/stable/drivers/vector/index.html" class="external-link">https://gdal.org/en/stable/drivers/vector/index.html</a></p></dd>
 
 </dl></div>
     <div class="section level2">

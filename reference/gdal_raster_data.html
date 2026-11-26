@@ -60,7 +60,8 @@
 <span>  band_output_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  include_meta <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  unscale <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  unscale <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  open_options <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">gdal_raster_dsn</span><span class="op">(</span></span>
@@ -74,7 +75,8 @@
 <span>  band_output_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  out_dsn <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".tif"</span><span class="op">)</span>,</span>
-<span>  include_meta <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  include_meta <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  open_options <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">gdal_raster_image</span><span class="op">(</span></span>
@@ -87,7 +89,8 @@
 <span>  bands <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  band_output_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  include_meta <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  include_meta <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  open_options <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">gdal_raster_nara</span><span class="op">(</span></span>
@@ -100,7 +103,8 @@
 <span>  bands <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  band_output_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  include_meta <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  include_meta <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  open_options <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -150,6 +154,10 @@
 
 <dt id="arg-unscale">unscale<a class="anchor" aria-label="anchor" href="#arg-unscale"></a></dt>
 <dd><p>default is <code>TRUE</code> so values are converted by the band's scale and offset to floating point, set to <code>FALSE</code> to get the stored values. An integer <code>band_output_type</code> also gives the stored values, see <a href="vapour_read_raster.html">vapour_read_raster</a></p></dd>
+
+
+<dt id="arg-open-options">open_options<a class="anchor" aria-label="anchor" href="#arg-open-options"></a></dt>
+<dd><p>open options for the driver, a character vector of <code>"NAME=VALUE"</code> strings (as <code>-oo</code> in the GDAL command line tools), <code>NULL</code> for none. These apply when each source is opened, <code>"-oo"</code> pairs found in <code>options</code> are treated the same way</p></dd>
 
 
 <dt id="arg-out-dsn">out_dsn<a class="anchor" aria-label="anchor" href="#arg-out-dsn"></a></dt>
