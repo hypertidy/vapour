@@ -1,5 +1,7 @@
 # Changelog
 
+## vapour (development version)
+
 ## vapour 0.20.0
 
 CRAN release: 2026-11-26

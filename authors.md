@@ -44,16 +44,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/hypertidy/vapour/blob/v0.20.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/hypertidy/vapour/blob/main/DESCRIPTION)
 
 Sumner M (2026). *vapour: Access to the 'Geospatial Data Abstraction
-Library' ('GDAL')*. R package version 0.20.0,
+Library' ('GDAL')*. R package version 0.20.0.9000,
 <https://github.com/hypertidy/vapour>.
 
     @Manual{,
       title = {vapour: Access to the 'Geospatial Data Abstraction Library' ('GDAL')},
       author = {Michael Sumner},
       year = {2026},
-      note = {R package version 0.20.0},
+      note = {R package version 0.20.0.9000},
       url = {https://github.com/hypertidy/vapour},
     }

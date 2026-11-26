@@ -62,7 +62,7 @@ file.copy(f, tf <- tempfile(fileext = ".tif"))
 try(vapour_write_raster_block(tf, data = v[[1]], offset = c(0L, 0L), 
                dimension = c(2L, 3L), band = 1L))
 #> Error in vapour_write_raster_block(tf, data = v[[1]], offset = c(0L, 0L),  : 
-#>   set 'overwrite' to TRUE if you really mean to write to file /tmp/Rtmpc5PG9u/file2057167d2c33.tif
+#>   set 'overwrite' to TRUE if you really mean to write to file /tmp/Rtmpaa6iyi/file205641e5dcc9.tif
 if (file.exists(tf)) file.remove(tf)
 #> [1] TRUE
 ```
