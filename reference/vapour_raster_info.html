@@ -128,8 +128,13 @@ Subdatasets may be specified by number, starting at 1. See
 <dt>corners</dt>
 <dd><p>corner coordinates of the data, for non-zero skew geotransforms a 2-column matrix with rows upperLeft, lowerLeft, lowerRight, upperRight, and center</p></dd>
 
+<dt>image_structure</dt>
+<dd><p>named character vector of the dataset's 'IMAGE_STRUCTURE' metadata, for example 'COMPRESSION', 'INTERLEAVE' or 'LAYOUT', or <code>NULL</code> if there is none</p></dd>
 
-</dl><p>Note that the geotransform is a kind of obscure combination of the extent and dimension, I don't find it
+
+</dl><p>A source with no geotransform reports GDAL's default, <code>c(0, 1, 0, 0, 0, 1)</code>, which
+is pixel and line coordinates with y increasing down. Its extent is then <code>c(0, ncol, 0, nrow)</code>.</p>
+<p>Note that the geotransform is a kind of obscure combination of the extent and dimension, I don't find it
 useful and modern GDAL is moving away from needing it so much. Extent is more sensible and used in many places in
 a straightforward way.</p>
 <p>On access vapour functions will report on the existence of subdatasets while
@@ -269,6 +274,10 @@ their dimensions will be listed as pairs of x,y values.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> lowerRight 150.010 -60.01833</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> upperRight 150.010 -39.99722</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> center     145.005 -50.00778</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $image_structure</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> COMPRESSION  INTERLEAVE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       "LZW"      "BAND" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

@@ -117,13 +117,16 @@
 <dd><p>the extent of all features xmin, xmax, ymin, ymax (can be turned off to avoid the extra work <code>extent</code>)</p></dd>
 
 <dt>projection</dt>
-<dd><p>a list of character strings, see next</p></dd>
+<dd><p>a list of formats of the projection metadata, see next</p></dd>
+
+<dt>filelist</dt>
+<dd><p>the files that make up the data source (may be none)</p></dd>
 
 
-</dl><p><code>$projection</code> is a list of various formats of the projection metadata.
+</dl><p><code>$projection</code> is a list with elements <code>Wkt</code>, <code>Proj4</code> and <code>EPSG</code>.
 Use <code>$projection$Wkt</code> as most authoritative, but we don't enter into the discussion or limit what
-might be done with this (that's up to you). Currently we see
-<code>c("Proj4", "MICoordSys", "PrettyWkt", "Wkt", "EPSG", "XML")</code> as names of this <code>$projection</code> element.</p>
+might be done with this (that's up to you). <code>EPSG</code> is the integer EPSG code when the
+projection carries one or GDAL can identify one for it, otherwise <code>NA</code>.</p>
 <p>To get the geometry type/s of a layer see <code><a href="vapour_read_geometry.html">vapour_read_type()</a></code>.</p>
     </div>
     <div class="section level2">

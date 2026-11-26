@@ -93,14 +93,17 @@ The layer information elements are
 
 - projection:
 
-  a list of character strings, see next
+  a list of formats of the projection metadata, see next
 
-`$projection` is a list of various formats of the projection metadata.
-Use `$projection$Wkt` as most authoritative, but we don't enter into the
+- filelist:
+
+  the files that make up the data source (may be none)
+
+`$projection` is a list with elements `Wkt`, `Proj4` and `EPSG`. Use
+`$projection$Wkt` as most authoritative, but we don't enter into the
 discussion or limit what might be done with this (that's up to you).
-Currently we see
-`c("Proj4", "MICoordSys", "PrettyWkt", "Wkt", "EPSG", "XML")` as names
-of this `$projection` element.
+`EPSG` is the integer EPSG code when the projection carries one or GDAL
+can identify one for it, otherwise `NA`.
 
 To get the geometry type/s of a layer see
 [`vapour_read_type()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md).

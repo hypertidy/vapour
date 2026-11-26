@@ -102,6 +102,16 @@ The structural metadata are
   2-column matrix with rows upperLeft, lowerLeft, lowerRight,
   upperRight, and center
 
+- image_structure:
+
+  named character vector of the dataset's 'IMAGE_STRUCTURE' metadata,
+  for example 'COMPRESSION', 'INTERLEAVE' or 'LAYOUT', or `NULL` if
+  there is none
+
+A source with no geotransform reports GDAL's default,
+`c(0, 1, 0, 0, 0, 1)`, which is pixel and line coordinates with y
+increasing down. Its extent is then `c(0, ncol, 0, nrow)`.
+
 Note that the geotransform is a kind of obscure combination of the
 extent and dimension, I don't find it useful and modern GDAL is moving
 away from needing it so much. Extent is more sensible and used in many
@@ -253,5 +263,9 @@ vapour_raster_info(f)
 #> lowerRight 150.010 -60.01833
 #> upperRight 150.010 -39.99722
 #> center     145.005 -50.00778
+#> 
+#> $image_structure
+#> COMPRESSION  INTERLEAVE 
+#>       "LZW"      "BAND" 
 #> 
 ```

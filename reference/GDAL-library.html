@@ -81,6 +81,7 @@ as described for "GDALVersionInfo". <a href="https://gdal.org/" class="external-
 <li><p><code>create</code> driver can create (note vapour provides no write capacity)</p></li>
 <li><p><code>copy</code>   driver can copy (note vapour provides no write capacity)</p></li>
 <li><p><code>virtual</code> driver has virtual capabilities ('vsi')</p></li>
+<li><p><code>sql_dialects</code> the SQL dialects a vector driver supports, space separated with the default first (<code>NA</code> for other drivers, and before GDAL 3.6)</p></li>
 </ul><p><code>vapour_driver()</code> returns the short name of the driver, e.g. 'GPKG' or 'GTiff', to get the
 long name and other properties use <code>vapour_all_drivers()</code> and match on 'driver'.</p>
     </div>
@@ -97,8 +98,8 @@ long name and other properties use <code>vapour_all_drivers()</code> and match o
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "FlatGeobuf"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">drv</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="fu">vapour_driver</span><span class="op">(</span><span class="va">f</span><span class="op">)</span>, <span class="va">drv</span><span class="op">$</span><span class="va">driver</span><span class="op">)</span>, <span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         driver       name vector raster create  copy virtual</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 166 FlatGeobuf FlatGeobuf   TRUE  FALSE   TRUE FALSE    TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         driver       name vector raster create  copy virtual  sql_dialects</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 166 FlatGeobuf FlatGeobuf   TRUE  FALSE   TRUE FALSE    TRUE OGRSQL SQLITE</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

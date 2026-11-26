@@ -318,7 +318,11 @@ argument of ExecuteSQL</a>.</p>
 <span><span class="co">#&gt; lowerLeft  140.000 -60.01833</span></span>
 <span><span class="co">#&gt; lowerRight 150.010 -60.01833</span></span>
 <span><span class="co">#&gt; upperRight 150.010 -39.99722</span></span>
-<span><span class="co">#&gt; center     145.005 -50.00778</span></span></code></pre></div>
+<span><span class="co">#&gt; center     145.005 -50.00778</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $image_structure</span></span>
+<span><span class="co">#&gt; COMPRESSION  INTERLEAVE </span></span>
+<span><span class="co">#&gt;       "LZW"      "BAND"</span></span></code></pre></div>
 <p>Read raster data (requires explicit setting of <code>window</code>
 argument, and is not useful without being used in the context of the
 raster dimensions).</p>
@@ -478,14 +482,15 @@ upon.</p>
 <span><span class="co">#&gt; [1] "GDAL 3.12.2 \"Chicoutimi\", released 2026/02/03"</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/GDAL-library.html">vapour_all_drivers</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 7</span></span>
-<span><span class="co">#&gt;  $ driver : chr [1:210] "DERIVED" "GTI" "SNAP_TIFF" "GTiff" ...</span></span>
-<span><span class="co">#&gt;  $ name   : chr [1:210] "Derived datasets using VRT pixel functions" "GDAL Raster Tile Index" "Sentinel Application Processing GeoTIFF" "GeoTIFF" ...</span></span>
-<span><span class="co">#&gt;  $ vector : logi [1:210] FALSE FALSE FALSE FALSE FALSE FALSE ...</span></span>
-<span><span class="co">#&gt;  $ raster : logi [1:210] TRUE TRUE TRUE TRUE TRUE TRUE ...</span></span>
-<span><span class="co">#&gt;  $ create : logi [1:210] FALSE FALSE FALSE TRUE FALSE FALSE ...</span></span>
-<span><span class="co">#&gt;  $ copy   : logi [1:210] FALSE FALSE FALSE TRUE TRUE FALSE ...</span></span>
-<span><span class="co">#&gt;  $ virtual: logi [1:210] FALSE TRUE TRUE TRUE TRUE TRUE ...</span></span></code></pre></div>
+<span><span class="co">#&gt; List of 8</span></span>
+<span><span class="co">#&gt;  $ driver      : chr [1:210] "DERIVED" "GTI" "SNAP_TIFF" "GTiff" ...</span></span>
+<span><span class="co">#&gt;  $ name        : chr [1:210] "Derived datasets using VRT pixel functions" "GDAL Raster Tile Index" "Sentinel Application Processing GeoTIFF" "GeoTIFF" ...</span></span>
+<span><span class="co">#&gt;  $ vector      : logi [1:210] FALSE FALSE FALSE FALSE FALSE FALSE ...</span></span>
+<span><span class="co">#&gt;  $ raster      : logi [1:210] TRUE TRUE TRUE TRUE TRUE TRUE ...</span></span>
+<span><span class="co">#&gt;  $ create      : logi [1:210] FALSE FALSE FALSE TRUE FALSE FALSE ...</span></span>
+<span><span class="co">#&gt;  $ copy        : logi [1:210] FALSE FALSE FALSE TRUE TRUE FALSE ...</span></span>
+<span><span class="co">#&gt;  $ virtual     : logi [1:210] FALSE TRUE TRUE TRUE TRUE TRUE ...</span></span>
+<span><span class="co">#&gt;  $ sql_dialects: chr [1:210] NA NA NA NA ...</span></span></code></pre></div>
 <p>Find the driver that will be used for a given data source.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/GDAL-library.html">vapour_driver</a></span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span></span>

@@ -48,6 +48,10 @@ drivers, in a list. This contains:
 
 - `virtual` driver has virtual capabilities ('vsi')
 
+- `sql_dialects` the SQL dialects a vector driver supports, space
+  separated with the default first (`NA` for other drivers, and before
+  GDAL 3.6)
+
 `vapour_driver()` returns the short name of the driver, e.g. 'GPKG' or
 'GTiff', to get the long name and other properties use
 `vapour_all_drivers()` and match on 'driver'.
@@ -65,6 +69,6 @@ vapour_driver(f)
 #> [1] "FlatGeobuf"
 
 as.data.frame(drv)[match(vapour_driver(f), drv$driver), ]
-#>         driver       name vector raster create  copy virtual
-#> 166 FlatGeobuf FlatGeobuf   TRUE  FALSE   TRUE FALSE    TRUE
+#>         driver       name vector raster create  copy virtual  sql_dialects
+#> 166 FlatGeobuf FlatGeobuf   TRUE  FALSE   TRUE FALSE    TRUE OGRSQL SQLITE
 ```
