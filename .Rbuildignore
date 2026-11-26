@@ -32,8 +32,10 @@
 ^Dockerfile$
 ^inst/ci$
 ^out.tif$
+^\.posit$
 ^\.positai$
 ^\.claude$
 ^\.posit/assistant$
 ^_pkgdown\.yml$
 ^errors\.txt$
+^vapour/tests/testthat/_snaps$
