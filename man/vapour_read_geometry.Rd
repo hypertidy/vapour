@@ -7,6 +7,7 @@
 \alias{vapour_read_geometry_ij}
 \alias{vapour_read_geometry_text}
 \alias{vapour_read_extent}
+\alias{vapour_feature_extent}
 \alias{vapour_read_type}
 \title{Read GDAL feature geometry}
 \usage{
@@ -34,6 +35,15 @@ vapour_read_geometry_text(
 )
 
 vapour_read_extent(
+  dsource,
+  layer = 0L,
+  sql = "",
+  limit_n = NULL,
+  skip_n = 0,
+  extent = NA
+)
+
+vapour_feature_extent(
   dsource,
   layer = 0L,
   sql = "",
@@ -73,6 +83,7 @@ vapour_read_type(
 \value{
 for \code{\link[=vapour_read_geometry]{vapour_read_geometry()}}, \code{\link[=vapour_read_geometry_ia]{vapour_read_geometry_ia()}} and \code{\link[=vapour_read_geometry_ij]{vapour_read_geometry_ij()}} a raw vector of
 geometry, for \code{\link[=vapour_read_extent]{vapour_read_extent()}} a list of numeric vectors each with 'xmin,xmax,ymin,ymax' respectively for each geometry,
+for \code{\link[=vapour_feature_extent]{vapour_feature_extent()}} a numeric matrix with columns 'xmin', 'xmax', 'ymin', 'ymax' and one row for each geometry,
 for \code{\link[=vapour_read_type]{vapour_read_type()}} a character vector. See Details for more information.
 }
 \description{
@@ -82,6 +93,8 @@ Read GDAL geometry as binary blob, text, or numeric extent.
 \code{vapour_read_geometry} will read features as binary WKB, \code{vapour_read_geometry_text} as various text formats (geo-json, wkt, kml, gml),
 
 \code{vapour_read_extent} a numeric extent which is the native bounding box, the four numbers (in this order) \verb{xmin, xmax, ymin, ymax}.
+\code{vapour_feature_extent} gives the same extents as a matrix, one row for each feature, with those four as named columns. A
+missing geometry is a row of \code{NA}.
 For each function an optional SQL string will be evaluated against the data source before reading.
 
 \code{vapour_read_geometry_ia} will read features by \emph{arbitrary index}, so any integer between 0 and one less than the number of
@@ -119,6 +132,10 @@ txtjson <- vapour_read_geometry_text(mvfile, sql = SQL)
 
 ## polygon extents in a list xmin, xmax, ymin, ymax
 exgeom <- vapour_read_extent(mvfile)
+
+## the same extents as a matrix, one row for each polygon
+exmat <- vapour_feature_extent(mvfile)
+head(exmat)
 
 ## points in raw text (GeoJSON)
 txtpointjson <- vapour_read_geometry_text(pfile)

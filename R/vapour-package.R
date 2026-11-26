@@ -44,7 +44,8 @@
 #' data source \cr \code{\link{vapour_layer_info}} \tab list of data source,
 #' driver, layer name/s, fields, feature count, projection \cr
 #' \code{\link{vapour_read_extent}}        \tab read the extent, or bounding
-#' box, of geometries in a layer \cr \code{\link{vapour_read_fields}}    \tab
+#' box, of geometries in a layer \cr \code{\link{vapour_feature_extent}} \tab
+#' the same extents as a matrix, one row for each feature \cr \code{\link{vapour_read_fields}}    \tab
 #' read attributes of features in a layer, the columnar data associated with
 #' each geometry \cr \code{\link{vapour_read_geometry}}      \tab read geometry
 #' in binary (blob, WKB) form \cr \code{\link{vapour_read_geometry_ia}} \tab

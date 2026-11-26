@@ -1,5 +1,10 @@
 # vapour 0.20.0
 
+* New `vapour_feature_extent()` returns the extent of each feature as a
+  matrix with columns `xmin`, `xmax`, `ymin`, `ymax`, one row for each
+  feature and a row of `NA` for a missing geometry. `vapour_read_extent()`
+  is unchanged and still returns a list of four-number vectors (#142).
+
 * Integer reads no longer turn every value at or below the nodata value into
   `NA`, only the nodata value itself. This affected `vapour_read_raster()` and
   `vapour_warp_raster()` on integer sources: with a nodata value of 0, all
