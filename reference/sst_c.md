@@ -1,0 +1,30 @@
+# SST contours
+
+Southern Ocean GHRSST contours in sf data frame from 2017-07-28, read
+from
+
+## Details
+
+podaac-ftp.jpl.nasa.gov/allData/ghrsst/data/GDS2/L4
+GLOB/JPL/MUR/v4.1/2017/209/
+20170728090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.nc
+
+See data-raw/sst_c.R for the derivation column `sst_c` in Celsius.
+
+Also stored in FlatGeoBuf format in
+`system.file("extdata/sst_c.fgb", package = "vapour")`
+
+## Examples
+
+``` r
+f <- system.file("extdata/sst_c.fgb", package = "vapour")
+
+## create a class-less form of the data in the 'sst_c.fgb' file  with GeoJSON geometry
+atts <- vapour_read_fields(f)
+dat <- as.data.frame(atts, stringsAsFactors = FALSE)
+dat[["json"]] <- vapour_read_geometry_text(f)
+names(dat)
+#> [1] "level" "sst"   "json" 
+names(sst_c)
+#> [1] "level"    "geometry" "sst"     
+```
