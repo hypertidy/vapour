@@ -111,6 +111,8 @@ vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ...) 
 #' `vapour_read_geometry` will read features as binary WKB, `vapour_read_geometry_text` as various text formats (geo-json, wkt, kml, gml),
 #' 
 #' `vapour_read_extent` a numeric extent which is the native bounding box, the four numbers (in this order) `xmin, xmax, ymin, ymax`.
+#' `vapour_feature_extent` gives the same extents as a matrix, one row for each feature, with those four as named columns. A 
+#' missing geometry is a row of `NA`.
 #' For each function an optional SQL string will be evaluated against the data source before reading.
 #'
 #' `vapour_read_geometry_ia` will read features by *arbitrary index*, so any integer between 0 and one less than the number of
@@ -140,6 +142,7 @@ vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ...) 
 #' @param ij a range index, integer vector of length two with values between 0 and one less the number of features, this range of geometries is returned
 #' @return for [vapour_read_geometry()], [vapour_read_geometry_ia()] and [vapour_read_geometry_ij()] a raw vector of
 #'  geometry, for [vapour_read_extent()] a list of numeric vectors each with 'xmin,xmax,ymin,ymax' respectively for each geometry, 
+#'  for [vapour_feature_extent()] a numeric matrix with columns 'xmin', 'xmax', 'ymin', 'ymax' and one row for each geometry, 
 #'  for [vapour_read_type()] a character vector. See Details for more information. 
 #' @examples
 #' file <- "list_locality_postcode_meander_valley.tab"
@@ -159,6 +162,10 @@ vapour_layer_extent <- function(dsource, layer = 0L, sql = "", extent = 0, ...) 
 #'
 #' ## polygon extents in a list xmin, xmax, ymin, ymax
 #' exgeom <- vapour_read_extent(mvfile)
+#'
+#' ## the same extents as a matrix, one row for each polygon
+#' exmat <- vapour_feature_extent(mvfile)
+#' head(exmat)
 #'
 #' ## points in raw text (GeoJSON)
 #' txtpointjson <- vapour_read_geometry_text(pfile)
@@ -207,6 +214,14 @@ vapour_read_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL, sk
   if (any(nulls)) out[nulls] <- replicate(sum(nulls), rep(NA_real_, 4L), simplify = FALSE)
   out
 
+}
+
+#' @rdname vapour_read_geometry
+#' @export
+vapour_feature_extent <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+  ex <- vapour_read_extent(dsource, layer = layer, sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
+  matrix(as.double(unlist(ex, use.names = FALSE)), ncol = 4L, byrow = TRUE,
+         dimnames = list(NULL, c("xmin", "xmax", "ymin", "ymax")))
 }
 
 #' @rdname vapour_read_geometry

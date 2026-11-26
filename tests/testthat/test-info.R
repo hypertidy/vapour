@@ -30,3 +30,25 @@ test_that("an invalid extent filter warns once", {
   expect_identical(msgs, "extent filter invalid (xmax <= xmin), ignoring")
   expect_length(g, 7L)
 })
+
+test_that("feature extents come back as a matrix", {
+  f <- system.file("extdata", "sst_c.fgb", package = "vapour", mustWork = TRUE)
+  m <- vapour_feature_extent(f)
+  expect_true(is.matrix(m) && is.double(m))
+  expect_identical(dim(m), c(7L, 4L))
+  expect_identical(colnames(m), c("xmin", "xmax", "ymin", "ymax"))
+  expect_equal(unname(m), do.call(rbind, vapour_read_extent(f)))
+  expect_identical(dim(vapour_feature_extent(f, limit_n = 2L, skip_n = 1)), c(2L, 4L))
+
+  ## a missing geometry is a row of NA, no features is no rows
+  tf <- tempfile(fileext = ".geojson")
+  writeLines(c('{"type":"FeatureCollection","features":[',
+               '{"type":"Feature","properties":{"id":1},"geometry":{"type":"Point","coordinates":[2,3]}},',
+               '{"type":"Feature","properties":{"id":2},"geometry":null}]}'), tf)
+  mn <- vapour_feature_extent(tf)
+  expect_equal(unname(mn[1L, ]), c(2, 2, 3, 3))
+  expect_true(all(is.na(mn[2L, ])))
+  layer <- vapour_layer_names(tf)[1L]
+  none <- vapour_feature_extent(tf, sql = sprintf("SELECT * FROM \"%s\" WHERE id > 5", layer))
+  expect_identical(dim(none), c(0L, 4L))
+})
