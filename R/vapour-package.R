@@ -48,7 +48,10 @@
 #' the same extents as a matrix, one row for each feature \cr \code{\link{vapour_read_fields}}    \tab
 #' read attributes of features in a layer, the columnar data associated with
 #' each geometry \cr \code{\link{vapour_read_geometry}}      \tab read geometry
-#' in binary (blob, WKB) form \cr \code{\link{vapour_read_geometry_ia}} \tab
+#' in binary (blob, WKB) form \cr \code{\link{vapour_read_geometry_fa}} \tab
+#' read geometry by feature id, with \code{\link{vapour_read_fields_fa}} for
+#' fields. The \code{_ia} and \code{_ij} forms are also there for fields and
+#' for feature ids \cr \code{\link{vapour_read_geometry_ia}} \tab
 #' read geometry by index, arbitrary \cr \code{\link{vapour_read_geometry_ij}}
 #' \tab read geometry by sequential index, i to j \cr
 #' \code{\link{vapour_read_geometry_text}} \tab read geometry in text form,

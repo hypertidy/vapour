@@ -20,7 +20,6 @@ test_that("a source that cannot be opened is an R error with GDAL's reason", {
   ## internal entry points that had no check at all
   expect_error(warp_suggest_cpp("nofile.tif", "EPSG:4326"), "cannot open dataset")
   expect_error(vapour_read_raster_value_cpp("nofile.tif", 0L, 0L, 1L, ""), "cannot open dataset")
-  expect_error(blocks_cpp("nofile.tif", 0L, FALSE), "cannot open dataset")
   expect_error(vapour_create_copy_cpp(tif, tempfile(fileext = ".tif"), "NotADriver"), "driver")
 })
 

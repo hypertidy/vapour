@@ -2,7 +2,8 @@
 
 This is a robustness release: no function is removed and no return value
 changes shape. What changes is how problems are reported, and a number of
-inputs that crashed R are now errors.
+inputs that crashed R are now errors. Six functions are added, to read fields
+and feature ids for chosen features.
 
 ## GDAL messages are R conditions
 
@@ -50,6 +51,26 @@ inputs that crashed R are now errors.
   do `"-oo"` pairs given in `options` to `vapour_warp_raster()` and the
   `gdal_raster_*()` functions. They were accepted and ignored, because vapour
   opens the sources itself.
+
+## Reading chosen features
+
+* Fields and feature ids can now be read for chosen features, as geometry
+  already could. The new functions follow `vapour_read_geometry_ia()` and
+  `vapour_read_geometry_ij()`:
+    - `vapour_read_fields_ia()`, `vapour_read_fids_ia()`: by position, counted
+      from 0, in any order and with repeats;
+    - `vapour_read_fields_ij()`, `vapour_read_fids_ij()`: by an inclusive range
+      of positions;
+    - `vapour_read_geometry_fa()`, `vapour_read_fields_fa()`: by feature id,
+      the values `vapour_read_fids()` returns. This is direct access where the
+      driver supports it.
+
+  A position or feature id that is not in the layer gives `NA` (`NULL` for
+  geometry).
+
+* `vapour_read_geometry_ia()` now reads `ia` in any order and with repeats, as
+  documented. Only positions in ascending order without repeats were read, and
+  the rest came back empty.
 
 ## Crashes fixed
 

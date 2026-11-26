@@ -92,6 +92,7 @@ inline doubles layer_read_fids_ij(OGRLayer *poLayer, doubles ij) {
   if (n < 0) n = 0;
   writable::doubles out(n);
   for (R_xlen_t k = 0; k < out.size(); k++) out[k] = NA_REAL;
+  poLayer->ResetReading();
   R_xlen_t cnt = 0;
   R_xlen_t ii = 0;
   while (ii <= en) {
@@ -110,14 +111,18 @@ inline doubles layer_read_fids_ij(OGRLayer *poLayer, doubles ij) {
 }
 
 inline doubles layer_read_fids_all(OGRLayer *poLayer) {
-  R_xlen_t nFeature = poLayer->GetFeatureCount();
+  R_xlen_t nFeature = gdallibrary::force_layer_feature_count(poLayer);
   writable::doubles ij = {0.0, (double)(nFeature - 1)};
   return layer_read_fids_ij(poLayer, ij);
 }
 
+// The three *_ia readers walk the layer once, so 'ia' (feature positions from
+// 0) must be ascending with no repeats. The R functions sort it and put the
+// result back in the order asked for.
 inline doubles layer_read_fids_ia(OGRLayer *poLayer, doubles ia) {
   writable::doubles out(ia.size());
   for (R_xlen_t k = 0; k < out.size(); k++) out[k] = NA_REAL;
+  poLayer->ResetReading();
   R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
   while (cnt < ia.size()) {
@@ -153,6 +158,7 @@ inline list layer_read_geom_ij(OGRLayer *poLayer, strings format, doubles ij) {
   R_xlen_t n = en - st + 1;
   if (n < 0) n = 0;
   writable::list out(n);
+  poLayer->ResetReading();
   R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
   while (ii <= en) {
@@ -171,7 +177,7 @@ inline list layer_read_geom_ij(OGRLayer *poLayer, strings format, doubles ij) {
 }
 
 inline list layer_read_geom_all(OGRLayer *poLayer, strings format) {
-  R_xlen_t nFeature = poLayer->GetFeatureCount();
+  R_xlen_t nFeature = gdallibrary::force_layer_feature_count(poLayer);
   writable::doubles ij = {0.0, (double)(nFeature - 1)};
   return layer_read_geom_ij(poLayer, format, ij);
 }
@@ -304,6 +310,7 @@ inline list layer_read_fields_ij(OGRLayer *poLayer, strings fid_column_name,
   cpp11::function ISOdatetime_fn(cpp11::package("base")["ISOdatetime"]);
   cpp11::function ISOdate_fn(cpp11::package("base")["ISOdate"]);
 
+  poLayer->ResetReading();
   R_xlen_t cnt = 0;
   R_xlen_t ii = 0;
   while (ii <= en) {
@@ -322,7 +329,7 @@ inline list layer_read_fields_ij(OGRLayer *poLayer, strings fid_column_name,
 }
 
 inline list layer_read_fields_all(OGRLayer *poLayer, strings fid_column_name) {
-  R_xlen_t nFeature = poLayer->GetFeatureCount();
+  R_xlen_t nFeature = gdallibrary::force_layer_feature_count(poLayer);
   writable::doubles ij = {0.0, (double)(nFeature - 1)};
   return layer_read_fields_ij(poLayer, fid_column_name, ij);
 }
@@ -335,6 +342,7 @@ inline list layer_read_fields_ia(OGRLayer *poLayer, strings fid_column_name,
   cpp11::function ISOdatetime_fn(cpp11::package("base")["ISOdatetime"]);
   cpp11::function ISOdate_fn(cpp11::package("base")["ISOdate"]);
 
+  poLayer->ResetReading();
   R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
   while (cnt < nFeature) {
@@ -345,6 +353,9 @@ inline list layer_read_fields_ia(OGRLayer *poLayer, strings fid_column_name,
       cnt++;
     }
     ii++;
+  }
+  if (cnt < nFeature) {
+    cpp11::warning("not all features found");
   }
   return out;
 }

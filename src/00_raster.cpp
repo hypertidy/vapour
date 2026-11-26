@@ -42,19 +42,3 @@ list raster_io_gdal_cpp(strings dsn,
     return gdalraster::gdal_raster_io(dsn, window, band, resample, band_output_type, unscale, nara, open_options);
   });
 }
-
-[[cpp11::register]]
-strings sds_list_gdal_cpp(strings dsn) {
-  return gdal_call([&]() { return gdalraster::gdal_sds_list(as_cstr(dsn[0])); });
-}
-
-[[cpp11::register]]
-list sds_list_list_gdal_cpp(strings dsn) {
-  return gdal_call([&]() {
-    writable::list outlist(dsn.size());
-    for (int i = 0; i < dsn.size(); i++) {
-      outlist[i] = gdalraster::gdal_sds_list(as_cstr(dsn[i]));
-    }
-    return outlist;
-  });
-}

@@ -5,6 +5,7 @@
 \alias{vapour_read_geometry}
 \alias{vapour_read_geometry_ia}
 \alias{vapour_read_geometry_ij}
+\alias{vapour_read_geometry_fa}
 \alias{vapour_read_geometry_text}
 \alias{vapour_read_extent}
 \alias{vapour_feature_extent}
@@ -26,6 +27,15 @@ vapour_read_geometry_ij(
   sql = "",
   extent = NA,
   ij = NULL,
+  open_options = NULL
+)
+
+vapour_read_geometry_fa(
+  dsource,
+  layer = 0L,
+  sql = "",
+  extent = NA,
+  fa = NULL,
   open_options = NULL
 )
 
@@ -95,6 +105,8 @@ vapour_read_type(
 
 \item{ij}{a range index, integer vector of length two with values between 0 and one less the number of features, this range of geometries is returned}
 
+\item{fa}{feature id (FID) values, as returned by \code{\link[=vapour_read_fids]{vapour_read_fids()}}, in any order and with repeats}
+
 \item{limit_n}{an arbitrary limit to the number of features scanned}
 
 \item{skip_n}{an arbitrary number of features to skip}
@@ -102,7 +114,7 @@ vapour_read_type(
 \item{textformat}{indicate text output format, available are "json" (default), "gml", "kml", "wkt"}
 }
 \value{
-for \code{\link[=vapour_read_geometry]{vapour_read_geometry()}}, \code{\link[=vapour_read_geometry_ia]{vapour_read_geometry_ia()}} and \code{\link[=vapour_read_geometry_ij]{vapour_read_geometry_ij()}} a raw vector of
+for \code{\link[=vapour_read_geometry]{vapour_read_geometry()}}, \code{\link[=vapour_read_geometry_ia]{vapour_read_geometry_ia()}}, \code{\link[=vapour_read_geometry_ij]{vapour_read_geometry_ij()}} and \code{\link[=vapour_read_geometry_fa]{vapour_read_geometry_fa()}} a raw vector of
 geometry, for \code{\link[=vapour_read_extent]{vapour_read_extent()}} a list of numeric vectors each with 'xmin,xmax,ymin,ymax' respectively for each geometry,
 for \code{\link[=vapour_feature_extent]{vapour_feature_extent()}} a numeric matrix with columns 'xmin', 'xmax', 'ymin', 'ymax' and one row for each geometry,
 for \code{\link[=vapour_read_type]{vapour_read_type()}} a character vector. See Details for more information.
@@ -123,6 +135,13 @@ features. These may be duplicated. If 'ia' is greater than the highest index NUL
 
 \code{vapour_read_geometry_ij} will read features by \emph{index range}, so two numbers to read every feature between those limits inclusively.
 'i' and 'j' must be increasing.
+
+\code{vapour_read_geometry_fa} will read features by \emph{feature id}, the FID values that \code{\link[=vapour_read_fids]{vapour_read_fids()}} returns, in any order and
+with repeats. A FID that is not in the layer gives NULL, with a warning. This is direct access where the driver supports it,
+so it does not scan the layer.
+
+The same three ways to choose features are available for fields, see \code{\link[=vapour_read_fields_ia]{vapour_read_fields_ia()}}, and for feature ids,
+see \code{\link[=vapour_read_fids_ia]{vapour_read_fids_ia()}}.
 
 \code{vapour_read_type} will read the (wkb) type of the geometry as an integer. These are
 \code{0} unknown, \code{1} Point, \code{2} LineString, \code{3} Polygon, \code{4} MultiPoint, \code{5} MultiLineString,
@@ -162,4 +181,11 @@ head(exmat)
 txtpointjson <- vapour_read_geometry_text(pfile)
 ## points in raw text (WKT)
 txtpointwkt <- vapour_read_geometry_text(pfile, textformat = "wkt")
+
+## chosen features: by position, by range of positions, and by feature id
+g_ia <- vapour_read_geometry_ia(mvfile, ia = c(0, 5, 2))
+g_ij <- vapour_read_geometry_ij(mvfile, ij = c(0, 2))
+fids <- vapour_read_fids(mvfile)
+g_fa <- vapour_read_geometry_fa(mvfile, fa = fids[c(1, 6, 3)])
+identical(g_ia, g_fa)
 }

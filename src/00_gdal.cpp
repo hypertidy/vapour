@@ -14,11 +14,6 @@ logicals cleanup_gdal_cpp() {
 }
 
 [[cpp11::register]]
-strings driver_gdal_cpp(strings dsn, strings open_options) {
-  return gdal_call([&]() { return gdallibrary::gdal_driver(dsn, open_options); });
-}
-
-[[cpp11::register]]
 strings driver_id_gdal_cpp(strings dsn, strings open_options) {
   return gdal_call([&]() { return gdallibrary::gdal_driver(dsn, open_options); });
 }
