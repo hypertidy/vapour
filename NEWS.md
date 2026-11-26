@@ -1,3 +1,5 @@
+# vapour (development version)
+
 # vapour 0.20.0
 
 * New `vapour_feature_extent()` returns the extent of each feature as a
