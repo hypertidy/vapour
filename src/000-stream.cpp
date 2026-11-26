@@ -2,6 +2,7 @@
 #include "gdalarrowstream/gdalvectorstream.h"
 
 using namespace cpp11;
+using gdalcommon::gdal_call;
 
 [[cpp11::register]]
 list gdal_dsn_read_vector_stream(cpp11::sexp stream_xptr,
@@ -15,7 +16,9 @@ list gdal_dsn_read_vector_stream(cpp11::sexp stream_xptr,
                            bool dsn_exists,
                            strings fid_column_name,
                            int width) {
-  return gdalvectorstream::read_gdal_stream(stream_xptr, dsn, layer, sql,
-                                               options, quiet, drivers, extent, dsn_exists,
-                                               fid_column_name, width);
+  return gdal_call([&]() {
+    return gdalvectorstream::read_gdal_stream(stream_xptr, dsn, layer, sql,
+                                                 options, quiet, drivers, extent, dsn_exists,
+                                                 fid_column_name, width);
+  });
 }

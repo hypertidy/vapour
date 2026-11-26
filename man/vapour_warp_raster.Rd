@@ -56,7 +56,7 @@ vapour_warp_raster(
 
 \item{transformation_options}{character vector of options, as in gdalwarp -to see Details}
 
-\item{open_options}{character vector of options, as in gdalwarp -oo - see Details}
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (as \code{-oo} in the GDAL command line tools), \code{NULL} for none, applied when each source is opened}
 
 \item{options}{character vectors of options as per the gdalwarp command line}
 

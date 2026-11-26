@@ -59,7 +59,7 @@ test_that("warper bad transformation fails", {
 
   ## this should get checked by GDAL itself, else crashy
   expect_error(vapour_warp_raster(f, extent = c(145, 146, -50, -48), dimension = c(2, 2), projection = "PROJala[kakakaka]"), "cannot initialize target projection")
-  expect_output(vapour_warp_raster(f, extent = c(145, 146, -50, -48), 
+  expect_warning(vapour_warp_raster(f, extent = c(145, 146, -50, -48), 
                                   dimension = c(2, 2), 
                                   source_projection =   "PROJala[kakakaka]"), "cannot set projection")
 
@@ -90,10 +90,10 @@ expect_named(
 })
 test_that("robust to bad inputs", {
   
- expect_output( expect_error(vapour_warp_raster(c(f, "afile"), extent = c(0, 1, 0, 1),
-                                   projection = "+proj=laea", source_projection = "EPSG:4326", dimension = c(10, 10))
-   )
- )
+ ## the source that cannot be read is named, with GDAL's reason
+ expect_error(vapour_warp_raster(c(f, "afile"), extent = c(0, 1, 0, 1),
+                                   projection = "+proj=laea", source_projection = "EPSG:4326", dimension = c(10, 10)), 
+              "input source not readable: 'afile': .*No such file")
   expect_error(vapour_warp_raster(c(f, f), extent = c(0, 1, 0, 1),
                      projection = "+proj=laea", source_wkt = "EPSG:4326", dimension = c(10, 10)), "'source_wkt' is defunct")
 

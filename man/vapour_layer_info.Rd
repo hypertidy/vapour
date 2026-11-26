@@ -10,7 +10,8 @@ vapour_layer_info(
   sql = "",
   extent = NA,
   count = TRUE,
-  ...
+  ...,
+  open_options = NULL
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ vapour_layer_info(
 \item{count}{logical to control if count calculated and returned, TRUE by default (set to FALSE to avoid the extra calculation and missing value is the result)}
 
 \item{...}{unused, reserved for future use}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (as \code{-oo} in the GDAL command line tools), \code{NULL} for none. The options a driver accepts are listed on its page at \url{https://gdal.org/en/stable/drivers/vector/index.html}}
 }
 \value{
 list with a list of character vectors of projection metadata, see details

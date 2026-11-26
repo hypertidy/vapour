@@ -126,21 +126,25 @@ vapour_crs_is_lonlat <- function(crs) {
 #'          ylim = range(c(gsum$ymin, gsum$ymax), na.rm = TRUE))
 #' rect(gsum$xmin, gsum$ymin, gsum$xmax, gsum$ymax)
 #' text(gsum$xmin, gsum$ymin, labels = gsum$FID)
-vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+vapour_geom_summary <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA, open_options = NULL) {
   #limit_n <- validate_limit_n(limit_n)
   dsource <- .check_dsn_single(dsource)
-  if (!is.numeric(layer)) layer <- index_layer(x = dsource, layername = layer)
+  open_options <- .check_open_options(open_options)
+  if (!is.numeric(layer)) layer <- index_layer(x = dsource, layername = layer, open_options = open_options)
   
   extent <- validate_extent(extent, sql, warn = FALSE)
   limit_n <- validate_limit_n(limit_n)
   
   skip_n <- as.integer(skip_n)
-  extents <- vapour_read_extent(dsource = dsource, layer = as.integer(layer), sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
-  fids <- vapour_read_names(dsource = dsource, layer = as.integer(layer), sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
+  extents <- vapour_read_extent(dsource = dsource, layer = as.integer(layer), sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent,
+                                open_options = open_options)
+  fids <- vapour_read_names(dsource = dsource, layer = as.integer(layer), sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent,
+                            open_options = open_options)
   ## FIXME the other funs deal with these args
   #limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
-  types <- vapour_read_type(dsource = dsource, layer = as.integer(layer), sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent)
+  types <- vapour_read_type(dsource = dsource, layer = as.integer(layer), sql = sql, limit_n = limit_n, skip_n = skip_n, extent = extent,
+                            open_options = open_options)
   na_geoms <- unlist(lapply(extents, anyNA), use.names = FALSE)
   list(FID = fids,
        valid_geometry = !na_geoms,
@@ -204,8 +208,9 @@ vapour_all_drivers <- function() {
 #' @rdname GDAL-library
 #' @export
 #' @param dsource data source string (i.e. file name or URL or database connection string)
-vapour_driver <- function(dsource) {
+#' @param open_options open options for the driver, a character vector of `"NAME=VALUE"` strings, `NULL` for none
+vapour_driver <- function(dsource, open_options = NULL) {
   dsource <- .check_dsn_single(dsource)
-  driver_id_gdal_cpp(dsource);
+  driver_id_gdal_cpp(dsource, .check_open_options(open_options))
 }
 

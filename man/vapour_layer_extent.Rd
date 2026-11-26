@@ -4,7 +4,14 @@
 \alias{vapour_layer_extent}
 \title{Read layer extent}
 \usage{
-vapour_layer_extent(dsource, layer = 0L, sql = "", extent = 0, ...)
+vapour_layer_extent(
+  dsource,
+  layer = 0L,
+  sql = "",
+  extent = 0,
+  ...,
+  open_options = NULL
+)
 }
 \arguments{
 \item{dsource}{data source name (path to file, connection string, URL)}
@@ -16,6 +23,8 @@ vapour_layer_extent(dsource, layer = 0L, sql = "", extent = 0, ...)
 \item{extent}{optional extent (xmin,xmax,ymin,ymax)}
 
 \item{...}{unused}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (as \code{-oo} in the GDAL command line tools), \code{NULL} for none. The options a driver accepts are listed on its page at \url{https://gdal.org/en/stable/drivers/vector/index.html}}
 }
 \value{
 vector of numeric values xmin,xmax,ymin,ymax

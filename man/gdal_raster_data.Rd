@@ -18,7 +18,8 @@ gdal_raster_data(
   band_output_type = NULL,
   options = character(),
   include_meta = TRUE,
-  unscale = TRUE
+  unscale = TRUE,
+  open_options = NULL
 )
 
 gdal_raster_dsn(
@@ -32,7 +33,8 @@ gdal_raster_dsn(
   band_output_type = NULL,
   options = character(),
   out_dsn = tempfile(fileext = ".tif"),
-  include_meta = TRUE
+  include_meta = TRUE,
+  open_options = NULL
 )
 
 gdal_raster_image(
@@ -45,7 +47,8 @@ gdal_raster_image(
   bands = NULL,
   band_output_type = NULL,
   options = character(),
-  include_meta = TRUE
+  include_meta = TRUE,
+  open_options = NULL
 )
 
 gdal_raster_nara(
@@ -58,7 +61,8 @@ gdal_raster_nara(
   bands = NULL,
   band_output_type = NULL,
   options = character(),
-  include_meta = TRUE
+  include_meta = TRUE,
+  open_options = NULL
 )
 }
 \arguments{
@@ -83,6 +87,8 @@ gdal_raster_nara(
 \item{include_meta}{metadata is attached, turn off by setting this to \code{FALSE}}
 
 \item{unscale}{default is \code{TRUE} so values are converted by the band's scale and offset to floating point, set to \code{FALSE} to get the stored values. An integer \code{band_output_type} also gives the stored values, see \link{vapour_read_raster}}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (as \code{-oo} in the GDAL command line tools), \code{NULL} for none. These apply when each source is opened, \code{"-oo"} pairs found in \code{options} are treated the same way}
 
 \item{out_dsn}{file name for output "_dsn"}
 }

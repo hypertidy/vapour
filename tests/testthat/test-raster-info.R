@@ -9,7 +9,8 @@ skip_on_cran()
 test_that("sds checks work", {
   f <- system.file("extdata/gdal/geos_rad.nc", package = "vapour", mustWork = TRUE)
   f <- normalizePath(f)
-  expect_silent(sds_boilerplate_checks(f))
+  ## GDAL warns about the axis unit of this file, and that is now an R warning
+  expect_equal(suppressWarnings(sds_boilerplate_checks(f)), f)
   f1 <- system.file("extdata/sst.tif", package = "vapour", mustWork = TRUE)
   f1 <- normalizePath(f1)
   expect_silent(sds_boilerplate_checks(f1))

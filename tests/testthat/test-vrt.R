@@ -23,7 +23,9 @@ vrttif <- vapour_vrt(tif)
 # })
 
 test_that("sources that cannot be opened do not crash", {
-  expect_error(buildvrt("nofile.tif"), "unable to build VRT")
-  expect_equal(vapour_vrt("nofile.tif", geolocation = c("a", "b")), NA_character_)
+  expect_error(suppressWarnings(buildvrt("nofile.tif")), "unable to build VRT")
+  ## NA for a source that cannot be opened, and GDAL's reason as a warning
+  expect_warning(novrt <- vapour_vrt("nofile.tif", geolocation = c("a", "b")), "GDAL error.*No such file")
+  expect_equal(novrt, NA_character_)
   expect_length(vapour_read_raster(vapour_vrt(tif, bands = rep(1, 3)), band = 1:3, window = c(0, 0, 2, 3)), 3L)
 })

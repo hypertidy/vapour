@@ -11,7 +11,8 @@ vapour_read_raster_block(
   band = 1L,
   band_output_type = "",
   unscale = TRUE,
-  nara = FALSE
+  nara = FALSE,
+  open_options = NULL
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ vapour_read_raster_block(
 \item{unscale}{default is \code{TRUE} so native values will be converted by offset and scale to floating point}
 
 \item{nara}{if 'TRUE' return in nativeRaster format}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (e.g. \code{"IGNORE_COG_LAYOUT_BREAK=YES"} to write to a COG), \code{NULL} for none}
 }
 \value{
 a list with a vector of data from the band read

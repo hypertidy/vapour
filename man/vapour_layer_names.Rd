@@ -4,12 +4,14 @@
 \alias{vapour_layer_names}
 \title{Read GDAL layer names}
 \usage{
-vapour_layer_names(dsource, ...)
+vapour_layer_names(dsource, ..., open_options = NULL)
 }
 \arguments{
 \item{dsource}{data source name (path to file, connection string, URL)}
 
 \item{...}{arguments ignored for deprecated compatibility (no 'sql' argument any longer)}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (as \code{-oo} in the GDAL command line tools), \code{NULL} for none. The options a driver accepts are listed on its page at \url{https://gdal.org/en/stable/drivers/vector/index.html}}
 }
 \value{
 character vector of layer names

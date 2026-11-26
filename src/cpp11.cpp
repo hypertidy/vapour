@@ -13,10 +13,10 @@ extern "C" SEXP _vapour_gdal_dsn_read_vector_stream(SEXP stream_xptr, SEXP dsn, 
   END_CPP11
 }
 // 000-warpgeneral.cpp
-list warp_general_cpp(strings dsn, strings target_crs, doubles target_extent, integers target_dim, doubles target_res, integers bands, strings resample, logicals silent, strings band_output_type, strings options, strings dsn_outname, logicals include_meta, logicals nara, logicals unscale);
-extern "C" SEXP _vapour_warp_general_cpp(SEXP dsn, SEXP target_crs, SEXP target_extent, SEXP target_dim, SEXP target_res, SEXP bands, SEXP resample, SEXP silent, SEXP band_output_type, SEXP options, SEXP dsn_outname, SEXP include_meta, SEXP nara, SEXP unscale) {
+list warp_general_cpp(strings dsn, strings target_crs, doubles target_extent, integers target_dim, doubles target_res, integers bands, strings resample, logicals silent, strings band_output_type, strings options, strings dsn_outname, logicals include_meta, logicals nara, logicals unscale, strings open_options);
+extern "C" SEXP _vapour_warp_general_cpp(SEXP dsn, SEXP target_crs, SEXP target_extent, SEXP target_dim, SEXP target_res, SEXP bands, SEXP resample, SEXP silent, SEXP band_output_type, SEXP options, SEXP dsn_outname, SEXP include_meta, SEXP nara, SEXP unscale, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(warp_general_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<strings>>(target_crs), cpp11::as_cpp<cpp11::decay_t<doubles>>(target_extent), cpp11::as_cpp<cpp11::decay_t<integers>>(target_dim), cpp11::as_cpp<cpp11::decay_t<doubles>>(target_res), cpp11::as_cpp<cpp11::decay_t<integers>>(bands), cpp11::as_cpp<cpp11::decay_t<strings>>(resample), cpp11::as_cpp<cpp11::decay_t<logicals>>(silent), cpp11::as_cpp<cpp11::decay_t<strings>>(band_output_type), cpp11::as_cpp<cpp11::decay_t<strings>>(options), cpp11::as_cpp<cpp11::decay_t<strings>>(dsn_outname), cpp11::as_cpp<cpp11::decay_t<logicals>>(include_meta), cpp11::as_cpp<cpp11::decay_t<logicals>>(nara), cpp11::as_cpp<cpp11::decay_t<logicals>>(unscale)));
+    return cpp11::as_sexp(warp_general_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<strings>>(target_crs), cpp11::as_cpp<cpp11::decay_t<doubles>>(target_extent), cpp11::as_cpp<cpp11::decay_t<integers>>(target_dim), cpp11::as_cpp<cpp11::decay_t<doubles>>(target_res), cpp11::as_cpp<cpp11::decay_t<integers>>(bands), cpp11::as_cpp<cpp11::decay_t<strings>>(resample), cpp11::as_cpp<cpp11::decay_t<logicals>>(silent), cpp11::as_cpp<cpp11::decay_t<strings>>(band_output_type), cpp11::as_cpp<cpp11::decay_t<strings>>(options), cpp11::as_cpp<cpp11::decay_t<strings>>(dsn_outname), cpp11::as_cpp<cpp11::decay_t<logicals>>(include_meta), cpp11::as_cpp<cpp11::decay_t<logicals>>(nara), cpp11::as_cpp<cpp11::decay_t<logicals>>(unscale), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 000-warpgeneral.cpp
@@ -48,31 +48,31 @@ extern "C" SEXP _vapour_cleanup_gdal_cpp() {
   END_CPP11
 }
 // 00_gdal.cpp
-strings driver_gdal_cpp(strings dsn);
-extern "C" SEXP _vapour_driver_gdal_cpp(SEXP dsn) {
+strings driver_gdal_cpp(strings dsn, strings open_options);
+extern "C" SEXP _vapour_driver_gdal_cpp(SEXP dsn, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(driver_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn)));
+    return cpp11::as_sexp(driver_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_gdal.cpp
-strings driver_id_gdal_cpp(strings dsn);
-extern "C" SEXP _vapour_driver_id_gdal_cpp(SEXP dsn) {
+strings driver_id_gdal_cpp(strings dsn, strings open_options);
+extern "C" SEXP _vapour_driver_id_gdal_cpp(SEXP dsn, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(driver_id_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn)));
+    return cpp11::as_sexp(driver_id_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_gdal.cpp
-strings vector_filelist_gdal_cpp(strings dsn);
-extern "C" SEXP _vapour_vector_filelist_gdal_cpp(SEXP dsn) {
+strings vector_filelist_gdal_cpp(strings dsn, strings open_options);
+extern "C" SEXP _vapour_vector_filelist_gdal_cpp(SEXP dsn, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(vector_filelist_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn)));
+    return cpp11::as_sexp(vector_filelist_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_gdal.cpp
-strings layer_names_gdal_cpp(strings dsn);
-extern "C" SEXP _vapour_layer_names_gdal_cpp(SEXP dsn) {
+strings layer_names_gdal_cpp(strings dsn, strings open_options);
+extern "C" SEXP _vapour_layer_names_gdal_cpp(SEXP dsn, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(layer_names_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn)));
+    return cpp11::as_sexp(layer_names_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_gdal.cpp
@@ -125,136 +125,136 @@ extern "C" SEXP _vapour_vsi_list_gdal_cpp(SEXP dsn) {
   END_CPP11
 }
 // 00_geometry.cpp
-doubles feature_count_gdal_cpp(strings dsn, integers layer, strings sql, doubles ex);
-extern "C" SEXP _vapour_feature_count_gdal_cpp(SEXP dsn, SEXP layer, SEXP sql, SEXP ex) {
+doubles feature_count_gdal_cpp(strings dsn, integers layer, strings sql, doubles ex, strings open_options);
+extern "C" SEXP _vapour_feature_count_gdal_cpp(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(feature_count_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex)));
+    return cpp11::as_sexp(feature_count_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-list projection_info_gdal_cpp(strings dsn, integers layer, strings sql);
-extern "C" SEXP _vapour_projection_info_gdal_cpp(SEXP dsn, SEXP layer, SEXP sql) {
+list projection_info_gdal_cpp(strings dsn, integers layer, strings sql, strings open_options);
+extern "C" SEXP _vapour_projection_info_gdal_cpp(SEXP dsn, SEXP layer, SEXP sql, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(projection_info_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql)));
+    return cpp11::as_sexp(projection_info_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-strings report_fields_gdal_cpp(strings dsn, integers layer, strings sql);
-extern "C" SEXP _vapour_report_fields_gdal_cpp(SEXP dsn, SEXP layer, SEXP sql) {
+strings report_fields_gdal_cpp(strings dsn, integers layer, strings sql, strings open_options);
+extern "C" SEXP _vapour_report_fields_gdal_cpp(SEXP dsn, SEXP layer, SEXP sql, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(report_fields_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql)));
+    return cpp11::as_sexp(report_fields_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-strings vapour_geom_name_cpp(strings dsource, integers layer, strings sql, doubles ex);
-extern "C" SEXP _vapour_vapour_geom_name_cpp(SEXP dsource, SEXP layer, SEXP sql, SEXP ex) {
+strings vapour_geom_name_cpp(strings dsource, integers layer, strings sql, doubles ex, strings open_options);
+extern "C" SEXP _vapour_vapour_geom_name_cpp(SEXP dsource, SEXP layer, SEXP sql, SEXP ex, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(vapour_geom_name_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsource), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex)));
+    return cpp11::as_sexp(vapour_geom_name_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsource), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-doubles vapour_layer_extent_cpp(strings dsource, integers layer, strings sql, doubles ex);
-extern "C" SEXP _vapour_vapour_layer_extent_cpp(SEXP dsource, SEXP layer, SEXP sql, SEXP ex) {
+doubles vapour_layer_extent_cpp(strings dsource, integers layer, strings sql, doubles ex, strings open_options);
+extern "C" SEXP _vapour_vapour_layer_extent_cpp(SEXP dsource, SEXP layer, SEXP sql, SEXP ex, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(vapour_layer_extent_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsource), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex)));
+    return cpp11::as_sexp(vapour_layer_extent_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsource), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-list gdal_dsn_read_geom_all(strings dsn, integers layer, strings sql, doubles ex, strings format);
-extern "C" SEXP _vapour_gdal_dsn_read_geom_all(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP format) {
+list gdal_dsn_read_geom_all(strings dsn, integers layer, strings sql, doubles ex, strings format, strings open_options);
+extern "C" SEXP _vapour_gdal_dsn_read_geom_all(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP format, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(gdal_dsn_read_geom_all(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(format)));
+    return cpp11::as_sexp(gdal_dsn_read_geom_all(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(format), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-list gdal_dsn_read_geom_ij(strings dsn, integers layer, strings sql, doubles ex, strings format, doubles ij);
-extern "C" SEXP _vapour_gdal_dsn_read_geom_ij(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP format, SEXP ij) {
+list gdal_dsn_read_geom_ij(strings dsn, integers layer, strings sql, doubles ex, strings format, doubles ij, strings open_options);
+extern "C" SEXP _vapour_gdal_dsn_read_geom_ij(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP format, SEXP ij, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(gdal_dsn_read_geom_ij(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(format), cpp11::as_cpp<cpp11::decay_t<doubles>>(ij)));
+    return cpp11::as_sexp(gdal_dsn_read_geom_ij(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(format), cpp11::as_cpp<cpp11::decay_t<doubles>>(ij), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-list gdal_dsn_read_geom_ia(strings dsn, integers layer, strings sql, doubles ex, strings format, doubles ia);
-extern "C" SEXP _vapour_gdal_dsn_read_geom_ia(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP format, SEXP ia) {
+list gdal_dsn_read_geom_ia(strings dsn, integers layer, strings sql, doubles ex, strings format, doubles ia, strings open_options);
+extern "C" SEXP _vapour_gdal_dsn_read_geom_ia(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP format, SEXP ia, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(gdal_dsn_read_geom_ia(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(format), cpp11::as_cpp<cpp11::decay_t<doubles>>(ia)));
+    return cpp11::as_sexp(gdal_dsn_read_geom_ia(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(format), cpp11::as_cpp<cpp11::decay_t<doubles>>(ia), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-list gdal_dsn_read_geom_fa(strings dsn, integers layer, strings sql, doubles ex, strings format, doubles fa);
-extern "C" SEXP _vapour_gdal_dsn_read_geom_fa(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP format, SEXP fa) {
+list gdal_dsn_read_geom_fa(strings dsn, integers layer, strings sql, doubles ex, strings format, doubles fa, strings open_options);
+extern "C" SEXP _vapour_gdal_dsn_read_geom_fa(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP format, SEXP fa, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(gdal_dsn_read_geom_fa(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(format), cpp11::as_cpp<cpp11::decay_t<doubles>>(fa)));
+    return cpp11::as_sexp(gdal_dsn_read_geom_fa(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(format), cpp11::as_cpp<cpp11::decay_t<doubles>>(fa), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-list gdal_dsn_read_fields_all(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name);
-extern "C" SEXP _vapour_gdal_dsn_read_fields_all(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP fid_column_name) {
+list gdal_dsn_read_fields_all(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name, strings open_options);
+extern "C" SEXP _vapour_gdal_dsn_read_fields_all(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP fid_column_name, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(gdal_dsn_read_fields_all(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(fid_column_name)));
+    return cpp11::as_sexp(gdal_dsn_read_fields_all(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(fid_column_name), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-list gdal_dsn_read_fields_ij(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name, doubles ij);
-extern "C" SEXP _vapour_gdal_dsn_read_fields_ij(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP fid_column_name, SEXP ij) {
+list gdal_dsn_read_fields_ij(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name, doubles ij, strings open_options);
+extern "C" SEXP _vapour_gdal_dsn_read_fields_ij(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP fid_column_name, SEXP ij, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(gdal_dsn_read_fields_ij(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(fid_column_name), cpp11::as_cpp<cpp11::decay_t<doubles>>(ij)));
+    return cpp11::as_sexp(gdal_dsn_read_fields_ij(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(fid_column_name), cpp11::as_cpp<cpp11::decay_t<doubles>>(ij), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-list gdal_dsn_read_fields_ia(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name, doubles ia);
-extern "C" SEXP _vapour_gdal_dsn_read_fields_ia(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP fid_column_name, SEXP ia) {
+list gdal_dsn_read_fields_ia(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name, doubles ia, strings open_options);
+extern "C" SEXP _vapour_gdal_dsn_read_fields_ia(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP fid_column_name, SEXP ia, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(gdal_dsn_read_fields_ia(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(fid_column_name), cpp11::as_cpp<cpp11::decay_t<doubles>>(ia)));
+    return cpp11::as_sexp(gdal_dsn_read_fields_ia(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(fid_column_name), cpp11::as_cpp<cpp11::decay_t<doubles>>(ia), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-list gdal_dsn_read_fields_fa(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name, doubles fa);
-extern "C" SEXP _vapour_gdal_dsn_read_fields_fa(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP fid_column_name, SEXP fa) {
+list gdal_dsn_read_fields_fa(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name, doubles fa, strings open_options);
+extern "C" SEXP _vapour_gdal_dsn_read_fields_fa(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP fid_column_name, SEXP fa, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(gdal_dsn_read_fields_fa(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(fid_column_name), cpp11::as_cpp<cpp11::decay_t<doubles>>(fa)));
+    return cpp11::as_sexp(gdal_dsn_read_fields_fa(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(fid_column_name), cpp11::as_cpp<cpp11::decay_t<doubles>>(fa), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-doubles gdal_dsn_read_fids_all(strings dsn, integers layer, strings sql, doubles ex);
-extern "C" SEXP _vapour_gdal_dsn_read_fids_all(SEXP dsn, SEXP layer, SEXP sql, SEXP ex) {
+doubles gdal_dsn_read_fids_all(strings dsn, integers layer, strings sql, doubles ex, strings open_options);
+extern "C" SEXP _vapour_gdal_dsn_read_fids_all(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(gdal_dsn_read_fids_all(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex)));
+    return cpp11::as_sexp(gdal_dsn_read_fids_all(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-doubles gdal_dsn_read_fids_ij(strings dsn, integers layer, strings sql, doubles ex, doubles ij);
-extern "C" SEXP _vapour_gdal_dsn_read_fids_ij(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP ij) {
+doubles gdal_dsn_read_fids_ij(strings dsn, integers layer, strings sql, doubles ex, doubles ij, strings open_options);
+extern "C" SEXP _vapour_gdal_dsn_read_fids_ij(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP ij, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(gdal_dsn_read_fids_ij(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<doubles>>(ij)));
+    return cpp11::as_sexp(gdal_dsn_read_fids_ij(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<doubles>>(ij), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-doubles gdal_dsn_read_fids_ia(strings dsn, integers layer, strings sql, doubles ex, doubles ia);
-extern "C" SEXP _vapour_gdal_dsn_read_fids_ia(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP ia) {
+doubles gdal_dsn_read_fids_ia(strings dsn, integers layer, strings sql, doubles ex, doubles ia, strings open_options);
+extern "C" SEXP _vapour_gdal_dsn_read_fids_ia(SEXP dsn, SEXP layer, SEXP sql, SEXP ex, SEXP ia, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(gdal_dsn_read_fids_ia(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<doubles>>(ia)));
+    return cpp11::as_sexp(gdal_dsn_read_fids_ia(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<doubles>>(ia), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-list read_fields_gdal_cpp(strings dsn, integers layer, strings sql, integers limit_n, integers skip_n, doubles ex, strings fid_column_name);
-extern "C" SEXP _vapour_read_fields_gdal_cpp(SEXP dsn, SEXP layer, SEXP sql, SEXP limit_n, SEXP skip_n, SEXP ex, SEXP fid_column_name) {
+list read_fields_gdal_cpp(strings dsn, integers layer, strings sql, integers limit_n, integers skip_n, doubles ex, strings fid_column_name, strings open_options);
+extern "C" SEXP _vapour_read_fields_gdal_cpp(SEXP dsn, SEXP layer, SEXP sql, SEXP limit_n, SEXP skip_n, SEXP ex, SEXP fid_column_name, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(read_fields_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<integers>>(limit_n), cpp11::as_cpp<cpp11::decay_t<integers>>(skip_n), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(fid_column_name)));
+    return cpp11::as_sexp(read_fields_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<integers>>(limit_n), cpp11::as_cpp<cpp11::decay_t<integers>>(skip_n), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(fid_column_name), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-list read_geometry_gdal_cpp(strings dsn, integers layer, strings sql, strings what, strings textformat, integers limit_n, integers skip_n, doubles ex);
-extern "C" SEXP _vapour_read_geometry_gdal_cpp(SEXP dsn, SEXP layer, SEXP sql, SEXP what, SEXP textformat, SEXP limit_n, SEXP skip_n, SEXP ex) {
+list read_geometry_gdal_cpp(strings dsn, integers layer, strings sql, strings what, strings textformat, integers limit_n, integers skip_n, doubles ex, strings open_options);
+extern "C" SEXP _vapour_read_geometry_gdal_cpp(SEXP dsn, SEXP layer, SEXP sql, SEXP what, SEXP textformat, SEXP limit_n, SEXP skip_n, SEXP ex, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(read_geometry_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<strings>>(what), cpp11::as_cpp<cpp11::decay_t<strings>>(textformat), cpp11::as_cpp<cpp11::decay_t<integers>>(limit_n), cpp11::as_cpp<cpp11::decay_t<integers>>(skip_n), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex)));
+    return cpp11::as_sexp(read_geometry_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<strings>>(what), cpp11::as_cpp<cpp11::decay_t<strings>>(textformat), cpp11::as_cpp<cpp11::decay_t<integers>>(limit_n), cpp11::as_cpp<cpp11::decay_t<integers>>(skip_n), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_geometry.cpp
-doubles read_fids_gdal_cpp(strings dsn, integers layer, strings sql, integers limit_n, integers skip_n, doubles ex);
-extern "C" SEXP _vapour_read_fids_gdal_cpp(SEXP dsn, SEXP layer, SEXP sql, SEXP limit_n, SEXP skip_n, SEXP ex) {
+doubles read_fids_gdal_cpp(strings dsn, integers layer, strings sql, integers limit_n, integers skip_n, doubles ex, strings open_options);
+extern "C" SEXP _vapour_read_fids_gdal_cpp(SEXP dsn, SEXP layer, SEXP sql, SEXP limit_n, SEXP skip_n, SEXP ex, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(read_fids_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<integers>>(limit_n), cpp11::as_cpp<cpp11::decay_t<integers>>(skip_n), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex)));
+    return cpp11::as_sexp(read_fids_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(layer), cpp11::as_cpp<cpp11::decay_t<strings>>(sql), cpp11::as_cpp<cpp11::decay_t<integers>>(limit_n), cpp11::as_cpp<cpp11::decay_t<integers>>(skip_n), cpp11::as_cpp<cpp11::decay_t<doubles>>(ex), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_proj_data.cpp
@@ -293,24 +293,24 @@ extern "C" SEXP _vapour_unset_gdal_config_cpp(SEXP option) {
   END_CPP11
 }
 // 00_raster.cpp
-list raster_gcp_gdal_cpp(strings dsn);
-extern "C" SEXP _vapour_raster_gcp_gdal_cpp(SEXP dsn) {
+list raster_gcp_gdal_cpp(strings dsn, strings open_options);
+extern "C" SEXP _vapour_raster_gcp_gdal_cpp(SEXP dsn, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(raster_gcp_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn)));
+    return cpp11::as_sexp(raster_gcp_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_raster.cpp
-logicals raster_has_geolocation_gdal_cpp(strings dsn, integers sds);
-extern "C" SEXP _vapour_raster_has_geolocation_gdal_cpp(SEXP dsn, SEXP sds) {
+logicals raster_has_geolocation_gdal_cpp(strings dsn, integers sds, strings open_options);
+extern "C" SEXP _vapour_raster_has_geolocation_gdal_cpp(SEXP dsn, SEXP sds, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(raster_has_geolocation_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(sds)));
+    return cpp11::as_sexp(raster_has_geolocation_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(sds), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_raster.cpp
-list raster_list_geolocation_gdal_cpp(strings dsn, integers sds);
-extern "C" SEXP _vapour_raster_list_geolocation_gdal_cpp(SEXP dsn, SEXP sds) {
+list raster_list_geolocation_gdal_cpp(strings dsn, integers sds, strings open_options);
+extern "C" SEXP _vapour_raster_list_geolocation_gdal_cpp(SEXP dsn, SEXP sds, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(raster_list_geolocation_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(sds)));
+    return cpp11::as_sexp(raster_list_geolocation_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(sds), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_raster.cpp
@@ -328,10 +328,10 @@ extern "C" SEXP _vapour_raster_extent_cpp(SEXP dsn) {
   END_CPP11
 }
 // 00_raster.cpp
-list raster_io_gdal_cpp(strings dsn, integers window, integers band, strings resample, strings band_output_type, logicals unscale, logicals nara);
-extern "C" SEXP _vapour_raster_io_gdal_cpp(SEXP dsn, SEXP window, SEXP band, SEXP resample, SEXP band_output_type, SEXP unscale, SEXP nara) {
+list raster_io_gdal_cpp(strings dsn, integers window, integers band, strings resample, strings band_output_type, logicals unscale, logicals nara, strings open_options);
+extern "C" SEXP _vapour_raster_io_gdal_cpp(SEXP dsn, SEXP window, SEXP band, SEXP resample, SEXP band_output_type, SEXP unscale, SEXP nara, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(raster_io_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(window), cpp11::as_cpp<cpp11::decay_t<integers>>(band), cpp11::as_cpp<cpp11::decay_t<strings>>(resample), cpp11::as_cpp<cpp11::decay_t<strings>>(band_output_type), cpp11::as_cpp<cpp11::decay_t<logicals>>(unscale), cpp11::as_cpp<cpp11::decay_t<logicals>>(nara)));
+    return cpp11::as_sexp(raster_io_gdal_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<integers>>(window), cpp11::as_cpp<cpp11::decay_t<integers>>(band), cpp11::as_cpp<cpp11::decay_t<strings>>(resample), cpp11::as_cpp<cpp11::decay_t<strings>>(band_output_type), cpp11::as_cpp<cpp11::decay_t<logicals>>(unscale), cpp11::as_cpp<cpp11::decay_t<logicals>>(nara), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_raster.cpp
@@ -349,10 +349,10 @@ extern "C" SEXP _vapour_sds_list_list_gdal_cpp(SEXP dsn) {
   END_CPP11
 }
 // 00_raster_block_io.cpp
-list vapour_read_raster_block_cpp(strings dsource, integers offset, integers dimension, integers band, strings band_output_type, logicals unscale, logicals nara);
-extern "C" SEXP _vapour_vapour_read_raster_block_cpp(SEXP dsource, SEXP offset, SEXP dimension, SEXP band, SEXP band_output_type, SEXP unscale, SEXP nara) {
+list vapour_read_raster_block_cpp(strings dsource, integers offset, integers dimension, integers band, strings band_output_type, logicals unscale, logicals nara, strings open_options);
+extern "C" SEXP _vapour_vapour_read_raster_block_cpp(SEXP dsource, SEXP offset, SEXP dimension, SEXP band, SEXP band_output_type, SEXP unscale, SEXP nara, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(vapour_read_raster_block_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsource), cpp11::as_cpp<cpp11::decay_t<integers>>(offset), cpp11::as_cpp<cpp11::decay_t<integers>>(dimension), cpp11::as_cpp<cpp11::decay_t<integers>>(band), cpp11::as_cpp<cpp11::decay_t<strings>>(band_output_type), cpp11::as_cpp<cpp11::decay_t<logicals>>(unscale), cpp11::as_cpp<cpp11::decay_t<logicals>>(nara)));
+    return cpp11::as_sexp(vapour_read_raster_block_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsource), cpp11::as_cpp<cpp11::decay_t<integers>>(offset), cpp11::as_cpp<cpp11::decay_t<integers>>(dimension), cpp11::as_cpp<cpp11::decay_t<integers>>(band), cpp11::as_cpp<cpp11::decay_t<strings>>(band_output_type), cpp11::as_cpp<cpp11::decay_t<logicals>>(unscale), cpp11::as_cpp<cpp11::decay_t<logicals>>(nara), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_raster_block_io.cpp
@@ -398,17 +398,17 @@ extern "C" SEXP _vapour_blocks_cpp(SEXP dsource, SEXP iblock, SEXP read) {
   END_CPP11
 }
 // 00_utils.cpp
-strings raster_gdalinfo_app_cpp(strings dsn, strings options);
-extern "C" SEXP _vapour_raster_gdalinfo_app_cpp(SEXP dsn, SEXP options) {
+strings raster_gdalinfo_app_cpp(strings dsn, strings options, integers sds, strings open_options);
+extern "C" SEXP _vapour_raster_gdalinfo_app_cpp(SEXP dsn, SEXP options, SEXP sds, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(raster_gdalinfo_app_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<strings>>(options)));
+    return cpp11::as_sexp(raster_gdalinfo_app_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<strings>>(options), cpp11::as_cpp<cpp11::decay_t<integers>>(sds), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_vrt.cpp
-strings raster_vrt_cpp(strings dsn, doubles extent, strings projection, integers sds, integers bands, strings geolocation, logicals nomd, integers overview, strings options);
-extern "C" SEXP _vapour_raster_vrt_cpp(SEXP dsn, SEXP extent, SEXP projection, SEXP sds, SEXP bands, SEXP geolocation, SEXP nomd, SEXP overview, SEXP options) {
+strings raster_vrt_cpp(strings dsn, doubles extent, strings projection, integers sds, integers bands, strings geolocation, logicals nomd, integers overview, strings options, strings open_options);
+extern "C" SEXP _vapour_raster_vrt_cpp(SEXP dsn, SEXP extent, SEXP projection, SEXP sds, SEXP bands, SEXP geolocation, SEXP nomd, SEXP overview, SEXP options, SEXP open_options) {
   BEGIN_CPP11
-    return cpp11::as_sexp(raster_vrt_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<doubles>>(extent), cpp11::as_cpp<cpp11::decay_t<strings>>(projection), cpp11::as_cpp<cpp11::decay_t<integers>>(sds), cpp11::as_cpp<cpp11::decay_t<integers>>(bands), cpp11::as_cpp<cpp11::decay_t<strings>>(geolocation), cpp11::as_cpp<cpp11::decay_t<logicals>>(nomd), cpp11::as_cpp<cpp11::decay_t<integers>>(overview), cpp11::as_cpp<cpp11::decay_t<strings>>(options)));
+    return cpp11::as_sexp(raster_vrt_cpp(cpp11::as_cpp<cpp11::decay_t<strings>>(dsn), cpp11::as_cpp<cpp11::decay_t<doubles>>(extent), cpp11::as_cpp<cpp11::decay_t<strings>>(projection), cpp11::as_cpp<cpp11::decay_t<integers>>(sds), cpp11::as_cpp<cpp11::decay_t<integers>>(bands), cpp11::as_cpp<cpp11::decay_t<strings>>(geolocation), cpp11::as_cpp<cpp11::decay_t<logicals>>(nomd), cpp11::as_cpp<cpp11::decay_t<integers>>(overview), cpp11::as_cpp<cpp11::decay_t<strings>>(options), cpp11::as_cpp<cpp11::decay_t<strings>>(open_options)));
   END_CPP11
 }
 // 00_vrt.cpp
@@ -432,44 +432,44 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_blocks_cpp1",                      (DL_FUNC) &_vapour_blocks_cpp1,                       3},
     {"_vapour_cleanup_gdal_cpp",                 (DL_FUNC) &_vapour_cleanup_gdal_cpp,                  0},
     {"_vapour_crs_is_lonlat_cpp",                (DL_FUNC) &_vapour_crs_is_lonlat_cpp,                 1},
-    {"_vapour_driver_gdal_cpp",                  (DL_FUNC) &_vapour_driver_gdal_cpp,                   1},
-    {"_vapour_driver_id_gdal_cpp",               (DL_FUNC) &_vapour_driver_id_gdal_cpp,                1},
+    {"_vapour_driver_gdal_cpp",                  (DL_FUNC) &_vapour_driver_gdal_cpp,                   2},
+    {"_vapour_driver_id_gdal_cpp",               (DL_FUNC) &_vapour_driver_id_gdal_cpp,                2},
     {"_vapour_drivers_list_gdal_cpp",            (DL_FUNC) &_vapour_drivers_list_gdal_cpp,             0},
-    {"_vapour_feature_count_gdal_cpp",           (DL_FUNC) &_vapour_feature_count_gdal_cpp,            4},
-    {"_vapour_gdal_dsn_read_fids_all",           (DL_FUNC) &_vapour_gdal_dsn_read_fids_all,            4},
-    {"_vapour_gdal_dsn_read_fids_ia",            (DL_FUNC) &_vapour_gdal_dsn_read_fids_ia,             5},
-    {"_vapour_gdal_dsn_read_fids_ij",            (DL_FUNC) &_vapour_gdal_dsn_read_fids_ij,             5},
-    {"_vapour_gdal_dsn_read_fields_all",         (DL_FUNC) &_vapour_gdal_dsn_read_fields_all,          5},
-    {"_vapour_gdal_dsn_read_fields_fa",          (DL_FUNC) &_vapour_gdal_dsn_read_fields_fa,           6},
-    {"_vapour_gdal_dsn_read_fields_ia",          (DL_FUNC) &_vapour_gdal_dsn_read_fields_ia,           6},
-    {"_vapour_gdal_dsn_read_fields_ij",          (DL_FUNC) &_vapour_gdal_dsn_read_fields_ij,           6},
-    {"_vapour_gdal_dsn_read_geom_all",           (DL_FUNC) &_vapour_gdal_dsn_read_geom_all,            5},
-    {"_vapour_gdal_dsn_read_geom_fa",            (DL_FUNC) &_vapour_gdal_dsn_read_geom_fa,             6},
-    {"_vapour_gdal_dsn_read_geom_ia",            (DL_FUNC) &_vapour_gdal_dsn_read_geom_ia,             6},
-    {"_vapour_gdal_dsn_read_geom_ij",            (DL_FUNC) &_vapour_gdal_dsn_read_geom_ij,             6},
+    {"_vapour_feature_count_gdal_cpp",           (DL_FUNC) &_vapour_feature_count_gdal_cpp,            5},
+    {"_vapour_gdal_dsn_read_fids_all",           (DL_FUNC) &_vapour_gdal_dsn_read_fids_all,            5},
+    {"_vapour_gdal_dsn_read_fids_ia",            (DL_FUNC) &_vapour_gdal_dsn_read_fids_ia,             6},
+    {"_vapour_gdal_dsn_read_fids_ij",            (DL_FUNC) &_vapour_gdal_dsn_read_fids_ij,             6},
+    {"_vapour_gdal_dsn_read_fields_all",         (DL_FUNC) &_vapour_gdal_dsn_read_fields_all,          6},
+    {"_vapour_gdal_dsn_read_fields_fa",          (DL_FUNC) &_vapour_gdal_dsn_read_fields_fa,           7},
+    {"_vapour_gdal_dsn_read_fields_ia",          (DL_FUNC) &_vapour_gdal_dsn_read_fields_ia,           7},
+    {"_vapour_gdal_dsn_read_fields_ij",          (DL_FUNC) &_vapour_gdal_dsn_read_fields_ij,           7},
+    {"_vapour_gdal_dsn_read_geom_all",           (DL_FUNC) &_vapour_gdal_dsn_read_geom_all,            6},
+    {"_vapour_gdal_dsn_read_geom_fa",            (DL_FUNC) &_vapour_gdal_dsn_read_geom_fa,             7},
+    {"_vapour_gdal_dsn_read_geom_ia",            (DL_FUNC) &_vapour_gdal_dsn_read_geom_ia,             7},
+    {"_vapour_gdal_dsn_read_geom_ij",            (DL_FUNC) &_vapour_gdal_dsn_read_geom_ij,             7},
     {"_vapour_gdal_dsn_read_vector_stream",      (DL_FUNC) &_vapour_gdal_dsn_read_vector_stream,      11},
     {"_vapour_get_gdal_config_cpp",              (DL_FUNC) &_vapour_get_gdal_config_cpp,               1},
     {"_vapour_get_proj_search_paths_cpp",        (DL_FUNC) &_vapour_get_proj_search_paths_cpp,         0},
-    {"_vapour_layer_names_gdal_cpp",             (DL_FUNC) &_vapour_layer_names_gdal_cpp,              1},
+    {"_vapour_layer_names_gdal_cpp",             (DL_FUNC) &_vapour_layer_names_gdal_cpp,              2},
     {"_vapour_probe_proj_db_cpp",                (DL_FUNC) &_vapour_probe_proj_db_cpp,                 0},
     {"_vapour_proj_db_metadata_cpp",             (DL_FUNC) &_vapour_proj_db_metadata_cpp,              1},
     {"_vapour_proj_to_wkt_gdal_cpp",             (DL_FUNC) &_vapour_proj_to_wkt_gdal_cpp,              1},
-    {"_vapour_projection_info_gdal_cpp",         (DL_FUNC) &_vapour_projection_info_gdal_cpp,          3},
+    {"_vapour_projection_info_gdal_cpp",         (DL_FUNC) &_vapour_projection_info_gdal_cpp,          4},
     {"_vapour_raster_buildvrt_cpp",              (DL_FUNC) &_vapour_raster_buildvrt_cpp,               2},
     {"_vapour_raster_extent_cpp",                (DL_FUNC) &_vapour_raster_extent_cpp,                 1},
-    {"_vapour_raster_gcp_gdal_cpp",              (DL_FUNC) &_vapour_raster_gcp_gdal_cpp,               1},
-    {"_vapour_raster_gdalinfo_app_cpp",          (DL_FUNC) &_vapour_raster_gdalinfo_app_cpp,           2},
-    {"_vapour_raster_has_geolocation_gdal_cpp",  (DL_FUNC) &_vapour_raster_has_geolocation_gdal_cpp,   2},
+    {"_vapour_raster_gcp_gdal_cpp",              (DL_FUNC) &_vapour_raster_gcp_gdal_cpp,               2},
+    {"_vapour_raster_gdalinfo_app_cpp",          (DL_FUNC) &_vapour_raster_gdalinfo_app_cpp,           4},
+    {"_vapour_raster_has_geolocation_gdal_cpp",  (DL_FUNC) &_vapour_raster_has_geolocation_gdal_cpp,   3},
     {"_vapour_raster_info_gdal_cpp",             (DL_FUNC) &_vapour_raster_info_gdal_cpp,              2},
-    {"_vapour_raster_io_gdal_cpp",               (DL_FUNC) &_vapour_raster_io_gdal_cpp,                7},
-    {"_vapour_raster_list_geolocation_gdal_cpp", (DL_FUNC) &_vapour_raster_list_geolocation_gdal_cpp,  2},
-    {"_vapour_raster_vrt_cpp",                   (DL_FUNC) &_vapour_raster_vrt_cpp,                    9},
+    {"_vapour_raster_io_gdal_cpp",               (DL_FUNC) &_vapour_raster_io_gdal_cpp,                8},
+    {"_vapour_raster_list_geolocation_gdal_cpp", (DL_FUNC) &_vapour_raster_list_geolocation_gdal_cpp,  3},
+    {"_vapour_raster_vrt_cpp",                   (DL_FUNC) &_vapour_raster_vrt_cpp,                   10},
     {"_vapour_raster_warp_file_cpp",             (DL_FUNC) &_vapour_raster_warp_file_cpp,             11},
-    {"_vapour_read_fids_gdal_cpp",               (DL_FUNC) &_vapour_read_fids_gdal_cpp,                6},
-    {"_vapour_read_fields_gdal_cpp",             (DL_FUNC) &_vapour_read_fields_gdal_cpp,              7},
-    {"_vapour_read_geometry_gdal_cpp",           (DL_FUNC) &_vapour_read_geometry_gdal_cpp,            8},
+    {"_vapour_read_fids_gdal_cpp",               (DL_FUNC) &_vapour_read_fids_gdal_cpp,                7},
+    {"_vapour_read_fields_gdal_cpp",             (DL_FUNC) &_vapour_read_fields_gdal_cpp,              8},
+    {"_vapour_read_geometry_gdal_cpp",           (DL_FUNC) &_vapour_read_geometry_gdal_cpp,            9},
     {"_vapour_register_gdal_cpp",                (DL_FUNC) &_vapour_register_gdal_cpp,                 0},
-    {"_vapour_report_fields_gdal_cpp",           (DL_FUNC) &_vapour_report_fields_gdal_cpp,            3},
+    {"_vapour_report_fields_gdal_cpp",           (DL_FUNC) &_vapour_report_fields_gdal_cpp,            4},
     {"_vapour_sds_list_gdal_cpp",                (DL_FUNC) &_vapour_sds_list_gdal_cpp,                 1},
     {"_vapour_sds_list_list_gdal_cpp",           (DL_FUNC) &_vapour_sds_list_list_gdal_cpp,            1},
     {"_vapour_set_gdal_config_cpp",              (DL_FUNC) &_vapour_set_gdal_config_cpp,               2},
@@ -477,16 +477,16 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vapour_unset_gdal_config_cpp",            (DL_FUNC) &_vapour_unset_gdal_config_cpp,             1},
     {"_vapour_vapour_create_copy_cpp",           (DL_FUNC) &_vapour_vapour_create_copy_cpp,            3},
     {"_vapour_vapour_create_cpp",                (DL_FUNC) &_vapour_vapour_create_cpp,                 8},
-    {"_vapour_vapour_geom_name_cpp",             (DL_FUNC) &_vapour_vapour_geom_name_cpp,              4},
-    {"_vapour_vapour_layer_extent_cpp",          (DL_FUNC) &_vapour_vapour_layer_extent_cpp,           4},
-    {"_vapour_vapour_read_raster_block_cpp",     (DL_FUNC) &_vapour_vapour_read_raster_block_cpp,      7},
+    {"_vapour_vapour_geom_name_cpp",             (DL_FUNC) &_vapour_vapour_geom_name_cpp,              5},
+    {"_vapour_vapour_layer_extent_cpp",          (DL_FUNC) &_vapour_vapour_layer_extent_cpp,           5},
+    {"_vapour_vapour_read_raster_block_cpp",     (DL_FUNC) &_vapour_vapour_read_raster_block_cpp,      8},
     {"_vapour_vapour_read_raster_value_cpp",     (DL_FUNC) &_vapour_vapour_read_raster_value_cpp,      5},
     {"_vapour_vapour_write_raster_block_cpp",    (DL_FUNC) &_vapour_vapour_write_raster_block_cpp,     6},
-    {"_vapour_vector_filelist_gdal_cpp",         (DL_FUNC) &_vapour_vector_filelist_gdal_cpp,          1},
+    {"_vapour_vector_filelist_gdal_cpp",         (DL_FUNC) &_vapour_vector_filelist_gdal_cpp,          2},
     {"_vapour_version_gdal_cpp",                 (DL_FUNC) &_vapour_version_gdal_cpp,                  0},
     {"_vapour_version_proj_cpp",                 (DL_FUNC) &_vapour_version_proj_cpp,                  0},
     {"_vapour_vsi_list_gdal_cpp",                (DL_FUNC) &_vapour_vsi_list_gdal_cpp,                 1},
-    {"_vapour_warp_general_cpp",                 (DL_FUNC) &_vapour_warp_general_cpp,                 14},
+    {"_vapour_warp_general_cpp",                 (DL_FUNC) &_vapour_warp_general_cpp,                 15},
     {"_vapour_warp_suggest_cpp",                 (DL_FUNC) &_vapour_warp_suggest_cpp,                  2},
     {NULL, NULL, 0}
 };

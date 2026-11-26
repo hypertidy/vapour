@@ -2,6 +2,7 @@
 #define GDAL_DRIVERS_H
 #include <cpp11.hpp>
 #include "common/common_vapour.h"
+#include "common/gdal_handles.h"
 #include "gdal_priv.h"
 #include "ogr_srs_api.h"
 #include "gdallibrary/gdal_layer_utils.h"
@@ -81,8 +82,8 @@ inline list gdal_list_drivers() {
   return out;
 }
 
-inline strings gdal_driver(strings dsn) {
-  return with_ogr_dataset(as_cstr(dsn[0]), GDAL_OF_READONLY,
+inline strings gdal_driver(strings dsn, strings open_options) {
+  return with_ogr_dataset(as_cstr(dsn[0]), GDAL_OF_READONLY, open_options,
     [](GDALDataset *poDS) -> strings {
       writable::strings dname(1);
       dname[0] = poDS->GetDriverName();
@@ -90,39 +91,41 @@ inline strings gdal_driver(strings dsn) {
     });
 }
 
-inline strings gdal_vector_filelist(strings dsn) {
-  return with_ogr_dataset(as_cstr(dsn[0]), GDAL_OF_VECTOR,
+inline strings gdal_vector_filelist(strings dsn, strings open_options) {
+  return with_ogr_dataset(as_cstr(dsn[0]), GDAL_OF_VECTOR, open_options,
     [](GDALDataset *poDS) -> strings {
-      char **filelist = poDS->GetFileList();
-      int nfile = CSLCount(filelist);
+      CPLStringList filelist(poDS->GetFileList());
+      int nfile = filelist.size();
       writable::strings files(nfile);
       for (int ifile = 0; ifile < nfile; ifile++) {
         files[ifile] = filelist[ifile];
       }
-      CSLDestroy(filelist);
       return files;
     });
 }
 
-inline strings gdal_layer_names(strings dsn) {
-  return with_ogr_dataset(as_cstr(dsn[0]), GDAL_OF_VECTOR,
+inline strings gdal_layer_names(strings dsn, strings open_options) {
+  return with_ogr_dataset(as_cstr(dsn[0]), GDAL_OF_VECTOR, open_options,
     [](GDALDataset *poDS) -> strings {
       int nlayer = poDS->GetLayerCount();
       writable::strings lnames(nlayer);
       for (int ilayer = 0; ilayer < nlayer; ilayer++) {
-        lnames[ilayer] = poDS->GetLayer(ilayer)->GetName();
+        OGRLayer *poLayer = poDS->GetLayer(ilayer);
+        if (poLayer == nullptr) {
+          lnames[ilayer] = NA_STRING;
+        } else {
+          lnames[ilayer] = poLayer->GetName();
+        }
       }
       return lnames;
     });
 }
 
 inline strings gdal_vsi_list(strings urlpath) {
-  char** VSI_paths = VSIReadDirRecursive(as_cstr(urlpath[0]));
-  int ipath = 0;
-  while (VSI_paths && VSI_paths[ipath] != NULL) ipath++;
-  writable::strings names(ipath);
-  for (int i = 0; i < ipath; i++) names[i] = VSI_paths[i];
-  CSLDestroy(VSI_paths);
+  CPLStringList VSI_paths(VSIReadDirRecursive(as_cstr(urlpath[0])));
+  int npath = VSI_paths.size();
+  writable::strings names(npath);
+  for (int i = 0; i < npath; i++) names[i] = VSI_paths[i];
   return names;
 }
 

@@ -4,10 +4,12 @@
 \alias{vapour_sds_names}
 \title{GDAL raster subdatasets (variables)}
 \usage{
-vapour_sds_names(x)
+vapour_sds_names(x, open_options = NULL)
 }
 \arguments{
 \item{x}{a data source string, filename, database connection string,  or other URL}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (as \code{-oo} in the GDAL command line tools), \code{NULL} for none}
 }
 \value{
 character vector of subdataset names, or just the source itself if no SDS are present

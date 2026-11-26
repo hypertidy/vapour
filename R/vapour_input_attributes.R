@@ -1,11 +1,11 @@
 
 ## find index of a layer name, or error
-index_layer <- function(x, layername) {
+index_layer <- function(x, layername, open_options = NULL) {
   if (is.factor(layername)) {
     warning("layer is a factor, converting to character")
     layername <- levels(layername)[layername]
   }
-  available_layers <- try(vapour_layer_names(x), silent = TRUE)
+  available_layers <- try(vapour_layer_names(x, open_options = open_options), silent = TRUE)
   if (inherits(available_layers, "try-error")) stop(sprintf("cannot open data source: %s", x))
  idx <- match(layername, available_layers)
  if (length(idx) != 1 || !is.numeric(idx)) stop(sprintf("cannot find layer: %s", layername))
@@ -79,12 +79,12 @@ validate_extent <- function(extent, sql, warn = TRUE) {
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' vapour_layer_names(mvfile)
 #' @export
-vapour_layer_names <- function(dsource, ...) {
+vapour_layer_names <- function(dsource, ..., open_options = NULL) {
   dsource <- .check_dsn_single(dsource)
   if ("sql" %in% names(list(...))) {
     message("old 'sql' argument is unused")
   }
-  layer_names_gdal_cpp(dsn = dsource)
+  layer_names_gdal_cpp(dsn = dsource, open_options = .check_open_options(open_options))
 }
 
 #' Read geometry column name
@@ -104,10 +104,12 @@ vapour_layer_names <- function(dsource, ...) {
 #' @examples
 #' file <- system.file("extdata/tab/list_locality_postcode_meander_valley.tab", package = "vapour")
 #' vapour_geom_name(file)  ## empty string
-vapour_geom_name <- function(dsource, layer = 0L, sql = "") {
+vapour_geom_name <- function(dsource, layer = 0L, sql = "", open_options = NULL) {
   dsource <- .check_dsn_single(dsource)
-  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
-  vapour_geom_name_cpp(dsource = dsource, layer = as.integer(layer), sql = sql, ex = as.numeric(0))
+  open_options <- .check_open_options(open_options)
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer, open_options)
+  vapour_geom_name_cpp(dsource = dsource, layer = as.integer(layer), sql = sql, ex = as.numeric(0),
+                       open_options = open_options)
 }
 
 #' Read feature names
@@ -131,22 +133,24 @@ vapour_geom_name <- function(dsource, layer = 0L, sql = "") {
 #' mvfile <- system.file(file.path("extdata/tab", file), package="vapour")
 #' range(fids <- vapour_read_names(mvfile))
 #' length(fids)
-vapour_read_fids <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+vapour_read_fids <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA, open_options = NULL) {
   dsource <- .check_dsn_single(dsource)
-  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
+  open_options <- .check_open_options(open_options)
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer, open_options)
   limit_n <- validate_limit_n(limit_n)
   skip_n <- skip_n[1L]
   if (skip_n < 0) stop("skip_n must be 0, or higher")
   extent <- validate_extent(extent, sql)
-  fids <- read_fids_gdal_cpp(dsource, layer = as.integer(layer), sql = sql, limit_n = limit_n, skip_n = as.integer(skip_n), ex = as.numeric(extent))
+  fids <- read_fids_gdal_cpp(dsource, layer = as.integer(layer), sql = sql, limit_n = limit_n, skip_n = as.integer(skip_n), ex = as.numeric(extent),
+                             open_options = open_options)
   fids
 }
 
 #' @name vapour_read_fids
 #' @export
-vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA, open_options = NULL) {
   dsource <- .check_dsn_single(dsource)
-  vapour_read_fids(dsource, layer, sql, limit_n, skip_n, extent) 
+  vapour_read_fids(dsource, layer, sql, limit_n, skip_n, extent, open_options = open_options) 
 }
 #' Read feature field types.
 #'
@@ -172,17 +176,18 @@ vapour_read_names <- function(dsource, layer = 0L, sql = "", limit_n = NULL, ski
 #' ## modified by sql argument
 #' vapour_report_fields(mvfile,
 #'   sql = "SELECT POSTCODE, NAME FROM list_locality_postcode_meander_valley")
-vapour_report_fields <- function(dsource, layer = 0L, sql = "") {
+vapour_report_fields <- function(dsource, layer = 0L, sql = "", open_options = NULL) {
   dsource <- .check_dsn_single(dsource)
-  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
-  report_fields_gdal_cpp(dsource, as.integer(layer), sql = sql)
+  open_options <- .check_open_options(open_options)
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer, open_options)
+  report_fields_gdal_cpp(dsource, as.integer(layer), sql = sql, open_options = open_options)
 }
 
 #' @name vapour_report_fields
 #' @export
-vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
+vapour_report_attributes <- function(dsource, layer = 0L, sql = "", open_options = NULL) {
   dsource <- .check_dsn_single(dsource)
-  vapour_report_fields(dsource, layer, sql)
+  vapour_report_fields(dsource, layer, sql, open_options = open_options)
 }
 #' Read feature field data
 #'
@@ -211,21 +216,22 @@ vapour_report_attributes <- function(dsource, layer = 0L, sql = "") {
 #' SQL <- "SELECT NAME FROM list_locality_postcode_meander_valley WHERE POSTCODE < 7300"
 #' vapour_read_fields(dsource, sql = SQL)
 #' @export
-vapour_read_fields <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+vapour_read_fields <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA, open_options = NULL) {
   dsource <- .check_dsn_single(dsource)
-  dsource <- .check_dsn_single(dsource)
-  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
+  open_options <- .check_open_options(open_options)
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer, open_options)
   limit_n <- validate_limit_n(limit_n)
   extent <- validate_extent(extent, sql)
 
   read_fields_gdal_cpp(dsn = dsource, layer = as.integer(layer), sql = sql, limit_n = limit_n, skip_n = as.integer(skip_n),
                        ex = as.numeric(extent),
-                       fid_column_name = character(0))
+                       fid_column_name = character(0),
+                       open_options = open_options)
 }
 
 #' @name vapour_read_fields
 #' @export
-vapour_read_attributes <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA) {
+vapour_read_attributes <- function(dsource, layer = 0L, sql = "", limit_n = NULL, skip_n = 0, extent = NA, open_options = NULL) {
   dsource <- .check_dsn_single(dsource)
- vapour_read_fields(dsource, layer, sql, limit_n, skip_n, extent)
+ vapour_read_fields(dsource, layer, sql, limit_n, skip_n, extent, open_options = open_options)
 }

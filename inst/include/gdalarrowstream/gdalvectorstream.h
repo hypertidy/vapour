@@ -7,6 +7,7 @@
 #include <cpp11.hpp>
 #include <ogrsf_frmts.h>
 #include "common/common_vapour.h"
+#include "common/gdal_handles.h"
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
 #include <ogr_recordbatch.h>
 #endif
@@ -93,25 +94,19 @@ inline list ogr_layer_setup(strings datasource,
                                std::vector<std::string> drivers,
                                doubles ex,
                                int width) {
-  std::vector <char *> open_options;
-  if (options.size() > 0) {
-     open_options = string_to_charptr(options);
-  }
-
+  writable::strings open_options;
+  for (size_t i = 0; i < options.size(); i++) open_options.push_back(options[i]);
   std::vector <char *> drivers_v = string_to_charptr(drivers);
-  GDALDataset *poDS;
 
-  poDS = (GDALDataset *) GDALOpenEx( as_cstr(datasource[0]), GDAL_OF_VECTOR | GDAL_OF_READONLY,
-          drivers.size() ? drivers_v.data() : NULL,
-          open_options.size() ? open_options.data() : NULL,
-          NULL );
+  gdalcommon::DatasetPtr owner = gdalcommon::open_dataset_or_stop(as_cstr(datasource[0]),
+                                   GDAL_OF_VECTOR | GDAL_OF_READONLY, open_options,
+                                   drivers.size() ? drivers_v.data() : NULL);
 
-  if( poDS == NULL ) {
-    cpp11::stop("Cannot open %s; ", as_cstr(datasource[0]));
-  }
-
-  SEXP dataset_xptr = PROTECT(R_MakeExternalPtr(poDS, R_NilValue, R_NilValue));
-  R_RegisterCFinalizer(dataset_xptr, &finalize_dataset_xptr);
+  // the external pointer takes the dataset over, with a finalizer to close it.
+  // It is protected by cpp11 so that an error below releases it as well.
+  cpp11::sexp dataset_xptr(cpp11::safe[R_MakeExternalPtr](owner.get(), R_NilValue, R_NilValue));
+  cpp11::safe[R_RegisterCFinalizer](dataset_xptr, &finalize_dataset_xptr);
+  GDALDataset *poDS = owner.release();
 
   writable::strings layer_w;
   bool layer_empty = (layer.size() == 0);
@@ -133,8 +128,8 @@ inline list ogr_layer_setup(strings datasource,
       if (! quiet) {
         Rprintf("Multiple layers are present in data source %s, ", as_cstr(datasource[0]));
         Rprintf("reading layer `%s'.\n", CHAR(STRING_ELT(layer_w, 0)));
-        Rprintf("Use `st_layers' to list all layer names and their type in a data source.\n");
-        Rprintf("Set the `layer' argument in `st_read' to read a particular layer.\n");
+        Rprintf("Use vapour_layer_names() to list the layer names in a data source.\n");
+        Rprintf("Set the 'layer' argument to read a particular layer.\n");
       }
       auto warning_fn = cpp11::package("base")["warning"];
       warning_fn("automatically selected the first layer in a data source containing more than one.");
@@ -172,15 +167,14 @@ inline list ogr_layer_setup(strings datasource,
   if (!query_is_na) {
     poLayer = poDS->ExecuteSQL(CHAR(STRING_ELT(query_w, 0)), &poly, NULL);
     if (poLayer == NULL)
-      cpp11::stop("Query execution failed, cannot open layer.\n");
+      gdalcommon::stop_gdal("Query execution failed, cannot open layer");
     if (layer_w.size())
       cpp11::warning("argument layer is ignored when query is specified\n");
   } else {
     poLayer = poDS->GetLayerByName(CHAR(STRING_ELT(layer_w, 0)));
   }
   if (poLayer == NULL) {
-    Rprintf("Cannot open layer %s\n", CHAR(STRING_ELT(layer_w, 0)));
-    cpp11::stop("Opening layer failed.\n");
+    gdalcommon::stop_gdal(std::string("cannot open layer '") + CHAR(STRING_ELT(layer_w, 0)) + "'");
   }
 
   if (! quiet) {
@@ -192,10 +186,8 @@ inline list ogr_layer_setup(strings datasource,
     Rprintf("using driver `%s'\n", poDS->GetDriverName());
   }
 
-  SEXP layer_xptr = PROTECT(R_MakeExternalPtr(poLayer, R_NilValue, dataset_xptr));
-  Rprintf("%s", "ogr_layer_setup:\n");
+  cpp11::sexp layer_xptr(cpp11::safe[R_MakeExternalPtr](poLayer, R_NilValue, dataset_xptr));
   writable::list result = {dataset_xptr, layer_xptr};
-  UNPROTECT(2);
   return result;
 }
 
@@ -227,17 +219,21 @@ inline list read_gdal_stream(
   OGRLayerH hLayer = reinterpret_cast<OGRLayerH>(poLayer);
   OGRSpatialReferenceH hSRS = OGR_L_GetSpatialRef(hLayer);
 
-  char* wkt_out;
+  // a layer with no CRS has an empty WKT
   std::string wkt_str;
-  if (OSRExportToWkt(hSRS, &wkt_out) != OGRERR_NONE) {
-    cpp11::stop("error export SRS to Wkt");
+  if (hSRS != nullptr) {
+    char* wkt_out = nullptr;
+    OGRErr wkt_err = OSRExportToWkt(hSRS, &wkt_out);
+    gdalcommon::CPLStringPtr wkt_owner(wkt_out);
+    if (wkt_err != OGRERR_NONE || wkt_out == nullptr) {
+      gdalcommon::stop_gdal("error export SRS to Wkt");
+    }
+    wkt_str = wkt_out;
   }
-  wkt_str = wkt_out;
-  CPLFree(wkt_out);
 
   struct ArrowArrayStream stream_temp;
   if (!poLayer->GetArrowStream(&stream_temp, array_stream_options)) {
-    cpp11::stop("Failed to open ArrayStream from Layer");
+    gdalcommon::stop_gdal("Failed to open ArrayStream from Layer");
   }
 
   GDALStreamWrapper::Make(&stream_temp, prep, stream_out);

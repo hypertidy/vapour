@@ -28,21 +28,25 @@ validate_limit_fa <- function(x) {
 
 #' @name vapour_read_geometry
 #' @export
-vapour_read_geometry_ia <- function(dsource, layer = 0L, sql = "", extent = NA, ia = NULL) {
+vapour_read_geometry_ia <- function(dsource, layer = 0L, sql = "", extent = NA, ia = NULL, open_options = NULL) {
   dsource <- .check_dsn_single(dsource)
-  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
+  open_options <- .check_open_options(open_options)
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer, open_options)
   ia <- validate_limit_ia(ia)
   extent <- validate_extent(extent, sql)
-  gdal_dsn_read_geom_ia( dsn = dsource, layer = layer, sql = sql, ex = extent, format = "wkb",  ia = ia)
+  gdal_dsn_read_geom_ia( dsn = dsource, layer = as.integer(layer), sql = sql, ex = as.numeric(extent), format = "wkb",  ia = ia,
+                         open_options = open_options)
 }
 #' @name vapour_read_geometry
 #' @export
-vapour_read_geometry_ij <- function(dsource, layer = 0L, sql = "", extent = NA, ij = NULL) {
+vapour_read_geometry_ij <- function(dsource, layer = 0L, sql = "", extent = NA, ij = NULL, open_options = NULL) {
   dsource <- .check_dsn_single(dsource)
-  if (!is.numeric(layer)) layer <- index_layer(dsource, layer)
+  open_options <- .check_open_options(open_options)
+  if (!is.numeric(layer)) layer <- index_layer(dsource, layer, open_options)
   ij <- validate_limit_ij(ij)
   extent <- validate_extent(extent, sql)
-  gdal_dsn_read_geom_ij( dsn = dsource, layer = layer, sql = sql, ex = extent, format = "wkb",  ij = ij)
+  gdal_dsn_read_geom_ij( dsn = dsource, layer = as.integer(layer), sql = sql, ex = as.numeric(extent), format = "wkb",  ij = ij,
+                         open_options = open_options)
 }
 
 

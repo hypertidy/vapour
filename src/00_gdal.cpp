@@ -2,6 +2,7 @@
 #include "gdallibrary/gdallibrary.h"
 
 using namespace cpp11;
+using gdalcommon::gdal_call;
 
 [[cpp11::register]]
 logicals cleanup_gdal_cpp() {
@@ -13,23 +14,23 @@ logicals cleanup_gdal_cpp() {
 }
 
 [[cpp11::register]]
-strings driver_gdal_cpp(strings dsn) {
-  return gdallibrary::gdal_driver(dsn);
+strings driver_gdal_cpp(strings dsn, strings open_options) {
+  return gdal_call([&]() { return gdallibrary::gdal_driver(dsn, open_options); });
 }
 
 [[cpp11::register]]
-strings driver_id_gdal_cpp(strings dsn) {
-  return gdallibrary::gdal_driver(dsn);
+strings driver_id_gdal_cpp(strings dsn, strings open_options) {
+  return gdal_call([&]() { return gdallibrary::gdal_driver(dsn, open_options); });
 }
 
 [[cpp11::register]]
-strings vector_filelist_gdal_cpp(strings dsn) {
-  return gdallibrary::gdal_vector_filelist(dsn);
+strings vector_filelist_gdal_cpp(strings dsn, strings open_options) {
+  return gdal_call([&]() { return gdallibrary::gdal_vector_filelist(dsn, open_options); });
 }
 
 [[cpp11::register]]
-strings layer_names_gdal_cpp(strings dsn) {
-  return gdallibrary::gdal_layer_names(dsn);
+strings layer_names_gdal_cpp(strings dsn, strings open_options) {
+  return gdal_call([&]() { return gdallibrary::gdal_layer_names(dsn, open_options); });
 }
 
 [[cpp11::register]]
@@ -39,12 +40,12 @@ list drivers_list_gdal_cpp() {
 
 [[cpp11::register]]
 strings proj_to_wkt_gdal_cpp(strings proj4string) {
-  return gdallibrary::gdal_proj_to_wkt(proj4string);
+  return gdal_call([&]() { return gdallibrary::gdal_proj_to_wkt(proj4string); });
 }
 
 [[cpp11::register]]
 logicals crs_is_lonlat_cpp(strings input_string) {
-  return gdallibrary::gdal_crs_is_lonlat(input_string);
+  return gdal_call([&]() { return gdallibrary::gdal_crs_is_lonlat(input_string); });
 }
 
 [[cpp11::register]]
@@ -68,5 +69,5 @@ integers version_proj_cpp() {
 
 [[cpp11::register]]
 strings vsi_list_gdal_cpp(strings dsn) {
-  return gdallibrary::gdal_vsi_list(dsn);
+  return gdal_call([&]() { return gdallibrary::gdal_vsi_list(dsn); });
 }

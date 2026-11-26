@@ -4,6 +4,7 @@
 #include "ogrsf_frmts.h"
 #include "gdal_priv.h"
 
+#include "common/gdal_handles.h"
 #include "gdallibrary/gdallibrary.h"
 #include "gdalmiscutils/gdalmiscutils.h"
 namespace gdalgeometry {
@@ -25,27 +26,31 @@ inline strings gdal_geometry_wkt(OGRFeature *poFeature) {
   writable::strings wkt(1);
   if (poFeature->GetGeometryRef()) {
     char *pszGEOM_WKT = NULL;
-    poFeature->GetGeometryRef()->exportToWkt(&pszGEOM_WKT, wkbVariantIso );
-    wkt[0] = pszGEOM_WKT;
-    CPLFree( pszGEOM_WKT );
+    OGRErr err = poFeature->GetGeometryRef()->exportToWkt(&pszGEOM_WKT, wkbVariantIso );
+    gdalcommon::CPLStringPtr wkt_owner(pszGEOM_WKT);
+    if (err == OGRERR_NONE && pszGEOM_WKT != NULL) {
+      wkt[0] = pszGEOM_WKT;
+    } else {
+      wkt[0] = NA_STRING;
+    }
   } else {
     wkt[0] = NA_STRING;
   }
   return wkt;
 }
 inline strings gdal_geometry_txt(OGRFeature *poFeature, strings format) {
-  char *export_txt = NULL;
   writable::strings txt(1);
+  txt[0] = NA_STRING;
   std::string fmt = std::string(format[0]);
   if (poFeature->GetGeometryRef()) {
+    char *export_txt = NULL;
     if (fmt == "gml")  export_txt = poFeature->GetGeometryRef()->exportToGML();
     if (fmt == "json") export_txt = poFeature->GetGeometryRef()->exportToJson();
     if (fmt == "kml")  export_txt = poFeature->GetGeometryRef()->exportToKML();
-    txt[0] = export_txt;
-  } else {
-    txt[0] = NA_STRING;
+    gdalcommon::CPLStringPtr txt_owner(export_txt);
+    // a geometry GDAL cannot write in this format is missing, as an absent one is
+    if (export_txt != NULL) txt[0] = export_txt;
   }
-  CPLFree(export_txt);
   return txt;
 }
 inline integers gdal_geometry_type(OGRFeature*poFeature) {
@@ -83,18 +88,20 @@ inline doubles gdal_geometry_extent(OGRFeature *poFeature) {
 inline doubles layer_read_fids_ij(OGRLayer *poLayer, doubles ij) {
   R_xlen_t st = (R_xlen_t)ij[0];
   R_xlen_t en = (R_xlen_t)ij[1];
-  writable::doubles out(en - st + 1);
+  R_xlen_t n = en - st + 1;
+  if (n < 0) n = 0;
+  writable::doubles out(n);
   for (R_xlen_t k = 0; k < out.size(); k++) out[k] = NA_REAL;
-  OGRFeature *poFeature;
   R_xlen_t cnt = 0;
   R_xlen_t ii = 0;
-  while(ii <= en && (poFeature = poLayer->GetNextFeature()) != NULL ) {
+  while (ii <= en) {
+    gdalcommon::FeaturePtr poFeature(poLayer->GetNextFeature());
+    if (!poFeature) break;
     if (ii >= st) {
       out[cnt] = (double)poFeature->GetFID();
       cnt++;
     }
     ii++;
-    OGRFeature::DestroyFeature(poFeature);
   }
   if (cnt < out.size()) {
     cpp11::warning("not as many FIDs as requested");
@@ -111,16 +118,16 @@ inline doubles layer_read_fids_all(OGRLayer *poLayer) {
 inline doubles layer_read_fids_ia(OGRLayer *poLayer, doubles ia) {
   writable::doubles out(ia.size());
   for (R_xlen_t k = 0; k < out.size(); k++) out[k] = NA_REAL;
-  OGRFeature *poFeature;
   R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
-  while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+  while (cnt < ia.size()) {
+    gdalcommon::FeaturePtr poFeature(poLayer->GetNextFeature());
+    if (!poFeature) break;
     if (ii == (R_xlen_t)(ia[cnt])) {
       out[cnt] = (double)poFeature->GetFID();
       cnt++;
     }
     ii++;
-    OGRFeature::DestroyFeature(poFeature);
   }
   if (cnt < out.size()) {
     cpp11::warning("not all FIDS found");
@@ -141,18 +148,20 @@ inline list feature_read_geom(OGRFeature *poFeature, strings format) {
 }
 
 inline list layer_read_geom_ij(OGRLayer *poLayer, strings format, doubles ij) {
-  OGRFeature *poFeature;
   R_xlen_t st = (R_xlen_t)ij[0];
   R_xlen_t en = (R_xlen_t)ij[1];
-  writable::list out(en - st + 1);
+  R_xlen_t n = en - st + 1;
+  if (n < 0) n = 0;
+  writable::list out(n);
   R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
-  while(ii <= en &&  (poFeature = poLayer->GetNextFeature()) != NULL ) {
+  while (ii <= en) {
+    gdalcommon::FeaturePtr poFeature(poLayer->GetNextFeature());
+    if (!poFeature) break;
     if (ii >= st) {
-      out[cnt] = feature_read_geom(poFeature, format)[0];
+      out[cnt] = feature_read_geom(poFeature.get(), format)[0];
       cnt++;
     }
-    OGRFeature::DestroyFeature(poFeature);
     ii++;
   }
   if (cnt < out.size()) {
@@ -168,31 +177,33 @@ inline list layer_read_geom_all(OGRLayer *poLayer, strings format) {
 }
 
 inline list layer_read_geom_ia(OGRLayer *poLayer, strings format, doubles ia) {
-  OGRFeature *poFeature;
   poLayer->ResetReading();
   writable::list out(ia.size());
   R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
-  while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+  while (cnt < ia.size()) {
+    gdalcommon::FeaturePtr poFeature(poLayer->GetNextFeature());
+    if (!poFeature) break;
     if (ii == static_cast<R_xlen_t>(ia[cnt])) {
-      out[cnt] = feature_read_geom(poFeature, format)[0];
+      out[cnt] = feature_read_geom(poFeature.get(), format)[0];
       cnt++;
     }
     ii++;
-    OGRFeature::DestroyFeature(poFeature);
-    if (cnt == ia.size()) break;
   }
   return out;
 }
 
 inline list layer_read_geom_fa(OGRLayer *poLayer, strings format, doubles fa) {
-  OGRFeature *poFeature;
   writable::list out(fa.size());
   for (R_xlen_t ii = 0; ii < fa.size(); ii++) {
     GIntBig feature_id = (GIntBig)fa[ii];
-    poFeature = poLayer->GetFeature(feature_id);
-    out[ii] = feature_read_geom(poFeature, format)[0];
-    OGRFeature::DestroyFeature(poFeature);
+    gdalcommon::FeaturePtr poFeature(poLayer->GetFeature(feature_id));
+    if (!poFeature) {
+      // the element stays NULL
+      cpp11::warning("FID not found %.0f", (double)fa[ii]);
+    } else {
+      out[ii] = feature_read_geom(poFeature.get(), format)[0];
+    }
   }
   return out;
 }
@@ -221,6 +232,13 @@ inline void write_feature_fields(OGRFeature *poFeature, OGRFeatureDefn *poFDefn,
       else { cv[cnt] = NA_STRING; }
     } break;
     case OFTInteger: {
+      // a boolean subtype was allocated as a logical vector
+      if (poFieldDefn->GetSubType() == OFSTBoolean) {
+        writable::logicals lv(out[iField]);
+        if (!not_NA) { lv[cnt] = NA_LOGICAL; break; }
+        lv[cnt] = (Rboolean)(poFeature->GetFieldAsInteger(iField) != 0);
+        break;
+      }
       writable::integers iv(out[iField]);
       if (!not_NA) { iv[cnt] = NA_INTEGER; break; }
       iv[cnt] = poFeature->GetFieldAsInteger(iField);
@@ -285,17 +303,17 @@ inline list layer_read_fields_ij(OGRLayer *poLayer, strings fid_column_name,
                                                        false, fid_column_name));
   cpp11::function ISOdatetime_fn(cpp11::package("base")["ISOdatetime"]);
   cpp11::function ISOdate_fn(cpp11::package("base")["ISOdate"]);
-  
-  OGRFeature *poFeature;
+
   R_xlen_t cnt = 0;
   R_xlen_t ii = 0;
-  while (ii <= en && (poFeature = poLayer->GetNextFeature()) != NULL) {
+  while (ii <= en) {
+    gdalcommon::FeaturePtr poFeature(poLayer->GetNextFeature());
+    if (!poFeature) break;
     if (ii >= st) {
-      write_feature_fields(poFeature, poFDefn, out, cnt, ISOdatetime_fn, ISOdate_fn);
+      write_feature_fields(poFeature.get(), poFDefn, out, cnt, ISOdatetime_fn, ISOdate_fn);
       cnt++;
     }
     ii++;
-    OGRFeature::DestroyFeature(poFeature);
   }
   if (cnt < nfeatures) {
     cpp11::warning("not as many features as requested");
@@ -316,16 +334,16 @@ inline list layer_read_fields_ia(OGRLayer *poLayer, strings fid_column_name,
   writable::list out(gdallibrary::allocate_fields_list(poFDefn, nFeature, false, fid_column_name));
   cpp11::function ISOdatetime_fn(cpp11::package("base")["ISOdatetime"]);
   cpp11::function ISOdate_fn(cpp11::package("base")["ISOdate"]);
-  
-  OGRFeature *poFeature;
+
   R_xlen_t ii = 0;
   R_xlen_t cnt = 0;
-  while ((poFeature = poLayer->GetNextFeature()) != NULL) {
+  while (cnt < nFeature) {
+    gdalcommon::FeaturePtr poFeature(poLayer->GetNextFeature());
+    if (!poFeature) break;
     if (ii == static_cast<R_xlen_t>(ia[cnt])) {
-      write_feature_fields(poFeature, poFDefn, out, cnt, ISOdatetime_fn, ISOdate_fn);
+      write_feature_fields(poFeature.get(), poFDefn, out, cnt, ISOdatetime_fn, ISOdate_fn);
       cnt++;
     }
-    OGRFeature::DestroyFeature(poFeature);
     ii++;
   }
   return out;
@@ -338,17 +356,15 @@ inline list layer_read_fields_fa(OGRLayer *poLayer, strings fid_column_name,
   writable::list out(gdallibrary::allocate_fields_list(poFDefn, nFeature, false, fid_column_name));
   cpp11::function ISOdatetime_fn(cpp11::package("base")["ISOdatetime"]);
   cpp11::function ISOdate_fn(cpp11::package("base")["ISOdate"]);
-  
-  OGRFeature *poFeature;
+
   R_xlen_t cnt = 0;
   for (R_xlen_t ii = 0; ii < fa.size(); ii++) {
     GIntBig feature_id = (GIntBig)fa[ii];
-    poFeature = poLayer->GetFeature(feature_id);
-    if (NULL == poFeature) {
-      cpp11::warning("FID not found %i", (int)fa[ii]);
+    gdalcommon::FeaturePtr poFeature(poLayer->GetFeature(feature_id));
+    if (!poFeature) {
+      cpp11::warning("FID not found %.0f", (double)fa[ii]);
     } else {
-      write_feature_fields(poFeature, poFDefn, out, cnt, ISOdatetime_fn, ISOdate_fn);
-      OGRFeature::DestroyFeature(poFeature);
+      write_feature_fields(poFeature.get(), poFDefn, out, cnt, ISOdatetime_fn, ISOdate_fn);
     }
     cnt++;
   }
@@ -357,48 +373,48 @@ inline list layer_read_fields_fa(OGRLayer *poLayer, strings fid_column_name,
 
 
 // DSN read - all use with_ogr_layer
-inline doubles dsn_read_fids_all(strings dsn, integers layer, strings sql, doubles ex) {
-  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
+inline doubles dsn_read_fids_all(strings dsn, integers layer, strings sql, doubles ex, strings oo) {
+  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex, oo,
                                      [](OGRLayer *poLayer) { return layer_read_fids_all(poLayer); });
 }
-inline doubles dsn_read_fids_ij(strings dsn, integers layer, strings sql, doubles ex, doubles ij) {
-  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
+inline doubles dsn_read_fids_ij(strings dsn, integers layer, strings sql, doubles ex, strings oo, doubles ij) {
+  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex, oo,
                                      [&ij](OGRLayer *poLayer) { return layer_read_fids_ij(poLayer, ij); });
 }
-inline doubles dsn_read_fids_ia(strings dsn, integers layer, strings sql, doubles ex, doubles ia) {
-  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
+inline doubles dsn_read_fids_ia(strings dsn, integers layer, strings sql, doubles ex, strings oo, doubles ia) {
+  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex, oo,
                                      [&ia](OGRLayer *poLayer) { return layer_read_fids_ia(poLayer, ia); });
 }
-inline list dsn_read_geom_all(strings dsn, integers layer, strings sql, doubles ex, strings format) {
-  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
+inline list dsn_read_geom_all(strings dsn, integers layer, strings sql, doubles ex, strings oo, strings format) {
+  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex, oo,
                                      [&format](OGRLayer *poLayer) { return layer_read_geom_all(poLayer, format); });
 }
-inline list dsn_read_geom_ij(strings dsn, integers layer, strings sql, doubles ex, strings format, doubles ij) {
-  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
+inline list dsn_read_geom_ij(strings dsn, integers layer, strings sql, doubles ex, strings oo, strings format, doubles ij) {
+  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex, oo,
                                      [&format, &ij](OGRLayer *poLayer) { return layer_read_geom_ij(poLayer, format, ij); });
 }
-inline list dsn_read_geom_ia(strings dsn, integers layer, strings sql, doubles ex, strings format, doubles ia) {
-  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
+inline list dsn_read_geom_ia(strings dsn, integers layer, strings sql, doubles ex, strings oo, strings format, doubles ia) {
+  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex, oo,
                                      [&format, &ia](OGRLayer *poLayer) { return layer_read_geom_ia(poLayer, format, ia); });
 }
-inline list dsn_read_geom_fa(strings dsn, integers layer, strings sql, doubles ex, strings format, doubles fa) {
-  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
+inline list dsn_read_geom_fa(strings dsn, integers layer, strings sql, doubles ex, strings oo, strings format, doubles fa) {
+  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex, oo,
                                      [&format, &fa](OGRLayer *poLayer) { return layer_read_geom_fa(poLayer, format, fa); });
 }
-inline list dsn_read_fields_all(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name) {
-  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
+inline list dsn_read_fields_all(strings dsn, integers layer, strings sql, doubles ex, strings oo, strings fid_column_name) {
+  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex, oo,
                                      [&fid_column_name](OGRLayer *poLayer) { return layer_read_fields_all(poLayer, fid_column_name); });
 }
-inline list dsn_read_fields_ij(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name, doubles ij) {
-  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
+inline list dsn_read_fields_ij(strings dsn, integers layer, strings sql, doubles ex, strings oo, strings fid_column_name, doubles ij) {
+  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex, oo,
                                      [&fid_column_name, &ij](OGRLayer *poLayer) { return layer_read_fields_ij(poLayer, fid_column_name, ij); });
 }
-inline list dsn_read_fields_ia(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name, doubles ia) {
-  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
+inline list dsn_read_fields_ia(strings dsn, integers layer, strings sql, doubles ex, strings oo, strings fid_column_name, doubles ia) {
+  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex, oo,
                                      [&fid_column_name, &ia](OGRLayer *poLayer) { return layer_read_fields_ia(poLayer, fid_column_name, ia); });
 }
-inline list dsn_read_fields_fa(strings dsn, integers layer, strings sql, doubles ex, strings fid_column_name, doubles fa) {
-  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex,
+inline list dsn_read_fields_fa(strings dsn, integers layer, strings sql, doubles ex, strings oo, strings fid_column_name, doubles fa) {
+  return gdallibrary::with_ogr_layer(dsn, layer, sql, ex, oo,
                                      [&fid_column_name, &fa](OGRLayer *poLayer) { return layer_read_fields_fa(poLayer, fid_column_name, fa); });
 }
 

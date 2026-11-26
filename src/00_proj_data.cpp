@@ -5,6 +5,7 @@
 #include "cpl_error.h"
 #include "cpl_string.h"
 #include "common/common_vapour.h"
+#include "common/gdal_handles.h"
 
 using namespace cpp11;
 
@@ -27,12 +28,11 @@ logicals set_proj_search_paths_cpp(strings paths) {
   if (paths.size() == 0) {
     OSRSetPROJSearchPaths(nullptr);
   } else {
-    char **papszPaths = nullptr;
+    CPLStringList aosPaths;
     for (R_xlen_t i = 0; i < paths.size(); i++) {
-      papszPaths = CSLAddString(papszPaths, as_cstr(paths[i]));
+      aosPaths.AddString(as_cstr(paths[i]));
     }
-    OSRSetPROJSearchPaths(papszPaths);
-    CSLDestroy(papszPaths);
+    OSRSetPROJSearchPaths(aosPaths.List());
   }
   out[0] = TRUE;
 #endif
@@ -43,12 +43,9 @@ logicals set_proj_search_paths_cpp(strings paths) {
 strings get_proj_search_paths_cpp() {
   writable::strings out;
 #if GDAL_VERSION_NUM >= 3000000
-  char **papszPaths = OSRGetPROJSearchPaths();
-  if (papszPaths != nullptr) {
-    for (int i = 0; papszPaths[i] != nullptr; i++) {
-      out.push_back(papszPaths[i]);
-    }
-    CSLDestroy(papszPaths);
+  CPLStringList aosPaths(OSRGetPROJSearchPaths());
+  for (int i = 0; i < aosPaths.size(); i++) {
+    out.push_back(aosPaths[i]);
   }
 #endif
   return out;
@@ -69,14 +66,16 @@ logicals probe_proj_db_cpp() {
   writable::logicals out(1);
   out[0] = FALSE;
   OSRCleanup();
-  CPLPushErrorHandler(CPLQuietErrorHandler);
-  OGRSpatialReferenceH hSRS = OSRNewSpatialReference(nullptr);
-  if (hSRS != nullptr) {
-    OGRErr err = OSRImportFromEPSG(hSRS, 4326);
-    out[0] = (err == OGRERR_NONE);
-    OSRDestroySpatialReference(hSRS);
+  bool ok = false;
+  {
+    gdalcommon::QuietErrors quiet;
+    OGRSpatialReferenceH hSRS = OSRNewSpatialReference(nullptr);
+    if (hSRS != nullptr) {
+      ok = OSRImportFromEPSG(hSRS, 4326) == OGRERR_NONE;
+      OSRDestroySpatialReference(hSRS);
+    }
   }
-  CPLPopErrorHandler();
+  out[0] = (Rboolean)ok;
   return out;
 }
 
@@ -89,28 +88,30 @@ logicals probe_proj_db_cpp() {
 strings proj_db_metadata_cpp(strings path) {
   writable::strings out;
   writable::strings nms;
-  CPLPushErrorHandler(CPLQuietErrorHandler);
+  // a file that cannot be read this way is an expected answer, so GDAL is
+  // quiet here. Everything below is released however this scope is left.
+  gdalcommon::QuietErrors quiet;
   const char *apszAllowed[] = {"SQLite", nullptr};
-  GDALDatasetH hDS = GDALOpenEx(as_cstr(path[0]), GDAL_OF_VECTOR | GDAL_OF_READONLY,
-                                apszAllowed, nullptr, nullptr);
-  if (hDS != nullptr) {
-    OGRLayerH hLayer = GDALDatasetExecuteSQL(hDS,
-      "SELECT key, value FROM metadata", nullptr, nullptr);
-    if (hLayer != nullptr) {
-      OGRFeatureH hFeat;
-      OGR_L_ResetReading(hLayer);
-      while ((hFeat = OGR_L_GetNextFeature(hLayer)) != nullptr) {
-        const char *key = OGR_F_GetFieldAsString(hFeat, 0);
-        const char *val = OGR_F_GetFieldAsString(hFeat, 1);
+  writable::strings no_options((R_xlen_t)0);
+  gdalcommon::DatasetPtr poDS = gdalcommon::open_dataset(as_cstr(path[0]), GDAL_OF_VECTOR | GDAL_OF_READONLY,
+                                                         no_options, apszAllowed);
+  if (poDS) {
+    gdalcommon::LayerHandle poLayer(poDS.get(),
+                                    poDS->ExecuteSQL("SELECT key, value FROM metadata", nullptr, nullptr),
+                                    true);
+    if (poLayer) {
+      poLayer->ResetReading();
+      while (true) {
+        gdalcommon::FeaturePtr poFeature(poLayer->GetNextFeature());
+        if (!poFeature) break;
+        if (poFeature->GetFieldCount() < 2) continue;
+        const char *key = poFeature->GetFieldAsString(0);
+        const char *val = poFeature->GetFieldAsString(1);
         nms.push_back(key ? key : "");
         out.push_back(val ? val : "");
-        OGR_F_Destroy(hFeat);
       }
-      GDALDatasetReleaseResultSet(hDS, hLayer);
     }
-    GDALClose(hDS);
   }
-  CPLPopErrorHandler();
   out.names() = nms;
   return out;
 }

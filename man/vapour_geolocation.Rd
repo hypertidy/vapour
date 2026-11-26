@@ -4,12 +4,14 @@
 \alias{vapour_geolocation}
 \title{Retrieve geolocation information for a dataset}
 \usage{
-vapour_geolocation(x, sds = NULL)
+vapour_geolocation(x, sds = NULL, open_options = NULL)
 }
 \arguments{
 \item{x}{data source string (i.e. file name or URL or database connection string)}
 
 \item{sds}{a subdataset number, if necessary}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (as \code{-oo} in the GDAL command line tools), \code{NULL} for none. The options a driver accepts are listed on its page at \url{https://gdal.org/en/stable/drivers/raster/index.html}}
 }
 \value{
 list with a single character vector

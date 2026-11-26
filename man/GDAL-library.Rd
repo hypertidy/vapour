@@ -13,10 +13,12 @@ vapour_proj_version()
 
 vapour_all_drivers()
 
-vapour_driver(dsource)
+vapour_driver(dsource, open_options = NULL)
 }
 \arguments{
 \item{dsource}{data source string (i.e. file name or URL or database connection string)}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings, \code{NULL} for none}
 }
 \value{
 please see Details, character vectors or lists of character vectors

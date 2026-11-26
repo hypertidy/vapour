@@ -4,7 +4,7 @@
 \alias{vapour_geom_name}
 \title{Read geometry column name}
 \usage{
-vapour_geom_name(dsource, layer = 0L, sql = "")
+vapour_geom_name(dsource, layer = 0L, sql = "", open_options = NULL)
 }
 \arguments{
 \item{dsource}{data source name (path to file, connection string, URL)}
@@ -12,6 +12,8 @@ vapour_geom_name(dsource, layer = 0L, sql = "")
 \item{layer}{integer of layer to work with, defaults to the first (0) or the name of the layer}
 
 \item{sql}{if not empty this is executed against the data source (layer will be ignored)}
+
+\item{open_options}{open options for the driver, a character vector of \code{"NAME=VALUE"} strings (as \code{-oo} in the GDAL command line tools), \code{NULL} for none. The options a driver accepts are listed on its page at \url{https://gdal.org/en/stable/drivers/vector/index.html}}
 }
 \value{
 character vector of geometry column name/s
