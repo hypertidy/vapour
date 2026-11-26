@@ -33,14 +33,22 @@ vapour_load_gdal <- function() {
   sql <- Sys.getenv("vapour.sql.dialect")
   if (is.null(sql)) Sys.setenv(vapour_sql_dialect = "")
 
-  ## register drivers first: the PROJ checks below need the SQLite
+  ## GDAL data, only if the files are in the package. This must happen
+  ## before the drivers are registered: GDAL builds its data file search
+  ## path once, during registration, and ignores GDAL_DATA after that.
+  ## Without it a static build (Windows) is left with the data path of the
+  ## machine GDAL was compiled on, and drivers that need a data file fail
+  ## (OSM cannot find osmconf.ini). Set as a GDAL config option rather than
+  ## an environment variable so it does not leak into other packages.
+  gdl <- system.file("gdal", package = "vapour")
+  if (nzchar(gdl) && file.exists(file.path(gdl, "gdalvrt.xsd"))) {
+    set_gdal_config_cpp("GDAL_DATA", gdl)
+    assign(".vapour.gdal_data_active", TRUE, envir = .vapour_cache)
+  }
+
+  ## register drivers before the PROJ checks below, which need the SQLite
   ## driver (to read proj.db metadata) and OSR
   out <- register_gdal_cpp()
-
-  ## GDAL data is deliberately left alone: the bundled copy is not
-  ## activated. Pointing GDAL_DATA at it broke OSM driver lookup of
-  ## osmconf.ini on Windows (win-builder and GitHub CI, 0.20.0 development),
-  ## whereas GDAL's own default resolves correctly.
 
   ## PROJ data, only if the files are in the package, and only if the
   ## bundled proj.db is actually usable by the libproj we are linked to
@@ -91,6 +99,9 @@ vapour_use_bundled_proj_data <- function(prj) {
 vapour_unload_gdal <- function() {
   if (isTRUE(get0(".vapour.proj_data_active", envir = .vapour_cache, ifnotfound = FALSE))) {
     set_proj_search_paths_cpp(character())
+  }
+  if (isTRUE(get0(".vapour.gdal_data_active", envir = .vapour_cache, ifnotfound = FALSE))) {
+    unset_gdal_config_cpp("GDAL_DATA")
   }
 }
 
