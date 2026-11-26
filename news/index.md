@@ -4,7 +4,8 @@
 
 This is a robustness release: no function is removed and no return value
 changes shape. What changes is how problems are reported, and a number
-of inputs that crashed R are now errors.
+of inputs that crashed R are now errors. Six functions are added, to
+read fields and feature ids for chosen features.
 
 ### GDAL messages are R conditions
 
@@ -78,6 +79,34 @@ of inputs that crashed R are now errors.
   [`vapour_warp_raster()`](https://hypertidy.github.io/vapour/reference/vapour_warp_raster.md)
   and the `gdal_raster_*()` functions. They were accepted and ignored,
   because vapour opens the sources itself.
+
+### Reading chosen features
+
+- Fields and feature ids can now be read for chosen features, as
+  geometry already could. The new functions follow
+  [`vapour_read_geometry_ia()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
+  and
+  [`vapour_read_geometry_ij()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md):
+
+  - [`vapour_read_fields_ia()`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md),
+    [`vapour_read_fids_ia()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md):
+    by position, counted from 0, in any order and with repeats;
+  - [`vapour_read_fields_ij()`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md),
+    [`vapour_read_fids_ij()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md):
+    by an inclusive range of positions;
+  - [`vapour_read_geometry_fa()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md),
+    [`vapour_read_fields_fa()`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md):
+    by feature id, the values
+    [`vapour_read_fids()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md)
+    returns. This is direct access where the driver supports it.
+
+  A position or feature id that is not in the layer gives `NA` (`NULL`
+  for geometry).
+
+- [`vapour_read_geometry_ia()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
+  now reads `ia` in any order and with repeats, as documented. Only
+  positions in ascending order without repeats were read, and the rest
+  came back empty.
 
 ### Crashes fixed
 

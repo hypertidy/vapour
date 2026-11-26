@@ -44,7 +44,7 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="vapour-development-version">vapour (development version)<a class="anchor" aria-label="anchor" href="#vapour-development-version"></a></h2>
-<p>This is a robustness release: no function is removed and no return value changes shape. What changes is how problems are reported, and a number of inputs that crashed R are now errors.</p>
+<p>This is a robustness release: no function is removed and no return value changes shape. What changes is how problems are reported, and a number of inputs that crashed R are now errors. Six functions are added, to read fields and feature ids for chosen features.</p>
 <div class="section level3">
 <h3 id="gdal-messages-are-r-conditions-development-version">GDAL messages are R conditions<a class="anchor" aria-label="anchor" href="#gdal-messages-are-r-conditions-development-version"></a></h3>
 <ul><li>
@@ -60,6 +60,20 @@
 <h3 id="open-options-development-version">Open options<a class="anchor" aria-label="anchor" href="#open-options-development-version"></a></h3>
 <ul><li><p>Every function that reads a source gains <code>open_options</code>, a character vector of <code>"NAME=VALUE"</code> strings passed to the driver when the source is opened, as <code>-oo</code> in the GDAL command line tools (<a href="https://github.com/hypertidy/vapour/issues/224" class="external-link">#224</a>). This covers the raster readers (<code><a href="../reference/vapour_raster_info.html">vapour_raster_info()</a></code>, <code><a href="../reference/vapour_raster_gcp.html">vapour_raster_gcp()</a></code>, <code><a href="../reference/vapour_sds.html">vapour_sds()</a></code>, <code><a href="../reference/vapour_sds_names.html">vapour_sds_names()</a></code>, <code><a href="../reference/vapour_geolocation.html">vapour_geolocation()</a></code>, <code><a href="../reference/vapour_read_raster.html">vapour_read_raster()</a></code> and its typed forms, <code><a href="../reference/vapour_read_raster_block.html">vapour_read_raster_block()</a></code>, <code><a href="../reference/vapour_vrt.html">vapour_vrt()</a></code>, the <code>gdal_raster_*()</code> functions) and the vector readers (<code><a href="../reference/vapour_layer_names.html">vapour_layer_names()</a></code>, <code><a href="../reference/vapour_layer_info.html">vapour_layer_info()</a></code>, <code><a href="../reference/vapour_layer_extent.html">vapour_layer_extent()</a></code>, <code><a href="../reference/GDAL-library.html">vapour_driver()</a></code>, <code><a href="../reference/vapour_geom_name.html">vapour_geom_name()</a></code>, <code><a href="../reference/vapour_geom_summary.html">vapour_geom_summary()</a></code>, <code><a href="../reference/vapour_report_fields.html">vapour_report_fields()</a></code>, <code><a href="../reference/vapour_read_fields.html">vapour_read_fields()</a></code>, <code><a href="../reference/vapour_read_fids.html">vapour_read_fids()</a></code>, <code><a href="../reference/vapour_read_geometry.html">vapour_read_geometry()</a></code> and its variants, <code><a href="../reference/vapour_read_geometry.html">vapour_read_extent()</a></code>, <code><a href="../reference/vapour_read_geometry.html">vapour_feature_extent()</a></code>, <code><a href="../reference/vapour_read_geometry.html">vapour_read_type()</a></code>). <code><a href="../reference/vapour_vrt.html">vapour_vrt()</a></code> records the options in the VRT, so they apply again when the VRT is opened.</p></li>
 <li><p>The <code>open_options</code> argument of <code><a href="../reference/vapour_warp_raster.html">vapour_warp_raster()</a></code> now has an effect, as do <code>"-oo"</code> pairs given in <code>options</code> to <code><a href="../reference/vapour_warp_raster.html">vapour_warp_raster()</a></code> and the <code>gdal_raster_*()</code> functions. They were accepted and ignored, because vapour opens the sources itself.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="reading-chosen-features-development-version">Reading chosen features<a class="anchor" aria-label="anchor" href="#reading-chosen-features-development-version"></a></h3>
+<ul><li>
+<p>Fields and feature ids can now be read for chosen features, as geometry already could. The new functions follow <code><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_ia()</a></code> and <code><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_ij()</a></code>:</p>
+<ul><li>
+<code><a href="../reference/vapour_read_fields.html">vapour_read_fields_ia()</a></code>, <code><a href="../reference/vapour_read_fids.html">vapour_read_fids_ia()</a></code>: by position, counted from 0, in any order and with repeats;</li>
+<li>
+<code><a href="../reference/vapour_read_fields.html">vapour_read_fields_ij()</a></code>, <code><a href="../reference/vapour_read_fids.html">vapour_read_fids_ij()</a></code>: by an inclusive range of positions;</li>
+<li>
+<code><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_fa()</a></code>, <code><a href="../reference/vapour_read_fields.html">vapour_read_fields_fa()</a></code>: by feature id, the values <code><a href="../reference/vapour_read_fids.html">vapour_read_fids()</a></code> returns. This is direct access where the driver supports it.</li>
+</ul><p>A position or feature id that is not in the layer gives <code>NA</code> (<code>NULL</code> for geometry).</p>
+</li>
+<li><p><code><a href="../reference/vapour_read_geometry.html">vapour_read_geometry_ia()</a></code> now reads <code>ia</code> in any order and with repeats, as documented. Only positions in ascending order without repeats were read, and the rest came back empty.</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="crashes-fixed-development-version">Crashes fixed<a class="anchor" aria-label="anchor" href="#crashes-fixed-development-version"></a></h3>

@@ -67,6 +67,15 @@
 <span>  open_options <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">vapour_read_geometry_fa</span><span class="op">(</span></span>
+<span>  <span class="va">dsource</span>,</span>
+<span>  layer <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>  sql <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  extent <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  fa <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  open_options <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">vapour_read_geometry</span><span class="op">(</span></span>
 <span>  <span class="va">dsource</span>,</span>
 <span>  layer <span class="op">=</span> <span class="fl">0L</span>,</span>
@@ -151,6 +160,10 @@
 <dd><p>a range index, integer vector of length two with values between 0 and one less the number of features, this range of geometries is returned</p></dd>
 
 
+<dt id="arg-fa">fa<a class="anchor" aria-label="anchor" href="#arg-fa"></a></dt>
+<dd><p>feature id (FID) values, as returned by <code><a href="vapour_read_fids.html">vapour_read_fids()</a></code>, in any order and with repeats</p></dd>
+
+
 <dt id="arg-limit-n">limit_n<a class="anchor" aria-label="anchor" href="#arg-limit-n"></a></dt>
 <dd><p>an arbitrary limit to the number of features scanned</p></dd>
 
@@ -165,7 +178,7 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>for <code>vapour_read_geometry()</code>, <code>vapour_read_geometry_ia()</code> and <code>vapour_read_geometry_ij()</code> a raw vector of
+    <p>for <code>vapour_read_geometry()</code>, <code>vapour_read_geometry_ia()</code>, <code>vapour_read_geometry_ij()</code> and <code>vapour_read_geometry_fa()</code> a raw vector of
 geometry, for <code>vapour_read_extent()</code> a list of numeric vectors each with 'xmin,xmax,ymin,ymax' respectively for each geometry,
 for <code>vapour_feature_extent()</code> a numeric matrix with columns 'xmin', 'xmax', 'ymin', 'ymax' and one row for each geometry,
 for <code>vapour_read_type()</code> a character vector. See Details for more information.</p>
@@ -181,6 +194,11 @@ For each function an optional SQL string will be evaluated against the data sour
 features. These may be duplicated. If 'ia' is greater than the highest index NULL is returned, but if less than 0 the function will error.</p>
 <p><code>vapour_read_geometry_ij</code> will read features by <em>index range</em>, so two numbers to read every feature between those limits inclusively.
 'i' and 'j' must be increasing.</p>
+<p><code>vapour_read_geometry_fa</code> will read features by <em>feature id</em>, the FID values that <code><a href="vapour_read_fids.html">vapour_read_fids()</a></code> returns, in any order and
+with repeats. A FID that is not in the layer gives NULL, with a warning. This is direct access where the driver supports it,
+so it does not scan the layer.</p>
+<p>The same three ways to choose features are available for fields, see <code><a href="vapour_read_fields.html">vapour_read_fields_ia()</a></code>, and for feature ids,
+see <code><a href="vapour_read_fids.html">vapour_read_fids_ia()</a></code>.</p>
 <p><code>vapour_read_type</code> will read the (wkb) type of the geometry as an integer. These are
 <code>0</code> unknown, <code>1</code> Point, <code>2</code> LineString, <code>3</code> Polygon, <code>4</code> MultiPoint, <code>5</code> MultiLineString,
 <code>6</code> MultiPolygon, <code>7</code> GeometryCollection, and the other more exotic types listed in "api/vector_c_api.html" from the
@@ -226,6 +244,14 @@ is stopped if <code>limit_n</code> is reached.</p>
 <span class="r-in"><span><span class="va">txtpointjson</span> <span class="op">&lt;-</span> <span class="fu">vapour_read_geometry_text</span><span class="op">(</span><span class="va">pfile</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## points in raw text (WKT)</span></span></span>
 <span class="r-in"><span><span class="va">txtpointwkt</span> <span class="op">&lt;-</span> <span class="fu">vapour_read_geometry_text</span><span class="op">(</span><span class="va">pfile</span>, textformat <span class="op">=</span> <span class="st">"wkt"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## chosen features: by position, by range of positions, and by feature id</span></span></span>
+<span class="r-in"><span><span class="va">g_ia</span> <span class="op">&lt;-</span> <span class="fu">vapour_read_geometry_ia</span><span class="op">(</span><span class="va">mvfile</span>, ia <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">g_ij</span> <span class="op">&lt;-</span> <span class="fu">vapour_read_geometry_ij</span><span class="op">(</span><span class="va">mvfile</span>, ij <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fids</span> <span class="op">&lt;-</span> <span class="fu"><a href="vapour_read_fids.html">vapour_read_fids</a></span><span class="op">(</span><span class="va">mvfile</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">g_fa</span> <span class="op">&lt;-</span> <span class="fu">vapour_read_geometry_fa</span><span class="op">(</span><span class="va">mvfile</span>, fa <span class="op">=</span> <span class="va">fids</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">6</span>, <span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">g_ia</span>, <span class="va">g_fa</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

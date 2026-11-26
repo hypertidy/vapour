@@ -84,16 +84,22 @@ Read geometry, feature identifiers and attribute fields.
 
 - [`vapour_read_geometry_ia()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
   [`vapour_read_geometry_ij()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
+  [`vapour_read_geometry_fa()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
   [`vapour_read_geometry()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
   [`vapour_read_geometry_text()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
   [`vapour_read_extent()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
   [`vapour_feature_extent()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
   [`vapour_read_type()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
   : Read GDAL feature geometry
-- [`vapour_read_fids()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md)
+- [`vapour_read_fids_ia()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md)
+  [`vapour_read_fids_ij()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md)
+  [`vapour_read_fids()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md)
   [`vapour_read_names()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md)
   : Read feature names
-- [`vapour_read_fields()`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md)
+- [`vapour_read_fields_ia()`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md)
+  [`vapour_read_fields_ij()`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md)
+  [`vapour_read_fields_fa()`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md)
+  [`vapour_read_fields()`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md)
   [`vapour_read_attributes()`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md)
   : Read feature field data
 - [`vapour_report_fields()`](https://hypertidy.github.io/vapour/reference/vapour_report_fields.md)

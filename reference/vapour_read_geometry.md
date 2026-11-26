@@ -23,6 +23,15 @@ vapour_read_geometry_ij(
   open_options = NULL
 )
 
+vapour_read_geometry_fa(
+  dsource,
+  layer = 0L,
+  sql = "",
+  extent = NA,
+  fa = NULL,
+  open_options = NULL
+)
+
 vapour_read_geometry(
   dsource,
   layer = 0L,
@@ -114,6 +123,12 @@ vapour_read_type(
   a range index, integer vector of length two with values between 0 and
   one less the number of features, this range of geometries is returned
 
+- fa:
+
+  feature id (FID) values, as returned by
+  [`vapour_read_fids()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md),
+  in any order and with repeats
+
 - limit_n:
 
   an arbitrary limit to the number of features scanned
@@ -129,10 +144,10 @@ vapour_read_type(
 
 ## Value
 
-for `vapour_read_geometry()`, `vapour_read_geometry_ia()` and
-`vapour_read_geometry_ij()` a raw vector of geometry, for
-`vapour_read_extent()` a list of numeric vectors each with
-'xmin,xmax,ymin,ymax' respectively for each geometry, for
+for `vapour_read_geometry()`, `vapour_read_geometry_ia()`,
+`vapour_read_geometry_ij()` and `vapour_read_geometry_fa()` a raw vector
+of geometry, for `vapour_read_extent()` a list of numeric vectors each
+with 'xmin,xmax,ymin,ymax' respectively for each geometry, for
 `vapour_feature_extent()` a numeric matrix with columns 'xmin', 'xmax',
 'ymin', 'ymax' and one row for each geometry, for `vapour_read_type()` a
 character vector. See Details for more information.
@@ -158,6 +173,18 @@ returned, but if less than 0 the function will error.
 `vapour_read_geometry_ij` will read features by *index range*, so two
 numbers to read every feature between those limits inclusively. 'i' and
 'j' must be increasing.
+
+`vapour_read_geometry_fa` will read features by *feature id*, the FID
+values that
+[`vapour_read_fids()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md)
+returns, in any order and with repeats. A FID that is not in the layer
+gives NULL, with a warning. This is direct access where the driver
+supports it, so it does not scan the layer.
+
+The same three ways to choose features are available for fields, see
+[`vapour_read_fields_ia()`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md),
+and for feature ids, see
+[`vapour_read_fids_ia()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md).
 
 `vapour_read_type` will read the (wkb) type of the geometry as an
 integer. These are `0` unknown, `1` Point, `2` LineString, `3` Polygon,
@@ -210,4 +237,12 @@ head(exmat)
 txtpointjson <- vapour_read_geometry_text(pfile)
 ## points in raw text (WKT)
 txtpointwkt <- vapour_read_geometry_text(pfile, textformat = "wkt")
+
+## chosen features: by position, by range of positions, and by feature id
+g_ia <- vapour_read_geometry_ia(mvfile, ia = c(0, 5, 2))
+g_ij <- vapour_read_geometry_ij(mvfile, ij = c(0, 2))
+fids <- vapour_read_fids(mvfile)
+g_fa <- vapour_read_geometry_fa(mvfile, fa = fids[c(1, 6, 3)])
+identical(g_ia, g_fa)
+#> [1] TRUE
 ```

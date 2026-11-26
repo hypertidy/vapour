@@ -46,6 +46,7 @@ Functions for raster and vector sources are included.
 | [`vapour_feature_extent`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md) | the same extents as a matrix, one row for each feature |
 | [`vapour_read_fields`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md) | read attributes of features in a layer, the columnar data associated with each geometry |
 | [`vapour_read_geometry`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md) | read geometry in binary (blob, WKB) form |
+| [`vapour_read_geometry_fa`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md) | read geometry by feature id, with [`vapour_read_fields_fa`](https://hypertidy.github.io/vapour/reference/vapour_read_fields.md) for fields. The `_ia` and `_ij` forms are also there for fields and for feature ids |
 | [`vapour_read_geometry_ia`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md) | read geometry by index, arbitrary |
 | [`vapour_read_geometry_ij`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md) | read geometry by sequential index, i to j |
 | [`vapour_read_geometry_text`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md) | read geometry in text form, various formats |

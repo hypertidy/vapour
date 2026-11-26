@@ -5,6 +5,33 @@ Read features fields (attributes), optionally after SQL execution.
 ## Usage
 
 ``` r
+vapour_read_fields_ia(
+  dsource,
+  layer = 0L,
+  sql = "",
+  extent = NA,
+  ia = NULL,
+  open_options = NULL
+)
+
+vapour_read_fields_ij(
+  dsource,
+  layer = 0L,
+  sql = "",
+  extent = NA,
+  ij = NULL,
+  open_options = NULL
+)
+
+vapour_read_fields_fa(
+  dsource,
+  layer = 0L,
+  sql = "",
+  extent = NA,
+  fa = NULL,
+  open_options = NULL
+)
+
 vapour_read_fields(
   dsource,
   layer = 0L,
@@ -42,19 +69,16 @@ vapour_read_attributes(
   if not empty this is executed against the data source (layer will be
   ignored)
 
-- limit_n:
-
-  an arbitrary limit to the number of features scanned
-
-- skip_n:
-
-  an arbitrary number of features to skip
-
 - extent:
 
   apply an arbitrary extent, only when 'sql' used (must be 'ex = c(xmin,
   xmax, ymin, ymax)' but sp bbox, sf bbox, and raster extent also
   accepted)
+
+- ia:
+
+  an arbitrary index, integer vector with values between 0 and one less
+  the number of features, duplicates allowed and arbitrary order is ok
 
 - open_options:
 
@@ -63,11 +87,31 @@ vapour_read_attributes(
   The options a driver accepts are listed on its page at
   <https://gdal.org/en/stable/drivers/vector/index.html>
 
+- ij:
+
+  a range index, integer vector of length two with values between 0 and
+  one less the number of features, this range of geometries is returned
+
+- fa:
+
+  feature id (FID) values, as returned by
+  [`vapour_read_fids()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md),
+  in any order and with repeats
+
+- limit_n:
+
+  an arbitrary limit to the number of features scanned
+
+- skip_n:
+
+  an arbitrary number of features to skip
+
 ## Value
 
 list of vectors one for each field in the source, each will be the same
 length which will depend on the values of 'skip_n', 'limit_n', 'sql',
-and the available records in the source. The types will be raw, numeric,
+and the available records in the source, or on the number of features
+asked for with 'ia', 'ij' or 'fa'. The types will be raw, numeric,
 integer, character, logical depending on the available mapping to the
 types in the source for the data there to R's native vectors.
 
@@ -77,6 +121,16 @@ Internal types are not fully supported, there are straightforward
 conversions for numeric, integer (32-bit) and string types. Date, Time,
 DateTime are returned as character, and Integer64 is returned as
 numeric.
+
+Three more functions read the fields of chosen features, as
+[`vapour_read_geometry_ia()`](https://hypertidy.github.io/vapour/reference/vapour_read_geometry.md)
+and its companions do for geometry: `vapour_read_fields_ia` by position
+(`ia`, counted from 0, in any order and with repeats),
+`vapour_read_fields_ij` by an inclusive range of positions (`ij`), and
+`vapour_read_fields_fa` by feature id (`fa`, the values that
+[`vapour_read_fids()`](https://hypertidy.github.io/vapour/reference/vapour_read_fids.md)
+returns). A position or feature id that is not in the layer gives `NA`
+in every field, with a warning.
 
 ## Examples
 
@@ -151,4 +205,13 @@ vapour_read_fields(dsource, sql = SQL)
 #> [13] "Riverside"          "Hadspen"            "Travellers Rest"   
 #> [16] "Prospect Vale"     
 #> 
+
+## chosen features: by position, by range of positions, and by feature id
+vapour_read_fields_ia(mvfile, ia = c(0, 5, 2))$NAME
+#> [1] "Caveside"    "Bridgenorth" "Kimberley"  
+vapour_read_fields_ij(mvfile, ij = c(0, 2))$NAME
+#> [1] "Caveside"  "Weegena"   "Kimberley"
+fids <- vapour_read_fids(mvfile)
+vapour_read_fields_fa(mvfile, fa = fids[c(1, 6, 3)])$NAME
+#> [1] "Caveside"    "Bridgenorth" "Kimberley"  
 ```
