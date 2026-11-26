@@ -1,5 +1,26 @@
 # vapour 0.20.0
 
+* Arguments that GDAL cannot parse are now an R error rather than a crash.
+  An unknown `resample` or a malformed `options` value in `gdal_raster_data()`,
+  `gdal_raster_dsn()`, `gdal_raster_image()`, `gdal_raster_nara()` or
+  `vapour_warp_raster()` took down the R session, because the warp options
+  were used without checking that GDAL had created them (#231).
+
+* `buildvrt()` on a source that cannot be opened, and `vapour_vrt()` with
+  `geolocation` on a source that cannot be opened, no longer crash. The first
+  is now an error and the second returns `NA` like the other `vapour_vrt()`
+  failures.
+
+* `vapour_read_raster()` reads more than one band again. A `band` vector
+  longer than one was an error under R 4.3.0 and later (#203).
+
+* Fixed the PROTECT imbalance reported by rchk in the nativeRaster
+  conversion (#239).
+
+* The Int8, Int64 and UInt64 band types are now gated on the GDAL version
+  number rather than on separate major and minor tests, which would have
+  dropped them under GDAL 4.0.
+
 * configure now passes `LDFLAGS` when linking its GDAL and PROJ test
   programs, so builds against a library prefix off the default runtime
   search path (such as conda-forge, which supplies the rpath in `LDFLAGS`)

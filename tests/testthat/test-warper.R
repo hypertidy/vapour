@@ -107,3 +107,13 @@ test_that("robust to bad inputs", {
                                   projection = "+proj=laea", source_projection = "EPSG:4326", dimension = c(10, 10)), "band number is not available")
 
 })
+
+test_that("options GDAL cannot parse are an error", {
+  ## these used to crash the session, GDAL returns no options object
+  expect_error(gdal_raster_data(f, target_dim = c(1, 1), resample = "Q2"), "invalid warp options")
+  expect_error(gdal_raster_data(f, target_dim = c(4, 4), options = "-notanoption"), "invalid warp options")
+  expect_error(gdal_raster_dsn(f, target_dim = c(4, 4), options = "-notanoption"), "invalid warp options")
+  expect_error(gdal_raster_image(f, target_dim = c(4, 4), resample = "Q2"), "invalid warp options")
+  expect_error(vapour_warp_raster(f, extent = c(140, 150, -50, -40), dimension = c(4, 4),
+                                  options = "-notanoption"), "invalid warp options")
+})
